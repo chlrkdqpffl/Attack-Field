@@ -26,7 +26,7 @@ CGameFramework::CGameFramework()
 	_tcscpy_s(m_pszBuffer, _T("DX11_Framework ("));
 
 	srand(timeGetTime());
-	// Ä¿¹Ô
+	
 }
 
 CGameFramework::~CGameFramework()
