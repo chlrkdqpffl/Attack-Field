@@ -26,10 +26,18 @@ CGameFramework::CGameFramework()
 	_tcscpy_s(m_pszBuffer, _T("DX11_Framework ("));
 
 	srand(timeGetTime());
+
+#ifdef USE_CONSOLE
+	AllocConsole();
+	freopen("CONOUT$", "wt", stdout);
+#endif
 }
 
 CGameFramework::~CGameFramework()
 {
+#ifdef USE_CONSOLE
+	FreeConsole();
+#endif
 }
 
 bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)

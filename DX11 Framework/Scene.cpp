@@ -373,7 +373,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		}
 	}
 
-	
 
 	CreateShaderVariables(pd3dDevice);
 }

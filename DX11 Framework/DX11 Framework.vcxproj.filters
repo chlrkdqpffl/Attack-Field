@@ -58,6 +58,12 @@
     <Filter Include="소스 파일\Object\Terrain">
       <UniqueIdentifier>{6943396b-9ac9-4d88-bd07-754685b82e28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Manager">
+      <UniqueIdentifier>{b5833d23-61f0-4799-b0a3-6d852790d8d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager">
+      <UniqueIdentifier>{89fe9380-576c-45a3-b9dd-88e14d821bde}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -119,6 +125,12 @@
     </ClCompile>
     <ClCompile Include="TerrainWater.cpp">
       <Filter>소스 파일\Object\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +199,21 @@
     </ClInclude>
     <ClInclude Include="TerrainWater.h">
       <Filter>헤더 파일\Object\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="SingletonManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UserDefine.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer_Slot.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

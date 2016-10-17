@@ -96,6 +96,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -164,8 +166,14 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="ResourceManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="RotatingObject.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="SpaceShipCamera.cpp" />
@@ -178,6 +186,7 @@
   <ItemGroup>
     <ClInclude Include="AirplanePlayer.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ConstantBuffer_Slot.h" />
     <ClInclude Include="DirectX11_Project.h" />
     <ClInclude Include="FirstPersonCamera.h" />
     <ClInclude Include="GameFramework.h" />
@@ -187,9 +196,18 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ResourceManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="RotatingObject.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="SingletonManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="SpaceShipCamera.h" />
     <ClInclude Include="stdafx.h" />
@@ -198,6 +216,7 @@
     <ClInclude Include="TerrainWater.h" />
     <ClInclude Include="ThirdPersonCamera.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="UserDefine.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="DirectX11_Project.ico" />
