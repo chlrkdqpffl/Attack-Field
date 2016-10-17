@@ -107,11 +107,7 @@ public:
 	virtual void SetLookAt(XMVECTOR& d3dxvPosition, XMVECTOR& d3dxvLookAt, XMVECTOR& vd3dxvUp);
 
 	void CalculateFrustumPlanes();
-	#ifdef _AABB_
-		bool IsInFrustum(XMVECTOR& d3dxvMinimum, XMVECTOR& d3dxvMaximum);
-		bool IsInFrustum(AABB *pAABB);
-	#else
+
 	bool IsInFrustum(XMVECTOR& xCenter, XMVECTOR& xExtern);
-		bool IsInFrustum(BoundingBox *boundingbox);
-	#endif
+	bool IsInFrustum(BoundingBox *boundingbox);
 };

@@ -174,81 +174,6 @@ void CCamera::CalculateFrustumPlanes()
 	for (int i = 0; i < 6; i++) XMPlaneNormalize(XMLoadFloat4(&m_pd3dxFrustumPlanes[i]));
 }
 
-#ifdef _AABB_
-	bool CCamera::IsInFrustum(XMVECTOR& d3dxvMinimum, XMVECTOR& d3dxvMaximum)
-{
-	XMFLOAT3 d3dxvNearPoint, d3dxvFarPoint, d3dxvNormal;
-	XMFLOAT3 d3dxvTempMax, d3dxvTempMin;
-
-	XMStoreFloat3(&d3dxvTempMax, d3dxvMaximum);
-	XMStoreFloat3(&d3dxvTempMin, d3dxvMinimum);
-
-	for (int i = 0; i < 6; i++)
-	{
-		XMStoreFloat3(&d3dxvNormal, XMVectorSet(m_pd3dxFrustumPlanes[i].x, m_pd3dxFrustumPlanes[i].y, m_pd3dxFrustumPlanes[i].z, 0.0f));
-
-		if (d3dxvNormal.x >= 0.0f)
-		{
-			if (d3dxvNormal.y >= 0.0f)
-			{
-				if (d3dxvNormal.z >= 0.0f)
-				{
-					d3dxvNearPoint.x = d3dxvTempMin.x; d3dxvNearPoint.y = d3dxvTempMin.y; d3dxvNearPoint.z = d3dxvTempMin.z;
-				}
-				else
-				{
-					d3dxvNearPoint.x = d3dxvTempMin.x; d3dxvNearPoint.y = d3dxvTempMin.y; d3dxvNearPoint.z = d3dxvTempMax.z;
-				}
-			}
-			else
-			{
-				if (d3dxvNormal.z >= 0.0f)
-				{
-					d3dxvNearPoint.x = d3dxvTempMin.x; d3dxvNearPoint.y = d3dxvTempMax.y; d3dxvNearPoint.z = d3dxvTempMin.z;
-				}
-				else
-				{
-					d3dxvNearPoint.x = d3dxvTempMin.x; d3dxvNearPoint.y = d3dxvTempMax.y; d3dxvNearPoint.z = d3dxvTempMax.z;
-				}
-			}
-		}
-		else
-		{
-			if (d3dxvNormal.y >= 0.0f)
-			{
-				if (d3dxvNormal.z >= 0.0f)
-				{
-					d3dxvNearPoint.x = d3dxvTempMax.x; d3dxvNearPoint.y = d3dxvTempMin.y; d3dxvNearPoint.z = d3dxvTempMin.z;
-				}
-				else
-				{
-					d3dxvNearPoint.x = d3dxvTempMax.x; d3dxvNearPoint.y = d3dxvTempMin.y; d3dxvNearPoint.z = d3dxvTempMax.z;
-				}
-			}
-			else
-			{
-				if (d3dxvNormal.z >= 0.0f)
-				{
-					d3dxvNearPoint.x = d3dxvTempMax.x; d3dxvNearPoint.y = d3dxvTempMax.y; d3dxvNearPoint.z = d3dxvTempMin.z;
-				}
-				else
-				{
-					d3dxvNearPoint.x = d3dxvTempMax.x; d3dxvNearPoint.y = d3dxvTempMax.y; d3dxvNearPoint.z = d3dxvTempMax.z;
-				}
-			}
-		}
-		
-		if (XMVectorGetX(XMPlaneDotCoord(XMLoadFloat4(&m_pd3dxFrustumPlanes[i]), XMLoadFloat3(&d3dxvNearPoint))) > 0.0f) return(false);
-	}
-	return(true);
-}
-
-	bool CCamera::IsInFrustum(AABB *pAABB)
-{
-	return(IsInFrustum(XMLoadFloat3(&pAABB->m_d3dxvMinimum), XMLoadFloat3(&pAABB->m_d3dxvMaximum)));
-}
-#else
-
 bool CCamera::IsInFrustum(XMVECTOR& xCenter, XMVECTOR& xExtern)
 {
 	XMFLOAT3 xmVectorNearPoint, xmVectorFarPoint, xmVectorNormal;
@@ -321,4 +246,3 @@ bool CCamera::IsInFrustum(BoundingBox *boundingbox)
 {
 	return(IsInFrustum(XMLoadFloat3(&boundingbox->Center), XMLoadFloat3(&boundingbox->Extents)));
 }
-#endif

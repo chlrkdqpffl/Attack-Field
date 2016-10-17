@@ -6,56 +6,6 @@
 #include "Mesh.h"
 #include "Object.h"
 
-//------------------------------------------------------------------------------------------------
-#ifdef _AABB_
-	void AABB::Merge(XMVECTOR& d3dxvMinimum, XMVECTOR& d3dxvMaximum)
-	{
-		XMFLOAT3 xmMax, xmMin;
-		XMStoreFloat3(&xmMax, d3dxvMaximum);
-		XMStoreFloat3(&xmMin, d3dxvMinimum);
-
-		if (xmMin.x < m_d3dxvMinimum.x) m_d3dxvMinimum.x = xmMin.x;
-		if (xmMin.y < m_d3dxvMinimum.y) m_d3dxvMinimum.y = xmMin.y;
-		if (xmMin.z < m_d3dxvMinimum.z) m_d3dxvMinimum.z = xmMin.z;
-		if (xmMax.x > m_d3dxvMaximum.x) m_d3dxvMaximum.x = xmMax.x;
-		if (xmMax.y > m_d3dxvMaximum.y) m_d3dxvMaximum.y = xmMax.y;
-		if (xmMax.z > m_d3dxvMaximum.z) m_d3dxvMaximum.z = xmMax.z;
-	}
-
-	void AABB::Merge(AABB *pAABB)
-	{
-		Merge(XMLoadFloat3(&pAABB->m_d3dxvMinimum), XMLoadFloat3(&pAABB->m_d3dxvMaximum));
-	}
-
-	void AABB::Update(XMMATRIX *pmtxTransform)
-	{
-		XMFLOAT3 vVertices[8];
-		XMStoreFloat3(&vVertices[0], XMVectorSet(m_d3dxvMinimum.x, m_d3dxvMinimum.y, m_d3dxvMinimum.z, 0.0f));
-		XMStoreFloat3(&vVertices[1], XMVectorSet(m_d3dxvMinimum.x, m_d3dxvMinimum.y, m_d3dxvMaximum.z, 0.0f));
-		XMStoreFloat3(&vVertices[2], XMVectorSet(m_d3dxvMaximum.x, m_d3dxvMinimum.y, m_d3dxvMaximum.z, 0.0f));
-		XMStoreFloat3(&vVertices[3], XMVectorSet(m_d3dxvMaximum.x, m_d3dxvMinimum.y, m_d3dxvMinimum.z, 0.0f));
-		XMStoreFloat3(&vVertices[4], XMVectorSet(m_d3dxvMinimum.x, m_d3dxvMaximum.y, m_d3dxvMinimum.z, 0.0f));
-		XMStoreFloat3(&vVertices[5], XMVectorSet(m_d3dxvMinimum.x, m_d3dxvMaximum.y, m_d3dxvMaximum.z, 0.0f));
-		XMStoreFloat3(&vVertices[6], XMVectorSet(m_d3dxvMaximum.x, m_d3dxvMaximum.y, m_d3dxvMaximum.z, 0.0f));
-		XMStoreFloat3(&vVertices[7], XMVectorSet(m_d3dxvMaximum.x, m_d3dxvMaximum.y, m_d3dxvMinimum.z, 0.0f));
-
-		XMStoreFloat3(&m_d3dxvMinimum, XMVectorSet(+FLT_MAX, +FLT_MAX, +FLT_MAX, 0.0f));
-		XMStoreFloat3(&m_d3dxvMaximum, XMVectorSet(-FLT_MAX, -FLT_MAX, -FLT_MAX, 0.0f));
-		for (int i = 0; i < 8; i++)
-		{
-			XMStoreFloat3(&vVertices[i], XMVector3TransformCoord(XMLoadFloat3(&vVertices[i]), *pmtxTransform));
-		
-			if (vVertices[i].x < m_d3dxvMinimum.x) m_d3dxvMinimum.x = vVertices[i].x;
-			if (vVertices[i].y < m_d3dxvMinimum.y) m_d3dxvMinimum.y = vVertices[i].y;
-			if (vVertices[i].z < m_d3dxvMinimum.z) m_d3dxvMinimum.z = vVertices[i].z;
-			if (vVertices[i].x > m_d3dxvMaximum.x) m_d3dxvMaximum.x = vVertices[i].x;
-			if (vVertices[i].y > m_d3dxvMaximum.y) m_d3dxvMaximum.y = vVertices[i].y;
-			if (vVertices[i].z > m_d3dxvMaximum.z) m_d3dxvMaximum.z = vVertices[i].z;
-		}
-	}
-#endif
-
-//------------------------------------------------------------------------------------------------
 CMesh::CMesh(ID3D11Device *pd3dDevice)
 {
 	m_nType = VERTEX_POSITION_ELEMENT;
@@ -78,14 +28,10 @@ CMesh::CMesh(ID3D11Device *pd3dDevice)
 	m_pd3dxvPositions = NULL;
 	m_pnIndices = NULL;
 
-	#ifdef _AABB_
-		XMStoreFloat3(&m_bcBoundingCube.m_d3dxvMinimum, XMVectorSet(+FLT_MAX, +FLT_MAX, +FLT_MAX, 0.0f));
-		XMStoreFloat3(&m_bcBoundingCube.m_d3dxvMaximum, XMVectorSet(-FLT_MAX, -FLT_MAX, -FLT_MAX, 0.0f));
-	#else
-		m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-		m_bcBoundingCube.Extents = { +FLT_MAX, +FLT_MAX, +FLT_MAX };
-	#endif
-		m_nReferences = 0;
+	m_bcBoundingCube.Center = { 0.0f, 0.0f, 0.0f };
+	m_bcBoundingCube.Extents = { 0.0f, 0.0f, 0.0f};
+
+	m_nReferences = 0;
 }
 
 CMesh::~CMesh()
@@ -236,23 +182,7 @@ int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRay
 	}
 	return(nIntersections);
 }
-#ifdef _AABB_
-void CMesh::CalculateBoundingCube()
-{
-	XMStoreFloat3(&m_bcBoundingCube.m_d3dxvMinimum, XMVectorSet(+FLT_MAX, +FLT_MAX, +FLT_MAX, 0.0f));
-	XMStoreFloat3(&m_bcBoundingCube.m_d3dxvMaximum, XMVectorSet(-FLT_MAX, -FLT_MAX, -FLT_MAX, 0.0f));
-	for (int i = 0; i < m_nVertices; i++)
-	{
-		if (m_pd3dxvPositions[i].x < m_bcBoundingCube.m_d3dxvMinimum.x) m_bcBoundingCube.m_d3dxvMinimum.x = m_pd3dxvPositions[i].x;
-		if (m_pd3dxvPositions[i].x > m_bcBoundingCube.m_d3dxvMaximum.x) m_bcBoundingCube.m_d3dxvMaximum.x = m_pd3dxvPositions[i].x;
-		if (m_pd3dxvPositions[i].y < m_bcBoundingCube.m_d3dxvMinimum.y) m_bcBoundingCube.m_d3dxvMinimum.y = m_pd3dxvPositions[i].y;
-		if (m_pd3dxvPositions[i].y > m_bcBoundingCube.m_d3dxvMaximum.y) m_bcBoundingCube.m_d3dxvMaximum.y = m_pd3dxvPositions[i].y;
-		if (m_pd3dxvPositions[i].z < m_bcBoundingCube.m_d3dxvMinimum.z) m_bcBoundingCube.m_d3dxvMinimum.z = m_pd3dxvPositions[i].z;
-		if (m_pd3dxvPositions[i].z > m_bcBoundingCube.m_d3dxvMaximum.z) m_bcBoundingCube.m_d3dxvMaximum.z = m_pd3dxvPositions[i].z;
-	}
-}
-#else
-//XMCost 변환 Cost가 더 커서 안건들임
+
 void CMesh::CalculateBoundingCube()
 {
 	XMFLOAT3 xmf3Cen = m_bcBoundingCube.Center;
@@ -277,10 +207,8 @@ void CMesh::CalculateBoundingCube()
 	{ fabs(xmf3min.x - xmf3max.x) * 0.5f, fabs(xmf3min.y - xmf3max.y) * 0.5f, fabs(xmf3min.z - xmf3max.z) * 0.5f, };
 	m_bcBoundingCube.Center = xmf3Cen;
 	m_bcBoundingCube.Extents = xmf3Ext;
-	m_fSize = xmf3Ext;
 }
 
-#endif
 //------------------------------------------------------------------------------------------------
 CMeshDiffused::CMeshDiffused(ID3D11Device *pd3dDevice) : CMesh(pd3dDevice)
 {
@@ -430,7 +358,6 @@ CMeshDetailTexturedIlluminated::~CMeshDetailTexturedIlluminated()
 	if (m_pd3dDetailTexCoordBuffer) m_pd3dDetailTexCoordBuffer->Release();
 }
 
-
 //------------------------------------------------------------------------------------------------
 CAirplaneMeshDiffused::CAirplaneMeshDiffused(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth, XMVECTOR d3dxColor) : CMeshDiffused(pd3dDevice)
 {
@@ -564,14 +491,8 @@ CAirplaneMeshDiffused::CAirplaneMeshDiffused(ID3D11Device *pd3dDevice, float fWi
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, ppd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-	#ifdef _AABB_
-		m_bcBoundingCube.m_d3dxvMinimum = XMFLOAT3(-fx, -fy, -fz);
-		m_bcBoundingCube.m_d3dxvMaximum = XMFLOAT3(+fx, +fy, +fz);
-	#else
-		m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-		m_bcBoundingCube.Extents = { fx, fy, fz };
-		m_fSize = XMFLOAT3(fx, fy, fz);
-	#endif
+	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingCube.Extents = { fx, fy, fz };
 }
 
 CAirplaneMeshDiffused::~CAirplaneMeshDiffused()
@@ -655,14 +576,8 @@ CCubeMeshDiffused::CCubeMeshDiffused(ID3D11Device *pd3dDevice, float fWidth, flo
 
 	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
-	#ifdef _AABB_
-		m_bcBoundingCube.m_d3dxvMinimum = XMFLOAT3(-fx, -fy, -fz);
-		m_bcBoundingCube.m_d3dxvMaximum = XMFLOAT3(+fx, +fy, +fz);
-	#else
-		m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-		m_bcBoundingCube.Extents = { fx, fy, fz };
-		m_fSize = XMFLOAT3(fx, fy, fz);
-	#endif
+	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingCube.Extents = { fx, fy, fz };
 }
 
 CCubeMeshDiffused::~CCubeMeshDiffused()
@@ -711,15 +626,9 @@ CSphereMeshDiffused::CSphereMeshDiffused(ID3D11Device *pd3dDevice, float fRadius
 	UINT pnBufferStrides[2] = { sizeof(XMFLOAT3), sizeof(XMCOLOR) };
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
-	
-	#ifdef _AABB_
-		m_bcBoundingCube.m_d3dxvMinimum = XMFLOAT3(-fRadius, -fRadius, -fRadius);
-		m_bcBoundingCube.m_d3dxvMaximum = XMFLOAT3(+fRadius, +fRadius, +fRadius);
-	#else
-		m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-		m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
-		m_fSize = XMFLOAT3(fRadius, fRadius, fRadius);
-	#endif
+
+	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
 }
 
 CSphereMeshDiffused::~CSphereMeshDiffused()
@@ -777,14 +686,8 @@ CCubeMeshIlluminated::CCubeMeshIlluminated(ID3D11Device *pd3dDevice, float fWidt
 
 	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
-	#ifdef _AABB_
-		m_bcBoundingCube.m_d3dxvMinimum = XMFLOAT3(-fx, -fy, -fz);
-		m_bcBoundingCube.m_d3dxvMaximum = XMFLOAT3(+fx, +fy, +fz);
-	#else
-		m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-		m_bcBoundingCube.Extents = { fx, fy, fz };
-		m_fSize = XMFLOAT3(fx, fy, fz);
-	#endif
+	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingCube.Extents = { fx, fy, fz };
 }
 
 CCubeMeshIlluminated::~CCubeMeshIlluminated()
@@ -926,15 +829,8 @@ CSphereMeshIlluminated::CSphereMeshIlluminated(ID3D11Device *pd3dDevice, float f
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 #endif
 
-
-	#ifdef _AABB_
-		m_bcBoundingCube.m_d3dxvMinimum = XMFLOAT3(-fRadius, -fRadius, -fRadius);
-		m_bcBoundingCube.m_d3dxvMaximum = XMFLOAT3(+fRadius, +fRadius, +fRadius);
-	#else
-		m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-		m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
-		m_fSize = XMFLOAT3(fRadius, fRadius, fRadius);
-	#endif
+	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
 }
 
 CSphereMeshIlluminated::~CSphereMeshIlluminated()
@@ -1058,14 +954,9 @@ CCubeMeshTextured::CCubeMeshTextured(ID3D11Device *pd3dDevice, float fWidth, flo
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-	#ifdef _AABB_
-		m_bcBoundingCube.m_d3dxvMinimum = XMFLOAT3(-fx, -fy, -fz);
-		m_bcBoundingCube.m_d3dxvMaximum = XMFLOAT3(+fx, +fy, +fz);
-	#else
-		m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-		m_bcBoundingCube.Extents = { fx, fy, fz };
-		m_fSize = XMFLOAT3(fx, fy, fz);
-	#endif
+	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingCube.Extents = { fx, fy, fz };
+	
 }
 
 CCubeMeshTextured::~CCubeMeshTextured()
@@ -1119,15 +1010,9 @@ CSphereMeshTextured::CSphereMeshTextured(ID3D11Device *pd3dDevice, float fRadius
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-
-	#ifdef _AABB_
-		m_bcBoundingCube.m_d3dxvMinimum = XMFLOAT3(-fRadius, -fRadius, -fRadius);
-		m_bcBoundingCube.m_d3dxvMaximum = XMFLOAT3(+fRadius, +fRadius, +fRadius);
-	#else
-		m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-		m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
-		m_fSize = XMFLOAT3(fRadius, fRadius, fRadius);
-	#endif
+	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
+	
 }
 
 CSphereMeshTextured::~CSphereMeshTextured()
@@ -1258,15 +1143,8 @@ CCubeMeshTexturedIlluminated::CCubeMeshTexturedIlluminated(ID3D11Device *pd3dDev
 	UINT pnBufferOffsets[3] = { 0, 0, 0 };
 	AssembleToVertexBuffer(3, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-
-	#ifdef _AABB_
-		m_bcBoundingCube.m_d3dxvMinimum = XMFLOAT3(-fx, -fy, -fz);
-		m_bcBoundingCube.m_d3dxvMaximum = XMFLOAT3(+fx, +fy, +fz);
-	#else
-		m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-		m_bcBoundingCube.Extents = { fx, fy, fz };
-		m_fSize = XMFLOAT3(fx, fy, fz);
-	#endif
+	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingCube.Extents = { fx, fy, fz };
 }
 
 CCubeMeshTexturedIlluminated::~CCubeMeshTexturedIlluminated()
@@ -1329,15 +1207,8 @@ CSphereMeshTexturedIlluminated::CSphereMeshTexturedIlluminated(ID3D11Device *pd3
 	UINT pnBufferOffsets[3] = { 0, 0, 0 };
 	AssembleToVertexBuffer(3, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 	
-	#ifdef _AABB_
-		m_bcBoundingCube.m_d3dxvMinimum = XMFLOAT3(-fRadius, -fRadius, -fRadius);
-		m_bcBoundingCube.m_d3dxvMaximum = XMFLOAT3(+fRadius, +fRadius, +fRadius);
-	#else
-		m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-		m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
-		m_fSize = XMFLOAT3(fRadius, fRadius, fRadius);
-	#endif
-
+	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
 }
 
 CSphereMeshTexturedIlluminated::~CSphereMeshTexturedIlluminated()
@@ -1419,11 +1290,6 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D11Device *pd3dDevice, int xStart, int
 
 	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
-#ifdef _AABB_
-	m_bcBoundingCube.m_d3dxvMinimum = XMFLOAT3(xStart * m_d3dxvScale.x, fMinHeight, zStart * m_d3dxvScale.z);
-	m_bcBoundingCube.m_d3dxvMaximum = XMFLOAT3((xStart + nWidth) * m_d3dxvScale.x, fMaxHeight, (zStart + nLength) *m_d3dxvScale.z);
-#else
-	//XMCost - 처음 로딩할때 한번이니 무시 가능
 	XMFLOAT3 d3dxvMinimum = XMFLOAT3(xStart*m_d3dxvScale.x, fMinHeight, zStart*m_d3dxvScale.z);
 	XMFLOAT3 d3dxvMaximum = XMFLOAT3((xStart + nWidth)*m_d3dxvScale.x, fMaxHeight, (zStart + nLength)*m_d3dxvScale.z);
 
@@ -1437,7 +1303,6 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D11Device *pd3dDevice, int xStart, int
 		fabs(d3dxvMinimum.y - d3dxvMaximum.y) * 0.5f,
 		fabs(d3dxvMinimum.z - d3dxvMaximum.z) * 0.5f
 	};
-#endif
 }
 
 CHeightMapGridMesh::~CHeightMapGridMesh()
@@ -1520,15 +1385,8 @@ CSkyBoxMesh::CSkyBoxMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, 
 
 	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	
-	#ifdef _AABB_
-		m_bcBoundingCube.m_d3dxvMinimum = XMFLOAT3(-fx, -fy, -fz);
-		m_bcBoundingCube.m_d3dxvMaximum = XMFLOAT3(+fx, +fy, +fz);
-	#else
-		m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-		m_bcBoundingCube.Extents = { fx, fy, fz };
-		m_fSize = XMFLOAT3(fx, fy, fz);
-	#endif
-
+	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingCube.Extents = { fx, fy, fz };
 }
 
 CSkyBoxMesh::~CSkyBoxMesh()
@@ -1699,15 +1557,8 @@ CTextureToScreenRectMesh::CTextureToScreenRectMesh(ID3D11Device *pd3dDevice, flo
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-	#ifdef _AABB_
-		m_bcBoundingCube.m_d3dxvMinimum = XMFLOAT3(-fx, -fy, 0);
-		m_bcBoundingCube.m_d3dxvMaximum = XMFLOAT3(+fx, +fy, 0);
-	#else
-		m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-		m_bcBoundingCube.Extents = { fx, fy, 0.0f };
-		m_fSize = XMFLOAT3(fx, fy, 0.0f);
-	#endif
-
+	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingCube.Extents = { fx, fy, 0.0f };	
 }
 
 CTextureToScreenRectMesh::~CTextureToScreenRectMesh()
@@ -1763,15 +1614,8 @@ CTexturedRectMesh::CTexturedRectMesh(ID3D11Device *pd3dDevice, float fWidth, flo
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-	#ifdef _AABB_
-		m_bcBoundingCube.m_d3dxvMinimum = XMFLOAT3(-fx, -fy, 0);
-		m_bcBoundingCube.m_d3dxvMaximum = XMFLOAT3(+fx, +fy, 0);
-	#else
-		m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-		m_bcBoundingCube.Extents = { fx, fy, 0.0f };
-		m_fSize = XMFLOAT3(fx, fy, 0.0f);
-	#endif
-
+	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingCube.Extents = { fx, fy, 0.0f };
 }
 
 CTexturedRectMesh::~CTexturedRectMesh()

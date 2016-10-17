@@ -39,24 +39,6 @@ inline void Swap(float *pfS, float *pfT) { float fTemp = *pfS; *pfS = *pfT; *pfT
 
 extern bool RayIntersectTriangle(XMVECTOR *pd3dxvOrigin, XMVECTOR *pd3dxvDirection, XMVECTOR *pd3dxvP0, XMVECTOR *pd3dxvP1, XMVECTOR *pd3dxvP2, float *pfU, float *pfV, float *pfRayToTriangle);
 
-////------------------------------------------------------------------------------------------------
-#ifdef _AABB_
-	class AABB
-	{
-	public:
-		XMFLOAT3						m_d3dxvMinimum;
-		XMFLOAT3						m_d3dxvMaximum;
-
-	public:
-		AABB() { XMStoreFloat3(&m_d3dxvMinimum, XMVectorSet(+FLT_MAX, +FLT_MAX, +FLT_MAX, 0.0f)); XMStoreFloat3(&m_d3dxvMaximum, XMVectorSet(-FLT_MAX, -FLT_MAX, -FLT_MAX, 0.0f)); };
-		AABB(XMVECTOR d3dxvMinimum, XMVECTOR d3dxvMaximum) { XMStoreFloat3(&m_d3dxvMinimum, d3dxvMinimum); XMStoreFloat3(&m_d3dxvMaximum, d3dxvMaximum); }
-
-		void Merge(XMVECTOR& d3dxvMinimum, XMVECTOR& d3dxvMaximum);
-		void Merge(AABB *pAABB);
-		void Update(XMMATRIX *pd3dxmtxTransform);
-	};
-#endif
-
 //------------------------------------------------------------------------------------------------
 class CMesh
 {
@@ -72,17 +54,10 @@ public:
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 protected:
-	#ifdef _AABB_
-		AABB							m_bcBoundingCube;
-	#else	
-		BoundingBox						m_bcBoundingCube;
-	#endif
-
-protected:
+	
+	BoundingBox						m_bcBoundingCube;
 	D3D11_PRIMITIVE_TOPOLOGY		m_d3dPrimitiveTopology;
-
 	UINT							m_nType;
-
 	ID3D11Buffer					*m_pd3dPositionBuffer;
 
 	/*인스턴싱을 위한 정점 버퍼는 메쉬의 정점 데이터와
@@ -128,9 +103,6 @@ protected:
 	XMFLOAT3						*m_pd3dxvPositions;
 	UINT							*m_pnIndices;
 
-	//객체의 크기
-	XMFLOAT3						 m_fSize;
-
 	//-------------------------------------------------알파블렌딩
 	ID3D11BlendState				*m_pd3dBlendState;
 	ID3D11RasterizerState			*m_pd3dRasterizerState;
@@ -143,14 +115,8 @@ protected:
 
 public:
 	UINT GetType() { return(m_nType); }
-
-	#ifdef _AABB_
-		AABB GetBoundingCube() { return(m_bcBoundingCube); }
-	#else
-		BoundingBox GetBoundingCube() { return(m_bcBoundingCube); }
-	#endif
+	BoundingBox GetBoundingCube() { return(m_bcBoundingCube); }
 	
-	//둘다 공용으로 쓰임
 	void CalculateBoundingCube();
 
 	ID3D11Buffer *CreateBuffer(ID3D11Device *pd3dDevice, UINT nStride, int nElements, void *pBufferData, UINT nBindFlags, D3D11_USAGE d3dUsage, UINT nCPUAccessFlags);

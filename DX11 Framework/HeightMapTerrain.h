@@ -31,13 +31,8 @@ public:
 	float GetWidth() { return(m_nWidth * m_d3dxvScale.x); }
 	float GetLength() { return(m_nLength * m_d3dxvScale.z); }
 
-#ifdef _AABB_
-	float GetPeakHeight() { return(m_bcMeshBoundingCube.m_d3dxvMaximum.y); }
-#else
-	//XMCost 생각안함
 	float GetPeakHeight() { return(m_bcMeshBoundingCube.Center.y + m_bcMeshBoundingCube.Extents.y); }
 
-#endif
 #ifdef _WITH_TERRAIN_TEXTURE_ARRAY
 	ID3D11Buffer				*m_pd3dcbTextureIndex;
 #endif

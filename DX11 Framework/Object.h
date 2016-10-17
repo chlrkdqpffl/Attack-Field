@@ -119,12 +119,6 @@ protected:
 	CMesh							**m_ppMeshes;
 	int								m_nMeshes;
 	
-	#ifdef _AABB_
-		AABB							m_bcMeshBoundingCube;
-	#else
-		BoundingBox						m_bcMeshBoundingCube;
-	#endif
-
 
 	CMaterial						*m_pMaterial;
 	CShader							*m_pShader;
@@ -133,11 +127,9 @@ protected:
 	CGameObject 					*m_pSibling;
 	CGameObject 					*m_pParent;
 
-	#ifdef _AABB_
-		AABB							m_bcBoundingCube;
-	#else
-		BoundingBox						m_bcBoundingCube;
-	#endif
+	BoundingBox						m_bcBoundingCube;			// 사용자가 정하는 바운딩 박스
+	BoundingBox						m_bcMeshBoundingCube;		// 실제 메쉬 바운딩 박스
+
 public:
 	ID3D11RasterizerState			*m_pd3dRasterizerState;
 	ID3D11DepthStencilState			*m_pd3dDepthStencilState;

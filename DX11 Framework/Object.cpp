@@ -231,13 +231,9 @@ CGameObject::CGameObject(int nMeshes)
 	if (m_nMeshes > 0) m_ppMeshes = new CMesh*[m_nMeshes];
 	for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
 
-#ifdef _AABB_
-	m_bcMeshBoundingCube = AABB();
-	m_bcBoundingCube = AABB();
-#else
-	m_bcMeshBoundingCube = BoundingBox();
+	m_bcMeshBoundingCube.Center = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_bcMeshBoundingCube.Extents = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_bcBoundingCube = BoundingBox();
-#endif
 
 	m_bActive = true;
 	m_bIsVisible = true;
@@ -290,8 +286,7 @@ void CGameObject::SetMesh(CMesh *pMesh, int nIndex)
 		m_nMeshes = nIndex + 1;
 		m_ppMeshes = ppMeshes;
 	}
-	else
-	{
+	else {
 		if (m_ppMeshes)
 		{
 			if (m_ppMeshes[nIndex]) m_ppMeshes[nIndex]->Release();
@@ -300,14 +295,7 @@ void CGameObject::SetMesh(CMesh *pMesh, int nIndex)
 		}
 	}
 
-	if (pMesh)
-	{
-#ifdef _AABB_
-		AABB bcBoundingCube = pMesh->GetBoundingCube();
-		m_bcMeshBoundingCube.Merge(&bcBoundingCube);
-#else
-
-
+	if (pMesh) {
 		XMFLOAT3 xmMin, xmMax; // 기존값
 		XMFLOAT3 input_xmMin, input_xmMax;		//새로 들어온거
 		XMFLOAT3 fCenter, fExtern;
@@ -320,58 +308,18 @@ void CGameObject::SetMesh(CMesh *pMesh, int nIndex)
 
 		XMStoreFloat3(&xmMin, XMVectorSubtract(XMLoadFloat3(&m_bcMeshBoundingCube.Center), XMLoadFloat3(&m_bcMeshBoundingCube.Extents)));
 		XMStoreFloat3(&xmMax, XMVectorAdd(XMLoadFloat3(&m_bcMeshBoundingCube.Center), XMLoadFloat3(&m_bcMeshBoundingCube.Extents)));
-
+		
 		if (input_xmMin.x < xmMin.x) xmMin.x = input_xmMin.x;
 		if (input_xmMin.y < xmMin.y) xmMin.y = input_xmMin.y;
 		if (input_xmMin.z < xmMin.z) xmMin.z = input_xmMin.z;
 		if (input_xmMax.x > xmMax.x) xmMax.x = input_xmMax.x;
 		if (input_xmMax.y > xmMax.y) xmMax.y = input_xmMax.y;
 		if (input_xmMax.z > xmMax.z) xmMax.z = input_xmMax.z;
-
-
-
-
+		
 		XMStoreFloat3(&m_bcBoundingCube.Center, XMVectorSubtract(XMLoadFloat3(&input_xmMax), XMLoadFloat3(&input_xmMin)) * 0.5f);
 		XMStoreFloat3(&m_bcBoundingCube.Extents, XMVectorAdd(XMLoadFloat3(&input_xmMax), XMLoadFloat3(&input_xmMin)) * 0.5f);
 
-		
-		/*
-		XMVECTOR xCenter = XMLoadFloat3(&m_bcMeshBoundingCube.Center);
-		XMVECTOR xExtern = XMLoadFloat3(&m_bcMeshBoundingCube.Extents);
-
-		XMFLOAT3 xmMin;// = m_bcMeshBoundingCube.Center;
-		XMFLOAT3 xmMax;// = m_bcMeshBoundingCube.Extents;
-
-
-		XMStoreFloat3(&xmMin, XMVectorSubtract(xCenter, xExtern));
-		XMStoreFloat3(&xmMax, XMVectorAdd(xCenter, xExtern));
-		
-
-		XMFLOAT3  xmfCenter = pMesh->GetBoundingCube().Center;
-		XMFLOAT3 xmfExtern = pMesh->GetBoundingCube().Extents;
-		
-		XMLoadFloat3(&xmfCenter);
-		XMLoadFloat3(&xmfExtern);
-
-		XMFLOAT3 mesh_Min, mesh_mMax;
-		XMStoreFloat3(&mesh_Min, XMVectorSubtract(xCenter, xExtern));
-		XMStoreFloat3(&mesh_mMax, XMVectorAdd(xCenter, xExtern));
-
-		if (mesh_Min.x < xmMin.x) xmMin.x = mesh_Min.x;
-		if (mesh_Min.y < xmMin.y) xmMin.y = mesh_Min.y;
-		if (mesh_Min.z < xmMin.z) xmMin.z = mesh_Min.z;
-		if (mesh_mMax.x > xmMax.x) xmMax.x = mesh_mMax.x;
-		if (mesh_mMax.y > xmMax.y) xmMax.y = mesh_mMax.y;
-		if (mesh_mMax.z > xmMax.z) xmMax.z = mesh_mMax.z;
-
-
-		m_bcBoundingCube.Center = xmMin;
-		m_bcBoundingCube.Extents = xmMax;
-		*/
-
-		//BoundingBox::CreateMerged(m_bcMeshBoundingCube, m_bcMeshBoundingCube, pMesh->GetBoundingCube());
-
-#endif
+		BoundingBox::CreateMerged(m_bcMeshBoundingCube, m_bcMeshBoundingCube, pMesh->GetBoundingCube());
 	}
 }
 
@@ -594,22 +542,16 @@ bool CGameObject::IsVisible(CCamera *pCamera)
 
 	m_bIsVisible = (m_bActive) ? true : false;
 #ifdef _WITH_FRUSTUM_CULLING_BY_OBJECT
-	if (m_bActive)
-	{
-		#ifdef _AABB_
-			AABB bcBoundingCube = m_bcMeshBoundingCube;
-			bcBoundingCube.Update(&XMLoadFloat4x4(&m_d3dxmtxWorld));
-			if (pCamera) m_bIsVisible = pCamera->IsInFrustum(&bcBoundingCube);
-		#else	
-			BoundingBox bcBoundingCube;
-			m_bcMeshBoundingCube.Transform(bcBoundingCube, XMLoadFloat4x4(&m_d3dxmtxWorld));
-			if (pCamera) m_bIsVisible = pCamera->IsInFrustum(&bcBoundingCube);
-		#endif
+	if (m_bActive) {
+		BoundingBox bcBoundingCube;
+		m_bcMeshBoundingCube.Transform(bcBoundingCube, XMLoadFloat4x4(&m_d3dxmtxWorld));
+		if (pCamera) m_bIsVisible = pCamera->IsInFrustum(&bcBoundingCube);
 
-		if (m_pSibling) m_bIsVisible |= m_pSibling->IsVisible(pCamera);
+		if (m_pSibling)	m_bIsVisible |= m_pSibling->IsVisible(pCamera);
 		if (m_pChild) m_bIsVisible |= m_pChild->IsVisible(pCamera);
 	}
 #endif
+
 	return(m_bIsVisible);
 }
 
@@ -641,25 +583,21 @@ void CGameObject::OnPrepareRender()
 
 void CGameObject::RenderMesh(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	if (m_ppMeshes)
-	{
-		for (int i = 0; i < m_nMeshes; i++)
-		{
-			if (m_ppMeshes[i])
-			{
+	if (m_ppMeshes) {
+		for (int i = 0; i < m_nMeshes; i++)	{
+			if (m_ppMeshes[i]) {
 				bool bIsVisible = true;
 				#ifdef _WITH_FRUSTUM_CULLING_BY_SUBMESH
-				if (pCamera)
-				{
-				#if _AABB_
-					AABB bcBoundingCube = m_ppMeshes[i]->GetBoundingCube();
-					bcBoundingCube.Update(&XMLoadFloat4x4(&m_d3dxmtxWorld));
-					bIsVisible = pCamera->IsInFrustum(&bcBoundingCube);
-				#else
-					BoundingBox bcBoundingCube = m_ppMeshes[i]->GetBoundingCube();
-					bcBoundingCube.Transform(bcBoundingCube, XMLoadFloat4x4(&m_d3dxmtxWorld));
-					m_bIsVisible = pCamera->IsInFrustum(&bcBoundingCube);
-				#endif
+					if (pCamera) {
+					#if _AABB_
+						AABB bcBoundingCube = m_ppMeshes[i]->GetBoundingCube();
+						bcBoundingCube.Update(&XMLoadFloat4x4(&m_d3dxmtxWorld));
+						bIsVisible = pCamera->IsInFrustum(&bcBoundingCube);
+					#else
+						BoundingBox bcBoundingCube = m_ppMeshes[i]->GetBoundingCube();
+						bcBoundingCube.Transform(bcBoundingCube, XMLoadFloat4x4(&m_d3dxmtxWorld));
+						m_bIsVisible = pCamera->IsInFrustum(&bcBoundingCube);
+					#endif
 				}
 				#endif
 				if (bIsVisible) m_ppMeshes[i]->Render(pd3dDeviceContext);
