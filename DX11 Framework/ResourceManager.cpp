@@ -2,16 +2,16 @@
 #include "ResourceManager.h"
 
 
-ResourceManager::ResourceManager()
+CResourceManager::CResourceManager()
 {
 }
 
 
-ResourceManager::~ResourceManager()
+CResourceManager::~CResourceManager()
 {
 }
 
-void ResourceManager::InitializeManager()
+void CResourceManager::InitializeManager()
 {
 	// ------------------------ Texture ---------------------------- //
 
@@ -33,7 +33,7 @@ void ResourceManager::InitializeManager()
 }
 
 /*
-void ResourceManager::AddResourece(Resource_TextrueTag resourceTag, string source)
+void CResourceManager::AddResourece(Resource_TextrueTag resourceTag, string source)
 {
 	textureMap.insert(make_pair(resourceTag, source));
 
@@ -42,7 +42,7 @@ void ResourceManager::AddResourece(Resource_TextrueTag resourceTag, string sourc
 	}
 }
 
-void ResourceManager::AddResourece(Resource_MeshTag resourceTag, string source)
+void CResourceManager::AddResourece(Resource_MeshTag resourceTag, string source)
 {
 	meshMap.insert(make_pair(resourceTag, source));
 
@@ -51,7 +51,7 @@ void ResourceManager::AddResourece(Resource_MeshTag resourceTag, string source)
 	}
 }
 
-wstring ResourceManager::FindResourceFromMap(Resource_TextrueTag resourceTag)
+wstring CResourceManager::FindResourceFromMap(Resource_TextrueTag resourceTag)
 {
 	auto f = textureMap.find(resourceTag);
 
@@ -62,7 +62,7 @@ wstring ResourceManager::FindResourceFromMap(Resource_TextrueTag resourceTag)
 	return wstr;
 }
 
-string ResourceManager::FindResourceFromMap(Resource_MeshTag resourceTag)
+string CResourceManager::FindResourceFromMap(Resource_MeshTag resourceTag)
 {
 	auto f = meshMap.find(resourceTag);
 	return (*f).second;

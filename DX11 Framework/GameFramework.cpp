@@ -47,6 +47,12 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 
 	if (!CreateDirect3DDisplay()) return(false);
 
+	// Manager Init
+	STATEOBJ_MGR->InitializeManager();
+	TEXT_MGR->InitializeManager(m_pd3dDevice, L"Koverwatch");
+	SCENE_MGR->InitializeManager();
+//	RESOURCE_MGR->InitializeManager();		빌드에서 제외하고 있음
+
 	BuildObjects();
 
 	return(true);
@@ -318,7 +324,7 @@ void CGameFramework::BuildObjects()
 	CShader *pPlayerShader = new CShader();
 	pPlayerShader->CreateShader(m_pd3dDevice, m_pPlayer->GetMeshType());
 	m_pPlayer->SetShader(pPlayerShader);
-
+	
 	m_pScene = new CScene();
 	m_pScene->SetPlayer(m_pPlayer);
 	m_pScene->BuildObjects(m_pd3dDevice);
@@ -411,13 +417,13 @@ void CGameFramework::ProcessInput()
 	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
 
-void CGameFramework::AnimateObjects()
+void CGameFramework::UpdateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
 
 	if (m_pPlayer) m_pPlayer->Animate(fTimeElapsed, NULL);
 
-	if (m_pScene) m_pScene->AnimateObjects(fTimeElapsed);
+	if (m_pScene) m_pScene->UpdateObjects(fTimeElapsed);
 }
 
 //#define _WITH_PLAYER_TOP
@@ -428,7 +434,7 @@ void CGameFramework::FrameAdvance()
 
 	ProcessInput();
 
-	AnimateObjects();
+	UpdateObjects();
 
 	if (m_pScene) m_pScene->OnPreRender(m_pd3dDeviceContext);
 
@@ -447,6 +453,7 @@ void CGameFramework::FrameAdvance()
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
 	if (m_pPlayer) m_pPlayer->Render(m_pd3dDeviceContext, m_pCamera);
+	if (m_pScene) m_pScene->RenderAllText(m_pd3dDeviceContext);		// 텍스트는 항상 제일 마지막에 그려야 정상적으로 그려짐
 
 	m_pDXGISwapChain->Present(0, 0);
 

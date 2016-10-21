@@ -14,7 +14,6 @@
 #include "TerrainWater.h"
 #include "RotatingObject.h"
 
-
 #define MAX_LIGHTS			4 //Multiple of 4
 #define POINT_LIGHT			1.0f
 #define SPOT_LIGHT			2.0f
@@ -61,9 +60,10 @@ public:
 	void ReleaseShaderVariables();
 
 	bool ProcessInput(UCHAR *pKeysBuffer);
-	void AnimateObjects(float fTimeElapsed);
+	void UpdateObjects(float fTimeElapsed);
 	void OnPreRender(ID3D11DeviceContext *pd3dDeviceContext);
 	void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera);
+	void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext);
 
 	CGameObject *PickObjectPointedByCursor(int xClient, int yClient);
 

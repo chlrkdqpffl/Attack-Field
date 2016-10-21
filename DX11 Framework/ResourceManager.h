@@ -1,18 +1,18 @@
 #pragma once
 #include "SingletonManager.h"
-#include <map>
+//#include <map>
 
 enum Resource_TextrueTag;
 enum Resource_MeshTag;
 
-class ResourceManager : public CSingletonManager<ResourceManager>
+class CResourceManager : public CSingletonManager<CResourceManager>
 {
 //	multimap<Resource_TextrueTag, string> textureMap;
 //	multimap<Resource_MeshTag, string> meshMap;
 
 public:
-	ResourceManager();
-	virtual ~ResourceManager();
+	CResourceManager();
+	virtual ~CResourceManager();
 
 	virtual void InitializeManager();
 

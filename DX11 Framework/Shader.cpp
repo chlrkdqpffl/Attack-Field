@@ -313,7 +313,7 @@ void CObjectsShader::ReleaseObjects()
 	}
 }
 
-void CObjectsShader::AnimateObjects(float fTimeElapsed)
+void CObjectsShader::UpdateObjects(float fTimeElapsed)
 {
 	for (int j = 0; j < m_nObjects; j++)
 	{

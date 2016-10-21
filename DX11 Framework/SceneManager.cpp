@@ -1,22 +1,22 @@
 #include "stdafx.h"
 #include "SceneManager.h"
 
-SceneManager::SceneManager()
+CSceneManager::CSceneManager()
 {
 	m_nowScene = nullptr;
 }
 
 
-SceneManager::~SceneManager()
+CSceneManager::~CSceneManager()
 {
 }
 
-void SceneManager::InitializeManager()
+void CSceneManager::InitializeManager()
 {
 
 }
 
-void SceneManager::ChangeScene(CScene* newScene)
+void CSceneManager::ChangeScene(CScene* newScene)
 {
 	if (m_nowScene) {
 		m_nowScene->ReleaseObjects();

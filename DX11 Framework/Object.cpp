@@ -211,7 +211,7 @@ ID3D11ShaderResourceView *CTexture::CreateTexture2DArraySRV(ID3D11Device *pd3dDe
 }
 
 ///////////////////////////////////////////////////////////////////////////
-//
+
 ID3D11Buffer *CGameObject::m_pd3dcbWorldMatrix = NULL;
 ID3D11Buffer *CGameObject::m_pd3dcbMaterialColors = NULL;
 XMMATRIX CGameObject::m_d3dxmtxIdentity;
@@ -394,13 +394,13 @@ int CGameObject::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMAT
 
 void CGameObject::SetPosition(float x, float y, float z)
 {
-	m_d3dxmtxLocal._41 = x;
-	m_d3dxmtxLocal._42 = y;
-	m_d3dxmtxLocal._43 = z;
-	if (!m_pParent) { m_d3dxmtxWorld._41 = x; m_d3dxmtxWorld._42 = y; m_d3dxmtxWorld._43 = z; }
-//	m_d3dxmtxWorld._41 = x;
-//	m_d3dxmtxWorld._42 = y; 
-//	m_d3dxmtxWorld._43 = z;
+//	m_d3dxmtxLocal._41 = x;
+//	m_d3dxmtxLocal._42 = y;
+//	m_d3dxmtxLocal._43 = z;
+//	if (!m_pParent) { m_d3dxmtxWorld._41 = x; m_d3dxmtxWorld._42 = y; m_d3dxmtxWorld._43 = z; }
+	m_d3dxmtxWorld._41 = x;
+	m_d3dxmtxWorld._42 = y; 
+	m_d3dxmtxWorld._43 = z;
 }
 
 void CGameObject::SetPosition(XMVECTOR d3dxvPosition)

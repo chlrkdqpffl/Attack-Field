@@ -24,7 +24,7 @@ public:
 	void ReleaseObjects();
 
 	void ProcessInput();
-	void AnimateObjects();
+	void UpdateObjects();
 	void FrameAdvance();
 
 	void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);

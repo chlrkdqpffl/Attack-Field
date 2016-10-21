@@ -1,5 +1,8 @@
 #pragma once
-
+#include "StateObjectManager.h"
+#include "ResourceManager.h"
+#include "SceneManager.h"
+#include "TextManager.h"
 
 //#define _WITH_MSAA4_MULTISAMPLING
 #define FRAME_BUFFER_WIDTH				1280
@@ -13,9 +16,6 @@
 
 #define RANDOM_COLOR	D3DXCOLOR((rand() * 0xFFFFFF) / RAND_MAX)
 
-
-#define USE_CONSOLE					// Open Console Windows
-
 #define _WITH_TERRAIN_PARTITION
 #define _WITH_FRUSTUM_CULLING_BY_OBJECT
 //#define _WITH_FRUSTUM_CULLING_BY_SUBMESH
@@ -23,6 +23,14 @@
 //#define _WITH_SKYBOX_TEXTURE_ARRAY
 #define _WITH_SKYBOX_TEXTURE_CUBE
 //#define _WITH_TERRAIN_TEXTURE_ARRAY
+
+#define USE_CONSOLE					// Open Console Windows
+
+#define STATEOBJ_MGR CStateObjectManager::GetInstance()
+#define RESOURCE_MGR CResourceManager::GetInstance()
+#define SCENE_MGR CSceneManager::GetInstance()
+#define TEXT_MGR CTextManager::GetInstance()
+
 
 #define VK_A 0x41 
 #define VK_B 0x42

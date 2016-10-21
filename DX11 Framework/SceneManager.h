@@ -1,16 +1,14 @@
 #pragma once
 #include "SingletonManager.h"
-//#include "UserDefine.h"
 #include "Scene.h"
 
-
-class SceneManager : public CSingletonManager<SceneManager>
+class CSceneManager : public CSingletonManager<CSceneManager>
 {
 public:
 	CScene				*m_nowScene;
 
-	SceneManager();
-	virtual ~SceneManager();
+	CSceneManager();
+	virtual ~CSceneManager();
 
 
 	void ChangeScene(CScene* newScene);

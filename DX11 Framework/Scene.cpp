@@ -532,7 +532,7 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 	return(pNearestObject);
 }
 
-void CScene::AnimateObjects(float fTimeElapsed)
+void CScene::UpdateObjects(float fTimeElapsed)
 {
 	XMVECTOR d3dxvCameraPosition = m_pCamera->GetPosition();
 	if (m_pLights && m_pd3dcbLights)
@@ -559,7 +559,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	}
 
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Animate(fTimeElapsed, NULL);
-	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->AnimateObjects(fTimeElapsed);
+	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->UpdateObjects(fTimeElapsed);
 }
 
 void CScene::OnPreRender(ID3D11DeviceContext *pd3dDeviceContext)
@@ -579,4 +579,36 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 	
 	for (int i = 0; i < m_nObjectShaders; i++) m_ppObjectShaders[i]->Render(pd3dDeviceContext, pCamera);
 	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->Render(pd3dDeviceContext, pCamera);
+}
+
+void CScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
+{
+	string str;
+	wstring wstr;
+	/*
+	wstr.assign(str.begin(), str.end());]
+	//abcdtest
+
+	G_VAR->g_pTextRenderer->RenderText(pd3dDeviceContext, wstr, 30, 28, 55, 0xFF0000FF, FW1_LEFT);
+	*/
+	/*
+	// Draw Player Position
+	D3DXVECTOR3 playerPos = m_pPlayer->GetPosition();
+	str = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")";
+	wstr.assign(str.begin(), str.end());
+	TEXT_MGR->RenderText(pd3dDeviceContext, wstr, 20, 20, 20, 0xFFFFFFFF, FW1_LEFT);
+	*/
+
+	/*
+	// Draw Time Gap
+	str = "Time Gap : " + to_string(G_VAR->timeGap_microSecond.count()) + " MicroSceonds";
+	wstr.assign(str.begin(), str.end());
+	G_VAR->g_pTextRenderer->RenderText(pd3dDeviceContext, wstr, 20, 20, 40, 0xFFFFFFFF, FW1_LEFT);
+	*/
+
+
+	//str = L"최고의 플레이";
+	wstr = L"최고의 플레이";
+	//wstr.assign(str.begin(), str.end());
+	TEXT_MGR->RenderText(pd3dDeviceContext, wstr, 40, 70, 100, 0xFFFFFFFF, FW1_LEFT);
 }

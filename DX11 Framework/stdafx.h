@@ -100,4 +100,3 @@ inline BoundingBox GetBoudingBox(const D3DXVECTOR3 &fMin, const D3DXVECTOR3 &fMa
 		#define HR(x) (x)
 	#endif
 #endif
-
