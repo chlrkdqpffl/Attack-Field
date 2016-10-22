@@ -394,13 +394,13 @@ int CGameObject::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMAT
 
 void CGameObject::SetPosition(float x, float y, float z)
 {
-	m_d3dxmtxLocal._41 = x;
-	m_d3dxmtxLocal._42 = y;
-	m_d3dxmtxLocal._43 = z;
-	if (!m_pParent) { m_d3dxmtxWorld._41 = x; m_d3dxmtxWorld._42 = y; m_d3dxmtxWorld._43 = z; }
-//	m_d3dxmtxWorld._41 = x;
-//	m_d3dxmtxWorld._42 = y; 
-//	m_d3dxmtxWorld._43 = z;
+//	m_d3dxmtxLocal._41 = x;
+//	m_d3dxmtxLocal._42 = y;
+//	m_d3dxmtxLocal._43 = z;
+//	if (!m_pParent) { m_d3dxmtxWorld._41 = x; m_d3dxmtxWorld._42 = y; m_d3dxmtxWorld._43 = z; }
+	m_d3dxmtxWorld._41 = x;
+	m_d3dxmtxWorld._42 = y; 
+	m_d3dxmtxWorld._43 = z;
 }
 
 void CGameObject::SetPosition(XMVECTOR d3dxvPosition)
@@ -412,7 +412,7 @@ void CGameObject::SetPosition(XMVECTOR d3dxvPosition)
 
 void CGameObject::MoveStrafe(float fDistance)
 {
-	XMVECTOR d3dxvPosition = GetPosition();
+	XMVECTOR d3dxvPosition = GetvPosition();
 	XMVECTOR d3dxvRight = GetRight();
 	d3dxvPosition += fDistance * d3dxvRight;
 	CGameObject::SetPosition(d3dxvPosition);
@@ -420,7 +420,7 @@ void CGameObject::MoveStrafe(float fDistance)
 
 void CGameObject::MoveUp(float fDistance)
 {
-	XMVECTOR d3dxvPosition = GetPosition();
+	XMVECTOR d3dxvPosition = GetvPosition();
 	XMVECTOR d3dxvUp = GetUp();
 	d3dxvPosition += fDistance * d3dxvUp;
 	CGameObject::SetPosition(d3dxvPosition);
@@ -428,7 +428,7 @@ void CGameObject::MoveUp(float fDistance)
 
 void CGameObject::MoveForward(float fDistance)
 {
-	XMVECTOR d3dxvPosition = GetPosition();
+	XMVECTOR d3dxvPosition = GetvPosition();
 	XMVECTOR d3dxvLookAt = GetLook();
 	d3dxvPosition += fDistance * d3dxvLookAt;
 	CGameObject::SetPosition(d3dxvPosition);
@@ -439,22 +439,27 @@ void CGameObject::Rotate(float fPitch, float fYaw, float fRoll)
 	XMMATRIX mtxRotate;
 	mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fPitch), 
 		XMConvertToRadians(fYaw), XMConvertToRadians(fRoll));
-	XMStoreFloat4x4(&m_d3dxmtxLocal, mtxRotate * XMLoadFloat4x4(&m_d3dxmtxLocal));
-	//	if (!m_pParent) m_d3dxmtxWorld = m_d3dxmtxLocal;
+	XMStoreFloat4x4(&m_d3dxmtxWorld, mtxRotate * XMLoadFloat4x4(&m_d3dxmtxWorld));
 }
 
 void CGameObject::Rotate(XMVECTOR *pd3dxvAxis, float fAngle)
 {
 	XMMATRIX mtxRotate;
 	mtxRotate = XMMatrixRotationAxis(*pd3dxvAxis, XMConvertToRadians(fAngle));
-	XMStoreFloat4x4(&m_d3dxmtxLocal, mtxRotate * XMLoadFloat4x4(&m_d3dxmtxLocal));
-	//	if (!m_pParent) m_d3dxmtxWorld = m_d3dxmtxLocal;
+	XMStoreFloat4x4(&m_d3dxmtxWorld, mtxRotate * XMLoadFloat4x4(&m_d3dxmtxWorld));
 }
 
-XMVECTOR& CGameObject::GetPosition(bool bIsLocal)
+XMVECTOR& CGameObject::GetvPosition(bool bIsLocal) const
 {
 	return((bIsLocal) ? XMVectorSet(m_d3dxmtxLocal._41, m_d3dxmtxLocal._42, m_d3dxmtxLocal._43, 0.0f) : 
 		XMVectorSet(m_d3dxmtxWorld._41, m_d3dxmtxWorld._42, m_d3dxmtxWorld._43, 0.0f));
+
+	return XMVectorSet(m_d3dxmtxWorld._41, m_d3dxmtxWorld._42, m_d3dxmtxWorld._43, 0.0f);
+}
+
+XMFLOAT3& CGameObject::GetPosition() const
+{
+	return XMFLOAT3(m_d3dxmtxWorld._41, m_d3dxmtxWorld._42, m_d3dxmtxWorld._43);
 }
 
 XMVECTOR& CGameObject::GetRight(bool bIsLocal)
@@ -563,7 +568,7 @@ void CGameObject::Animate(float fTimeElapsed)
 
 void CGameObject::Update(XMMATRIX *pd3dxmtxParent)
 {
-	m_d3dxmtxWorld = m_d3dxmtxLocal;
+//	m_d3dxmtxWorld = m_d3dxmtxLocal;
 	if (pd3dxmtxParent) XMStoreFloat4x4(&m_d3dxmtxWorld, XMMatrixMultiply(XMLoadFloat4x4(&m_d3dxmtxLocal), *pd3dxmtxParent));
 
 	if (m_pSibling) m_pSibling->Update(pd3dxmtxParent);

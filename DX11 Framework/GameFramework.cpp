@@ -46,6 +46,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	// Manager Init
 	STATEOBJ_MGR->InitializeManager();
 	TEXT_MGR->InitializeManager(STATEOBJ_MGR->m_pd3dDevice.Get(), L"Koverwatch");
+//	TEXT_MGR->InitializeManager(STATEOBJ_MGR->m_pd3dDevice.Get(), L"a반달곰");			// 폰트 여러개 만들 수 있음
 	SCENE_MGR->InitializeManager();
 //	RESOURCE_MGR->InitializeManager();		빌드에서 제외하고 있음
 
@@ -387,16 +388,28 @@ void CGameFramework::ProcessInput()
 {
 	static UCHAR pKeysBuffer[256];
 	bool bProcessedByScene = false;
+	float fPlayerSpeed = 150;
+
 	if (GetKeyboardState(pKeysBuffer) && SCENE_MGR->m_nowScene) bProcessedByScene = SCENE_MGR->m_nowScene->ProcessInput(pKeysBuffer);
 	if (!bProcessedByScene)
 	{
 		DWORD dwDirection = 0;
 		if (pKeysBuffer[VK_UP] & 0xF0) dwDirection |= DIR_FORWARD;
+		if (pKeysBuffer[VK_W] & 0xF0) dwDirection |= DIR_FORWARD;
+
 		if (pKeysBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
+		if (pKeysBuffer[VK_S] & 0xF0) dwDirection |= DIR_BACKWARD;
+
 		if (pKeysBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
+		if (pKeysBuffer[VK_A] & 0xF0) dwDirection |= DIR_LEFT;
+
 		if (pKeysBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
+		if (pKeysBuffer[VK_D] & 0xF0) dwDirection |= DIR_RIGHT;
+
 		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
 		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
+
+		if (pKeysBuffer[VK_SHIFT] & 0xF0) { fPlayerSpeed *= 10; }
 
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 		POINT ptCursorPos;
@@ -418,7 +431,7 @@ void CGameFramework::ProcessInput()
 				else
 					m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
 			}
-			if (dwDirection) m_pPlayer->Move(dwDirection, 150.0f * m_GameTimer.GetTimeElapsed(), true);
+			if (dwDirection) m_pPlayer->Move(dwDirection, fPlayerSpeed * m_GameTimer.GetTimeElapsed(), true);
 		}
 	}
 	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());

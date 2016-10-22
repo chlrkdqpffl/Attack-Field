@@ -56,7 +56,7 @@ void CTerrainPlayer::OnPlayerUpdated(float fTimeElapsed)
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)m_pPlayerUpdatedContext;
 	XMVECTOR d3dxvScale = pTerrain->GetScale();
 	XMFLOAT3 d3dxvPlayerPosition;
-	XMStoreFloat3(&d3dxvPlayerPosition, GetPosition());
+	XMStoreFloat3(&d3dxvPlayerPosition, GetvPosition());
 	int z = (int)(d3dxvPlayerPosition.z / XMVectorGetZ(d3dxvScale));
 	bool bReverseQuad = ((z % 2) != 0);
 	float fHeight = pTerrain->GetHeight(d3dxvPlayerPosition.x, d3dxvPlayerPosition.z, bReverseQuad) + 6.0f;
@@ -88,7 +88,7 @@ void CTerrainPlayer::OnCameraUpdated(float fTimeElapsed)
 		if (m_pCamera->GetMode() == THIRD_PERSON_CAMERA)
 		{
 			CThirdPersonCamera *p3rdPersonCamera = (CThirdPersonCamera *)m_pCamera;
-			p3rdPersonCamera->SetLookAt(GetPosition());
+			p3rdPersonCamera->SetLookAt(GetvPosition());
 		}
 	}
 }

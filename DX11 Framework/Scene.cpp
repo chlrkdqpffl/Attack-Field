@@ -22,6 +22,8 @@ CScene::CScene()
 
 	m_pCamera = NULL;
 	m_pSelectedObject = NULL;
+
+	m_pSkyBox = nullptr;
 	m_pTerrain = nullptr;
 }
 
@@ -151,6 +153,9 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 
 void CScene::UpdateObjects(float fTimeElapsed)
 {
+	m_pSkyBox->Animate(fTimeElapsed, NULL);
+	m_pTerrain->Animate(fTimeElapsed, NULL);
+
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Animate(fTimeElapsed, NULL);
 	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->UpdateObjects(fTimeElapsed);
 }
@@ -163,13 +168,14 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 {
 	if (m_pLights && m_pd3dcbLights) UpdateShaderVariable(pd3dDeviceContext, m_pLights);
 
-	if (m_ppObjects && m_ppObjects[0]) m_ppObjects[0]->Render(pd3dDeviceContext, pCamera); //SkyBox
+	if (m_pSkyBox)
+		m_pSkyBox->Render(pd3dDeviceContext, pCamera);
 
 	if (m_pTerrain->IsVisible(pCamera)) 
 		m_pTerrain->Render(pd3dDeviceContext, pCamera);  //Terrain
 
-	if (m_ppObjects && m_ppObjects[1])
-		m_ppObjects[1]->Render(pd3dDeviceContext, pCamera); //Water
+	if (m_ppObjects && m_ppObjects[0])
+		m_ppObjects[0]->Render(pd3dDeviceContext, pCamera); //Water
 	
 	for (int i = 0; i < m_nObjectShaders; i++) m_ppObjectShaders[i]->Render(pd3dDeviceContext, pCamera);
 	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->Render(pd3dDeviceContext, pCamera);

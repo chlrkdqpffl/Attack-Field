@@ -40,9 +40,9 @@ void CFirstPersonCamera::Rotate(float x, float y, float z)
 		mtxRotate = XMMatrixRotationAxis(m_pPlayer->GetLookVector(), XMConvertToRadians(z));
 		xmPosition = XMLoadFloat3(&m_d3dxvPosition);
 
-		xmPosition -= m_pPlayer->GetPosition();
+		xmPosition -= m_pPlayer->GetvPosition();
 		XMVector3TransformCoord(xmPosition, mtxRotate);
-		xmPosition += m_pPlayer->GetPosition();
+		xmPosition += m_pPlayer->GetvPosition();
 
 		XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
 		XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));

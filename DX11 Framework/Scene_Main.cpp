@@ -224,12 +224,12 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pTerrainWaterShader->CreateShader(pd3dDevice);
 	pTerrainWater->SetShader(pTerrainWaterShader);
 
-	m_nObjects = 2;
+	m_nObjects = 1;
 	m_ppObjects = new CGameObject*[m_nObjects];
 
+	m_pSkyBox = pSkyBox;
 	m_pTerrain = pTerrain;
-	m_ppObjects[0] = pSkyBox;
-	m_ppObjects[1] = pTerrainWater;
+	m_ppObjects[0] = pTerrainWater;
 
 	//Instancing
 	CMaterial *pInstancingMaterials[3];
@@ -476,11 +476,15 @@ void CScene_Main::UpdateObjects(float fTimeElapsed)
 		m_pLights->m_pLights[0].m_fRange = pTerrain->GetPeakHeight();
 
 		CPlayer *pPlayer = m_pCamera->GetPlayer();
-		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvPosition, pPlayer->GetPosition());
+		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvPosition, pPlayer->GetvPosition());
 		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvDirection, pPlayer->GetLookVector());
 
-		XMStoreFloat3(&m_pLights->m_pLights[3].m_d3dxvPosition, pPlayer->GetPosition() + XMVectorSet(0.0f, 80.0f, 0.0f, 0.0f));
+		XMStoreFloat3(&m_pLights->m_pLights[3].m_d3dxvPosition, pPlayer->GetvPosition() + XMVectorSet(0.0f, 80.0f, 0.0f, 0.0f));
 	}
+
+	// Light Update
+	if (m_pLights && m_pd3dcbLights) UpdateShaderVariable(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get(), m_pLights);
+
 }
 
 void CScene_Main::OnPreRender(ID3D11DeviceContext *pd3dDeviceContext)
@@ -490,7 +494,6 @@ void CScene_Main::OnPreRender(ID3D11DeviceContext *pd3dDeviceContext)
 void CScene_Main::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
 	CScene::Render(pd3dDeviceContext, pCamera);
-	if (m_pLights && m_pd3dcbLights) UpdateShaderVariable(pd3dDeviceContext, m_pLights);
 
 }
 
@@ -498,19 +501,13 @@ void CScene_Main::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	string str;
 	wstring wstr;
-	/*
-	wstr.assign(str.begin(), str.end());]
-	//abcdtest
-
-	G_VAR->g_pTextRenderer->RenderText(pd3dDeviceContext, wstr, 30, 28, 55, 0xFF0000FF, FW1_LEFT);
-	*/
-	/*
-	// Draw Player Position
-	D3DXVECTOR3 playerPos = m_pPlayer->GetPosition();
+	
+	// Draw Position
+	XMFLOAT3 playerPos = m_pPlayer->GetPosition();
 	str = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")";
 	wstr.assign(str.begin(), str.end());
-	TEXT_MGR->RenderText(pd3dDeviceContext, wstr, 20, 20, 20, 0xFFFFFFFF, FW1_LEFT);
-	*/
+	TEXT_MGR->RenderText(pd3dDeviceContext, wstr, 30, 20, 50, 0xFFFFFFFF, FW1_LEFT);
+
 
 	/*
 	// Draw Time Gap

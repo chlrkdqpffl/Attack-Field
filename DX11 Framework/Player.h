@@ -30,7 +30,8 @@ public:
 	CPlayer(int nMeshes = 1);
 	virtual ~CPlayer();
 
-	XMVECTOR& GetPosition() { return(XMLoadFloat3(&m_d3dxvPosition)); }
+	XMVECTOR& GetvPosition() const { return(XMLoadFloat3(&m_d3dxvPosition)); }
+	XMFLOAT3 GetPosition() const {	return m_d3dxvPosition; }
 	XMVECTOR& GetLookVector() { return(XMLoadFloat3(&m_d3dxvLook)); }
 	XMVECTOR& GetUpVector() { return(XMLoadFloat3(&m_d3dxvUp)); }
 	XMVECTOR& GetRightVector() { return(XMLoadFloat3(&m_d3dxvRight)); }

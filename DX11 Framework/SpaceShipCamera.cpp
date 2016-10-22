@@ -21,7 +21,7 @@ void CSpaceShipCamera::Rotate(float x, float y, float z)
 		XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
 		XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
 
-		XMStoreFloat3(&xmPosition, m_pPlayer->GetPosition());
+		XMStoreFloat3(&xmPosition, m_pPlayer->GetvPosition());
 		m_d3dxvPosition.x -= xmPosition.x;
 		m_d3dxvPosition.y -= xmPosition.y;
 		m_d3dxvPosition.z -= xmPosition.z;
@@ -37,7 +37,7 @@ void CSpaceShipCamera::Rotate(float x, float y, float z)
 		XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
 		XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
 
-		XMStoreFloat3(&xmPosition, m_pPlayer->GetPosition());
+		XMStoreFloat3(&xmPosition, m_pPlayer->GetvPosition());
 		m_d3dxvPosition.x -= xmPosition.x;
 		m_d3dxvPosition.y -= xmPosition.y;
 		m_d3dxvPosition.z -= xmPosition.z;
@@ -53,7 +53,7 @@ void CSpaceShipCamera::Rotate(float x, float y, float z)
 		XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
 		XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
 
-		XMStoreFloat3(&xmPosition, m_pPlayer->GetPosition());
+		XMStoreFloat3(&xmPosition, m_pPlayer->GetvPosition());
 		m_d3dxvPosition.x -= xmPosition.x;
 		m_d3dxvPosition.y -= xmPosition.y;
 		m_d3dxvPosition.z -= xmPosition.z;

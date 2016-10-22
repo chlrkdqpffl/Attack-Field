@@ -232,10 +232,10 @@ void CPlayer::OnCameraUpdated(float fTimeElapsed)
 
 void CPlayer::OnPrepareRender()
 {
-	m_d3dxmtxLocal._11 = m_d3dxvRight.x; m_d3dxmtxLocal._12 = m_d3dxvRight.y; m_d3dxmtxLocal._13 = m_d3dxvRight.z;
-	m_d3dxmtxLocal._21 = m_d3dxvUp.x; m_d3dxmtxLocal._22 = m_d3dxvUp.y; m_d3dxmtxLocal._23 = m_d3dxvUp.z;
-	m_d3dxmtxLocal._31 = m_d3dxvLook.x; m_d3dxmtxLocal._32 = m_d3dxvLook.y; m_d3dxmtxLocal._33 = m_d3dxvLook.z;
-	m_d3dxmtxLocal._41 = m_d3dxvPosition.x; m_d3dxmtxLocal._42 = m_d3dxvPosition.y; m_d3dxmtxLocal._43 = m_d3dxvPosition.z;
+	m_d3dxmtxWorld._11 = m_d3dxvRight.x; m_d3dxmtxWorld._12 = m_d3dxvRight.y; m_d3dxmtxWorld._13 = m_d3dxvRight.z;
+	m_d3dxmtxWorld._21 = m_d3dxvUp.x; m_d3dxmtxWorld._22 = m_d3dxvUp.y; m_d3dxmtxWorld._23 = m_d3dxvUp.z;
+	m_d3dxmtxWorld._31 = m_d3dxvLook.x; m_d3dxmtxWorld._32 = m_d3dxvLook.y; m_d3dxmtxWorld._33 = m_d3dxvLook.z;
+	m_d3dxmtxWorld._41 = m_d3dxvPosition.x; m_d3dxmtxWorld._42 = m_d3dxvPosition.y; m_d3dxmtxWorld._43 = m_d3dxvPosition.z;
 
 	CGameObject::Update(NULL);
 }

@@ -33,7 +33,7 @@ void CThirdPersonCamera::Update(XMVECTOR& d3dxvLookAt, float fTimeElapsed)
 
 		XMVECTOR d3dxvOffset;
 		d3dxvOffset = XMVector3TransformCoord(XMLoadFloat3(&m_d3dxvOffset), XMLoadFloat4x4(&mtxRotate));
-		XMVECTOR d3dxvPosition = m_pPlayer->GetPosition() + d3dxvOffset;
+		XMVECTOR d3dxvPosition = m_pPlayer->GetvPosition() + d3dxvOffset;
 		XMVECTOR d3dxvDirection = d3dxvPosition - XMLoadFloat3(&m_d3dxvPosition);
 		float fLength = XMVectorGetX(XMVector3Length(d3dxvDirection));
 		d3dxvDirection = XMVector3Normalize(d3dxvDirection);

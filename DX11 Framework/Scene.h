@@ -93,5 +93,7 @@ protected:
 	LIGHTS							*m_pLights;
 	ID3D11Buffer					*m_pd3dcbLights;
 
+
+	CSkyBox							*m_pSkyBox;
 	CHeightMapTerrain				*m_pTerrain;
 };

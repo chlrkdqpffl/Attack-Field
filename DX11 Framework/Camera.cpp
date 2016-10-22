@@ -78,7 +78,7 @@ void CCamera::GenerateProjectionMatrix(float fNearPlaneDistance, float fFarPlane
 
 void CCamera::GenerateViewMatrix()
 {
-	XMStoreFloat4x4(&m_d3dxmtxView, XMMatrixLookAtLH(XMLoadFloat3(&m_d3dxvPosition), m_pPlayer->GetPosition(), XMLoadFloat3(&m_d3dxvUp)));
+	XMStoreFloat4x4(&m_d3dxmtxView, XMMatrixLookAtLH(XMLoadFloat3(&m_d3dxvPosition), m_pPlayer->GetvPosition(), XMLoadFloat3(&m_d3dxvUp)));
 }
 
 void CCamera::RegenerateViewMatrix()

@@ -61,8 +61,8 @@ void CAirplanePlayer::OnPlayerUpdated(float fTimeElapsed)
 {
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)m_pPlayerUpdatedContext;
 	XMVECTOR d3dxvScale = pTerrain->GetScale();
-	XMFLOAT3 d3dxvPlayerPosition;
-	XMStoreFloat3(&d3dxvPlayerPosition, GetPosition());
+	XMFLOAT3 d3dxvPlayerPosition = GetPosition();
+
 	int z = (int)(d3dxvPlayerPosition.z / XMVectorGetZ(d3dxvScale));
 	bool bReverseQuad = ((z % 2) != 0);
 	float fHeight = pTerrain->GetHeight(d3dxvPlayerPosition.x, d3dxvPlayerPosition.z, bReverseQuad) + 30.0f;
