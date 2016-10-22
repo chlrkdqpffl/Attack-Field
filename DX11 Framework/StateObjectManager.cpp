@@ -3,6 +3,8 @@
 
 CStateObjectManager::CStateObjectManager()
 {
+	m_pd3dDevice = nullptr;
+	m_pd3dImmediateDeviceContext = nullptr;
 }
 
 

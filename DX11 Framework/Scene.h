@@ -39,7 +39,7 @@ struct LIGHT
 struct LIGHTS
 {
 	LIGHT					m_pLights[MAX_LIGHTS];
-	XMFLOAT4					m_d3dxcGlobalAmbient;
+	XMFLOAT4				m_d3dxcGlobalAmbient;
 	XMFLOAT4				m_d3dxvCameraPosition;
 };
 
@@ -49,31 +49,34 @@ public:
 	CScene();
 	virtual ~CScene();
 
-	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	virtual bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	virtual bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	virtual void OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMaterial, int nIndex = 0);
 
-	void BuildObjects(ID3D11Device *pd3dDevice);
-	void ReleaseObjects();
+	virtual void BuildObjects(ID3D11Device *pd3dDevice);
+	virtual void ReleaseObjects();
 
-	void CreateShaderVariables(ID3D11Device *pd3dDevice);
-	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights);
-	void ReleaseShaderVariables();
+	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
+	virtual void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights);
+	virtual void ReleaseShaderVariables();
 
-	bool ProcessInput(UCHAR *pKeysBuffer);
-	void UpdateObjects(float fTimeElapsed);
-	void OnPreRender(ID3D11DeviceContext *pd3dDeviceContext);
-	void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera);
-	void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext);
+	virtual bool ProcessInput(UCHAR *pKeysBuffer);
+	virtual void UpdateObjects(float fTimeElapsed);
+	virtual void OnPreRender(ID3D11DeviceContext *pd3dDeviceContext);
+	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera);
+	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext);
 
+public:
 	CGameObject *PickObjectPointedByCursor(int xClient, int yClient);
+
+	// ----- Get, Setter ----- // 
+	CHeightMapTerrain *GetTerrain() const {	return m_pTerrain; }
 
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
 	void SetPlayer(CPlayer *pPlayer) { m_pPlayer = pPlayer; }
 
-	CHeightMapTerrain *GetTerrain();
-	void OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMaterial, int nIndex = 0);
 
-private:
+protected:
 	CGameObject						**m_ppObjects;
 	int								m_nObjects;
 
@@ -89,5 +92,6 @@ private:
 
 	LIGHTS							*m_pLights;
 	ID3D11Buffer					*m_pd3dcbLights;
-};
 
+	CHeightMapTerrain				*m_pTerrain;
+};

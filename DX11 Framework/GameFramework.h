@@ -2,7 +2,7 @@
 
 #include "Timer.h"
 #include "TerrainPlayer.h"
-#include "Scene.h"
+#include "Scene_Main.h"
 
 
 class CGameFramework
@@ -39,10 +39,10 @@ private:
 	int								m_nWndClientWidth;
 	int								m_nWndClientHeight;
 
-	ID3D11Device					*m_pd3dDevice;
+//	ID3D11Device					*m_pd3dDevice;
 	IDXGISwapChain					*m_pDXGISwapChain;
 	ID3D11RenderTargetView			*m_pd3dRenderTargetView;
-	ID3D11DeviceContext				*m_pd3dDeviceContext;
+//	ID3D11DeviceContext				*m_pd3dDeviceContext;
 
 	UINT							m_n4xMSAAQualities;
 
@@ -50,8 +50,6 @@ private:
 	ID3D11DepthStencilView			*m_pd3dDepthStencilView;
 
 	CGameTimer						m_GameTimer;
-
-	CScene							*m_pScene;
 
 	CPlayer							*m_pPlayer;
 	CCamera							*m_pCamera;

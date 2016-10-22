@@ -172,9 +172,7 @@
     <ClCompile Include="RotatingObject.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="Scene_World.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="Scene_Main.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="SpaceShipCamera.cpp" />
@@ -205,9 +203,7 @@
     <ClInclude Include="RotatingObject.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="Scene_World.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="Scene_Main.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SingletonManager.h" />
     <ClInclude Include="SkyBox.h" />
@@ -221,6 +217,7 @@
     <ClInclude Include="ThirdPersonCamera.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UserDefine.h" />
+    <ClInclude Include="UserTag.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="DirectX11_Project.ico" />

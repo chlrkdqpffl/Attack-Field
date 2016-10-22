@@ -43,6 +43,13 @@
 #include <algorithm>
 #include <memory>
 #include <process.h>
+#include <utility>
+
+// Comptr
+#include <wrl.h>
+#include <wrl\client.h>
+using namespace Microsoft::WRL;
+
 
 using namespace DirectX;
 using namespace DirectX::PackedVector;

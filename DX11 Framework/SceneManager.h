@@ -14,4 +14,5 @@ public:
 	void ChangeScene(CScene* newScene);
 
 	virtual void InitializeManager();
+	
 };

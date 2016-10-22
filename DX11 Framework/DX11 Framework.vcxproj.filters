@@ -138,7 +138,7 @@
     <ClCompile Include="TextManager.cpp">
       <Filter>소스 파일\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Scene_World.cpp">
+    <ClCompile Include="Scene_Main.cpp">
       <Filter>소스 파일\Scene</Filter>
     </ClCompile>
   </ItemGroup>
@@ -230,8 +230,11 @@
     <ClInclude Include="TextManager.h">
       <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Scene_World.h">
+    <ClInclude Include="Scene_Main.h">
       <Filter>헤더 파일\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UserTag.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,14 +6,13 @@ CSceneManager::CSceneManager()
 	m_nowScene = nullptr;
 }
 
-
 CSceneManager::~CSceneManager()
 {
+
 }
 
 void CSceneManager::InitializeManager()
 {
-
 }
 
 void CSceneManager::ChangeScene(CScene* newScene)
@@ -24,5 +23,5 @@ void CSceneManager::ChangeScene(CScene* newScene)
 	}
 	m_nowScene = newScene;
 
-//	m_nowScene->BuildObjects(G_VAR->g_pd3dDevice);
+	m_nowScene->BuildObjects(STATEOBJ_MGR->m_pd3dDevice.Get());
 }
