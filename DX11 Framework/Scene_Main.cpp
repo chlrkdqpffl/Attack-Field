@@ -167,7 +167,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #ifdef _WITH_TERRAIN_PARTITION
 	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, _T("../Assets/Image/Terrain/HeightMap.raw"), 257, 257, 17, 17, d3dxvScale);
 #else
-	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, _T("Image/Terrain/HeightMap.raw"), 257, 257, 257, 257, d3dxvScale);
+	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, _T("../Assets/Image/Terrain/HeightMap.raw"), 257, 257, 257, 257, d3dxvScale);
 #endif
 	pTerrain->SetMaterial(pTerrainMaterial);
 
@@ -309,16 +309,19 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 	int xObjects = int(fTerrainWidth / (fxPitch * 3.0f)), zObjects = int(fTerrainLength / (fzPitch * 3.0f));
 
-	m_nInstancingShaders = 6;
-	m_ppInstancingShaders = new CInstancedObjectsShader*[m_nInstancingShaders];
+	m_vInstancedObjectsShaderVector.reserve(6);
 
-	for (int k = 0; k < m_nInstancingShaders; k++)
+	
+	CInstancedObjectsShader *pInstancingShaders;
+	for (int k = 0; k < 6; k++)
 	{
-		m_ppInstancingShaders[k] = new CInstancedObjectsShader(xObjects * zObjects);
-		m_ppInstancingShaders[k]->SetMesh(pMeshes[k]);
-		m_ppInstancingShaders[k]->SetMaterial(pInstancingMaterials[k % 3]);
-		m_ppInstancingShaders[k]->BuildObjects(pd3dDevice, NULL);
-		m_ppInstancingShaders[k]->CreateShader(pd3dDevice);
+		pInstancingShaders = new CInstancedObjectsShader(xObjects * zObjects);
+		pInstancingShaders->SetMesh(pMeshes[k]);
+		pInstancingShaders->SetMaterial(pInstancingMaterials[k % 3]);
+		pInstancingShaders->BuildObjects(pd3dDevice, NULL);
+		pInstancingShaders->CreateShader(pd3dDevice);
+
+		m_vInstancedObjectsShaderVector.push_back(move(pInstancingShaders));
 	}
 
 	XMVECTOR d3dxvRotateAxis;
@@ -346,14 +349,16 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 					pRotatingObject->Rotate(&d3dxvRotateAxis, XMConvertToDegrees(fAngle));
 				pRotatingObject->SetRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 				pRotatingObject->SetRotationSpeed(18.0f * (i % 10) + 10.0f);
-				m_ppInstancingShaders[k * 2]->AddObject(pRotatingObject);
+
+				m_vInstancedObjectsShaderVector[k * 2]->AddObject(pRotatingObject);
 
 				pRotatingObject = new CRotatingObject();
 				pRotatingObject->SetMesh(pMeshes[k * 2 + 1]);
 				pRotatingObject->SetPosition(xPosition, fHeight + (fyPitch * 4), zPosition);
 				pRotatingObject->SetRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 				pRotatingObject->SetRotationSpeed(36.0f * (i % 10) + 36.0f);
-				m_ppInstancingShaders[k * 2 + 1]->AddObject(pRotatingObject);
+
+				m_vInstancedObjectsShaderVector[k * 2 + 1]->AddObject(pRotatingObject);
 			}
 		}
 	}

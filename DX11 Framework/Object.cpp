@@ -566,6 +566,12 @@ void CGameObject::Animate(float fTimeElapsed)
 	if (m_pChild) m_pChild->Animate(fTimeElapsed);
 }
 
+void CGameObject::Animate(float fTimeElapsed, XMMATRIX *pd3dxmtxParent)
+{
+	Animate(fTimeElapsed);
+	Update(pd3dxmtxParent);
+}
+
 void CGameObject::Update(XMMATRIX *pd3dxmtxParent)
 {
 //	m_d3dxmtxWorld = m_d3dxmtxLocal;
@@ -573,17 +579,6 @@ void CGameObject::Update(XMMATRIX *pd3dxmtxParent)
 
 	if (m_pSibling) m_pSibling->Update(pd3dxmtxParent);
 	if (m_pChild) m_pChild->Update(&XMLoadFloat4x4(&m_d3dxmtxWorld));
-}
-
-void CGameObject::Animate(float fTimeElapsed, XMMATRIX *pd3dxmtxParent)
-{
-	Animate(fTimeElapsed);
-
-	Update(pd3dxmtxParent);
-}
-
-void CGameObject::OnPrepareRender()
-{
 }
 
 void CGameObject::RenderMesh(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
@@ -609,6 +604,10 @@ void CGameObject::RenderMesh(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pC
 			}
 		}
 	}
+}
+
+void CGameObject::OnPrepareRender()
+{
 }
 
 void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)

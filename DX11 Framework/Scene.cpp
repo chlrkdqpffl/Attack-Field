@@ -11,12 +11,6 @@ CScene::CScene()
 	m_ppObjects = NULL;
 	m_nObjects = 0;
 
-	m_ppObjectShaders = NULL;
-	m_nObjectShaders = 0;
-
-	m_ppInstancingShaders = NULL;
-	m_nInstancingShaders = 0;
-
 	m_pLights = NULL;
 	m_pd3dcbLights = NULL;
 
@@ -25,6 +19,10 @@ CScene::CScene()
 
 	m_pSkyBox = nullptr;
 	m_pTerrain = nullptr;
+
+	m_vObjectsVector.clear();
+	m_vObjectsShaderVector.clear();
+	m_vInstancedObjectsShaderVector.clear();
 }
 
 CScene::~CScene()
@@ -73,19 +71,36 @@ void CScene::ReleaseObjects()
 
 	if (m_ppObjects) delete[] m_ppObjects;
 
-	for (int j = 0; j < m_nObjectShaders; j++)
-	{
-		if (m_ppObjectShaders[j]) m_ppObjectShaders[j]->ReleaseObjects();
-		if (m_ppObjectShaders[j]) m_ppObjectShaders[j]->Release();
-	}
-	if (m_ppObjectShaders) delete[] m_ppObjectShaders;
+	//for (int j = 0; j < m_nObjectShaders; j++)
+	//{
+	//	if (m_ppObjectShaders[j]) m_ppObjectShaders[j]->ReleaseObjects();
+	//	if (m_ppObjectShaders[j]) m_ppObjectShaders[j]->Release();
+	//}
+	//if (m_ppObjectShaders) delete[] m_ppObjectShaders;
 
-	for (int j = 0; j < m_nInstancingShaders; j++)
-	{
-		if (m_ppInstancingShaders[j]) m_ppInstancingShaders[j]->ReleaseObjects();
-		if (m_ppInstancingShaders[j]) m_ppInstancingShaders[j]->Release();
+	//for (int j = 0; j < m_nInstancingShaders; j++)
+	//{
+	//	if (m_ppInstancingShaders[j]) m_ppInstancingShaders[j]->ReleaseObjects();
+	//	if (m_ppInstancingShaders[j]) m_ppInstancingShaders[j]->Release();
+	//}
+	//if (m_ppInstancingShaders) delete[] m_ppInstancingShaders;
+
+	for (auto& object : m_vObjectsVector) 
+		object->Release();
+
+	m_vObjectsVector.clear();
+
+	for (auto& shaderObject : m_vObjectsShaderVector) {
+		shaderObject->ReleaseObjects();
+		shaderObject->Release();
 	}
-	if (m_ppInstancingShaders) delete[] m_ppInstancingShaders;
+	m_vObjectsShaderVector.clear();
+
+	for (auto& instancedShaderObject : m_vInstancedObjectsShaderVector) {
+		instancedShaderObject->ReleaseObjects();
+		instancedShaderObject->Release();
+	}
+	m_vInstancedObjectsShaderVector.clear();
 }
 
 void CScene::CreateShaderVariables(ID3D11Device *pd3dDevice)
@@ -129,6 +144,7 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 	float fNearHitDistance = FLT_MAX;
 	MESHINTERSECTINFO d3dxIntersectInfo;
 	CGameObject *pIntersectedObject = NULL, *pNearestObject = NULL;
+	/*
 	for (int i = 0; i < m_nObjectShaders; i++)
 	{
 		pIntersectedObject = m_ppObjectShaders[i]->PickObjectByRayIntersection(&d3dxvPickPosition, &d3dxmtxView, &d3dxIntersectInfo);
@@ -147,7 +163,7 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 			pNearestObject = m_ppObjects[i];
 		}
 	}
-
+	*/
 	return(pNearestObject);
 }
 
@@ -156,8 +172,17 @@ void CScene::UpdateObjects(float fTimeElapsed)
 	m_pSkyBox->Animate(fTimeElapsed, NULL);
 	m_pTerrain->Animate(fTimeElapsed, NULL);
 
-	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Animate(fTimeElapsed, NULL);
-	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->UpdateObjects(fTimeElapsed);
+//	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Animate(fTimeElapsed, NULL);
+//	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->UpdateObjects(fTimeElapsed);
+
+	for (auto object : m_vObjectsVector)
+		object->Update(nullptr);		// 오류 발생 확인하기
+
+	for (auto shaderObject : m_vObjectsShaderVector)
+		shaderObject->UpdateObjects(fTimeElapsed);
+
+	for (auto instancedShaderObject : m_vInstancedObjectsShaderVector)
+		instancedShaderObject->UpdateObjects(fTimeElapsed);
 }
 
 void CScene::OnPreRender(ID3D11DeviceContext *pd3dDeviceContext)
@@ -176,9 +201,20 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 
 	if (m_ppObjects && m_ppObjects[0])
 		m_ppObjects[0]->Render(pd3dDeviceContext, pCamera); //Water
+
+
+	for(auto object : m_vObjectsVector)
+		object->Render(pd3dDeviceContext, pCamera);
+
+	for (auto shaderObject : m_vObjectsShaderVector)
+		shaderObject->Render(pd3dDeviceContext, pCamera);
+
+	for (auto instancedShaderObject : m_vInstancedObjectsShaderVector)
+		instancedShaderObject->Render(pd3dDeviceContext, pCamera);
+
 	
-	for (int i = 0; i < m_nObjectShaders; i++) m_ppObjectShaders[i]->Render(pd3dDeviceContext, pCamera);
-	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->Render(pd3dDeviceContext, pCamera);
+//	for (int i = 0; i < m_nObjectShaders; i++) m_ppObjectShaders[i]->Render(pd3dDeviceContext, pCamera);
+//	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->Render(pd3dDeviceContext, pCamera);
 }
 
 void CScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)

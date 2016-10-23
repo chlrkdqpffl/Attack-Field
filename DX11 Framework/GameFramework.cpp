@@ -441,7 +441,8 @@ void CGameFramework::UpdateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
 
-	if (m_pPlayer) m_pPlayer->Animate(fTimeElapsed, NULL);
+	if (m_pPlayer) 
+		m_pPlayer->Animate(fTimeElapsed, NULL);
 
 	SCENE_MGR->m_nowScene->UpdateObjects(fTimeElapsed);
 }

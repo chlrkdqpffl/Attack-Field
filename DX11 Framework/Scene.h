@@ -80,11 +80,15 @@ protected:
 	CGameObject						**m_ppObjects;
 	int								m_nObjects;
 
-	CObjectsShader					**m_ppObjectShaders;
-	int								m_nObjectShaders;
+//	CObjectsShader					**m_ppObjectShaders;
+//	int								m_nObjectShaders;
 
-	CInstancedObjectsShader			**m_ppInstancingShaders;
-	int								m_nInstancingShaders;
+//	CInstancedObjectsShader			**m_ppInstancingShaders;
+//	int								m_nInstancingShaders;
+
+	vector<CGameObject*>				m_vObjectsVector;
+	vector<CObjectsShader*>				m_vObjectsShaderVector;
+	vector<CInstancedObjectsShader*>	m_vInstancedObjectsShaderVector;
 
 	CPlayer							*m_pPlayer;
 	CCamera							*m_pCamera;
