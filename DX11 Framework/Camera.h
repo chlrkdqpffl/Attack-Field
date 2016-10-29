@@ -14,6 +14,8 @@ struct VS_CB_CAMERA
 	XMFLOAT4X4						m_d3dxmtxProjection;
 };
 
+
+
 class CPlayer;
 
 class CCamera
@@ -39,6 +41,7 @@ protected:
 	D3D11_VIEWPORT					m_d3dViewport;
 
 	static ID3D11Buffer				*m_pd3dcbCamera;
+	static ID3D11Buffer				*m_pd3dcbCameraPosition;
 
 	CPlayer							*m_pPlayer;
 
@@ -58,7 +61,9 @@ public:
 
 	static void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	static void ReleaseShaderVariables();
-	static void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxView, XMMATRIX *pd3dxmtxProjection);
+	static void UpdateConstantBuffer_ViewProjection(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxView, XMMATRIX *pd3dxmtxProjection);
+	static void UpdateConstantBuffer_CameraPos(ID3D11DeviceContext *pd3dDeviceContext, XMVECTOR*);
+
 	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
 
 	void SetPlayer(CPlayer *pPlayer) { m_pPlayer = pPlayer; }

@@ -36,9 +36,9 @@ struct LIGHT
 
 struct LIGHTS
 {
+//	vector<LIGHT>			m_vLightVector;
 	LIGHT					m_pLights[MAX_LIGHTS];
 	XMFLOAT4				m_d3dxcGlobalAmbient;
-	XMFLOAT4				m_d3dxvCameraPosition;
 };
 
 class CScene
@@ -54,9 +54,9 @@ public:
 	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 	virtual void ReleaseObjects();
 
-	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
-	virtual void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights);
-	virtual void ReleaseShaderVariables();
+	virtual void CreateConstantBuffers(ID3D11Device *pd3dDevice);
+	virtual void UpdateConstantBuffers(ID3D11DeviceContext *pd3dDeviceContext);
+	virtual void ReleaseConstantBuffers();
 
 	virtual bool ProcessInput(UCHAR *pKeysBuffer);
 	virtual void UpdateObjects(float fTimeElapsed);
@@ -88,7 +88,6 @@ protected:
 
 	// Light
 	LIGHTS							*m_pLights;
-	ID3D11Buffer					*m_pd3dcbLights;
 
 	// Environment
 	CSkyBox							*m_pSkyBox;
@@ -98,7 +97,10 @@ protected:
 	float							m_fGametime;
 	CParticleSystem					*m_pParticleSystem;
 
-	// Fog
-	ID3D11Buffer					*m_pd3dcbFogEnable;
+	// RenderOption
 	bool							m_bFogEnable;
+
+
+	// Constant Buffer
+	ID3D11Buffer					*m_pd3dcbRenderOption;
 };

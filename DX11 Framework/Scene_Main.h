@@ -14,9 +14,9 @@ public:
 	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 	virtual void ReleaseObjects();
 
-	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
-	virtual void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights);
-	virtual void ReleaseShaderVariables();
+	virtual void CreateConstantBuffers(ID3D11Device *pd3dDevice);
+	virtual void UpdateConstantBuffers(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights);
+	virtual void ReleaseConstantBuffers();
 
 	virtual bool ProcessInput(UCHAR *pKeysBuffer);
 	virtual void UpdateObjects(float fTimeElapsed);
@@ -26,6 +26,7 @@ public:
 
 private:
 
+	ID3D11Buffer					*m_pd3dcbLights;
 	
 };
 

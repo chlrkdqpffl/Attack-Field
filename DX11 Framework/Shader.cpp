@@ -264,7 +264,6 @@ CObjectsShader::CObjectsShader(int nObjects)
 	m_pMaterial = NULL;
 	m_pContext = NULL;
 
-	m_nIndexToAdd = 0;
 }
 
 CObjectsShader::~CObjectsShader()
@@ -280,7 +279,7 @@ void CObjectsShader::SetObject(int nIndex, CGameObject *pGameObject)
 
 void CObjectsShader::AddObject(CGameObject *pGameObject)
 {
-	m_vObjectsVector[m_nIndexToAdd++] = pGameObject;
+	m_vObjectsVector.push_back(pGameObject);
 	if (pGameObject) pGameObject->AddRef();
 }
 
@@ -391,7 +390,7 @@ void CInstancedObjectsShader::BuildObjects(ID3D11Device *pd3dDevice, void *pCont
 {
 	CObjectsShader::BuildObjects(pd3dDevice, pContext);
 
-	m_pd3dInstanceBuffer = CreateBuffer(pd3dDevice, m_nInstanceBufferStride, m_vObjectsVector.size(), NULL, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+	m_pd3dInstanceBuffer = CreateBuffer(pd3dDevice, m_nInstanceBufferStride, m_vObjectsVector.capacity(), NULL, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
 	m_pMesh->AssembleToVertexBuffer(1, &m_pd3dInstanceBuffer, &m_nInstanceBufferStride, &m_nInstanceBufferOffset);
 }
 

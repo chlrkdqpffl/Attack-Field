@@ -115,9 +115,6 @@ protected:
 
 	void							*m_pContext;
 
-private:
-	int								m_nIndexToAdd;
-
 public:
 	virtual void BuildObjects(ID3D11Device *pd3dDevice, void *pContext = NULL);
 	virtual void ReleaseObjects();

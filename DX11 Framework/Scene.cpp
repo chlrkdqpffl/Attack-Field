@@ -4,12 +4,10 @@
 
 #include "stdafx.h"
 #include "Scene.h"
-#include "resource.h"
 
 CScene::CScene()
 {
 	m_pLights = NULL;
-	m_pd3dcbLights = NULL;
 
 	m_pCamera = NULL;
 	m_pSelectedObject = NULL;
@@ -23,6 +21,9 @@ CScene::CScene()
 
 	m_pParticleSystem = nullptr;
 	m_fGametime = 0.0f;
+
+	m_pd3dcbRenderOption = nullptr;
+	m_bFogEnable = true;
 }
 
 CScene::~CScene()
@@ -82,17 +83,19 @@ void CScene::ReleaseObjects()
 		instancedShaderObject->Release();
 	}
 	m_vInstancedObjectsShaderVector.clear();
+
+	ReleaseCOM(m_pd3dcbRenderOption);
 }
 
-void CScene::CreateShaderVariables(ID3D11Device *pd3dDevice)
+void CScene::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 {
 }
 
-void CScene::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights)
+void CScene::UpdateConstantBuffers(ID3D11DeviceContext *pd3dDeviceContext)
 {
 }
 
-void CScene::ReleaseShaderVariables()
+void CScene::ReleaseConstantBuffers()
 {
 }
 
@@ -182,6 +185,8 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 
 void CScene::UpdateObjects(float fTimeElapsed)
 {
+	UpdateConstantBuffers(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get());
+
 	m_pSkyBox->Animate(fTimeElapsed, NULL);
 	m_pTerrain->Animate(fTimeElapsed, NULL);
 
@@ -201,8 +206,6 @@ void CScene::OnPreRender(ID3D11DeviceContext *pd3dDeviceContext)
 
 void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 {
-	if (m_pLights && m_pd3dcbLights) UpdateShaderVariable(pd3dDeviceContext, m_pLights);
-
 	if (m_pSkyBox)
 		m_pSkyBox->Render(pd3dDeviceContext, pCamera);
 

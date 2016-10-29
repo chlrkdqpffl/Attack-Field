@@ -19,9 +19,9 @@ CParticleSystem::CParticleSystem()
 	m_fAge = 0.0f;
 	m_nOffset = 0;
 	m_nStride = 0;
-	m_d3dxvAcceleration = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_d3dxvEmitPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_d3dxvEmitDirection = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_d3dxvAcceleration = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_d3dxvEmitPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_d3dxvEmitDirection = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 	m_pd3dcbParticleInfo = NULL;
 	
@@ -68,6 +68,7 @@ void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceV
 {
 	m_pd3dsrvTextureArray = pd3dsrvTexArray;
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &m_pd3dsrvTextureArray, NULL);
+	//D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/snow.png"), NULL, NULL, &m_pd3dsrvTextureArray, NULL);
 
 	D3D11_SAMPLER_DESC d3dSamplerDesc;
 	ZeroMemory(&d3dSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
@@ -92,13 +93,13 @@ void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceV
 	m_fTimeStep = 0;
 	m_fAge = 0;
 	
-	m_d3dxvAcceleration = D3DXVECTOR3(0, 0, 0);
-	m_d3dxvEmitPosition = D3DXVECTOR3(0, 0, 0);
-	m_d3dxvEmitDirection = D3DXVECTOR3(0, 0, 0);
+	m_d3dxvAcceleration = XMFLOAT3(0, 0, 0);
+	m_d3dxvEmitPosition = XMFLOAT3(0, 0, 0);
+	m_d3dxvEmitDirection = XMFLOAT3(0, 0, 0);
 
-	CreateParticle(pd3dDevice, D3DXVECTOR3(1028, 250, 1028), D3DXVECTOR3(0, 1, 0), D3DXVECTOR3(0, 1, 0));
+	CreateParticle(pd3dDevice, XMFLOAT3(1028, 250, 1028), XMFLOAT3(0, 1, 0), XMFLOAT3(0, 1, 0));
 }
-void CParticleSystem::CreateParticle(ID3D11Device *pd3dDevice, D3DXVECTOR3& Position, D3DXVECTOR3& Direction, D3DXVECTOR3& Accelerater)
+void CParticleSystem::CreateParticle(ID3D11Device *pd3dDevice, XMFLOAT3& Position, XMFLOAT3& Direction, XMFLOAT3& Accelerater)
 {
 	m_d3dxvEmitPosition = Position;
 	m_d3dxvEmitDirection = Direction;
@@ -143,7 +144,7 @@ void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice)
 	ZeroMemory(&d3dBlendStateDesc, sizeof(D3D11_BLEND_DESC));
 	d3dBlendStateDesc.IndependentBlendEnable = false;
 	ZeroMemory(&d3dBlendStateDesc.RenderTarget[0], sizeof(D3D11_RENDER_TARGET_BLEND_DESC));
-	//d3dBlendStateDesc.AlphaToCoverageEnable = true;
+	d3dBlendStateDesc.AlphaToCoverageEnable = true;
 	d3dBlendStateDesc.RenderTarget[0].BlendEnable = true;
 	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;

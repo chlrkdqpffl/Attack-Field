@@ -77,7 +77,6 @@ PARTICLE_OUTPUT VSParticleDraw(PARTICLE_INPUT input)
     return output;
 }
 
-
 [maxvertexcount(2)]
 void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTICLE_INPUT> pointStream)
 {
@@ -88,11 +87,13 @@ void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTIC
         {
             float3 vRandom = gtxtRandomTexture.SampleLevel(gParticleSamplerState, gfGameTime, 0).xyz;
             vRandom = normalize(vRandom);
-            vRandom.x *= 0.5f;
-            vRandom.z *= 0.5f;
+//            vRandom.x *= 0.5f;
+ //           vRandom.z *= 0.5f;
+            vRandom.x *= 1.0f;
+            vRandom.z *= 1.0f;
             PARTICLE_INPUT particle = (PARTICLE_INPUT) 0;
             particle.position = gvParticleEmitPosition.xyz;
-            particle.velocity = 4.0f * vRandom;
+            particle.velocity = 4.0f * vRandom; 
             particle.size = float2(1.0f, 1.0f);
             particle.age = 0.0f;
             particle.type = PARTICLE_TYPE_FLARE;

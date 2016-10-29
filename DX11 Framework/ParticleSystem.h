@@ -2,18 +2,18 @@
 
 struct CB_PARTICLEINFO
 {
-	D3DXVECTOR3 m_d3dxvEmitPosition;
+	XMFLOAT3 m_d3dxvEmitPosition;
 	float m_fGameTime;
-	D3DXVECTOR3 m_d3dxvEmitDirection;
+	XMFLOAT3 m_d3dxvEmitDirection;
 	float m_fTimeStep;
-	D3DXVECTOR3 m_d3dxvAcceleration;
+	XMFLOAT3 m_d3dxvAcceleration;
 };
 
 struct CParticleVertex
 {
-	D3DXVECTOR3 m_d3dxvPosition;
-	D3DXVECTOR3 m_d3dxvVelocity;
-	D3DXVECTOR2 m_d3dxvSize;
+	XMFLOAT3 m_d3dxvPosition;
+	XMFLOAT3 m_d3dxvVelocity;
+	XMFLOAT2 m_d3dxvSize;
 	float m_fAge;
 	UINT m_nType;
 };
@@ -21,14 +21,14 @@ struct CParticleVertex
 class CParticleSystem
 {
 private:
-	UINT m_nMaxParticles;		// 최대 파티클
-	bool m_bInitializeParticle;	// Emitter 파티클 생성 신호
-	float m_fGameTime;			// ElapsedTime 저장
-	float m_fTimeStep;			// 흘러간 시간 기록
-	float m_fAge;				// 파티클의 소멸 Age
-	D3DXVECTOR3 m_d3dxvAcceleration;	// 파티클 속도
-	D3DXVECTOR3	m_d3dxvEmitPosition;	// 파티클 포지션
-	D3DXVECTOR3 m_d3dxvEmitDirection;	// 파티클 방향
+	UINT m_nMaxParticles;			// 최대 파티클
+	bool m_bInitializeParticle;		// Emitter 파티클 생성 신호
+	float m_fGameTime;				// ElapsedTime 저장
+	float m_fTimeStep;				// 흘러간 시간 기록
+	float m_fAge;					// 파티클의 소멸 Age
+	XMFLOAT3 m_d3dxvAcceleration;	// 파티클 속도
+	XMFLOAT3 m_d3dxvEmitPosition;	// 파티클 포지션
+	XMFLOAT3 m_d3dxvEmitDirection;	// 파티클 방향
 	
 	ID3D11Buffer *m_pd3dcbParticleInfo;
 
@@ -62,7 +62,7 @@ public:
 	~CParticleSystem();
 
 	void Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceView *pd3dsrvTexArray, ID3D11ShaderResourceView *pd3dsrvRandomTexture, UINT nMaxParticles);
-	void CreateParticle(ID3D11Device *pd3dDevice, D3DXVECTOR3 &pd3dxvPosition, D3DXVECTOR3 &pd3dxvDirection, D3DXVECTOR3 &pd3dxvAccelerator);
+	void CreateParticle(ID3D11Device *pd3dDevice, XMFLOAT3 &pd3dxvPosition, XMFLOAT3 &pd3dxvDirection, XMFLOAT3 &pd3dxvAccelerator);
 	ID3D11ShaderResourceView* CreateRandomTexture1DSRV(ID3D11Device *pd3dDevice);
 	void Update(float fTimeStep, float fElapsedTime);
 	void Render(ID3D11DeviceContext *pd3dDeviceContext);

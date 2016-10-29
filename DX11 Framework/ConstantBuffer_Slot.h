@@ -10,7 +10,7 @@
 // ============ Constant Buffers ============== //
 
 // Vertex Shader
-#define VS_CB_SLOT_CAMERA					0x00
+#define VS_CB_SLOT_CAMERA_VIEW_PROJECTION	0x00
 #define VS_CB_SLOT_WORLD_MATRIX				0x01
 #define VS_CB_SLOT_TEXTURE_MATRIX			0x02
 #define VS_CB_SLOT_TERRAIN					0x03
@@ -25,6 +25,7 @@
 // Pixel Shader
 #define PS_CB_SLOT_LIGHT					0x00
 #define PS_CB_SLOT_MATERIAL					0x01
+#define PS_CB_SLOT_CAMERA_POSITION			0x02
 #define PS_CB_SLOT_TERRAIN					0x03
 #define PS_CB_SLOT_SKYBOX					0x04
 

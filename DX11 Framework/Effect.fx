@@ -1,18 +1,14 @@
-//-------------------------------------------------------------------------------------------------------------------------------
-// File: DirectX11_Project.fx
-//-------------------------------------------------------------------------------------------------------------------------------
 
 //#define _WITH_SKYBOX_TEXTURE_ARRAY
 #define _WITH_SKYBOX_TEXTURE_CUBE
 //#define _WITH_TERRAIN_TEXTURE_ARRAY
 
-//fxc /E GSParticleDraw /T gs_5_0 /Od /Zi /Fo CompiledVS.fxo Particle.fx
-
+//    fxc /E PSInstancedTexturedLightingColor /T ps_5_0 /Od /Zi /Fo CompiledVS.fxo Effect.fx
 
 //-------------------------------------------------------------------------------------------------------------------------------
 // Constant Buffer Variables
 //-------------------------------------------------------------------------------------------------------------------------------
-cbuffer cbViewProjectionMatrix : register(b0)
+cbuffer cbViewProjectionMatrix : register(b0)                // VS Set
 {
 	matrix		gmtxView : packoffset(c0);
 	matrix		gmtxProjection : packoffset(c4);
@@ -23,9 +19,14 @@ cbuffer cbWorldMatrix : register(b1)
 	matrix		gmtxWorld : packoffset(c0);
 };
 
-cbuffer cbTextureMatrix : register(b2)
+cbuffer cbTextureMatrix : register(b2)                      // VS Set
 {
 	matrix		gmtxTexture : packoffset(c0);
+};
+
+cbuffer cbCameraPosition : register(b2)                     // PS Set
+{
+    float4      gvCameraPosition : packoffset(c0);
 };
 
 cbuffer cbTerrain : register(b3)
@@ -65,6 +66,60 @@ SamplerState gssTerrainDetail   : register(s3);
 SamplerState gssSkyBox          : register(s4);
 
 #include "Light.fx"
+//#include "Fog.fx"
+
+
+#define LINEAR_FOG 	                1.0f
+#define EXPONENTIAL_FOG	            2.0f
+#define EXPONENTIAL_SQUARED_FOG	    3.0f
+#define E					2.71828182846
+
+// fxc /E Fog /T vs_5_0 /Od /Zi /Fo CompiledVS.fxo Fog.fx
+
+static const float4 gcFogColor = { 0.75f, 0.75f, 0.75f, 1.0f };
+static const float4 gvFogParameter = { LINEAR_FOG, 200.0f, 1000.0f, 0.8f };
+
+/*
+cbuffer cbCamera : register(b2)
+{
+    float4 gvCameraPosition;
+};
+
+
+cbuffer cbFog : register(cb3)
+{
+    float4 gcFogColor;
+    float4 gvFogParameter; //(Mode, Start, End, Density)
+};
+*/
+
+float4 Fog(float4 cColor, float3 vPosition)
+{
+    float fDistanceToCamera = length(gvCameraPosition.xyz - vPosition);
+    float fFogFactor = 0.0f;
+
+    fFogFactor = saturate((fDistanceToCamera - gvFogParameter.y) / gvFogParameter.z);
+
+    /* 비선형 안개가 적용 안되어 미적용
+    if (gvFogParameter.x == LINEAR_FOG)
+    {
+        fFogFactor = saturate((fDistanceToCamera - gvFogParameter.y) / gvFogParameter.z);
+    }
+    else if (gvFogParameter.x == EXPONENTIAL_FOG)
+    {
+        fFogFactor = 1.0f / exp( fDistanceToCamera * gvFogParameter.z);
+    }
+    else if (gvFogParameter.x == EXPONENTIAL_SQUARED_FOG)
+    {
+        fFogFactor = 1.0f / exp( pow(fDistanceToCamera * gvFogParameter.z, 2) );
+    }
+    */
+
+    return (lerp(cColor, gcFogColor, fFogFactor));
+}
+
+
+
 
 //-------------------------------------------------------------------------------------------------------------------------------
 struct VS_DIFFUSED_INPUT
@@ -548,6 +603,8 @@ float4 PSInstancedTexturedLightingColor(VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT in
 	input.normalW = normalize(input.normalW);
 	float4 cIllumination = Lighting(input.positionW, input.normalW);
 	float4 cColor = gtxtDefault.Sample(gssDefault, input.texCoord) * cIllumination;
+
+    cColor = Fog(cColor, input.positionW);
 
 	return(cColor);
 }

@@ -4,6 +4,8 @@
 #define SPOT_LIGHT			2.0f
 #define DIRECTIONAL_LIGHT	3.0f
 
+//         fxc /E Lighting /T vs_5_0 /Od /Zi /Fo CompiledVS.fxo Light.fx
+
 #define _WITH_LOCAL_VIEWER_HIGHLIGHTING
 #define _WITH_THETA_PHI_CONES
 //#define _WITH_REFLECT
@@ -37,13 +39,19 @@ cbuffer cbLights : register(b0)     // PS Buffer
 {
 	LIGHT				gLights[MAX_LIGHTS];
 	float4				gcLightGlobalAmbient;
-	float4				gvCameraPosition;
 };
 
 cbuffer cbMaterial : register(b1)   // PS Buffer
 {
 	MATERIAL			gMaterial;
 };
+
+/*  Effect.fx 에서 참조
+cbuffer cbCameraPosition : register(b2) // PS Set
+{
+    float4 gvCameraPosition : packoffset(c0);
+};
+*/
 
 struct LIGHTEDCOLOR
 {
@@ -163,7 +171,7 @@ LIGHTEDCOLOR SpotLight(int i, float3 vPosition, float3 vNormal, float3 vToCamera
 float4 Lighting(float3 vPosition, float3 vNormal)
 {
 	int i;
-	float3 vCameraPosition = float3(gvCameraPosition.x, gvCameraPosition.y, gvCameraPosition.z);
+    float3 vCameraPosition = float3(gvCameraPosition.x, gvCameraPosition.y, gvCameraPosition.z);
 	float3 vToCamera = normalize(vCameraPosition - vPosition);
 	LIGHTEDCOLOR LightedColor = (LIGHTEDCOLOR)0;
 	float4 cColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -192,4 +200,3 @@ float4 Lighting(float3 vPosition, float3 vNormal)
 	cColor.a =  gMaterial.m_cDiffuse.a;
 	return(cColor);// float4(vCameraPosition, 1));
 }
-

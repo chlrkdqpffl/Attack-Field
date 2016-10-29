@@ -4,13 +4,11 @@
 
 CScene_Main::CScene_Main()
 {
-	m_pd3dcbFogEnable = nullptr;
-	m_bFogEnable = true;
+	m_pd3dcbLights = nullptr;
 }
 
 CScene_Main::~CScene_Main()
 {
-	ReleaseCOM(m_pd3dcbFogEnable);
 }
 
 bool CScene_Main::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -50,10 +48,10 @@ bool CScene_Main::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 					cout << "안개 효과 활성화" << endl;
 					m_bFogEnable = true;
 					D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-					STATEOBJ_MGR->m_pd3dImmediateDeviceContext->Map(m_pd3dcbFogEnable, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+		//			STATEOBJ_MGR->m_pd3dImmediateDeviceContext->Map(m_pd3dcbFogEnable, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 //					D3DXCOLOR *pcbColor = (D3DXCOLOR *)d3dMappedResource.pData;
 //					*pcbColor = d3dxcColor;
-					STATEOBJ_MGR->m_pd3dImmediateDeviceContext->Unmap(m_pd3dcbFogEnable, 0);
+		//			STATEOBJ_MGR->m_pd3dImmediateDeviceContext->Unmap(m_pd3dcbFogEnable, 0);
 
 				break;
 
@@ -405,20 +403,20 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_pParticleSystem->CreateShader(pd3dDevice);
 #pragma endregion
 
-	CreateShaderVariables(pd3dDevice);
+	CreateConstantBuffers(pd3dDevice);
 }
 
 void CScene_Main::ReleaseObjects()
 {
 	CScene::ReleaseObjects();
-	CScene::ReleaseShaderVariables();
-	ReleaseShaderVariables();
+	CScene::ReleaseConstantBuffers();
+	ReleaseConstantBuffers();
 
 	delete m_pParticleSystem;
 	m_pParticleSystem = nullptr;
 }
 
-void CScene_Main::CreateShaderVariables(ID3D11Device *pd3dDevice)
+void CScene_Main::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 {
 	m_pLights = new LIGHTS;
 	::ZeroMemory(m_pLights, sizeof(LIGHTS));
@@ -479,7 +477,7 @@ void CScene_Main::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbLights);
 }
 
-void CScene_Main::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights)
+void CScene_Main::UpdateConstantBuffers(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	pd3dDeviceContext->Map(m_pd3dcbLights, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
@@ -489,7 +487,7 @@ void CScene_Main::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, L
 	pd3dDeviceContext->PSSetConstantBuffers(PS_CB_SLOT_LIGHT, 1, &m_pd3dcbLights);
 }
 
-void CScene_Main::ReleaseShaderVariables()
+void CScene_Main::ReleaseConstantBuffers()
 {
 	if (m_pLights) {
 		delete m_pLights;
@@ -513,8 +511,7 @@ void CScene_Main::UpdateObjects(float fTimeElapsed)
 	{
 		XMFLOAT4 f4vCameraPosition;
 		XMStoreFloat4(&f4vCameraPosition, d3dxvCameraPosition);
-		XMStoreFloat4(&m_pLights->m_d3dxvCameraPosition, XMVectorSet(f4vCameraPosition.x, f4vCameraPosition.y,
-			f4vCameraPosition.z, 1.0f));
+//		XMStoreFloat4(&m_pLights->m_d3dxvCameraPosition, XMVectorSet(f4vCameraPosition.x, f4vCameraPosition.y, f4vCameraPosition.z, 1.0f));
 
 		CHeightMapTerrain *pTerrain = GetTerrain();
 		static XMVECTOR d3dxvRotated = XMVectorSet(pTerrain->GetWidth()*0.3f, 0.0f, 0.0f, 0.0f);
@@ -533,7 +530,7 @@ void CScene_Main::UpdateObjects(float fTimeElapsed)
 	}
 
 	// Light Shader Update
-	if (m_pLights && m_pd3dcbLights) UpdateShaderVariable(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get(), m_pLights);
+	if (m_pLights && m_pd3dcbLights) UpdateConstantBuffers(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get(), m_pLights);
 
 	// Particle
 	m_fGametime += fTimeElapsed;
@@ -562,12 +559,13 @@ void CScene_Main::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	wstr.assign(str.begin(), str.end());
 	TEXT_MGR->RenderText(pd3dDeviceContext, wstr, 30, 20, 50, 0xFFFFFFFF, FW1_LEFT);
 
-
 	/*
 	// Draw Time Gap
-	str = "Time Gap : " + to_string(G_VAR->timeGap_microSecond.count()) + " MicroSceonds";
+	XMFLOAT3 cameraPos;
+	XMStoreFloat3(&cameraPos, m_pCamera->GetPosition());
+	str = "Camera Position : (" + to_string(cameraPos.x) + ", " + to_string(cameraPos.y) + ", " + to_string(cameraPos.z) + ")";
 	wstr.assign(str.begin(), str.end());
-	G_VAR->g_pTextRenderer->RenderText(pd3dDeviceContext, wstr, 20, 20, 40, 0xFFFFFFFF, FW1_LEFT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, wstr, 30, 20, 80, 0xFFFFFFFF, FW1_LEFT);
 	*/
 
 
