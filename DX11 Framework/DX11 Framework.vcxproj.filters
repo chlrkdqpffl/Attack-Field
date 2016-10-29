@@ -64,6 +64,9 @@
     <Filter Include="소스 파일\Manager">
       <UniqueIdentifier>{89fe9380-576c-45a3-b9dd-88e14d821bde}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Particle">
+      <UniqueIdentifier>{212ba4fb-c602-4b82-bf63-ababc9048f83}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -140,6 +143,9 @@
     </ClCompile>
     <ClCompile Include="Scene_Main.cpp">
       <Filter>소스 파일\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -236,6 +242,9 @@
     <ClInclude Include="UserTag.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -255,6 +264,12 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="Effect.fx">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="Particle.fx">
+      <Filter>Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Fog.fx">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

@@ -32,7 +32,7 @@ odbccp32.lib
 
 그리고 라이브러리 추가 그냥
 
-#pragma comment(lib, "dsound.lib") 이런 방법 사용함.
+#pragma comment(lib, "legacy_stdio_definitions.lib") 이런 방법 사용함.
 
 
 그리고 윈도우 10이기때문에 프로젝트 속성페이지(속성시트말고) - 구성속성 - 일반 - 대상 플랫폼 버전을 8.1이 아닌

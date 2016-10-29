@@ -11,5 +11,11 @@ public:
 	
 	ComPtr<ID3D11Device>			m_pd3dDevice;
 	ComPtr<ID3D11DeviceContext>		m_pd3dImmediateDeviceContext;
+
+	static ID3D11RasterizerState*	m_pWireframeRS;
+	static ID3D11RasterizerState*	m_pNoCullRS;
+
+	static ID3D11BlendState*		m_pAlphaToCoverageBS;
+	static ID3D11BlendState*		m_pTransparentBS;
 };
 

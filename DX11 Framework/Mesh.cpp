@@ -519,7 +519,8 @@ CCubeMeshDiffused::CCubeMeshDiffused(ID3D11Device *pd3dDevice, float fWidth, flo
 	m_pd3dxvPositions[7] = XMFLOAT3(-fx, -fy, +fz);
 
 	XMCOLOR pd3dxColors[8];
-	for (int i = 0; i < 8; i++) XMStoreColor(&pd3dxColors[i], d3dxColor/* + RANDOM_COLOR*/);
+	for (int i = 0; i < 8; i++) 
+		XMStoreColor(&pd3dxColors[i], d3dxColor/* + RANDOM_COLOR*/);
 
 	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dColorBuffer = CreateBuffer(pd3dDevice, sizeof(XMCOLOR), m_nVertices, pd3dxColors, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);

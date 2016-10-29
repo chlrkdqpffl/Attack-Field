@@ -30,24 +30,24 @@ public:
 	CPlayer(int nMeshes = 1);
 	virtual ~CPlayer();
 
-	XMVECTOR& GetvPosition() const { return(XMLoadFloat3(&m_d3dxvPosition)); }
+	XMVECTOR GetvPosition() const { return(XMLoadFloat3(&m_d3dxvPosition)); }
 	XMFLOAT3 GetPosition() const {	return m_d3dxvPosition; }
-	XMVECTOR& GetLookVector() { return(XMLoadFloat3(&m_d3dxvLook)); }
-	XMVECTOR& GetUpVector() { return(XMLoadFloat3(&m_d3dxvUp)); }
-	XMVECTOR& GetRightVector() { return(XMLoadFloat3(&m_d3dxvRight)); }
+	XMVECTOR GetLookVector() { return(XMLoadFloat3(&m_d3dxvLook)); }
+	XMVECTOR GetUpVector() { return(XMLoadFloat3(&m_d3dxvUp)); }
+	XMVECTOR GetRightVector() { return(XMLoadFloat3(&m_d3dxvRight)); }
 
 	void SetFriction(float fFriction) { m_fFriction = fFriction; }
-	void SetGravity(const XMVECTOR& d3dxvGravity) { XMStoreFloat3(&m_d3dxvGravity, d3dxvGravity); }
+	void SetGravity(XMVECTOR d3dxvGravity) { XMStoreFloat3(&m_d3dxvGravity, d3dxvGravity); }
 	void SetMaxVelocityXZ(float fMaxVelocity) { m_fMaxVelocityXZ = fMaxVelocity; }
 	void SetMaxVelocityY(float fMaxVelocity) { m_fMaxVelocityY = fMaxVelocity; }
-	void SetVelocity(const XMVECTOR& d3dxvVelocity) { XMStoreFloat3(&m_d3dxvVelocity, d3dxvVelocity); }
-	void SetPosition(const XMVECTOR& d3dxvPosition)
+	void SetVelocity(XMVECTOR d3dxvVelocity) { XMStoreFloat3(&m_d3dxvVelocity, d3dxvVelocity); }
+	void SetPosition(XMVECTOR d3dxvPosition)
 	{ 
 		XMVECTOR v = XMLoadFloat3(&m_d3dxvPosition);
 		Move((d3dxvPosition - v), false);
 	}
 
-	const XMVECTOR& GetVelocity() const { return(XMLoadFloat3(&m_d3dxvVelocity)); }
+	const XMVECTOR GetVelocity() const { return(XMLoadFloat3(&m_d3dxvVelocity)); }
 	float GetYaw() const { return(m_fYaw); }
 	float GetPitch() const { return(m_fPitch); }
 	float GetRoll() const { return(m_fRoll); }
@@ -56,7 +56,7 @@ public:
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
 
 	void Move(ULONG nDirection, float fDistance, bool bVelocity = false);
-	void Move(const XMVECTOR& d3dxvShift, bool bVelocity = false);
+	void Move(const XMVECTOR d3dxvShift, bool bVelocity = false);
 	void Move(float fxOffset = 0.0f, float fyOffset = 0.0f, float fzOffset = 0.0f);
 	void Rotate(float x, float y, float z);
 

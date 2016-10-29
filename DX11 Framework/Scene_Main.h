@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+
 class CScene_Main : public CScene
 {
 public:
@@ -25,6 +26,6 @@ public:
 
 private:
 
-
+	
 };
 

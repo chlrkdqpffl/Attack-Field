@@ -68,20 +68,20 @@ public:
 	void SetViewport(ID3D11DeviceContext *pd3dDeviceContext);
 	D3D11_VIEWPORT GetViewport() { return(m_d3dViewport); }
 
-	XMMATRIX& GetViewMatrix() { return(XMLoadFloat4x4(&m_d3dxmtxView)); }
-	XMMATRIX& GetProjectionMatrix() { return(XMLoadFloat4x4(&m_d3dxmtxProjection)); }
+	XMMATRIX GetViewMatrix() { return(XMLoadFloat4x4(&m_d3dxmtxView)); }
+	XMMATRIX GetProjectionMatrix() { return(XMLoadFloat4x4(&m_d3dxmtxProjection)); }
 	ID3D11Buffer *GetCameraConstantBuffer() { return(m_pd3dcbCamera); }
 
 	void SetPosition(XMVECTOR d3dxvPosition) { XMStoreFloat3(&m_d3dxvPosition, d3dxvPosition); }
-	XMVECTOR& GetPosition() { return(XMLoadFloat3(&m_d3dxvPosition)); }
+	XMVECTOR GetPosition() { return(XMLoadFloat3(&m_d3dxvPosition)); }
 
-	XMVECTOR& GetRightVector() { return(XMLoadFloat3(&m_d3dxvRight)); }
-	XMVECTOR& GetUpVector() { return(XMLoadFloat3(&m_d3dxvUp)); }
-	XMVECTOR& GetLookVector() { return(XMLoadFloat3(&m_d3dxvLook)); }
+	XMVECTOR GetRightVector() { return(XMLoadFloat3(&m_d3dxvRight)); }
+	XMVECTOR GetUpVector() { return(XMLoadFloat3(&m_d3dxvUp)); }
+	XMVECTOR GetLookVector() { return(XMLoadFloat3(&m_d3dxvLook)); }
 
-	float& GetPitch() { return(m_fPitch); }
-	float& GetRoll() { return(m_fRoll); }
-	float& GetYaw() { return(m_fYaw); }
+	float GetPitch() { return(m_fPitch); }
+	float GetRoll() { return(m_fRoll); }
+	float GetYaw() { return(m_fYaw); }
 
 	void SetOffset(XMVECTOR d3dxvOffset) 
 	{

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Timer.h"
+
 #include "TerrainPlayer.h"
 #include "Scene_Main.h"
-
 
 class CGameFramework
 {

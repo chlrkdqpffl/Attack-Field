@@ -124,6 +124,7 @@ void CCamera::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMAT
 	pd3dDeviceContext->Unmap(m_pd3dcbCamera, 0);
 
 	pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_CAMERA, 1, &m_pd3dcbCamera);
+	pd3dDeviceContext->GSSetConstantBuffers(VS_CB_SLOT_CAMERA, 1, &m_pd3dcbCamera);
 #ifdef _WITH_GEOMETRY_SHADER_SHADOW
 	pd3dDeviceContext->GSSetConstantBuffers(GS_CB_SLOT_CAMERA, 1, &m_pd3dcbCamera);
 #endif

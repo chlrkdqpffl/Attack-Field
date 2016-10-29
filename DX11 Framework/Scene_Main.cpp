@@ -4,20 +4,26 @@
 
 CScene_Main::CScene_Main()
 {
+	m_pd3dcbFogEnable = nullptr;
+	m_bFogEnable = true;
 }
 
 CScene_Main::~CScene_Main()
 {
+	ReleaseCOM(m_pd3dcbFogEnable);
 }
 
 bool CScene_Main::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	CScene::OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 
-	switch (nMessageID)
-	{
+	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
 		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam));
+		
+		if (m_pSelectedObject)
+			cout << m_pSelectedObject->GetPosition().x << ", " << m_pSelectedObject->GetPosition().y << ", " << m_pSelectedObject->GetPosition().z << endl;
+
 		break;
 	case WM_RBUTTONDOWN:
 		break;
@@ -36,6 +42,37 @@ bool CScene_Main::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 bool CScene_Main::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	CScene::OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+
+	switch (nMessageID) {
+		case WM_KEYDOWN:
+			switch (wParam) {
+				case '1':
+					cout << "안개 효과 활성화" << endl;
+					m_bFogEnable = true;
+					D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+					STATEOBJ_MGR->m_pd3dImmediateDeviceContext->Map(m_pd3dcbFogEnable, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+//					D3DXCOLOR *pcbColor = (D3DXCOLOR *)d3dMappedResource.pData;
+//					*pcbColor = d3dxcColor;
+					STATEOBJ_MGR->m_pd3dImmediateDeviceContext->Unmap(m_pd3dcbFogEnable, 0);
+
+				break;
+
+				case '2':
+					cout << "안개 효과 비활성화" << endl;
+					m_bFogEnable = false;
+					break;
+
+			}
+			break;
+		case WM_KEYUP:
+			switch (wParam) {
+				case VK_A:
+					
+				break;
+			}
+			break;
+		}
+
 	return(false);
 }
 
@@ -224,14 +261,12 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pTerrainWaterShader->CreateShader(pd3dDevice);
 	pTerrainWater->SetShader(pTerrainWaterShader);
 
-	m_nObjects = 1;
-	m_ppObjects = new CGameObject*[m_nObjects];
 
-	m_pSkyBox = pSkyBox;
-	m_pTerrain = pTerrain;
-	m_ppObjects[0] = pTerrainWater;
+	m_pSkyBox = move(pSkyBox);
+	m_pTerrain = move(pTerrain);
+	m_vObjectsVector.push_back(move(pTerrainWater));
 
-	//Instancing
+#pragma region [Create Instancing Object]
 	CMaterial *pInstancingMaterials[3];
 
 	CMaterialColors *pRedColor = new CMaterialColors();
@@ -362,7 +397,13 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 			}
 		}
 	}
+#pragma endregion
 
+#pragma region [Particle System]
+	m_pParticleSystem = new CParticleSystem();
+	m_pParticleSystem->Initialize(pd3dDevice, NULL, m_pParticleSystem->CreateRandomTexture1DSRV(pd3dDevice), 200);
+	m_pParticleSystem->CreateShader(pd3dDevice);
+#pragma endregion
 
 	CreateShaderVariables(pd3dDevice);
 }
@@ -370,8 +411,11 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 void CScene_Main::ReleaseObjects()
 {
 	CScene::ReleaseObjects();
-	//CScene::ReleaseShaderVariables();
+	CScene::ReleaseShaderVariables();
 	ReleaseShaderVariables();
+
+	delete m_pParticleSystem;
+	m_pParticleSystem = nullptr;
 }
 
 void CScene_Main::CreateShaderVariables(ID3D11Device *pd3dDevice)
@@ -451,7 +495,8 @@ void CScene_Main::ReleaseShaderVariables()
 		delete m_pLights;
 		m_pLights = nullptr;
 	}
-	if (m_pd3dcbLights) m_pd3dcbLights->Release();
+
+	ReleaseCOM(m_pd3dcbLights);
 }
 
 bool CScene_Main::ProcessInput(UCHAR *pKeysBuffer)
@@ -487,9 +532,12 @@ void CScene_Main::UpdateObjects(float fTimeElapsed)
 		XMStoreFloat3(&m_pLights->m_pLights[3].m_d3dxvPosition, pPlayer->GetvPosition() + XMVectorSet(0.0f, 80.0f, 0.0f, 0.0f));
 	}
 
-	// Light Update
+	// Light Shader Update
 	if (m_pLights && m_pd3dcbLights) UpdateShaderVariable(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get(), m_pLights);
 
+	// Particle
+	m_fGametime += fTimeElapsed;
+	m_pParticleSystem->Update(fTimeElapsed, m_fGametime);
 }
 
 void CScene_Main::OnPreRender(ID3D11DeviceContext *pd3dDeviceContext)
@@ -500,6 +548,7 @@ void CScene_Main::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 {
 	CScene::Render(pd3dDeviceContext, pCamera);
 
+	m_pParticleSystem->Render(pd3dDeviceContext);
 }
 
 void CScene_Main::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
@@ -522,8 +571,8 @@ void CScene_Main::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	*/
 
 
-	//str = L"최고의 플레이";
-	wstr = L"최고의 플레이";
-	//wstr.assign(str.begin(), str.end());
-	TEXT_MGR->RenderText(pd3dDeviceContext, wstr, 40, 70, 100, 0xFFFFFFFF, FW1_LEFT);
+//	str = L"최고의 플레이";
+//	wstr = L"최고의 플레이";
+//	wstr.assign(str.begin(), str.end());
+//	TEXT_MGR->RenderText(pd3dDeviceContext, wstr, 40, 70, 100, 0xFFFFFFFF, FW1_LEFT);
 }

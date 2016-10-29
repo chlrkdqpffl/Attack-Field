@@ -6,6 +6,9 @@
 #define _WITH_SKYBOX_TEXTURE_CUBE
 //#define _WITH_TERRAIN_TEXTURE_ARRAY
 
+//fxc /E GSParticleDraw /T gs_5_0 /Od /Zi /Fo CompiledVS.fxo Particle.fx
+
+
 //-------------------------------------------------------------------------------------------------------------------------------
 // Constant Buffer Variables
 //-------------------------------------------------------------------------------------------------------------------------------
@@ -40,26 +43,26 @@ Texture2D gtxtDefaultDetail : register(t1);
 Texture2D gtxtTerrain : register(t2);
 
 #ifdef _WITH_TERRAIN_TEXTURE_ARRAY
-Texture2D gtxtTerrainDetails[10] : register(t3);
+    Texture2D gtxtTerrainDetails[10] : register(t3);
 #else
-Texture2D gtxtTerrainDetail : register(t3);
+    Texture2D gtxtTerrainDetail : register(t3);
 #endif
 
 #ifdef _WITH_SKYBOX_TEXTURE_ARRAY
-Texture2DArray gtxtSkyBox : register(t13);
+    Texture2DArray gtxtSkyBox : register(t13);
 #else
-#ifdef _WITH_SKYBOX_TEXTURE_CUBE
-TextureCube gtxtSkyBox : register(t13);
-#else
-Texture2D gtxtSkyBox : register(t13);
-#endif
+    #ifdef _WITH_SKYBOX_TEXTURE_CUBE
+        TextureCube gtxtSkyBox : register(t13);
+    #else
+        Texture2D gtxtSkyBox : register(t13);
+    #endif
 #endif
 
-SamplerState gssDefault : register(s0);
-SamplerState gssDefaultDetail : register(s1);
-SamplerState gssTerrain : register(s2);
-SamplerState gssTerrainDetail : register(s3);
-SamplerState gssSkyBox : register(s4);
+SamplerState gssDefault         : register(s0);
+SamplerState gssDefaultDetail   : register(s1);
+SamplerState gssTerrain         : register(s2);
+SamplerState gssTerrainDetail   : register(s3);
+SamplerState gssSkyBox          : register(s4);
 
 #include "Light.fx"
 
@@ -276,7 +279,7 @@ float4 PSLightingColor(VS_LIGHTING_OUTPUT input) : SV_Target
 	input.normalW = normalize(input.normalW);
 	float4 cIllumination = Lighting(input.positionW, input.normalW);
 
-		return(cIllumination);
+	return(cIllumination);
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------

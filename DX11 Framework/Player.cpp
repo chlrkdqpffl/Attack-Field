@@ -66,7 +66,7 @@ void CPlayer::Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity)
 	}
 }
 
-void CPlayer::Move(const XMVECTOR& d3dxvShift, bool bUpdateVelocity)
+void CPlayer::Move(XMVECTOR d3dxvShift, bool bUpdateVelocity)
 {
 	if (bUpdateVelocity)
 	{
@@ -249,5 +249,7 @@ void CPlayer::Animate(float fTimeElapsed, XMMATRIX *pd3dxmtxParent)
 
 void CPlayer::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	if (m_pCamera->GetMode() == THIRD_PERSON_CAMERA) CGameObject::Render(pd3dDeviceContext, pCamera);
+	if (m_pCamera->GetMode() == THIRD_PERSON_CAMERA) {
+		CGameObject::Render(pd3dDeviceContext, pCamera);
+	}
 }

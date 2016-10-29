@@ -320,7 +320,7 @@ void CGameFramework::BuildObjects()
 {
 	CreateShaderVariables();
 
-	CCubeMeshDiffused *pCubeMesh = new CCubeMeshDiffused(STATEOBJ_MGR->m_pd3dDevice.Get(), 4.0f, 12.0f, 4.0f, XMVectorSet(0.5f, 0.0f, 0.0f, 0.0f));
+	CCubeMeshIlluminated *pCubeMesh = new CCubeMeshIlluminated(STATEOBJ_MGR->m_pd3dDevice.Get(), 4.0f, 12.0f, 4.0f);
 	m_pPlayer = new CTerrainPlayer(1);
 	m_pPlayer->AddRef();
 	m_pPlayer->SetMesh(pCubeMesh);
@@ -336,7 +336,7 @@ void CGameFramework::BuildObjects()
 	m_pScene->BuildObjects(STATEOBJ_MGR->m_pd3dDevice.Get());
 
 	CHeightMapTerrain *pTerrain = m_pScene->GetTerrain();
-	float fHeight = pTerrain->GetHeight(pTerrain->GetWidth()*0.5f, pTerrain->GetLength()*0.5f, false) + 1300.0f;
+	float fHeight = pTerrain->GetHeight(pTerrain->GetWidth()*0.5f, pTerrain->GetLength()*0.5f, false) + 800.0f;
 	m_pPlayer->SetPosition(XMVectorSet(pTerrain->GetWidth()*0.5f, fHeight, pTerrain->GetLength()*0.5f, 0.0f));
 	m_pPlayer->SetPlayerUpdatedContext(pTerrain);
 	m_pPlayer->SetCameraUpdatedContext(pTerrain);
@@ -473,7 +473,9 @@ void CGameFramework::FrameAdvance()
 #ifdef _WITH_PLAYER_TOP
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
-	if (m_pPlayer) m_pPlayer->Render(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get(), m_pCamera);
+	if (m_pPlayer) 
+		m_pPlayer->Render(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get(), m_pCamera);
+
 	SCENE_MGR->m_nowScene->RenderAllText(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get());		// 텍스트는 항상 제일 마지막에 그려야 정상적으로 그려짐
 
 	m_pDXGISwapChain->Present(0, 0);

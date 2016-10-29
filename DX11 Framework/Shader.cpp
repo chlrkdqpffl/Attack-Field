@@ -259,14 +259,7 @@ void CWaterShader::CreateShader(ID3D11Device *pd3dDevice)
 //
 CObjectsShader::CObjectsShader(int nObjects)
 {
-	m_ppObjects = NULL;
-
-	m_nObjects = nObjects;
-	if (m_nObjects > 0)
-	{
-		m_ppObjects = new CGameObject*[m_nObjects];
-		for (int i = 0; i < m_nObjects; i++) m_ppObjects[i] = NULL;
-	}
+	m_vObjectsVector.reserve(nObjects);
 
 	m_pMaterial = NULL;
 	m_pContext = NULL;
@@ -280,14 +273,14 @@ CObjectsShader::~CObjectsShader()
 
 void CObjectsShader::SetObject(int nIndex, CGameObject *pGameObject)
 {
-	if (m_ppObjects[nIndex]) m_ppObjects[nIndex]->Release();
-	m_ppObjects[nIndex] = pGameObject;
+	if (m_vObjectsVector[nIndex]) m_vObjectsVector[nIndex]->Release();
+	m_vObjectsVector[nIndex] = pGameObject;
 	if (pGameObject) pGameObject->AddRef();
 }
 
 void CObjectsShader::AddObject(CGameObject *pGameObject)
 {
-	m_ppObjects[m_nIndexToAdd++] = pGameObject;
+	m_vObjectsVector[m_nIndexToAdd++] = pGameObject;
 	if (pGameObject) pGameObject->AddRef();
 }
 
@@ -306,19 +299,18 @@ void CObjectsShader::ReleaseObjects()
 {
 	if (m_pMaterial) m_pMaterial->Release();
 
-	if (m_ppObjects)
-	{
-		for (int j = 0; j < m_nObjects; j++) if (m_ppObjects[j]) m_ppObjects[j]->Release();
-		delete[] m_ppObjects;
+	for (auto& object : m_vObjectsVector) {
+		object->Release();
+		object = nullptr;
 	}
+
+	m_vObjectsVector.clear();
 }
 
 void CObjectsShader::UpdateObjects(float fTimeElapsed)
 {
-	for (int j = 0; j < m_nObjects; j++)
-	{
-		m_ppObjects[j]->Animate(fTimeElapsed, NULL);
-	}
+	for (auto object : m_vObjectsVector)
+		object->Animate(fTimeElapsed, NULL);
 }
 
 void CObjectsShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
@@ -332,14 +324,9 @@ void CObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCa
 
 	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
 
-	for (int j = 0; j < m_nObjects; j++)
-	{
-		if (m_ppObjects[j])
-		{
-			if (m_ppObjects[j]->IsVisible(pCamera))
-			{
-				m_ppObjects[j]->Render(pd3dDeviceContext, pCamera);
-			}
+	for (auto object : m_vObjectsVector) {
+		if (object->IsVisible(pCamera)){
+			object->Render(pd3dDeviceContext, pCamera);
 		}
 	}
 }
@@ -350,21 +337,24 @@ CGameObject *CObjectsShader::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPos
 	float fNearHitDistance = FLT_MAX;
 	CGameObject *pSelectedObject = NULL;
 	MESHINTERSECTINFO d3dxIntersectInfo;
-	for (int i = 0; i < m_nObjects; i++)
-	{
-		nIntersected = m_ppObjects[i]->PickObjectByRayIntersection(pd3dxvPickPosition, pd3dxmtxView, &d3dxIntersectInfo);
+
+	for (auto object : m_vObjectsVector) {
+
+		nIntersected = object->PickObjectByRayIntersection(pd3dxvPickPosition, pd3dxmtxView, &d3dxIntersectInfo);
 		if ((nIntersected > 0) && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
 		{
 			fNearHitDistance = d3dxIntersectInfo.m_fDistance;
-			pSelectedObject = m_ppObjects[i];
+			pSelectedObject = object;
 			if (pd3dxIntersectInfo) *pd3dxIntersectInfo = d3dxIntersectInfo;
 		}
+
 	}
+
 	return(pSelectedObject);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
+
 CInstancedObjectsShader::CInstancedObjectsShader(int nObjects) : CObjectsShader(nObjects)
 {
 	m_nInstanceBufferStride = sizeof(XMMATRIX);
@@ -401,7 +391,7 @@ void CInstancedObjectsShader::BuildObjects(ID3D11Device *pd3dDevice, void *pCont
 {
 	CObjectsShader::BuildObjects(pd3dDevice, pContext);
 
-	m_pd3dInstanceBuffer = CreateBuffer(pd3dDevice, m_nInstanceBufferStride, m_nObjects, NULL, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+	m_pd3dInstanceBuffer = CreateBuffer(pd3dDevice, m_nInstanceBufferStride, m_vObjectsVector.size(), NULL, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
 	m_pMesh->AssembleToVertexBuffer(1, &m_pd3dInstanceBuffer, &m_nInstanceBufferStride, &m_nInstanceBufferOffset);
 }
 
@@ -425,16 +415,13 @@ void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCa
 	int nInstances = 0;
 	pd3dDeviceContext->Map(m_pd3dInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	XMMATRIX *pd3dxmtxInstances = (XMMATRIX *)d3dMappedResource.pData;
-	for (int j = 0; j < m_nObjects; j++)
-	{
-		if (m_ppObjects[j])
-		{
-			if (m_ppObjects[j]->IsVisible(pCamera))
-			{
-				pd3dxmtxInstances[nInstances++] = XMMatrixTranspose(XMLoadFloat4x4(&m_ppObjects[j]->m_d3dxmtxWorld));
-			}
+
+	for (auto object : m_vObjectsVector) {
+		if (object->IsVisible(pCamera))	{
+			pd3dxmtxInstances[nInstances++] = XMMatrixTranspose(XMLoadFloat4x4(&object->m_d3dxmtxWorld));
 		}
 	}
+	
 	pd3dDeviceContext->Unmap(m_pd3dInstanceBuffer, 0);
 
 	m_pMesh->RenderInstanced(pd3dDeviceContext, nInstances, 0);

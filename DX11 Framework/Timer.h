@@ -1,9 +1,4 @@
-//-----------------------------------------------------------------------------
-// File: CGameTimer.h
-//-----------------------------------------------------------------------------
-
-#ifndef _TIMER_H_
-#define _TIMER_H_
+#pragma once
 
 const ULONG MAX_SAMPLE_COUNT = 50; // Maximum frame time sample count
 
@@ -32,5 +27,3 @@ private:
 	unsigned long					m_FramePerSecond;					// Elapsed frames in any given second
 	float							m_fFPSTimeElapsed;					// How much time has passed during FPS sample
 };
-
-#endif

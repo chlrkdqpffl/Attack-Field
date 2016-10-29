@@ -33,14 +33,14 @@ struct LIGHT
 	float				padding;
 };
 
-cbuffer cbLights : register(b0)
+cbuffer cbLights : register(b0)     // PS Buffer
 {
 	LIGHT				gLights[MAX_LIGHTS];
 	float4				gcLightGlobalAmbient;
 	float4				gvCameraPosition;
 };
 
-cbuffer cbMaterial : register(b1)
+cbuffer cbMaterial : register(b1)   // PS Buffer
 {
 	MATERIAL			gMaterial;
 };

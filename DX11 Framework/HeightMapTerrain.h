@@ -22,12 +22,12 @@ private:
 
 public:
 	float GetHeight(float x, float z, bool bReverseQuad = false) { return(m_pHeightMap->GetHeight(x, z, bReverseQuad) * m_d3dxvScale.y); } //World
-	XMVECTOR& GetNormal(float x, float z) { return(m_pHeightMap->GetHeightMapNormal(int(x / m_d3dxvScale.x), int(z / m_d3dxvScale.z))); }
+	XMVECTOR GetNormal(float x, float z) { return(m_pHeightMap->GetHeightMapNormal(int(x / m_d3dxvScale.x), int(z / m_d3dxvScale.z))); }
 
 	int GetHeightMapWidth() { return(m_pHeightMap->GetHeightMapWidth()); }
 	int GetHeightMapLength() { return(m_pHeightMap->GetHeightMapLength()); }
 
-	XMVECTOR& GetScale() { return(XMLoadFloat3(&m_d3dxvScale)); }
+	XMVECTOR GetScale() { return(XMLoadFloat3(&m_d3dxvScale)); }
 	float GetWidth() { return(m_nWidth * m_d3dxvScale.x); }
 	float GetLength() { return(m_nLength * m_d3dxvScale.z); }
 

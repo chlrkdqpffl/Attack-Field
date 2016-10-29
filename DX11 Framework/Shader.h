@@ -109,8 +109,7 @@ public:
 	virtual ~CObjectsShader();
 
 protected:
-	CGameObject						**m_ppObjects;
-	int								m_nObjects;
+	vector<CGameObject*>			m_vObjectsVector;
 
 	CMaterial						*m_pMaterial;
 

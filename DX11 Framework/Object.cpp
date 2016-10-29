@@ -46,6 +46,7 @@ void CMaterial::SetTexture(CTexture *pTexture)
 
 void CMaterial::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext)
 {
+
 	if (m_pColors) CGameObject::UpdateShaderVariable(pd3dDeviceContext, m_pColors);
 	if (m_pTexture) m_pTexture->UpdateShaderVariable(pd3dDeviceContext);
 }

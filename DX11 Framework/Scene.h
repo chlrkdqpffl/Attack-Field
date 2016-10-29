@@ -1,18 +1,16 @@
-//-----------------------------------------------------------------------------
-// File: Scene.h
-//-----------------------------------------------------------------------------
-
 #pragma once
 
 #include "Camera.h"
 #include "Shader.h"
-
 
 // Object
 #include "SkyBox.h"
 #include "HeightMapTerrain.h"
 #include "TerrainWater.h"
 #include "RotatingObject.h"
+
+// System
+#include "ParticleSystem.h"
 
 #define MAX_LIGHTS			4 //Multiple of 4
 #define POINT_LIGHT			1.0f
@@ -80,12 +78,6 @@ protected:
 	CGameObject						**m_ppObjects;
 	int								m_nObjects;
 
-//	CObjectsShader					**m_ppObjectShaders;
-//	int								m_nObjectShaders;
-
-//	CInstancedObjectsShader			**m_ppInstancingShaders;
-//	int								m_nInstancingShaders;
-
 	vector<CGameObject*>				m_vObjectsVector;
 	vector<CObjectsShader*>				m_vObjectsShaderVector;
 	vector<CInstancedObjectsShader*>	m_vInstancedObjectsShaderVector;
@@ -94,10 +86,19 @@ protected:
 	CCamera							*m_pCamera;
 	CGameObject						*m_pSelectedObject;
 
+	// Light
 	LIGHTS							*m_pLights;
 	ID3D11Buffer					*m_pd3dcbLights;
 
-
+	// Environment
 	CSkyBox							*m_pSkyBox;
 	CHeightMapTerrain				*m_pTerrain;
+
+	// Particle
+	float							m_fGametime;
+	CParticleSystem					*m_pParticleSystem;
+
+	// Fog
+	ID3D11Buffer					*m_pd3dcbFogEnable;
+	bool							m_bFogEnable;
 };

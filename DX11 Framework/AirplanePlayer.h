@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "HeightMapTerrain.h"
 
+
 class CAirplanePlayer : public CPlayer
 {
 public:
