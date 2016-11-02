@@ -242,9 +242,9 @@ void CPlayer::OnPrepareRender()
 
 void CPlayer::Animate(float fTimeElapsed, XMMATRIX *pd3dxmtxParent)
 {
-	CGameObject::Animate(fTimeElapsed);
+	CGameObject::Update(fTimeElapsed);
 	CPlayer::OnPrepareRender();
-	CGameObject::Update(pd3dxmtxParent);
+	CGameObject::Animate(pd3dxmtxParent);
 }
 
 void CPlayer::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)

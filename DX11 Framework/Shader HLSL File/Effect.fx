@@ -24,7 +24,7 @@ cbuffer cbTextureMatrix : register(b2)                      // VS Set
 	matrix		gmtxTexture : packoffset(c0);
 };
 
-cbuffer cbCameraPosition : register(b2)                     // PS Set
+cbuffer cbCameraPosition : register(b2) // PS Set
 {
     float4      gvCameraPosition : packoffset(c0);
 };
@@ -37,6 +37,11 @@ cbuffer cbTerrain : register(b3)
 cbuffer cbSkyBox : register(b4)
 {
 	int4		gvSkyBoxTextureIndex : packoffset(c0);
+};
+
+cbuffer cbRenderOption : register(b5)           // PS Set
+{
+    float4      gbRenderOption : packoffset(c0);     // (x : Fog)
 };
 
 Texture2D gtxtDefault : register(t0);
@@ -65,33 +70,18 @@ SamplerState gssTerrain         : register(s2);
 SamplerState gssTerrainDetail   : register(s3);
 SamplerState gssSkyBox          : register(s4);
 
-#include "Light.fx"
-//#include "Fog.fx"
+#include "Light.hlsli"
+#include "Fog.hlsli"
 
-
+/*
 #define LINEAR_FOG 	                1.0f
 #define EXPONENTIAL_FOG	            2.0f
 #define EXPONENTIAL_SQUARED_FOG	    3.0f
 #define E					2.71828182846
 
-// fxc /E Fog /T vs_5_0 /Od /Zi /Fo CompiledVS.fxo Fog.fx
-
 static const float4 gcFogColor = { 0.75f, 0.75f, 0.75f, 1.0f };
 static const float4 gvFogParameter = { LINEAR_FOG, 200.0f, 1000.0f, 0.8f };
 
-/*
-cbuffer cbCamera : register(b2)
-{
-    float4 gvCameraPosition;
-};
-
-
-cbuffer cbFog : register(cb3)
-{
-    float4 gcFogColor;
-    float4 gvFogParameter; //(Mode, Start, End, Density)
-};
-*/
 
 float4 Fog(float4 cColor, float3 vPosition)
 {
@@ -100,26 +90,24 @@ float4 Fog(float4 cColor, float3 vPosition)
 
     fFogFactor = saturate((fDistanceToCamera - gvFogParameter.y) / gvFogParameter.z);
 
-    /* 비선형 안개가 적용 안되어 미적용
-    if (gvFogParameter.x == LINEAR_FOG)
-    {
-        fFogFactor = saturate((fDistanceToCamera - gvFogParameter.y) / gvFogParameter.z);
-    }
-    else if (gvFogParameter.x == EXPONENTIAL_FOG)
-    {
-        fFogFactor = 1.0f / exp( fDistanceToCamera * gvFogParameter.z);
-    }
-    else if (gvFogParameter.x == EXPONENTIAL_SQUARED_FOG)
-    {
-        fFogFactor = 1.0f / exp( pow(fDistanceToCamera * gvFogParameter.z, 2) );
-    }
-    */
+//     비선형 안개가 적용 안되어 미적용
+//    if (gvFogParameter.x == LINEAR_FOG)
+//    {
+//        fFogFactor = saturate((fDistanceToCamera - gvFogParameter.y) / gvFogParameter.z);
+//    }
+//    else if (gvFogParameter.x == EXPONENTIAL_FOG)
+//    {
+//        fFogFactor = 1.0f / exp( fDistanceToCamera * gvFogParameter.z);
+//    }
+//    else if (gvFogParameter.x == EXPONENTIAL_SQUARED_FOG)
+//    {
+//        fFogFactor = 1.0f / exp( pow(fDistanceToCamera * gvFogParameter.z, 2) );
+//    }
+    
 
     return (lerp(cColor, gcFogColor, fFogFactor));
 }
-
-
-
+*/
 
 //-------------------------------------------------------------------------------------------------------------------------------
 struct VS_DIFFUSED_INPUT
@@ -496,11 +484,14 @@ float4 PSTerrainDetailTexturedLightingColor(VS_TERRAIN_DETAIL_TEXTURED_LIGHTING_
 {
 	input.normalW = normalize(input.normalW);
 	float4 cIllumination = Lighting(input.positionW, input.normalW);
-		float4 cBaseTexColor = gtxtTerrain.Sample(gssTerrain, input.texCoordBase);
-		float4 cDetailTexColor = gtxtTerrainDetail.Sample(gssTerrainDetail, input.texCoordDetail);
-		float4 cColor = saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f)) * cIllumination;
+	float4 cBaseTexColor = gtxtTerrain.Sample(gssTerrain, input.texCoordBase);
+	float4 cDetailTexColor = gtxtTerrainDetail.Sample(gssTerrainDetail, input.texCoordDetail);
+	float4 cColor = saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f)) * cIllumination;
 
-		return(cColor);
+    if (gbRenderOption.x == 1.0f)
+        cColor = Fog(cColor, input.positionW);
+
+	return(cColor);
 }
 #endif
 
@@ -526,6 +517,7 @@ VS_SKYBOX_CUBEMAP_OUTPUT VSSkyBoxTexturedColor(VS_SKYBOX_CUBEMAP_INPUT input)
 float4 PSSkyBoxTexturedColor(VS_SKYBOX_CUBEMAP_OUTPUT input) : SV_Target
 {
 	float4 cColor = gtxtSkyBox.Sample(gssSkyBox, input.positionL);
+
 	return(cColor);
 }
 #else
@@ -604,7 +596,9 @@ float4 PSInstancedTexturedLightingColor(VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT in
 	float4 cIllumination = Lighting(input.positionW, input.normalW);
 	float4 cColor = gtxtDefault.Sample(gssDefault, input.texCoord) * cIllumination;
 
-    cColor = Fog(cColor, input.positionW);
+
+    if (gbRenderOption.x == 1.0f)
+        cColor = Fog(cColor, input.positionW);
 
 	return(cColor);
 }

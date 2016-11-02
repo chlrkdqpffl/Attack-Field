@@ -12,7 +12,7 @@ CRotatingObject::~CRotatingObject()
 {
 }
 
-void CRotatingObject::Animate(float fTimeElapsed)
+void CRotatingObject::Update(float fTimeElapsed)
 {
 	CGameObject::Rotate(&XMLoadFloat3(&m_d3dxvRotationAxis), m_fRotationSpeed * fTimeElapsed);
 }

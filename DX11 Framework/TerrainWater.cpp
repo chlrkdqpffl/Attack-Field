@@ -18,15 +18,15 @@ CTerrainWater::CTerrainWater(ID3D11Device *pd3dDevice, int nWidth, int nLength, 
 	m_ppMeshes = new CMesh*[m_nMeshes];
 	for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
 
-	CWaterGridMesh *pWaterGridMesh = NULL;
+	m_pWaterGridMesh = NULL;
 	for (int z = 0, zStart = 0; z < czBlocks; z++)
 	{
 		for (int x = 0, xStart = 0; x < cxBlocks; x++)
 		{
 			xStart = x * (nBlockWidth - 1);
 			zStart = z * (nBlockLength - 1);
-			pWaterGridMesh = new CWaterGridMesh(pd3dDevice, xStart, zStart, nBlockWidth, nBlockLength, d3dxvScale, NULL, D3D11_USAGE_DYNAMIC);
-			SetMesh(pWaterGridMesh, x + (z*cxBlocks));
+			m_pWaterGridMesh = new CWaterGridMesh(pd3dDevice, xStart, zStart, nBlockWidth, nBlockLength, d3dxvScale, NULL, D3D11_USAGE_DYNAMIC);
+			SetMesh(m_pWaterGridMesh, x + (z*cxBlocks));
 		}
 	}
 
@@ -54,11 +54,15 @@ CTerrainWater::~CTerrainWater()
 {
 }
 
-void CTerrainWater::Animate(float fTimeElapsed)
+void CTerrainWater::Update(float fTimeElapsed)
 {
-	static XMFLOAT3 d3dxOffset(0.0f, 0.0f, 0.0f);
-	d3dxOffset.y += 0.005f * 0.001f;
-	d3dxOffset.x = 0.0025f * sinf(4.0f * d3dxOffset.y);
+	// Update Wave Position
+	m_pWaterGridMesh->Update(fTimeElapsed);
+
+	// Animate Texture Mtx
+	static XMFLOAT2 d3dxOffset(0.0f, 0.0f);
+	d3dxOffset.y += 0.000005f;
+	d3dxOffset.x += 0.001f * sinf(4.0f * d3dxOffset.y);
 	m_d3dxmtxTexture._41 += d3dxOffset.x;
 	m_d3dxmtxTexture._42 += d3dxOffset.y;
 }

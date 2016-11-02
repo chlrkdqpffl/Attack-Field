@@ -2,6 +2,7 @@
 #include "StateObjectManager.h"
 
 
+ID3D11RasterizerState* CStateObjectManager::m_pDefaultRS			= 0;
 ID3D11RasterizerState* CStateObjectManager::m_pWireframeRS			= 0;
 ID3D11RasterizerState* CStateObjectManager::m_pNoCullRS				= 0;
 
@@ -17,6 +18,7 @@ CStateObjectManager::CStateObjectManager()
 
 CStateObjectManager::~CStateObjectManager()
 {
+	ReleaseCOM(m_pDefaultRS);
 	ReleaseCOM(m_pWireframeRS);
 	ReleaseCOM(m_pNoCullRS);
 	ReleaseCOM(m_pAlphaToCoverageBS);
@@ -25,6 +27,16 @@ CStateObjectManager::~CStateObjectManager()
 
 void CStateObjectManager::InitializeManager()
 {
+	// Default RS
+	D3D11_RASTERIZER_DESC defaultDesc;
+	ZeroMemory(&defaultDesc, sizeof(D3D11_RASTERIZER_DESC));
+	defaultDesc.FillMode = D3D11_FILL_SOLID;
+	defaultDesc.CullMode = D3D11_CULL_BACK;
+	defaultDesc.FrontCounterClockwise = false;
+	defaultDesc.DepthClipEnable = true;
+
+	HR(m_pd3dDevice->CreateRasterizerState(&defaultDesc, &m_pDefaultRS));
+
 	// WireframeRS
 	D3D11_RASTERIZER_DESC wireframeDesc;
 	ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));

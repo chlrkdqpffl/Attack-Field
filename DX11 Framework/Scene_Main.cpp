@@ -2,9 +2,8 @@
 #include "Scene_Main.h"
 
 
-CScene_Main::CScene_Main()
+CScene_Main::CScene_Main() : m_pd3dcbLights(nullptr)
 {
-	m_pd3dcbLights = nullptr;
 }
 
 CScene_Main::~CScene_Main()
@@ -45,21 +44,12 @@ bool CScene_Main::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		case WM_KEYDOWN:
 			switch (wParam) {
 				case '1':
-					cout << "안개 효과 활성화" << endl;
-					m_bFogEnable = true;
-					D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-		//			STATEOBJ_MGR->m_pd3dImmediateDeviceContext->Map(m_pd3dcbFogEnable, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-//					D3DXCOLOR *pcbColor = (D3DXCOLOR *)d3dMappedResource.pData;
-//					*pcbColor = d3dxcColor;
-		//			STATEOBJ_MGR->m_pd3dImmediateDeviceContext->Unmap(m_pd3dcbFogEnable, 0);
-
+					
 				break;
 
 				case '2':
-					cout << "안개 효과 비활성화" << endl;
-					m_bFogEnable = false;
-					break;
-
+				
+				break;
 			}
 			break;
 		case WM_KEYUP:
@@ -119,6 +109,9 @@ void CScene_Main::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pM
 
 void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 {
+	CScene::BuildObjects(pd3dDevice);
+
+#pragma region [Create SkyBox]
 	ID3D11SamplerState *pd3dSamplerState = NULL;
 	D3D11_SAMPLER_DESC d3dSamplerDesc;
 	ZeroMemory(&d3dSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
@@ -134,12 +127,13 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #ifdef _WITH_SKYBOX_TEXTURE_ARRAY
 	CTexture *pSkyboxTexture = new CTexture(1, 1, PS_SLOT_TEXTURE_SKYBOX, PS_SLOT_SAMPLER_SKYBOX);
 #else
-#ifdef _WITH_SKYBOX_TEXTURE_CUBE
-	CTexture *pSkyboxTexture = new CTexture(1, 1, PS_SLOT_TEXTURE_SKYBOX, PS_SLOT_SAMPLER_SKYBOX);
-#else
-	CTexture *pSkyboxTexture = new CTexture(6, 1, PS_SLOT_TEXTURE_SKYBOX, PS_SLOT_SAMPLER_SKYBOX);
+	#ifdef _WITH_SKYBOX_TEXTURE_CUBE
+		CTexture *pSkyboxTexture = new CTexture(1, 1, PS_SLOT_TEXTURE_SKYBOX, PS_SLOT_SAMPLER_SKYBOX);
+	#else
+		CTexture *pSkyboxTexture = new CTexture(6, 1, PS_SLOT_TEXTURE_SKYBOX, PS_SLOT_SAMPLER_SKYBOX);
+	#endif
 #endif
-#endif
+
 	pSkyboxTexture->SetSampler(0, pd3dSamplerState);
 	pd3dSamplerState->Release();
 
@@ -155,7 +149,9 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CShader *pSkyBoxShader = new CSkyBoxShader();
 	pSkyBoxShader->CreateShader(pd3dDevice);
 	pSkyBox->SetShader(pSkyBoxShader);
+#pragma endregion
 
+#pragma region [Create Terrain]
 	ID3D11SamplerState *pd3dBaseSamplerState = NULL;
 	ZeroMemory(&d3dSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
 	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -199,6 +195,8 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pTerrainMaterial->SetTexture(pTerrainTexture);
 
 	XMVECTOR d3dxvScale = XMVectorSet(8.0f, 2.0f, 8.0f, 0.0f);
+
+//	XMVECTOR d3dxvScale = XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f);
 #ifdef _WITH_TERRAIN_PARTITION
 	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, _T("../Assets/Image/Terrain/HeightMap.raw"), 257, 257, 17, 17, d3dxvScale);
 #else
@@ -212,9 +210,9 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 	ZeroMemory(&d3dSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
 	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	d3dSamplerDesc.MinLOD = 0;
 	d3dSamplerDesc.MaxLOD = 0;
@@ -227,20 +225,22 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 	pd3dsrvBaseTexture = NULL;
 	pd3dsrvDetailTexture = NULL;
+#pragma endregion
+
+#pragma region [Create Water]
 	CTexture *pTerrainWaterTexture = new CTexture(2, 2, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/14_-water-texture.jpg."), NULL, NULL, &pd3dsrvBaseTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/water.jpg"), NULL, NULL, &pd3dsrvBaseTexture, NULL);
 	pTerrainWaterTexture->SetTexture(0, pd3dsrvBaseTexture);
 	pTerrainWaterTexture->SetSampler(0, pd3dBaseSamplerState);
 	pd3dsrvBaseTexture->Release();
 	pd3dBaseSamplerState->Release();
 
 	//D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Detail_Texture_1.jpg"), NULL, NULL, &pd3dsrvDetailTexture, NULL);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/water-detail_texture_alpha.jpg"), NULL, NULL, &pd3dsrvDetailTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Water_Detail_Texture_0.dds"), NULL, NULL, &pd3dsrvDetailTexture, NULL);
 	pTerrainWaterTexture->SetTexture(1, pd3dsrvDetailTexture);
 	pTerrainWaterTexture->SetSampler(1, pd3dDetailSamplerState);
 	pd3dsrvDetailTexture->Release();
 	pd3dDetailSamplerState->Release();
-
 
 	CMaterialColors *pWaterColors = new CMaterialColors();
 	pTerrainColors->m_d3dxcDiffuse = XMFLOAT4(0.8f, 1.0f, 0.2f, 1.0f);
@@ -251,14 +251,14 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CMaterial *pTerrainWaterMaterial = new CMaterial(pWaterColors);
 	pTerrainWaterMaterial->SetTexture(pTerrainWaterTexture);
 
-	CTerrainWater *pTerrainWater = new CTerrainWater(pd3dDevice, 257, 257, 17, 17, d3dxvScale);
+	CTerrainWater *pTerrainWater = new CTerrainWater(pd3dDevice, 257, 257, 257, 257, d3dxvScale);
 	pTerrainWater->SetMaterial(pTerrainWaterMaterial);
 	pTerrainWater->SetPosition(0.0f, 80.0f, 0.0f);
 
 	CShader *pTerrainWaterShader = new CWaterShader();
 	pTerrainWaterShader->CreateShader(pd3dDevice);
 	pTerrainWater->SetShader(pTerrainWaterShader);
-
+#pragma endregion
 
 	m_pSkyBox = move(pSkyBox);
 	m_pTerrain = move(pTerrain);
@@ -409,7 +409,6 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 void CScene_Main::ReleaseObjects()
 {
 	CScene::ReleaseObjects();
-	CScene::ReleaseConstantBuffers();
 	ReleaseConstantBuffers();
 
 	delete m_pParticleSystem;

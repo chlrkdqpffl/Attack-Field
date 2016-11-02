@@ -103,10 +103,6 @@ protected:
 	XMFLOAT3						*m_pd3dxvPositions;
 	UINT							*m_pnIndices;
 
-	//-------------------------------------------------¾ËÆÄºí·»µù
-	ID3D11BlendState				*m_pd3dBlendState;
-	ID3D11RasterizerState			*m_pd3dRasterizerState;
-
 	//------------------------------------------------------
 	UINT		  m_nStride;
 	UINT		  m_nOffset;
@@ -267,65 +263,6 @@ class CSphereMeshTexturedIlluminated : public CMeshTexturedIlluminated
 public:
 	CSphereMeshTexturedIlluminated(ID3D11Device *pd3dDevice, float fRadius = 2.0f, int nSlices = 20, int nStacks = 20);
 	virtual ~CSphereMeshTexturedIlluminated();
-};
-
-//------------------------------------------------------------------------------------------------
-class CHeightMapGridMesh : public CMeshDetailTexturedIlluminated
-{
-protected:
-	int							m_nWidth;
-	int							m_nLength;
-	XMFLOAT3					m_d3dxvScale;
-
-public:
-	CHeightMapGridMesh(ID3D11Device *pd3dDevice, int xStart, int zStart, int nWidth, int nLength, XMVECTOR d3dxvScale = XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f), void *pContext = NULL, D3D11_USAGE d3dUsage = D3D11_USAGE_DEFAULT);
-	virtual ~CHeightMapGridMesh();
-
-	XMVECTOR& GetScale() { return(XMLoadFloat3(&m_d3dxvScale)); }
-	int GetWidth() { return(m_nWidth); }
-	int GetLength() { return(m_nLength); }
-
-	virtual float OnGetHeight(int x, int z, void *pContext);
-};
-
-//-------------------------------------------------------------------------------------------------
-class CSkyBoxMesh : public CMeshTextured
-{
-public:
-	CSkyBoxMesh(ID3D11Device *pd3dDevice, float fWidth = 20.0f, float fHeight = 20.0f, float fDepth = 20.0f);
-	virtual ~CSkyBoxMesh();
-};
-
-class CWaterGridMesh : public CHeightMapGridMesh
-{
-private:
-	int							m_xStart;
-	int							m_zStart;
-
-	float						m_fK1;
-	float						m_fK2;
-	float						m_fK3;
-
-	float						m_fTimeDelta;
-	float						m_fSpatialDelta;
-	float						m_fAccumulatedTime;
-
-	XMFLOAT3					*m_pd3dxvPreviousPositions;
-	XMFLOAT3					*m_pd3dxvCurrentPositions;
-	XMFLOAT3					*m_pd3dxvTempPositions;
-	XMFLOAT3					*m_pd3dxvNormalVectors;
-
-public:
-	CWaterGridMesh(ID3D11Device *pd3dDevice, int xStart, int zStart, int nWidth, int nLength, XMVECTOR d3dxvScale = XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f), void *pContext = NULL, D3D11_USAGE d3dUsage = D3D11_USAGE_DEFAULT);
-	virtual ~CWaterGridMesh();
-
-	virtual float OnGetHeight(int x, int z, void *pContext);
-
-	void SetDisturbingForce(int i, int j, float fMagnitude);
-	void OnPrepareAnimation(float fTimeDelta, float fSpatialDelta, float fSpeed, float fDamping);
-
-	virtual void Animate(ID3D11DeviceContext *pd3dDeviceContext, float fTimeElapsed);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
 
 //--------------------------------------------------------------------------------------------------

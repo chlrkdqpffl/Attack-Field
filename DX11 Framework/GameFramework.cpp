@@ -379,7 +379,7 @@ void CGameFramework::CreateShaderVariables()
 
 void CGameFramework::ReleaseShaderVariables()
 {
-	CGameObject::ReleaseShaderVariables();
+	CGameObject::ReleaseConstantBuffers();
 	CCamera::ReleaseShaderVariables();
 	CTexture::ReleaseShaderVariables();
 }
@@ -467,6 +467,13 @@ void CGameFramework::FrameAdvance()
 
 	if (m_pPlayer) m_pPlayer->UpdateShaderVariables(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get());
 	m_pCamera->SetViewport(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get());
+
+	// WireFrame Mode
+	if (GetAsyncKeyState('3') & 0x8000)
+		STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get()->RSSetState(STATEOBJ_MGR->m_pWireframeRS);
+	else 
+		STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get()->RSSetState(STATEOBJ_MGR->m_pDefaultRS);
+	
 
 	SCENE_MGR->m_nowScene->Render(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get(), m_pCamera);
 

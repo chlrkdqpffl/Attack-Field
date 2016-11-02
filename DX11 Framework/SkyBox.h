@@ -1,6 +1,7 @@
 #pragma once
-#include "Object.h"
-#include "Shader.h"
+//#include "Object.h"
+//#include "Shader.h"
+#include "SkyBoxMesh.h"
 
 class CSkyBox : public CGameObject
 {

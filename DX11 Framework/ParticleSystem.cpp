@@ -34,7 +34,6 @@ CParticleSystem::CParticleSystem()
 	m_pd3dPixelShader = NULL;
 	m_pd3dSOVertexShader = NULL;
 	m_pd3dSOGeometryShader = NULL;
-	m_pd3dRasterizerState = NULL;
 	m_pd3dSODepthStencilState = NULL;
 	m_pd3dDepthStencilState = NULL;
 	m_pd3dBlendState = NULL;
@@ -54,7 +53,6 @@ CParticleSystem::~CParticleSystem()
 	if (m_pd3dPixelShader) m_pd3dPixelShader->Release();
 	if (m_pd3dSOVertexShader) m_pd3dSOVertexShader->Release();
 	if (m_pd3dSOGeometryShader) m_pd3dSOGeometryShader->Release();
-	if (m_pd3dRasterizerState) m_pd3dRasterizerState->Release();
 	if (m_pd3dSODepthStencilState) m_pd3dSODepthStencilState->Release();
 	if (m_pd3dDepthStencilState) m_pd3dDepthStencilState->Release();
 	if (m_pd3dBlendState) m_pd3dBlendState->Release();
@@ -121,11 +119,11 @@ void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice)
 		{ "AGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
-	CreateVertexShaderFromFile(pd3dDevice, L"Particle.fx", "VSParticleStreamOut", "vs_5_0", &m_pd3dSOVertexShader, d3dInputLayout, 5, &m_pd3dVertexLayout);
-	CreateVertexShaderFromFile(pd3dDevice, L"Particle.fx", "VSParticleDraw", "vs_5_0", &m_pd3dVertexShader, d3dInputLayout, 5, &m_pd3dVertexLayout);
-	CreateGeometryShaderFromFile(pd3dDevice, L"Particle.fx", "GSParticleDraw", "gs_5_0", &m_pd3dGeometryShader);
-	CreateSOGeometryShaderFromFile(pd3dDevice, L"Particle.fx", "GSParticleStreamOut", "gs_5_0", &m_pd3dSOGeometryShader);
-	CreatePixelShaderFromFile(pd3dDevice, L"Particle.fx", "PSParticleDraw", "ps_5_0", &m_pd3dPixelShader);
+	CreateVertexShaderFromFile(pd3dDevice, L"Shader HLSL File/Particle.fx", "VSParticleStreamOut", "vs_5_0", &m_pd3dSOVertexShader, d3dInputLayout, 5, &m_pd3dVertexLayout);
+	CreateVertexShaderFromFile(pd3dDevice, L"Shader HLSL File/Particle.fx", "VSParticleDraw", "vs_5_0", &m_pd3dVertexShader, d3dInputLayout, 5, &m_pd3dVertexLayout);
+	CreateGeometryShaderFromFile(pd3dDevice, L"Shader HLSL File/Particle.fx", "GSParticleDraw", "gs_5_0", &m_pd3dGeometryShader);
+	CreateSOGeometryShaderFromFile(pd3dDevice, L"Shader HLSL File/Particle.fx", "GSParticleStreamOut", "gs_5_0", &m_pd3dSOGeometryShader);
+	CreatePixelShaderFromFile(pd3dDevice, L"Shader HLSL File/Particle.fx", "PSParticleDraw", "ps_5_0", &m_pd3dPixelShader);
 
 	// 깊이 스텐실 상태 설정
 	//D3D11_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
@@ -154,14 +152,6 @@ void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice)
 	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	d3dBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	pd3dDevice->CreateBlendState(&d3dBlendStateDesc, &m_pd3dBlendState);
-
-	// 래스터라이즈 설정
-	D3D11_RASTERIZER_DESC d3dRasterizerStateDesc;
-	ZeroMemory(&d3dRasterizerStateDesc, sizeof(D3D11_RASTERIZER_DESC));
-	d3dRasterizerStateDesc.CullMode = D3D11_CULL_NONE;
-	d3dRasterizerStateDesc.FillMode = D3D11_FILL_SOLID;
-
-	pd3dDevice->CreateRasterizerState(&d3dRasterizerStateDesc, &m_pd3dRasterizerState);
 }
 
 void CParticleSystem::Update(float fTimeStep, float fGameTime)
@@ -180,7 +170,8 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 
 	pd3dDeviceContext->VSSetShader(m_pd3dSOVertexShader, NULL, 0);//
 	pd3dDeviceContext->GSSetShader(m_pd3dSOGeometryShader, NULL, 0);//
-	pd3dDeviceContext->RSSetState(m_pd3dRasterizerState);
+	pd3dDeviceContext->RSSetState(STATEOBJ_MGR->m_pNoCullRS);
+	
 	pd3dDeviceContext->PSSetShader(NULL, NULL, 0);
 
 	pd3dDeviceContext->OMSetDepthStencilState(m_pd3dSODepthStencilState, 0);
@@ -216,6 +207,8 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 
 	pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dDrawVertexBuffer, &m_nStride, &m_nOffset);
 	pd3dDeviceContext->DrawAuto();
+
+	pd3dDeviceContext->RSSetState(STATEOBJ_MGR->m_pDefaultRS);
 
 	pd3dDeviceContext->OMSetDepthStencilState(NULL, 0);
 	pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
@@ -361,12 +354,13 @@ void CParticleSystem::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	D3D11_SUBRESOURCE_DATA d3dSubResourceData;
 	d3dSubResourceData.pSysMem = &particle;
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dSubResourceData, &m_pd3dInitialVertexBuffer);
+
 	m_nStride = sizeof(CParticleVertex);
 	d3dBufferDesc.ByteWidth = sizeof(CParticleVertex) * m_nMaxParticles;//PARTICLES = 500
 	d3dBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
-	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dSubResourceData, &m_pd3dStreamOutVertexBuffer);
-	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dSubResourceData, &m_pd3dDrawVertexBuffer);
-	//버퍼 두개를 만든다.
+	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dStreamOutVertexBuffer);
+	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dDrawVertexBuffer);
+	// 버퍼 두개를 만든다.
 
 	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
 	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;

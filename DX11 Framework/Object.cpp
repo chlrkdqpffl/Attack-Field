@@ -47,7 +47,7 @@ void CMaterial::SetTexture(CTexture *pTexture)
 void CMaterial::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext)
 {
 
-	if (m_pColors) CGameObject::UpdateShaderVariable(pd3dDeviceContext, m_pColors);
+	if (m_pColors) CGameObject::UpdateConstantBuffer_Material(pd3dDeviceContext, m_pColors);
 	if (m_pTexture) m_pTexture->UpdateShaderVariable(pd3dDeviceContext);
 }
 
@@ -487,7 +487,7 @@ XMVECTOR& CGameObject::GetLook(bool bIsLocal)
 	return(d3dxvLookAt);
 }
 
-void CGameObject::CreateShaderVariables(ID3D11Device *pd3dDevice)
+void CGameObject::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 {
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
@@ -501,13 +501,13 @@ void CGameObject::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterialColors);
 }
 
-void CGameObject::ReleaseShaderVariables()
+void CGameObject::ReleaseConstantBuffers()
 {
 	if (m_pd3dcbWorldMatrix) m_pd3dcbWorldMatrix->Release();
 	if (m_pd3dcbMaterialColors) m_pd3dcbMaterialColors->Release();
 }
 
-void CGameObject::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxWorld)
+void CGameObject::UpdateConstantBuffer_WorldMtx(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxWorld)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	pd3dDeviceContext->Map(m_pd3dcbWorldMatrix, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
@@ -517,7 +517,7 @@ void CGameObject::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, X
 	pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_WORLD_MATRIX, 1, &m_pd3dcbWorldMatrix);
 }
 
-void CGameObject::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, CMaterialColors *pMaterial)
+void CGameObject::UpdateConstantBuffer_Material(ID3D11DeviceContext *pd3dDeviceContext, CMaterialColors *pMaterial)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	pd3dDeviceContext->Map(m_pd3dcbMaterialColors, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
@@ -528,17 +528,6 @@ void CGameObject::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, C
 	memcpy(pcbMaterial + 3, &pMaterial->m_d3dxcEmissive, sizeof(XMFLOAT4));
 	pd3dDeviceContext->Unmap(m_pd3dcbMaterialColors, 0);
 	pd3dDeviceContext->PSSetConstantBuffers(PS_CB_SLOT_MATERIAL, 1, &m_pd3dcbMaterialColors);
-}
-
-void CGameObject::CreateRasterizerState(ID3D11Device *pd3dDevice)
-{
-	D3D11_RASTERIZER_DESC d3dRasterizerDesc;
-	ZeroMemory(&d3dRasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
-	d3dRasterizerDesc.CullMode = D3D11_CULL_BACK;
-	d3dRasterizerDesc.FillMode = D3D11_FILL_SOLID;
-	//	d3dRasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
-	d3dRasterizerDesc.DepthClipEnable = true;
-	pd3dDevice->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
 }
 
 bool CGameObject::IsVisible(CCamera *pCamera)
@@ -561,25 +550,25 @@ bool CGameObject::IsVisible(CCamera *pCamera)
 	return(m_bIsVisible);
 }
 
-void CGameObject::Animate(float fTimeElapsed)
+void CGameObject::Update(float fTimeElapsed)
 {
-	if (m_pSibling) m_pSibling->Animate(fTimeElapsed);
-	if (m_pChild) m_pChild->Animate(fTimeElapsed);
+	if (m_pSibling) m_pSibling->Update(fTimeElapsed);
+	if (m_pChild) m_pChild->Update(fTimeElapsed);
 }
 
-void CGameObject::Animate(float fTimeElapsed, XMMATRIX *pd3dxmtxParent)
+void CGameObject::Update(float fTimeElapsed, XMMATRIX *pd3dxmtxParent)
 {
-	Animate(fTimeElapsed);
-	Update(pd3dxmtxParent);
+	Update(fTimeElapsed);
+	Animate(pd3dxmtxParent);
 }
 
-void CGameObject::Update(XMMATRIX *pd3dxmtxParent)
+void CGameObject::Animate(XMMATRIX *pd3dxmtxParent)
 {
 //	m_d3dxmtxWorld = m_d3dxmtxLocal;
 	if (pd3dxmtxParent) XMStoreFloat4x4(&m_d3dxmtxWorld, XMMatrixMultiply(XMLoadFloat4x4(&m_d3dxmtxLocal), *pd3dxmtxParent));
 
-	if (m_pSibling) m_pSibling->Update(pd3dxmtxParent);
-	if (m_pChild) m_pChild->Update(&XMLoadFloat4x4(&m_d3dxmtxWorld));
+	if (m_pSibling) m_pSibling->Animate(pd3dxmtxParent);
+	if (m_pChild) m_pChild->Animate(&XMLoadFloat4x4(&m_d3dxmtxWorld));
 }
 
 void CGameObject::RenderMesh(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
@@ -618,10 +607,10 @@ void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 
 	if (m_pShader) m_pShader->Render(pd3dDeviceContext, pCamera);
 
-	CGameObject::UpdateShaderVariable(pd3dDeviceContext, &XMLoadFloat4x4(&m_d3dxmtxWorld));
+	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&m_d3dxmtxWorld));
 	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
 
-	pd3dDeviceContext->RSSetState(m_pd3dRasterizerState);
+//	pd3dDeviceContext->RSSetState(m_pd3dRasterizerState);
 	pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 0);
 	if (m_pd3dBlendState) pd3dDeviceContext->OMSetBlendState(m_pd3dBlendState, NULL, 0xffffffff);
 

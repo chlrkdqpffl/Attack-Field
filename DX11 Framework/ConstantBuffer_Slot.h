@@ -28,6 +28,7 @@
 #define PS_CB_SLOT_CAMERA_POSITION			0x02
 #define PS_CB_SLOT_TERRAIN					0x03
 #define PS_CB_SLOT_SKYBOX					0x04
+#define PS_CB_SLOT_RENDEROPTION				0x05
 
 
 // ================== Slot ==================== //

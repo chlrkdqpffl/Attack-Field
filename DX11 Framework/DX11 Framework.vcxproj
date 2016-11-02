@@ -161,8 +161,10 @@
     <ClCompile Include="FirstPersonCamera.cpp" />
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="HeightMap.cpp" />
+    <ClCompile Include="HeightMapGridMesh.cpp" />
     <ClCompile Include="HeightMapTerrain.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="ModelMesh_FBX.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -175,6 +177,7 @@
     <ClCompile Include="Scene_Main.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SkyBox.cpp" />
+    <ClCompile Include="SkyBoxMesh.cpp" />
     <ClCompile Include="SpaceShipCamera.cpp" />
     <ClCompile Include="StateObjectManager.cpp" />
     <ClCompile Include="stdafx.cpp" />
@@ -183,6 +186,7 @@
     <ClCompile Include="TextManager.cpp" />
     <ClCompile Include="ThirdPersonCamera.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="WaterGridMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AirplanePlayer.h" />
@@ -192,8 +196,10 @@
     <ClInclude Include="FirstPersonCamera.h" />
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="HeightMap.h" />
+    <ClInclude Include="HeightMapGridMesh.h" />
     <ClInclude Include="HeightMapTerrain.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="ModelMesh_FBX.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Player.h" />
@@ -208,6 +214,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SingletonManager.h" />
     <ClInclude Include="SkyBox.h" />
+    <ClInclude Include="SkyBoxMesh.h" />
     <ClInclude Include="SpaceShipCamera.h" />
     <ClInclude Include="StateObjectManager.h" />
     <ClInclude Include="stdafx.h" />
@@ -219,6 +226,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UserDefine.h" />
     <ClInclude Include="UserTag.h" />
+    <ClInclude Include="WaterGridMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="DirectX11_Project.ico" />
@@ -228,22 +236,17 @@
     <ResourceCompile Include="DirectX11_Project.rc" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Effect.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    <Text Include="memo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader HLSL File\Effect.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="Fog.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Light.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Particle.fx">
+    <FxCompile Include="Shader HLSL File\Particle.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -251,7 +254,8 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="memo.txt" />
+    <None Include="Fog.hlsli" />
+    <None Include="Light.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

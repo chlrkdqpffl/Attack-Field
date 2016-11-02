@@ -46,8 +46,7 @@ private:
 	ID3D11PixelShader		*m_pd3dPixelShader;
 	ID3D11VertexShader		*m_pd3dSOVertexShader;	// StreamOut¿ëµµÀÇ VS
 	ID3D11GeometryShader	*m_pd3dSOGeometryShader;
-	ID3D11RasterizerState   *m_pd3dRasterizerState;
-
+	
 	ID3D11DepthStencilState *m_pd3dSODepthStencilState;
 	ID3D11DepthStencilState *m_pd3dDepthStencilState;
 	ID3D11BlendState		*m_pd3dBlendState;

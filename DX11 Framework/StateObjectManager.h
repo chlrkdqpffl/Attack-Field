@@ -12,6 +12,7 @@ public:
 	ComPtr<ID3D11Device>			m_pd3dDevice;
 	ComPtr<ID3D11DeviceContext>		m_pd3dImmediateDeviceContext;
 
+	static ID3D11RasterizerState*	m_pDefaultRS;
 	static ID3D11RasterizerState*	m_pWireframeRS;
 	static ID3D11RasterizerState*	m_pNoCullRS;
 

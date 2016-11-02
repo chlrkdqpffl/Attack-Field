@@ -1,7 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "HeightMap.h"
-
+#include "HeightMapGridMesh.h"
 
 class CHeightMapTerrain : public CGameObject
 {
@@ -16,10 +16,7 @@ private:
 	int							m_nLength;
 
 	XMFLOAT3					m_d3dxvScale;
-
-	CWaterGridMesh				**m_ppWaterMeshes;
-	int							m_nWaterMeshes;
-
+	
 public:
 	float GetHeight(float x, float z, bool bReverseQuad = false) { return(m_pHeightMap->GetHeight(x, z, bReverseQuad) * m_d3dxvScale.y); } //World
 	XMVECTOR GetNormal(float x, float z) { return(m_pHeightMap->GetHeightMapNormal(int(x / m_d3dxvScale.x), int(z / m_d3dxvScale.z))); }

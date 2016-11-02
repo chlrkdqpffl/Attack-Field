@@ -52,12 +52,6 @@
     <Filter Include="소스 파일\Mesh">
       <UniqueIdentifier>{0989b406-fcdf-4fe5-bed1-17b9b3866732}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Object\Terrain">
-      <UniqueIdentifier>{97da0f15-c1f4-4ee2-a10a-8fc03aeb5127}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Object\Terrain">
-      <UniqueIdentifier>{6943396b-9ac9-4d88-bd07-754685b82e28}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\Manager">
       <UniqueIdentifier>{b5833d23-61f0-4799-b0a3-6d852790d8d1}</UniqueIdentifier>
     </Filter>
@@ -66,6 +60,18 @@
     </Filter>
     <Filter Include="Particle">
       <UniqueIdentifier>{212ba4fb-c602-4b82-bf63-ababc9048f83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{22e16c88-e3ad-40e7-af8a-757e32f0e765}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Water">
+      <UniqueIdentifier>{b2ca4d8d-6df3-4b10-9483-55d96fc07de1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\SkyBox">
+      <UniqueIdentifier>{a046322d-a3d1-41f4-8894-cd50ad5354ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Terrain">
+      <UniqueIdentifier>{519f8bc8-9ccd-42e2-94d7-69e470d6b63a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -114,20 +120,8 @@
     <ClCompile Include="RotatingObject.cpp">
       <Filter>소스 파일\Object</Filter>
     </ClCompile>
-    <ClCompile Include="SkyBox.cpp">
-      <Filter>소스 파일\Object</Filter>
-    </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>소스 파일\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="HeightMap.cpp">
-      <Filter>소스 파일\Object\Terrain</Filter>
-    </ClCompile>
-    <ClCompile Include="HeightMapTerrain.cpp">
-      <Filter>소스 파일\Object\Terrain</Filter>
-    </ClCompile>
-    <ClCompile Include="TerrainWater.cpp">
-      <Filter>소스 파일\Object\Terrain</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>소스 파일\Manager</Filter>
@@ -146,6 +140,30 @@
     </ClCompile>
     <ClCompile Include="ParticleSystem.cpp">
       <Filter>Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="WaterGridMesh.cpp">
+      <Filter>Objects\Water</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainWater.cpp">
+      <Filter>Objects\Water</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>Objects\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxMesh.cpp">
+      <Filter>Objects\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMap.cpp">
+      <Filter>Objects\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMapTerrain.cpp">
+      <Filter>Objects\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMapGridMesh.cpp">
+      <Filter>Objects\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelMesh_FBX.cpp">
+      <Filter>소스 파일\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -203,18 +221,6 @@
     <ClInclude Include="RotatingObject.h">
       <Filter>헤더 파일\Object</Filter>
     </ClInclude>
-    <ClInclude Include="SkyBox.h">
-      <Filter>헤더 파일\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="HeightMap.h">
-      <Filter>헤더 파일\Object\Terrain</Filter>
-    </ClInclude>
-    <ClInclude Include="HeightMapTerrain.h">
-      <Filter>헤더 파일\Object\Terrain</Filter>
-    </ClInclude>
-    <ClInclude Include="TerrainWater.h">
-      <Filter>헤더 파일\Object\Terrain</Filter>
-    </ClInclude>
     <ClInclude Include="SingletonManager.h">
       <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
@@ -245,6 +251,30 @@
     <ClInclude Include="ParticleSystem.h">
       <Filter>Particle</Filter>
     </ClInclude>
+    <ClInclude Include="WaterGridMesh.h">
+      <Filter>Objects\Water</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>Objects\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainWater.h">
+      <Filter>Objects\Water</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxMesh.h">
+      <Filter>Objects\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMap.h">
+      <Filter>Objects\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMapTerrain.h">
+      <Filter>Objects\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMapGridMesh.h">
+      <Filter>Objects\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelMesh_FBX.h">
+      <Filter>헤더 파일\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -260,20 +290,22 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Light.fx">
+    <Text Include="memo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader HLSL File\Effect.fx">
       <Filter>HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="Effect.fx">
-      <Filter>HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="Particle.fx">
+    <FxCompile Include="Shader HLSL File\Particle.fx">
       <Filter>Particle</Filter>
-    </FxCompile>
-    <FxCompile Include="Fog.fx">
-      <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="memo.txt" />
+    <None Include="Fog.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Light.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>

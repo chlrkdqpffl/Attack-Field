@@ -170,10 +170,10 @@ public:
 
 	bool IsVisible(CCamera *pCamera = NULL);
 
-	void Update(XMMATRIX *pd3dxmtxParent);
+	void Animate(XMMATRIX *pd3dxmtxParent);
 
-	virtual void Animate(float fTimeElapsed);
-	virtual void Animate(float fTimeElapsed, XMMATRIX *pd3dxmtxParent);
+	virtual void Update(float fTimeElapsed);
+	virtual void Update(float fTimeElapsed, XMMATRIX *pd3dxmtxParent);
 	virtual void OnPrepareRender();
 	virtual void RenderMesh(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
@@ -187,12 +187,11 @@ public:
 	static ID3D11Buffer				*m_pd3dcbMaterialColors;
 
 public:
-	static void CreateShaderVariables(ID3D11Device *pd3dDevice);
-	static void ReleaseShaderVariables();
-	static void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxWorld);
-	static void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, CMaterialColors *pMaterialColors);
+	static void CreateConstantBuffers(ID3D11Device *pd3dDevice);
+	static void ReleaseConstantBuffers();
+	static void UpdateConstantBuffer_WorldMtx(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxWorld);
+	static void UpdateConstantBuffer_Material(ID3D11DeviceContext *pd3dDeviceContext, CMaterialColors *pMaterialColors);
 
-	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
 	virtual void CreateDepthStencilState(ID3D11Device *pd3dDevice) { }
 	virtual void CreateBlendState(ID3D11Device *pd3dDevice) { }
 };

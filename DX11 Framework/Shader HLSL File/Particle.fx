@@ -16,7 +16,6 @@ cbuffer cbWorldMatrix : register(b1)    // VS Buffer
     matrix gmtxWorld : packoffset(c0);
 };
 
-
 cbuffer cbParticleInfo  : register(b1)  // GS Buffer.
 {
     float3 gvParticleEmitPosition;

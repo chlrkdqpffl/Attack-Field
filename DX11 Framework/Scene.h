@@ -98,7 +98,7 @@ protected:
 	CParticleSystem					*m_pParticleSystem;
 
 	// RenderOption
-	bool							m_bFogEnable;
+	XMFLOAT4						m_vRenderOption;		// (x : Fog )
 
 
 	// Constant Buffer

@@ -22,11 +22,21 @@
 
 #define USE_CONSOLE					// Open Console Windows
 
+
+// --------------------- Manager -------------------- //
 #define STATEOBJ_MGR CStateObjectManager::GetInstance()
 #define RESOURCE_MGR CResourceManager::GetInstance()
 #define SCENE_MGR CSceneManager::GetInstance()
 #define TEXT_MGR CTextManager::GetInstance()
 
+// Returns random float in [a, b).
+#define RAND_FLOAT(a, b) float(a + ((float)(rand()) / (float)RAND_MAX) * (b - a));
+
+//---------------------------------------------------------------------------------------
+// Convenience macro for releasing, deleteing COM objects.
+#define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
+#define SafeDelete(x) { delete x; x = 0; }
+//---------------------------------------------------------------------------------------
 
 #define VK_A 0x41 
 #define VK_B 0x42
@@ -79,9 +89,3 @@ namespace Colors
 		#define HR(x) (x)
 	#endif
 #endif
-
-//---------------------------------------------------------------------------------------
-// Convenience macro for releasing, deleteing COM objects.
-#define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
-#define SafeDelete(x) { delete x; x = 0; }
-//---------------------------------------------------------------------------------------
