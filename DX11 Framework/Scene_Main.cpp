@@ -109,6 +109,8 @@ void CScene_Main::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pM
 
 void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 {
+	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
+
 	CScene::BuildObjects(pd3dDevice);
 
 #pragma region [Create SkyBox]
@@ -142,13 +144,13 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CTexture *pTerrainTexture = new CTexture(2, 2, PS_SLOT_TEXTURE_TERRAIN, PS_SLOT_SAMPLER_TERRAIN);
 
 	ID3D11ShaderResourceView *pd3dsrvBaseTexture = NULL;
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Base_Texture.jpg"), NULL, NULL, &pd3dsrvBaseTexture, NULL);
+	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Base_Texture.jpg"), NULL, NULL, &pd3dsrvBaseTexture, NULL));
 	pTerrainTexture->SetTexture(0, pd3dsrvBaseTexture);
 	pTerrainTexture->SetSampler(0, STATEOBJ_MGR->m_pPointClampSS);
 	pd3dsrvBaseTexture->Release();
 	
 	ID3D11ShaderResourceView *pd3dsrvDetailTexture = NULL;
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Detail_Texture_7.jpg"), NULL, NULL, &pd3dsrvDetailTexture, NULL);
+	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Detail_Texture_7.jpg"), NULL, NULL, &pd3dsrvDetailTexture, NULL));
 	pTerrainTexture->SetTexture(1, pd3dsrvDetailTexture);
 	pTerrainTexture->SetSampler(1, STATEOBJ_MGR->m_pPointWarpSS);
 	pd3dsrvDetailTexture->Release();
@@ -182,13 +184,13 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 #pragma region [Create Water]
 	CTexture *pTerrainWaterTexture = new CTexture(2, 2, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/water.jpg"), NULL, NULL, &pd3dsrvBaseTexture, NULL);
+	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/water.jpg"), NULL, NULL, &pd3dsrvBaseTexture, NULL));
 	pTerrainWaterTexture->SetTexture(0, pd3dsrvBaseTexture);
 	pTerrainWaterTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
 	pd3dsrvBaseTexture->Release();
 
 	//D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Detail_Texture_1.jpg"), NULL, NULL, &pd3dsrvDetailTexture, NULL);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Water_Detail_Texture_0.dds"), NULL, NULL, &pd3dsrvDetailTexture, NULL);
+	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Water_Detail_Texture_0.dds"), NULL, NULL, &pd3dsrvDetailTexture, NULL));
 	pTerrainWaterTexture->SetTexture(1, pd3dsrvDetailTexture);
 	pTerrainWaterTexture->SetSampler(1, STATEOBJ_MGR->m_pPointWarpSS);
 	pd3dsrvDetailTexture->Release();
@@ -218,6 +220,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma region [Create Shader Object]
 	CMaterial *pPlayerMaterial;
 
+	
 	CMaterialColors *pPlayerColor = new CMaterialColors();
 	pPlayerColor->m_d3dxcDiffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	pPlayerColor->m_d3dxcAmbient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -225,8 +228,24 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pPlayerColor->m_d3dxcEmissive = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	pPlayerMaterial = new CMaterial(pPlayerColor);
 
+	CTexture *pPlayerTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
+	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_color.png"), NULL, NULL, &pd3dsrvTexture, NULL));
+	pPlayerTexture->SetTexture(0, pd3dsrvTexture);
+	pPlayerTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
+	pd3dsrvTexture->Release();
+	pPlayerMaterial->SetTexture(pPlayerTexture);
 
+	CMesh* pPlayerMesh = new CModelMesh_FBX("../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.data");
 
+	CObjectsShader* pModelShader = new CObjectsShader(10);
+	pModelShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0);
+	pModelShader->SetMaterial(pPlayerMaterial);
+	
+	CGameObject* pPlayer = new CGameObject();
+	pPlayer->SetPosition(1028, 200, 1028);
+	pPlayer->SetMesh(pPlayerMesh);
+	pModelShader->AddObject(pPlayer);
+	m_vObjectsShaderVector.push_back(pModelShader);
 #pragma endregion
 
 #pragma region [Create Instancing Object]
@@ -240,8 +259,8 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pInstancingMaterials[0] = new CMaterial(pRedColor);
 
 	CMaterialColors *pGreenColor = new CMaterialColors();
-	pGreenColor->m_d3dxcDiffuse = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	pGreenColor->m_d3dxcAmbient = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	pGreenColor->m_d3dxcDiffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	pGreenColor->m_d3dxcAmbient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	pGreenColor->m_d3dxcSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 5.0f);
 	pGreenColor->m_d3dxcEmissive = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	pInstancingMaterials[1] = new CMaterial(pGreenColor);
@@ -253,7 +272,6 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pBlueColor->m_d3dxcEmissive = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	pInstancingMaterials[2] = new CMaterial(pBlueColor);
 
-	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
 	CTexture *pStoneTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Miscellaneous/Stone01.jpg"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pStoneTexture->SetTexture(0, pd3dsrvTexture);
@@ -262,7 +280,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pInstancingMaterials[0]->SetTexture(pStoneTexture);
 	
 	CTexture *pBrickTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Miscellaneous/Brick01.jpg"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Miscellaneous/bricks.dds"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pBrickTexture->SetTexture(0, pd3dsrvTexture);
 	pBrickTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
 	pd3dsrvTexture->Release();
@@ -282,7 +300,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pMeshes[1] = new CSphereMeshTexturedIlluminated(pd3dDevice, fSize, 20, 20);
 	pMeshes[2] = new CCubeMeshTexturedIlluminated(pd3dDevice, fSize, fSize, fSize);
 	pMeshes[3] = new CSphereMeshTexturedIlluminated(pd3dDevice, fSize, 20, 20);
-	pMeshes[4] = new CCubeMeshTexturedIlluminated(pd3dDevice, fSize, fSize, fSize);
+	pMeshes[4] = new CCubeMeshTexturedIlluminated(pd3dDevice, 100, 100, 100);
 	pMeshes[5] = new CSphereMeshTexturedIlluminated(pd3dDevice, fSize, 20, 20);
 
 	float fxPitch = fSize * 3.5f;
@@ -294,9 +312,9 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 	int xObjects = int(fTerrainWidth / (fxPitch * 3.0f)), zObjects = int(fTerrainLength / (fzPitch * 3.0f));
 
+
 	m_vInstancedObjectsShaderVector.reserve(6);
 
-	
 	CInstancedObjectsShader *pInstancingShaders;
 	for (int k = 0; k < 6; k++)
 	{
@@ -333,7 +351,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 				if (!XMVector3Equal(d3dxvRotateAxis, XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f)))
 					pRotatingObject->Rotate(&d3dxvRotateAxis, XMConvertToDegrees(fAngle));
 				pRotatingObject->SetRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-				pRotatingObject->SetRotationSpeed(18.0f * (i % 10) + 10.0f);
+				pRotatingObject->SetRotationSpeed(0.0f);
 
 				m_vInstancedObjectsShaderVector[k * 2]->AddObject(pRotatingObject);
 
@@ -341,7 +359,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 				pRotatingObject->SetMesh(pMeshes[k * 2 + 1]);
 				pRotatingObject->SetPosition(xPosition, fHeight + (fyPitch * 4), zPosition);
 				pRotatingObject->SetRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-				pRotatingObject->SetRotationSpeed(36.0f * (i % 10) + 36.0f);
+				pRotatingObject->SetRotationSpeed(0.0f);
 
 				m_vInstancedObjectsShaderVector[k * 2 + 1]->AddObject(pRotatingObject);
 			}
@@ -371,7 +389,8 @@ void CScene_Main::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 {
 	m_pLights = new LIGHTS;
 	::ZeroMemory(m_pLights, sizeof(LIGHTS));
-	m_pLights->m_d3dxcGlobalAmbient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	float vGlobalAmbient = 0.5f;
+	m_pLights->m_d3dxcGlobalAmbient = XMFLOAT4(vGlobalAmbient, vGlobalAmbient, vGlobalAmbient, 1.0f);
 
 	m_pLights->m_pLights[0].m_bEnable = 1.0f;
 	m_pLights->m_pLights[0].m_nType = POINT_LIGHT;

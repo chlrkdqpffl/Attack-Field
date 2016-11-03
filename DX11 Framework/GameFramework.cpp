@@ -234,7 +234,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		switch (wParam)
 		{
 		case VK_ESCAPE:
-		case VK_Q:
 			::PostQuitMessage(0);
 			break;
 		case VK_RETURN:
@@ -290,7 +289,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 
 		STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get()->OMSetRenderTargets(0, NULL, NULL);
 
-		if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();
+		if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();		// 왜 최소화 하면 안만들어지는가 ?
 		if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
 		if (m_pd3dDepthStencilView) m_pd3dDepthStencilView->Release();
 

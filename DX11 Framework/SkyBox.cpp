@@ -57,8 +57,6 @@ void CSkyBox::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 
 	if (m_pShader) m_pShader->Render(pd3dDeviceContext, pCamera);
 
-//	pd3dDeviceContext->RSSetState(m_pd3dRasterizerState);
-
 	CSkyBoxMesh *pSkyBoxMesh = (CSkyBoxMesh *)m_ppMeshes[0];
 	pSkyBoxMesh->OnPrepareRender(pd3dDeviceContext);
 

@@ -4,7 +4,12 @@
 
 CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTexturedIlluminated(STATEOBJ_MGR->m_pd3dDevice.Get())
 {
-	LoadFBXfromFile(fileName);
+	if (LoadFBXfromFile(fileName))
+		cout << "File Load Succese!! <" << fileName.c_str() << ">\t불러오기 성공!" << endl;
+	else {
+		cout << "File Load Error!! <" << fileName.c_str() << ">\t불러오기 실패! - 파일 또는 경로를 확인하세요." << endl;
+		return;
+	}
 	
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
@@ -64,14 +69,12 @@ CModelMesh_FBX::~CModelMesh_FBX()
 {
 }
 
-void CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
+bool CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
 {
 	ifstream fin(fileName);
 
-	if (!fin.is_open()) {
-		cout << "FBXLoadManager : " << fileName.c_str() << " 불러오기 실패! - 파일이 존재하지 않습니다." << endl;
-		return;
-	}
+	if (!fin.is_open())
+		return false;
 
 	int meshCount;
 	int vertexCount, indexCount, boneCount, animationCount;
@@ -163,4 +166,6 @@ void CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
 	m_pvNormals = new XMFLOAT3[m_nVertices];
 	m_pvTexCoords = new XMFLOAT2[m_nVertices];
 	m_pnIndices = new UINT[m_nIndices];
+
+	return true;
 }

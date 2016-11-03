@@ -3,6 +3,9 @@
 #include "Camera.h"
 #include "Shader.h"
 
+// Mesh
+#include "ModelMesh_FBX.h"
+
 // Object
 #include "SkyBox.h"
 #include "HeightMapTerrain.h"

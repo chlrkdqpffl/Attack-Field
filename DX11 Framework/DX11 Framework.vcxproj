@@ -165,6 +165,7 @@
     <ClCompile Include="HeightMapTerrain.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ModelMesh_FBX.cpp" />
+    <ClCompile Include="NormalMapObject.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="HeightMapTerrain.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ModelMesh_FBX.h" />
+    <ClInclude Include="NormalMapObject.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Player.h" />
@@ -254,6 +256,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="NormalMap.hlsli" />
     <None Include="Shader HLSL File\Fog.hlsli" />
     <None Include="Shader HLSL File\Light.hlsli" />
   </ItemGroup>

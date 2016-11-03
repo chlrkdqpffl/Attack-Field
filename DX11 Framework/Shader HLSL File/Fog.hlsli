@@ -14,7 +14,7 @@ float4 Fog(float4 cColor, float3 vPosition)
 
     fFogFactor = saturate((fDistanceToCamera - gvFogParameter.y) / gvFogParameter.z);
 
-    /*
+    /*//     비선형 안개가 적용 안되어 미적용
     else if (gvFogParameter.x == EXPONENTIAL_FOG)
     {
         //fFogFactor = 1.0f / exp( fDistanceToCamera * gvFogParameter.z);

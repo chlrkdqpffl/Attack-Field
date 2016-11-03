@@ -111,7 +111,7 @@ public:
 	XMFLOAT4X4						m_d3dxmtxLocal;
 	XMFLOAT4X4						m_d3dxmtxWorld;
 
-	static XMMATRIX				m_d3dxmtxIdentity;
+	static XMMATRIX					m_d3dxmtxIdentity;
 
 	XMFLOAT4X4						m_d3dxmtxShadow;
 
@@ -131,7 +131,6 @@ protected:
 	BoundingBox						m_bcMeshBoundingCube;		// 실제 메쉬 바운딩 박스
 
 public:
-	ID3D11RasterizerState			*m_pd3dRasterizerState;
 	ID3D11DepthStencilState			*m_pd3dDepthStencilState;
 	ID3D11BlendState				*m_pd3dBlendState;
 

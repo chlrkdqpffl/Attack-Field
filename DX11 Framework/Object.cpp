@@ -46,7 +46,6 @@ void CMaterial::SetTexture(CTexture *pTexture)
 
 void CMaterial::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext)
 {
-
 	if (m_pColors) CGameObject::UpdateConstantBuffer_Material(pd3dDeviceContext, m_pColors);
 	if (m_pTexture) m_pTexture->UpdateShaderVariable(pd3dDeviceContext);
 }
@@ -254,13 +253,11 @@ CGameObject::CGameObject(int nMeshes)
 	m_pChild = m_pSibling = m_pParent = NULL;
 
 	m_pd3dDepthStencilState = NULL;
-	m_pd3dRasterizerState = NULL;
 	m_pd3dBlendState = NULL;
 }
 
 CGameObject::~CGameObject()
 {
-	if (m_pd3dRasterizerState) m_pd3dRasterizerState->Release();
 	if (m_pd3dDepthStencilState) m_pd3dDepthStencilState->Release();
 	if (m_pd3dBlendState) m_pd3dBlendState->Release();
 

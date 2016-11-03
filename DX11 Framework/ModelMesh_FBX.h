@@ -14,5 +14,5 @@ public:
 	CModelMesh_FBX(const string&, float size = 1.0f);
 	virtual ~CModelMesh_FBX();
 
-	void LoadFBXfromFile(const string& fileName);
+	bool LoadFBXfromFile(const string& fileName);
 };
