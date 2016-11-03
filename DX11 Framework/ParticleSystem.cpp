@@ -38,7 +38,6 @@ CParticleSystem::CParticleSystem()
 	m_pd3dDepthStencilState = NULL;
 	m_pd3dBlendState = NULL;
 	m_pd3dsrvRandomTexture = NULL;
-	m_pd3dSamplerState = NULL;
 	m_pd3dsrvTextureArray = NULL;
 }
 
@@ -57,7 +56,6 @@ CParticleSystem::~CParticleSystem()
 	if (m_pd3dDepthStencilState) m_pd3dDepthStencilState->Release();
 	if (m_pd3dBlendState) m_pd3dBlendState->Release();
 	if (m_pd3dsrvRandomTexture) m_pd3dsrvRandomTexture->Release();
-	if (m_pd3dSamplerState) m_pd3dSamplerState->Release();
 	if (m_pd3dsrvTextureArray) m_pd3dsrvTextureArray->Release();
 }
 
@@ -67,18 +65,6 @@ void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceV
 	m_pd3dsrvTextureArray = pd3dsrvTexArray;
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &m_pd3dsrvTextureArray, NULL);
 	//D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/snow.png"), NULL, NULL, &m_pd3dsrvTextureArray, NULL);
-
-	D3D11_SAMPLER_DESC d3dSamplerDesc;
-	ZeroMemory(&d3dSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
-	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	d3dSamplerDesc.MinLOD = 0;
-	d3dSamplerDesc.MaxLOD = 0;
-	pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &m_pd3dSamplerState);
-	//샘플러 상태 추가
 
 	//랜덤값을 위한 텍스쳐
 	m_pd3dsrvRandomTexture = pd3dsrvRandomTexture;
@@ -175,7 +161,7 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 	pd3dDeviceContext->PSSetShader(NULL, NULL, 0);
 
 	pd3dDeviceContext->OMSetDepthStencilState(m_pd3dSODepthStencilState, 0);
-	pd3dDeviceContext->GSSetSamplers(0, 1, &m_pd3dSamplerState);
+	pd3dDeviceContext->GSSetSamplers(0, 1, &STATEOBJ_MGR->m_pPointWarpSS);
 	pd3dDeviceContext->GSSetShaderResources(0, 1, &m_pd3dsrvRandomTexture);
 
 	if (m_bInitializeParticle)
@@ -202,7 +188,7 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 	pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 0);
 	pd3dDeviceContext->OMSetBlendState(m_pd3dBlendState, NULL, 0xffffffff);
 
-	pd3dDeviceContext->PSSetSamplers(0, 1, &m_pd3dSamplerState);
+	pd3dDeviceContext->PSSetSamplers(0, 1, &STATEOBJ_MGR->m_pPointWarpSS);
 	pd3dDeviceContext->PSSetShaderResources(5, 1, &m_pd3dsrvTextureArray);
 
 	pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dDrawVertexBuffer, &m_nStride, &m_nOffset);

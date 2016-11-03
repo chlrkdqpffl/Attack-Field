@@ -130,9 +130,8 @@ void CWaterGridMesh::Render(ID3D11DeviceContext *pd3dDeviceContext)
 	}
 	pd3dDeviceContext->Unmap(m_pd3dPositionBuffer, 0);
 
-	/*	// Normal 버퍼의 리소스가 맵핑이 안됨.. 미해결
 	// Normal Buffer
-	pd3dDeviceContext->Map(m_pd3dNormalBuffer, 0, D3D11_MAP_WRITE, 0, &d3dMappedResource);
+	pd3dDeviceContext->Map(m_pd3dNormalBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	XMFLOAT3 *pNormal = (XMFLOAT3 *)d3dMappedResource.pData;
 	for (int i = 0, z = m_zStart; z < (m_zStart + m_nLength); z++, i++)
 	{
@@ -142,6 +141,6 @@ void CWaterGridMesh::Render(ID3D11DeviceContext *pd3dDeviceContext)
 		}
 	}
 	pd3dDeviceContext->Unmap(m_pd3dNormalBuffer, 0);
-	*/
+	
 	CHeightMapGridMesh::Render(pd3dDeviceContext);
 }

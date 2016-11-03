@@ -145,7 +145,6 @@ public:
 
 protected:
 	ID3D11Buffer					*m_pd3dNormalBuffer;
-
 public:
 	XMVECTOR& CalculateTriAngleNormal(UINT nIndex0, UINT nIndex1, UINT nIndex2);
 	void SetTriAngleListVertexNormal(XMVECTOR *pd3dxvNormals);

@@ -53,7 +53,6 @@ private:
 
 	ID3D11ShaderResourceView *m_pd3dsrvRandomTexture;
 
-	ID3D11SamplerState *m_pd3dSamplerState;
 	ID3D11ShaderResourceView *m_pd3dsrvTextureArray;
 
 public:

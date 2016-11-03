@@ -132,7 +132,6 @@ void CTexture::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMA
 	*pcbWorldMatrix = XMMatrixTranspose(*pd3dxmtxTexture);
 	pd3dDeviceContext->Unmap(m_pd3dcbTextureMatrix, 0);
 
-
 	pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_TEXTURE_MATRIX, 1, &m_pd3dcbTextureMatrix);
 }
 

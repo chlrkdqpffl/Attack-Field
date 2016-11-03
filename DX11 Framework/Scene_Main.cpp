@@ -112,18 +112,6 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CScene::BuildObjects(pd3dDevice);
 
 #pragma region [Create SkyBox]
-	ID3D11SamplerState *pd3dSamplerState = NULL;
-	D3D11_SAMPLER_DESC d3dSamplerDesc;
-	ZeroMemory(&d3dSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
-	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	d3dSamplerDesc.MinLOD = 0;
-	d3dSamplerDesc.MaxLOD = 0;
-	pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
-
 #ifdef _WITH_SKYBOX_TEXTURE_ARRAY
 	CTexture *pSkyboxTexture = new CTexture(1, 1, PS_SLOT_TEXTURE_SKYBOX, PS_SLOT_SAMPLER_SKYBOX);
 #else
@@ -134,9 +122,8 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	#endif
 #endif
 
-	pSkyboxTexture->SetSampler(0, pd3dSamplerState);
-	pd3dSamplerState->Release();
-
+	pSkyboxTexture->SetSampler(0, STATEOBJ_MGR->m_pPointClampSS);
+	
 	CMaterial *pSkyboxMaterial = new CMaterial(NULL);
 	pSkyboxMaterial->SetTexture(pSkyboxTexture);
 	OnChangeSkyBoxTextures(pd3dDevice, pSkyboxMaterial, 0);
@@ -152,38 +139,19 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma endregion
 
 #pragma region [Create Terrain]
-	ID3D11SamplerState *pd3dBaseSamplerState = NULL;
-	ZeroMemory(&d3dSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
-	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	d3dSamplerDesc.MinLOD = 0;
-	d3dSamplerDesc.MaxLOD = 0;
-	pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dBaseSamplerState);
-
-	ID3D11SamplerState *pd3dDetailSamplerState = NULL;
-	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dDetailSamplerState);
-
 	CTexture *pTerrainTexture = new CTexture(2, 2, PS_SLOT_TEXTURE_TERRAIN, PS_SLOT_SAMPLER_TERRAIN);
 
 	ID3D11ShaderResourceView *pd3dsrvBaseTexture = NULL;
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Base_Texture.jpg"), NULL, NULL, &pd3dsrvBaseTexture, NULL);
 	pTerrainTexture->SetTexture(0, pd3dsrvBaseTexture);
-	pTerrainTexture->SetSampler(0, pd3dBaseSamplerState);
+	pTerrainTexture->SetSampler(0, STATEOBJ_MGR->m_pPointClampSS);
 	pd3dsrvBaseTexture->Release();
-	pd3dBaseSamplerState->Release();
-
+	
 	ID3D11ShaderResourceView *pd3dsrvDetailTexture = NULL;
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Detail_Texture_7.jpg"), NULL, NULL, &pd3dsrvDetailTexture, NULL);
 	pTerrainTexture->SetTexture(1, pd3dsrvDetailTexture);
-	pTerrainTexture->SetSampler(1, pd3dDetailSamplerState);
+	pTerrainTexture->SetSampler(1, STATEOBJ_MGR->m_pPointWarpSS);
 	pd3dsrvDetailTexture->Release();
-	pd3dDetailSamplerState->Release();
 
 	CMaterialColors *pTerrainColors = new CMaterialColors();
 	pTerrainColors->m_d3dxcDiffuse = XMFLOAT4(0.8f, 1.0f, 0.2f, 1.0f);
@@ -208,21 +176,6 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pTerrainShader->CreateShader(pd3dDevice);
 	pTerrain->SetShader(pTerrainShader);
 
-	ZeroMemory(&d3dSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
-	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	d3dSamplerDesc.MinLOD = 0;
-	d3dSamplerDesc.MaxLOD = 0;
-	pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dBaseSamplerState);
-
-	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dDetailSamplerState);
-
 	pd3dsrvBaseTexture = NULL;
 	pd3dsrvDetailTexture = NULL;
 #pragma endregion
@@ -231,17 +184,15 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CTexture *pTerrainWaterTexture = new CTexture(2, 2, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/water.jpg"), NULL, NULL, &pd3dsrvBaseTexture, NULL);
 	pTerrainWaterTexture->SetTexture(0, pd3dsrvBaseTexture);
-	pTerrainWaterTexture->SetSampler(0, pd3dBaseSamplerState);
+	pTerrainWaterTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
 	pd3dsrvBaseTexture->Release();
-	pd3dBaseSamplerState->Release();
 
 	//D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Detail_Texture_1.jpg"), NULL, NULL, &pd3dsrvDetailTexture, NULL);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Water_Detail_Texture_0.dds"), NULL, NULL, &pd3dsrvDetailTexture, NULL);
 	pTerrainWaterTexture->SetTexture(1, pd3dsrvDetailTexture);
-	pTerrainWaterTexture->SetSampler(1, pd3dDetailSamplerState);
+	pTerrainWaterTexture->SetSampler(1, STATEOBJ_MGR->m_pPointWarpSS);
 	pd3dsrvDetailTexture->Release();
-	pd3dDetailSamplerState->Release();
-
+	
 	CMaterialColors *pWaterColors = new CMaterialColors();
 	pTerrainColors->m_d3dxcDiffuse = XMFLOAT4(0.8f, 1.0f, 0.2f, 1.0f);
 	pTerrainColors->m_d3dxcAmbient = XMFLOAT4(0.1f, 0.3f, 0.1f, 1.0f);
@@ -263,6 +214,20 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_pSkyBox = move(pSkyBox);
 	m_pTerrain = move(pTerrain);
 	m_vObjectsVector.push_back(move(pTerrainWater));
+
+#pragma region [Create Shader Object]
+	CMaterial *pPlayerMaterial;
+
+	CMaterialColors *pPlayerColor = new CMaterialColors();
+	pPlayerColor->m_d3dxcDiffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	pPlayerColor->m_d3dxcAmbient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	pPlayerColor->m_d3dxcSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 5.0f);
+	pPlayerColor->m_d3dxcEmissive = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	pPlayerMaterial = new CMaterial(pPlayerColor);
+
+
+
+#pragma endregion
 
 #pragma region [Create Instancing Object]
 	CMaterial *pInstancingMaterials[3];
@@ -288,40 +253,27 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pBlueColor->m_d3dxcEmissive = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	pInstancingMaterials[2] = new CMaterial(pBlueColor);
 
-	ZeroMemory(&d3dSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
-	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	d3dSamplerDesc.MinLOD = 0;
-	d3dSamplerDesc.MaxLOD = 0;
-	pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
-
 	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
 	CTexture *pStoneTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Miscellaneous/Stone01.jpg"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pStoneTexture->SetTexture(0, pd3dsrvTexture);
-	pStoneTexture->SetSampler(0, pd3dSamplerState);
+	pStoneTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
 	pd3dsrvTexture->Release();
 	pInstancingMaterials[0]->SetTexture(pStoneTexture);
-
+	
 	CTexture *pBrickTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Miscellaneous/Brick01.jpg"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pBrickTexture->SetTexture(0, pd3dsrvTexture);
-	pBrickTexture->SetSampler(0, pd3dSamplerState);
+	pBrickTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
 	pd3dsrvTexture->Release();
 	pInstancingMaterials[1]->SetTexture(pBrickTexture);
 
 	CTexture *pWoodTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Miscellaneous/Wood01.jpg"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pWoodTexture->SetTexture(0, pd3dsrvTexture);
-	pWoodTexture->SetSampler(0, pd3dSamplerState);
+	pWoodTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
 	pd3dsrvTexture->Release();
 	pInstancingMaterials[2]->SetTexture(pWoodTexture);
-
-
-	pd3dSamplerState->Release();
 
 	float fSize = 24.0f;
 

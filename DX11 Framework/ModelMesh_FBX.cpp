@@ -5,32 +5,30 @@
 CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTexturedIlluminated(STATEOBJ_MGR->m_pd3dDevice.Get())
 {
 	LoadFBXfromFile(fileName);
-	/*
+	
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
 
 	if (size == 1.0f) {
 		for (int i = 0; i < m_nVertices; ++i) {
 			m_pd3dxvPositions[i] = posVector[i];
-			m_pd3dxvNormals[i] = normalVector[i];
-			m_pd3dxTexCoords[i] = uvVector[i];
+			m_pvNormals[i] = normalVector[i];
+			m_pvTexCoords[i] = uvVector[i];
 		}
 	}
 	else {
 		for (int i = 0; i < m_nVertices; ++i) {
 			XMStoreFloat3(&m_pd3dxvPositions[i], XMVectorScale(XMLoadFloat3(&posVector[i]), size));
-			//		XMStoreFloat3(&m_pd3dxvNormals[i], XMVectorScale(XMLoadFloat3(&normalVector[i]), size));
-			//		XMStoreFloat2(&m_pd3dxTexCoords[i], XMVectorScale(XMLoadFloat2(&uvVector[i]), size));
-			m_pd3dxvNormals[i] = normalVector[i];
-			m_pd3dxTexCoords[i] = uvVector[i];
+			//		XMStoreFloat3(&m_pvNormals[i], XMVectorScale(XMLoadFloat3(&normalVector[i]), size));
+			//		XMStoreFloat2(&m_pvTexCoords[i], XMVectorScale(XMLoadFloat2(&uvVector[i]), size));
+			m_pvNormals[i] = normalVector[i];
+			m_pvTexCoords[i] = uvVector[i];
 		}
 	}
 
-
 	// Create Buffer
-	m_pd3dPositionBuffer = CreateBuffer(G_VAR->g_pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	m_pd3dNormalBuffer = CreateBuffer(G_VAR->g_pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	m_pd3dTexCoordBuffer = CreateBuffer(G_VAR->g_pd3dDevice, sizeof(XMFLOAT2), m_nVertices, m_pd3dxTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(STATEOBJ_MGR->m_pd3dDevice.Get(), sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dNormalBuffer = CreateBuffer(STATEOBJ_MGR->m_pd3dDevice.Get(), sizeof(XMFLOAT3), m_nVertices, m_pvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dTexCoordBuffer = CreateBuffer(STATEOBJ_MGR->m_pd3dDevice.Get(), sizeof(XMFLOAT2), m_nVertices, m_pvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	ID3D11Buffer *pd3dBuffers[3] = { m_pd3dPositionBuffer, m_pd3dNormalBuffer, m_pd3dTexCoordBuffer };
 	UINT pnBufferStrides[3] = { sizeof(XMFLOAT3), sizeof(XMFLOAT3), sizeof(XMFLOAT2) };
@@ -38,12 +36,12 @@ CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTextur
 	AssembleToVertexBuffer(3, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
 	for (int i = 0, j = 0; i < m_nIndices / 3; ++i, j += 3) {
-		m_pIndices[j] = indexVector[i].x;
-		m_pIndices[j + 1] = indexVector[i].y;
-		m_pIndices[j + 2] = indexVector[i].z;
+		m_pnIndices[j] = indexVector[i].x;
+		m_pnIndices[j + 1] = indexVector[i].y;
+		m_pnIndices[j + 2] = indexVector[i].z;
 	}
 
-	m_pd3dIndexBuffer = CreateBuffer(G_VAR->g_pd3dDevice, sizeof(UINT), m_nIndices, m_pIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dIndexBuffer = CreateBuffer(STATEOBJ_MGR->m_pd3dDevice.Get(), sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	float max_x = m_pd3dxvPositions[0].x, max_y = m_pd3dxvPositions[0].y, max_z = m_pd3dxvPositions[0].z;
 	for (int i = 0; i < m_nVertices; i++) {
@@ -60,7 +58,6 @@ CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTextur
 
 	m_bcBoundingCube.Center = XMFLOAT3(0, 0, 0);
 	m_bcBoundingCube.Extents = XMFLOAT3(max_x, max_y, max_z);
-	*/
 }
 
 CModelMesh_FBX::~CModelMesh_FBX()
@@ -138,6 +135,7 @@ void CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
 		//			cout << "끝";
 		//			break;
 	}
+	fin.close();
 
 	/*
 	cout << "Mesh Count : " << meshCount << endl;
@@ -157,16 +155,12 @@ void CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
 	cout << "Index : " << i.x << ", " << i.y << ", " << i.z << endl;
 	}
 	*/
-	fin.close();
 
 	m_nVertices = vertexCount;
 	m_nIndices = indexCount;
 
-
-
-	// 이거 주석 풀기!!!!!!!!!!!!!!!!!! 커밋 하기위해 주석 닮
-//	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
-//	m_pd3dxvNormals = new XMFLOAT3[m_nVertices];
-//	m_pd3dxTexCoords = new XMFLOAT2[m_nVertices];
-//	m_pIndices = new UINT[m_nIndices];
+	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
+	m_pvNormals = new XMFLOAT3[m_nVertices];
+	m_pvTexCoords = new XMFLOAT2[m_nVertices];
+	m_pnIndices = new UINT[m_nIndices];
 }

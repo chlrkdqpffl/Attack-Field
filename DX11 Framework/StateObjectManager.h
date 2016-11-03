@@ -18,5 +18,11 @@ public:
 
 	static ID3D11BlendState*		m_pAlphaToCoverageBS;
 	static ID3D11BlendState*		m_pTransparentBS;
+
+	static ID3D11SamplerState*		m_pLinearClampSS;
+	static ID3D11SamplerState*		m_pPointClampSS;
+	static ID3D11SamplerState*		m_pPointWarpSS;
+	static ID3D11SamplerState*		m_pLinearWarpSS;
+	
 };
 
