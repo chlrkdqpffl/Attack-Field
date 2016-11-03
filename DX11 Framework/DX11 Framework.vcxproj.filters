@@ -301,10 +301,10 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Fog.hlsli">
+    <None Include="Shader HLSL File\Fog.hlsli">
       <Filter>HLSL</Filter>
     </None>
-    <None Include="Light.hlsli">
+    <None Include="Shader HLSL File\Light.hlsli">
       <Filter>HLSL</Filter>
     </None>
   </ItemGroup>

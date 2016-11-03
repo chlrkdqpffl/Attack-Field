@@ -1,13 +1,13 @@
 #pragma once
 #include "SingletonManager.h"
-#include "FW1FontWrapper/FW1FontWrapper.h"
+#include "../Setting/FW1FontWrapper/FW1FontWrapper.h"
 
 // 32비트 컴파일
-//#pragma comment(lib, "FW1FontWrapper/x86/FW1FontWrapper.lib")
+//#pragma comment(lib, "../Setting/FW1FontWrapper/x86/FW1FontWrapper.lib")
 // 응용프로그램을 제대로 시작하지 못했습니다. (0xc000007b) 오류는 FW1FontWrapper.dll 이 32비트용이 아니므로 32비트용으로 덮어쓰기
 
 // 64비트 컴파일
-#pragma comment(lib, "FW1FontWrapper/x64/FW1FontWrapper.lib")
+#pragma comment(lib, "../Setting/FW1FontWrapper/x64/FW1FontWrapper.lib")
 // 응용프로그램을 제대로 시작하지 못했습니다. (0xc000007b) 오류는 FW1FontWrapper.dll 이 64비트용이 아니므로 64비트용으로 덮어쓰기
 
 enum TEXT
@@ -43,4 +43,5 @@ public:
 public:
 	virtual void InitializeManager() {};
 	void InitializeManager(ID3D11Device* pd3dDevice, std::wstring font = L"맑은 고딕");
+	virtual void ReleseManager() override;
 };

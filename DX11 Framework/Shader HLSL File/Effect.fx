@@ -518,6 +518,9 @@ float4 PSSkyBoxTexturedColor(VS_SKYBOX_CUBEMAP_OUTPUT input) : SV_Target
 {
 	float4 cColor = gtxtSkyBox.Sample(gssSkyBox, input.positionL);
 
+    if (gbRenderOption.x == 1.0f)
+        cColor = Fog(cColor, input.position.xyz);
+
 	return(cColor);
 }
 #else
@@ -595,7 +598,6 @@ float4 PSInstancedTexturedLightingColor(VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT in
 	input.normalW = normalize(input.normalW);
 	float4 cIllumination = Lighting(input.positionW, input.normalW);
 	float4 cColor = gtxtDefault.Sample(gssDefault, input.texCoord) * cIllumination;
-
 
     if (gbRenderOption.x == 1.0f)
         cColor = Fog(cColor, input.positionW);

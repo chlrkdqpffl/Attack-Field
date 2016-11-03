@@ -27,12 +27,14 @@ public:
 	{
 		if (m_Instance)
 		{
+			ReleseManager();
 			delete m_Instance;
 			m_Instance = nullptr;
 		}
 	}
 	// 추상 클래스 생성
 	virtual void InitializeManager() = 0;
+	virtual void ReleseManager() = 0;
 };
 
 // 싱글톤 인스턴스 초기화

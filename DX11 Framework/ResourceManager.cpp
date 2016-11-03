@@ -32,6 +32,10 @@ void CResourceManager::InitializeManager()
 
 }
 
+void CResourceManager::ReleseManager()
+{
+}
+
 /*
 void CResourceManager::AddResourece(Resource_TextrueTag resourceTag, string source)
 {

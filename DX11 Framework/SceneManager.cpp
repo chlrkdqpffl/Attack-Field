@@ -8,10 +8,13 @@ CSceneManager::CSceneManager()
 
 CSceneManager::~CSceneManager()
 {
-
 }
 
 void CSceneManager::InitializeManager()
+{
+}
+
+void CSceneManager::ReleseManager()
 {
 }
 

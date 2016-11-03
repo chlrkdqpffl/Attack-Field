@@ -15,27 +15,14 @@ ID3D11SamplerState*		CStateObjectManager::m_pLinearWarpSS		= 0;
 ID3D11SamplerState*		CStateObjectManager::m_pPointWarpSS			= 0;
 
 
-
 CStateObjectManager::CStateObjectManager()
 {
 	m_pd3dDevice = nullptr;
 	m_pd3dImmediateDeviceContext = nullptr;
 }
 
-
 CStateObjectManager::~CStateObjectManager()
 {
-	ReleaseCOM(m_pDefaultRS);
-	ReleaseCOM(m_pWireframeRS);
-	ReleaseCOM(m_pNoCullRS);
-
-	ReleaseCOM(m_pAlphaToCoverageBS);
-	ReleaseCOM(m_pTransparentBS);
-
-	ReleaseCOM(m_pLinearClampSS);
-	ReleaseCOM(m_pPointClampSS);
-	ReleaseCOM(m_pLinearWarpSS);
-	ReleaseCOM(m_pPointWarpSS);
 }
 
 void CStateObjectManager::InitializeManager()
@@ -115,4 +102,19 @@ void CStateObjectManager::InitializeManager()
 	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	HR(m_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &m_pLinearWarpSS));
 	
+}
+
+void CStateObjectManager::ReleseManager()
+{
+	ReleaseCOM(m_pDefaultRS);
+	ReleaseCOM(m_pWireframeRS);
+	ReleaseCOM(m_pNoCullRS);
+
+	ReleaseCOM(m_pAlphaToCoverageBS);
+	ReleaseCOM(m_pTransparentBS);
+
+	ReleaseCOM(m_pLinearClampSS);
+	ReleaseCOM(m_pPointClampSS);
+	ReleaseCOM(m_pLinearWarpSS);
+	ReleaseCOM(m_pPointWarpSS);
 }
