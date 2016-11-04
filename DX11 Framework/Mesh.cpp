@@ -234,7 +234,7 @@ CMeshIlluminated::~CMeshIlluminated()
 	if (m_pd3dNormalBuffer) m_pd3dNormalBuffer->Release();
 }
 
-XMVECTOR& CMeshIlluminated::CalculateTriAngleNormal(UINT nIndex0, UINT nIndex1, UINT nIndex2)
+XMVECTOR CMeshIlluminated::CalculateTriAngleNormal(UINT nIndex0, UINT nIndex1, UINT nIndex2)
 {
 	XMVECTOR d3dxvNormal = XMVectorZero();
 	XMVECTOR d3dxvP0 = XMLoadFloat3(&m_pd3dxvPositions[nIndex0]);

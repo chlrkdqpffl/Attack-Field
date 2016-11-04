@@ -33,7 +33,7 @@ CHeightMap::~CHeightMap()
 	m_pHeightMapImage = NULL;
 }
 
-XMVECTOR& CHeightMap::GetHeightMapNormal(int x, int z)
+XMVECTOR CHeightMap::GetHeightMapNormal(int x, int z)
 {
 	if ((x < 0.0f) || (z < 0.0f) || (x >= m_nWidth) || (z >= m_nLength)) return(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 

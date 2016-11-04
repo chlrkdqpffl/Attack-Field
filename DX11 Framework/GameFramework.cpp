@@ -23,9 +23,11 @@ CGameFramework::CGameFramework()
 
 	srand(timeGetTime());
 
-#ifdef USE_CONSOLE
-	AllocConsole();
-	freopen("CONOUT$", "wt", stdout);
+#if defined(DEBUG) || defined(_DEBUG)
+	#ifdef USE_CONSOLE
+		AllocConsole();
+		freopen("CONOUT$", "wt", stdout);
+	#endif
 #endif
 }
 
@@ -48,7 +50,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	TEXT_MGR->InitializeManager(STATEOBJ_MGR->m_pd3dDevice.Get(), L"Koverwatch");
 //	TEXT_MGR->InitializeManager(STATEOBJ_MGR->m_pd3dDevice.Get(), L"a반달곰");			// 폰트 여러개 만들 수 있음
 	SCENE_MGR->InitializeManager();
-//	RESOURCE_MGR->InitializeManager();		빌드에서 제외하고 있음
+	RESOURCE_MGR->InitializeManager();
 
 	BuildObjects();
 
@@ -201,7 +203,7 @@ void CGameFramework::OnDestroy()
 	STATEOBJ_MGR->ReleseInstance();
 	TEXT_MGR->ReleseInstance();
 	SCENE_MGR->ReleseInstance();
-	//RESOURCE_MGR->ReleseInstance();		빌드에서 제외하고 있음
+	RESOURCE_MGR->ReleseInstance();
 }
 
 void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)

@@ -4,13 +4,16 @@
 
 CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTexturedIlluminated(STATEOBJ_MGR->m_pd3dDevice.Get())
 {
-	if (LoadFBXfromFile(fileName))
-		cout << "File Load Succese!! <" << fileName.c_str() << ">\t불러오기 성공!" << endl;
+	bool isLoad = LoadFBXfromFile(fileName);
+#if defined(DEBUG) || defined(_DEBUG)
+	if (isLoad)
+		cout << "File Load Success!! <" << fileName.c_str() << ">\t불러오기 성공!" << endl;
 	else {
 		cout << "File Load Error!! <" << fileName.c_str() << ">\t불러오기 실패! - 파일 또는 경로를 확인하세요." << endl;
 		return;
 	}
-	
+#endif
+
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	if (size == 1.0f) {
@@ -41,9 +44,9 @@ CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTextur
 	AssembleToVertexBuffer(3, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
 	for (int i = 0, j = 0; i < m_nIndices / 3; ++i, j += 3) {
-		m_pnIndices[j] = indexVector[i].x;
-		m_pnIndices[j + 1] = indexVector[i].y;
-		m_pnIndices[j + 2] = indexVector[i].z;
+		m_pnIndices[j] = (UINT)indexVector[i].x;
+		m_pnIndices[j + 1] = (UINT)indexVector[i].y;
+		m_pnIndices[j + 2] = (UINT)indexVector[i].z;
 	}
 
 	m_pd3dIndexBuffer = CreateBuffer(STATEOBJ_MGR->m_pd3dDevice.Get(), sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);

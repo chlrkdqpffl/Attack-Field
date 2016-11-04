@@ -446,7 +446,7 @@ void CGameObject::Rotate(XMVECTOR *pd3dxvAxis, float fAngle)
 	XMStoreFloat4x4(&m_d3dxmtxWorld, mtxRotate * XMLoadFloat4x4(&m_d3dxmtxWorld));
 }
 
-XMVECTOR& CGameObject::GetvPosition(bool bIsLocal) const
+XMVECTOR CGameObject::GetvPosition(bool bIsLocal) const
 {
 	return((bIsLocal) ? XMVectorSet(m_d3dxmtxLocal._41, m_d3dxmtxLocal._42, m_d3dxmtxLocal._43, 0.0f) : 
 		XMVectorSet(m_d3dxmtxWorld._41, m_d3dxmtxWorld._42, m_d3dxmtxWorld._43, 0.0f));
@@ -454,12 +454,12 @@ XMVECTOR& CGameObject::GetvPosition(bool bIsLocal) const
 	return XMVectorSet(m_d3dxmtxWorld._41, m_d3dxmtxWorld._42, m_d3dxmtxWorld._43, 0.0f);
 }
 
-XMFLOAT3& CGameObject::GetPosition() const
+XMFLOAT3 CGameObject::GetPosition() const
 {
 	return XMFLOAT3(m_d3dxmtxWorld._41, m_d3dxmtxWorld._42, m_d3dxmtxWorld._43);
 }
 
-XMVECTOR& CGameObject::GetRight(bool bIsLocal)
+XMVECTOR CGameObject::GetRight(bool bIsLocal)
 {
 	XMVECTOR d3dxvRight = (bIsLocal) ? XMVectorSet(m_d3dxmtxLocal._11, m_d3dxmtxLocal._12, m_d3dxmtxLocal._13, 0.0f) : 
 		XMVectorSet(m_d3dxmtxWorld._11, m_d3dxmtxWorld._12, m_d3dxmtxWorld._13, 0.0f);
@@ -467,7 +467,7 @@ XMVECTOR& CGameObject::GetRight(bool bIsLocal)
 	return(d3dxvRight);
 }
 
-XMVECTOR& CGameObject::GetUp(bool bIsLocal)
+XMVECTOR CGameObject::GetUp(bool bIsLocal)
 {
 	XMVECTOR d3dxvUp = (bIsLocal) ? XMVectorSet(m_d3dxmtxLocal._21, m_d3dxmtxLocal._22, m_d3dxmtxLocal._23, 0.0f) : 
 		XMVectorSet(m_d3dxmtxWorld._21, m_d3dxmtxWorld._22, m_d3dxmtxWorld._23, 0.0f);
@@ -475,7 +475,7 @@ XMVECTOR& CGameObject::GetUp(bool bIsLocal)
 	return(d3dxvUp);
 }
 
-XMVECTOR& CGameObject::GetLook(bool bIsLocal)
+XMVECTOR CGameObject::GetLook(bool bIsLocal)
 {
 	XMVECTOR d3dxvLookAt = (bIsLocal) ? XMVectorSet(m_d3dxmtxLocal._31, m_d3dxmtxLocal._32, m_d3dxmtxLocal._33, 0.0f) : 
 		XMVectorSet(m_d3dxmtxWorld._31, m_d3dxmtxWorld._32, m_d3dxmtxWorld._33, 0.0f);

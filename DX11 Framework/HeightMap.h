@@ -13,8 +13,8 @@ public:
 	virtual ~CHeightMap();
 
 	float GetHeight(float x, float z, bool bReverseQuad = false);
-	XMVECTOR& GetHeightMapNormal(int x, int z);
-	XMVECTOR& GetScale() { return(XMLoadFloat3(&m_d3dxvScale)); }
+	XMVECTOR GetHeightMapNormal(int x, int z);
+	XMVECTOR GetScale() { return(XMLoadFloat3(&m_d3dxvScale)); }
 
 	BYTE *GetHeightMapImage() { return(m_pHeightMapImage); }
 	int GetHeightMapWidth() { return(m_nWidth); }

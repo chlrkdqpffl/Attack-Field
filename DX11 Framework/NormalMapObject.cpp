@@ -14,15 +14,24 @@ CNormalMapObject::~CNormalMapObject()
 }
 
 
-void CNormalMapObject::CreateTexture(ID3D11Device *pd3dDevice)
+void CNormalMapObject::CreateMaterial(ID3D11Device *pd3dDevice)
 {
-	CTexture *pNormalTexture = new CTexture(1, 1, PS_SLOT_TEXTURE_TERRAIN, PS_SLOT_SAMPLER_TERRAIN);
+	CMaterial *pMaterial = new CMaterial();
 
+	CTexture *pNormalTexture = new CTexture(2, 1, PS_SLOT_TEXTURE_TERRAIN, PS_SLOT_SAMPLER_TERRAIN);
+
+	ID3D11ShaderResourceView *pd3dsrvDiffuseTexture = NULL;
 	ID3D11ShaderResourceView *pd3dsrvNormalTexture = NULL;
+
+	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Base_Texture.jpg"), NULL, NULL, &pd3dsrvDiffuseTexture, NULL));
+	pNormalTexture->SetTexture(0, pd3dsrvDiffuseTexture);
+	pd3dsrvDiffuseTexture->Release();
+
 	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Base_Texture.jpg"), NULL, NULL, &pd3dsrvNormalTexture, NULL));
-	pNormalTexture->SetTexture(0, pd3dsrvNormalTexture);
+	pNormalTexture->SetTexture(1, pd3dsrvNormalTexture);
+
 	pNormalTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
 	pd3dsrvNormalTexture->Release();
 
-
+	pMaterial->SetTexture(pNormalTexture);
 }

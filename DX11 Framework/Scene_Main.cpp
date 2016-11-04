@@ -184,16 +184,16 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 #pragma region [Create Water]
 	CTexture *pTerrainWaterTexture = new CTexture(2, 2, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/water.jpg"), NULL, NULL, &pd3dsrvBaseTexture, NULL));
-	pTerrainWaterTexture->SetTexture(0, pd3dsrvBaseTexture);
+	//HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, RESOURCE_MGR->FindResourceFromMap(eTexture_Water).c_str(), NULL, NULL, &pd3dsrvBaseTexture, NULL));
+	pTerrainWaterTexture->SetTexture(0, RESOURCE_MGR->FindResourceFromMap(eTexture_Water));
 	pTerrainWaterTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
-	pd3dsrvBaseTexture->Release();
+//	pd3dsrvBaseTexture->Release();
 
 	//D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Detail_Texture_1.jpg"), NULL, NULL, &pd3dsrvDetailTexture, NULL);
-	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Water_Detail_Texture_0.dds"), NULL, NULL, &pd3dsrvDetailTexture, NULL));
-	pTerrainWaterTexture->SetTexture(1, pd3dsrvDetailTexture);
+//	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Water_Detail_Texture_0.dds"), NULL, NULL, &pd3dsrvDetailTexture, NULL));
+	pTerrainWaterTexture->SetTexture(1, RESOURCE_MGR->FindResourceFromMap(eTexture_WaterDetail));
 	pTerrainWaterTexture->SetSampler(1, STATEOBJ_MGR->m_pPointWarpSS);
-	pd3dsrvDetailTexture->Release();
+//	pd3dsrvDetailTexture->Release();
 	
 	CMaterialColors *pWaterColors = new CMaterialColors();
 	pTerrainColors->m_d3dxcDiffuse = XMFLOAT4(0.8f, 1.0f, 0.2f, 1.0f);
@@ -218,15 +218,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_vObjectsVector.push_back(move(pTerrainWater));
 
 #pragma region [Create Shader Object]
-	CMaterial *pPlayerMaterial;
-
-	
-	CMaterialColors *pPlayerColor = new CMaterialColors();
-	pPlayerColor->m_d3dxcDiffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	pPlayerColor->m_d3dxcAmbient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	pPlayerColor->m_d3dxcSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 5.0f);
-	pPlayerColor->m_d3dxcEmissive = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	pPlayerMaterial = new CMaterial(pPlayerColor);
+	CMaterial *pPlayerMaterial = new CMaterial();
 
 	CTexture *pPlayerTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
 	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_color.png"), NULL, NULL, &pd3dsrvTexture, NULL));

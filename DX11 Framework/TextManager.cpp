@@ -10,15 +10,6 @@ CTextManager::CTextManager()
 
 CTextManager::~CTextManager()
 {
-	if (m_pFW1FontFactory){
-		m_pFW1FontFactory->Release();
-		m_pFW1FontFactory = nullptr;
-	}
-
-	if (m_pFW1Font){
-		m_pFW1Font->Release();
-		m_pFW1Font = nullptr;
-	}
 }
 
 void CTextManager::InitializeManager(ID3D11Device* pd3dDevice, std::wstring font)
@@ -28,6 +19,19 @@ void CTextManager::InitializeManager(ID3D11Device* pd3dDevice, std::wstring font
 
 	if (FAILED(m_pFW1FontFactory->CreateFontWrapper(pd3dDevice, font.c_str(), &m_pFW1Font)))
 		MessageBox(NULL, L"Font is None", L"Font Error", MB_OK);
+}
+
+void CTextManager::ReleseManager()
+{
+	if (m_pFW1FontFactory) {
+		m_pFW1FontFactory->Release();
+		m_pFW1FontFactory = nullptr;
+	}
+
+	if (m_pFW1Font) {
+		m_pFW1Font->Release();
+		m_pFW1Font = nullptr;
+	}
 }
 
 void CTextManager::RenderText(ID3D11DeviceContext* pd3dDeviceContext, std::string text, float fontSize, float posX, float posY, UINT32 color, UINT pivot)

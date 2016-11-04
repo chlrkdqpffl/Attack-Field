@@ -5,8 +5,12 @@
 	Max Constant Buffer				: 16
 	Max Constant Buffer Size		: 4096 Byte
 	Max Resource(Texture, Buffer)	: 128
+
+	※ 주의 : 여기 있는 값들은 쉐이더 코드와 연동되므로 register 값과 일치해야 한다.
 */
 
+
+// ============================================ //
 // ============ Constant Buffers ============== //
 
 // Vertex Shader
@@ -31,7 +35,9 @@
 #define PS_CB_SLOT_RENDEROPTION				0x05
 
 
+// ============================================ //
 // ================== Slot ==================== //
+// texture
 #define PS_SLOT_TEXTURE						0x00
 #define PS_SLOT_TEXTURE_TERRAIN				0x02
 #define PS_SLOT_TEXTURE_SKYBOX				0x0D
@@ -40,6 +46,11 @@
 #define PS_SLOT_TEXTURE_PROJECTED_DEPTH		0x10
 #define PS_SLOT_TEXTURE_SHADOW				0x11
 
+#define PS_SLOT_TEXTURE_DIFFUSE				18
+//		PS_SLOT_TEXTURE_NORMAL				19
+
+
+// Sampler
 #define PS_SLOT_SAMPLER						0x00
 #define PS_SLOT_SAMPLER_DETAIL				0x01
 #define PS_SLOT_SAMPLER_TERRAIN				0x02

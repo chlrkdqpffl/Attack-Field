@@ -313,5 +313,8 @@
     <None Include="Shader HLSL File\Light.hlsli">
       <Filter>HLSL</Filter>
     </None>
+    <None Include="Shader HLSL File\NormalMap.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>

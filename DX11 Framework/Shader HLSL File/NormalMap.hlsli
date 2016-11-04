@@ -1,6 +1,6 @@
 
-Texture2D gtxNormal : register(t4);
-
+Texture2D gDiffuseMap : register(t18);
+Texture2D gNormalMap : register(t19);
 
 struct VS_TEXTURED_LIGHTING_NORMAL_INPUT
 {

@@ -1,23 +1,25 @@
 #pragma once
 #include "SingletonManager.h"
 //#include <map>
-
-enum Resource_TextrueTag;
-enum Resource_MeshTag;
+#include "UserTag.h"
 
 class CResourceManager : public CSingletonManager<CResourceManager>
 {
-//	multimap<Resource_TextrueTag, string> textureMap;
-//	multimap<Resource_MeshTag, string> meshMap;
+	multimap<Resource_TextrueTag, string> textureMap;
+	multimap<Resource_MeshTag, string> meshMap;
 
 public:
 	CResourceManager();
 	virtual ~CResourceManager();
 
-	virtual void InitializeManager();
+	virtual void InitializeManager() override;
+	virtual void ReleseManager() override;
 
-//	void AddResourece(Resource_TextrueTag resourceTag, string source);
-//	void AddResourece(Resource_MeshTag resourceTag, string source);
+	void AddResourece(Resource_TextrueTag resourceTag, string source);
+	void AddResourece(Resource_MeshTag resourceTag, string source);
 //	wstring FindResourceFromMap(Resource_TextrueTag resourceTag);
 //	string FindResourceFromMap(Resource_MeshTag resourceTag);
+
+
+	ID3D11ShaderResourceView* FindResourceFromMap(Resource_TextrueTag);
 };

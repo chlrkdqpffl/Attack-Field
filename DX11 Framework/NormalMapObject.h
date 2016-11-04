@@ -6,6 +6,6 @@ public:
 	CNormalMapObject();
 	virtual ~CNormalMapObject();
 
-	void CreateTexture(ID3D11Device *pd3dDevice);
+	void CreateMaterial(ID3D11Device *pd3dDevice);
 };
 

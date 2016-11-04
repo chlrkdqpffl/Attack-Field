@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ResourceManager.h"
 
-
 CResourceManager::CResourceManager()
 {
 }
@@ -15,24 +14,24 @@ void CResourceManager::InitializeManager()
 {
 	// ------------------------ Texture ---------------------------- //
 
-	// Title Scene Texture
-//	AddResourece(eTexture_TitleBackGround, "../Assets/Image/UI/BackGround2.jpg");
-
-	// Loading Scene Texture
-
-	// Space Scene Texture
-
 	// Model
 
+	// UI
 
-	// UI & etc
+	//  etc
+	AddResourece(eTexture_Water,			"../Assets/Image/Terrain/water.jpg");
+	AddResourece(eTexture_WaterDetail,		"../Assets/Image/Terrain/Water_Detail_Texture_0.dds");
 
 
 	// ------------------------ Mesh ---------------------------- //
 
 }
 
-/*
+void CResourceManager::ReleseManager()
+{
+}
+
+
 void CResourceManager::AddResourece(Resource_TextrueTag resourceTag, string source)
 {
 	textureMap.insert(make_pair(resourceTag, source));
@@ -51,6 +50,7 @@ void CResourceManager::AddResourece(Resource_MeshTag resourceTag, string source)
 	}
 }
 
+/*
 wstring CResourceManager::FindResourceFromMap(Resource_TextrueTag resourceTag)
 {
 	auto f = textureMap.find(resourceTag);
@@ -61,10 +61,30 @@ wstring CResourceManager::FindResourceFromMap(Resource_TextrueTag resourceTag)
 
 	return wstr;
 }
-
 string CResourceManager::FindResourceFromMap(Resource_MeshTag resourceTag)
 {
 	auto f = meshMap.find(resourceTag);
 	return (*f).second;
+}*/
+
+ID3D11ShaderResourceView* CResourceManager::FindResourceFromMap(Resource_TextrueTag resourceTag)
+{
+	auto findResource = textureMap.find(resourceTag);
+
+	string str = (*findResource).second.c_str();
+	wstring wstr;
+	wstr.assign(str.begin(), str.end());
+	
+	HRESULT hResult;
+	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
+	D3DX11CreateShaderResourceViewFromFile(STATEOBJ_MGR->m_pd3dDevice.Get(), wstr.c_str(), NULL, NULL, &pd3dsrvTexture, &hResult);
+	
+#if defined(DEBUG) || defined(_DEBUG)
+	if ((HRESULT)hResult >= 0)
+		cout << "File Load Success!! <" << (*findResource).second << "> 불러오기 성공 ! " << endl;
+	else 
+		cout << "File Load Error!! <" << (*findResource).second << "> 불러오기 실패 ! - 파일 또는 경로를 확인하세요." << endl;
+#endif
+
+	return pd3dsrvTexture;
 }
-*/

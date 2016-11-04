@@ -15,6 +15,10 @@ void CSceneManager::InitializeManager()
 {
 }
 
+void CSceneManager::ReleseManager()
+{
+}
+
 void CSceneManager::ChangeScene(CScene* newScene)
 {
 	if (m_nowScene) {

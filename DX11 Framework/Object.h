@@ -161,11 +161,11 @@ public:
 	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
 	void Rotate(XMVECTOR *pd3dxvAxis, float fAngle);
 
-	XMVECTOR& GetvPosition(bool bIsLocal = true) const;
-	XMFLOAT3& GetPosition() const;
-	XMVECTOR& GetLook(bool bIsLocal = true);
-	XMVECTOR& GetUp(bool bIsLocal = true);
-	XMVECTOR& GetRight(bool bIsLocal = true);
+	XMVECTOR GetvPosition(bool bIsLocal = true) const;
+	XMFLOAT3 GetPosition() const;
+	XMVECTOR GetLook(bool bIsLocal = true);
+	XMVECTOR GetUp(bool bIsLocal = true);
+	XMVECTOR GetRight(bool bIsLocal = true);
 
 	bool IsVisible(CCamera *pCamera = NULL);
 

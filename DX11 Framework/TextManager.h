@@ -44,4 +44,5 @@ public:
 public:
 	virtual void InitializeManager() {};
 	void InitializeManager(ID3D11Device* pd3dDevice, std::wstring font = L"¸¼Àº °íµñ");
+	virtual void ReleseManager() override;
 };

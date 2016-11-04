@@ -95,7 +95,7 @@ public:
 		v += d3dxvOffset;
 		XMStoreFloat3(&m_d3dxvPosition, v);
 	}
-	XMVECTOR& GetOffset() { return(XMLoadFloat3(&m_d3dxvOffset)); }
+	XMVECTOR GetOffset() { return(XMLoadFloat3(&m_d3dxvOffset)); }
 
 	void SetTimeLag(float fTimeLag) { m_fTimeLag = fTimeLag; }
 	float GetTimeLag() { return(m_fTimeLag); }
