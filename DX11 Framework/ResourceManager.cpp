@@ -15,16 +15,27 @@ void CResourceManager::InitializeManager()
 	// ------------------------ Texture ---------------------------- //
 
 	// Model
+	AddResourece(eTexture_DarkFighterColor,		"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_color.png");
 
 	// UI
+	
+	// Environment
+	AddResourece(eTexture_Terrain,				"../Assets/Image/Terrain/Base_Texture.jpg");
+	AddResourece(eTexture_TerrainDetail,		"../Assets/Image/Terrain/Detail_Texture_7.jpg");
+	AddResourece(eTexture_HeightMap,			"../Assets/Image/Terrain/HeightMap.raw");
+	AddResourece(eTexture_Water,				"../Assets/Image/Terrain/water.jpg");
+	AddResourece(eTexture_WaterDetail,			"../Assets/Image/Terrain/Water_Detail_Texture_0.dds");
 
 	//  etc
-	AddResourece(eTexture_Water,			"../Assets/Image/Terrain/water.jpg");
-	AddResourece(eTexture_WaterDetail,		"../Assets/Image/Terrain/Water_Detail_Texture_0.dds");
+	AddResourece(eTexture_Stone,				"../Assets/Image/Miscellaneous/Stone01.jpg");
+	AddResourece(eTexture_Bricks,				"../Assets/Image/Miscellaneous/bricks.dds");
+	AddResourece(eTexture_Wood,					"../Assets/Image/Miscellaneous/Wood01.jpg");
+	
+
 
 
 	// ------------------------ Mesh ---------------------------- //
-
+	AddResourece(eMesh_DarkFighter,				"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.data");
 }
 
 void CResourceManager::ReleseManager()
@@ -50,8 +61,8 @@ void CResourceManager::AddResourece(Resource_MeshTag resourceTag, string source)
 	}
 }
 
-/*
-wstring CResourceManager::FindResourceFromMap(Resource_TextrueTag resourceTag)
+
+wstring CResourceManager::FindResourcePath(Resource_TextrueTag resourceTag)
 {
 	auto f = textureMap.find(resourceTag);
 
@@ -61,13 +72,13 @@ wstring CResourceManager::FindResourceFromMap(Resource_TextrueTag resourceTag)
 
 	return wstr;
 }
-string CResourceManager::FindResourceFromMap(Resource_MeshTag resourceTag)
+string CResourceManager::FindResourcePath(Resource_MeshTag resourceTag)
 {
 	auto f = meshMap.find(resourceTag);
 	return (*f).second;
-}*/
+}
 
-ID3D11ShaderResourceView* CResourceManager::FindResourceFromMap(Resource_TextrueTag resourceTag)
+ID3D11ShaderResourceView* CResourceManager::FindResourceAndCreateSRV(Resource_TextrueTag resourceTag)
 {
 	auto findResource = textureMap.find(resourceTag);
 
@@ -81,9 +92,9 @@ ID3D11ShaderResourceView* CResourceManager::FindResourceFromMap(Resource_Textrue
 	
 #if defined(DEBUG) || defined(_DEBUG)
 	if ((HRESULT)hResult >= 0)
-		cout << "File Load Success!! <" << (*findResource).second << "> 불러오기 성공 ! " << endl;
+		cout << "File Load Success!! <" << (*findResource).second << ">" << endl;
 	else 
-		cout << "File Load Error!! <" << (*findResource).second << "> 불러오기 실패 ! - 파일 또는 경로를 확인하세요." << endl;
+		cout << "File Load Error!! <" << (*findResource).second << "> \t 파일 또는 경로를 확인하세요." << endl;
 #endif
 
 	return pd3dsrvTexture;

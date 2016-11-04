@@ -7,9 +7,9 @@ CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTextur
 	bool isLoad = LoadFBXfromFile(fileName);
 #if defined(DEBUG) || defined(_DEBUG)
 	if (isLoad)
-		cout << "File Load Success!! <" << fileName.c_str() << ">\t불러오기 성공!" << endl;
+		cout << "File Load Success!! <" << fileName.c_str() << ">" << endl;
 	else {
-		cout << "File Load Error!! <" << fileName.c_str() << ">\t불러오기 실패! - 파일 또는 경로를 확인하세요." << endl;
+		cout << "File Load Error!! <" << fileName.c_str() << "> \t 파일 또는 경로를 확인하세요." << endl;
 		return;
 	}
 #endif

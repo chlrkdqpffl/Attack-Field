@@ -71,10 +71,18 @@ CTexture::CTexture(int nTextures, int nSamplers, int nTextureStartSlot, int nSam
 
 CTexture::~CTexture()
 {
-	for (int i = 0; i < m_nTextures; i++) if (m_ppd3dsrvTextures[i]) m_ppd3dsrvTextures[i]->Release();
-	for (int i = 0; i < m_nSamplers; i++) if (m_ppd3dSamplerStates[i]) m_ppd3dSamplerStates[i]->Release();
-	if (m_ppd3dsrvTextures) delete[] m_ppd3dsrvTextures;
-	if (m_ppd3dSamplerStates) delete[] m_ppd3dSamplerStates;
+	for (int i = 0; i < m_nTextures; i++) 
+		if (m_ppd3dsrvTextures[i]) 
+			m_ppd3dsrvTextures[i]->Release();
+
+	for (int i = 0; i < m_nSamplers; i++) 
+		if (m_ppd3dSamplerStates[i]) 
+			m_ppd3dSamplerStates[i]->Release();
+
+	if (m_ppd3dsrvTextures) 
+		delete[] m_ppd3dsrvTextures;
+	if (m_ppd3dSamplerStates) 
+		delete[] m_ppd3dSamplerStates;
 }
 
 void CTexture::SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture)

@@ -78,7 +78,7 @@ void CScene_Main::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pM
 	pMaterial->m_pTexture->SetTexture(0, pd3dsrvTexture); pd3dsrvTexture->Release();
 #else
 #ifdef _WITH_SKYBOX_TEXTURE_CUBE
-	_TCHAR pstrTextureNames[128];
+	_TCHAR pstrTextureNames[128]; 
 	_stprintf_s(pstrTextureNames, _T("../Assets/Image/SkyBox/SkyBox_%d.dds"), nIndex, 128);
 	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, pstrTextureNames, NULL, NULL, &pd3dsrvTexture, NULL);
@@ -109,8 +109,6 @@ void CScene_Main::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pM
 
 void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 {
-	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
-
 	CScene::BuildObjects(pd3dDevice);
 
 #pragma region [Create SkyBox]
@@ -143,18 +141,12 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma region [Create Terrain]
 	CTexture *pTerrainTexture = new CTexture(2, 2, PS_SLOT_TEXTURE_TERRAIN, PS_SLOT_SAMPLER_TERRAIN);
 
-	ID3D11ShaderResourceView *pd3dsrvBaseTexture = NULL;
-	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Base_Texture.jpg"), NULL, NULL, &pd3dsrvBaseTexture, NULL));
-	pTerrainTexture->SetTexture(0, pd3dsrvBaseTexture);
+	pTerrainTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_Terrain));
 	pTerrainTexture->SetSampler(0, STATEOBJ_MGR->m_pPointClampSS);
-	pd3dsrvBaseTexture->Release();
 	
-	ID3D11ShaderResourceView *pd3dsrvDetailTexture = NULL;
-	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Detail_Texture_7.jpg"), NULL, NULL, &pd3dsrvDetailTexture, NULL));
-	pTerrainTexture->SetTexture(1, pd3dsrvDetailTexture);
+	pTerrainTexture->SetTexture(1, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_TerrainDetail));
 	pTerrainTexture->SetSampler(1, STATEOBJ_MGR->m_pPointWarpSS);
-	pd3dsrvDetailTexture->Release();
-
+	
 	CMaterialColors *pTerrainColors = new CMaterialColors();
 	pTerrainColors->m_d3dxcDiffuse = XMFLOAT4(0.8f, 1.0f, 0.2f, 1.0f);
 	pTerrainColors->m_d3dxcAmbient = XMFLOAT4(0.1f, 0.3f, 0.1f, 1.0f);
@@ -168,32 +160,24 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 //	XMVECTOR d3dxvScale = XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f);
 #ifdef _WITH_TERRAIN_PARTITION
-	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, _T("../Assets/Image/Terrain/HeightMap.raw"), 257, 257, 17, 17, d3dxvScale);
+	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, RESOURCE_MGR->FindResourcePath(eTexture_HeightMap).c_str(), 257, 257, 17, 17, d3dxvScale);
 #else
-	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, _T("../Assets/Image/Terrain/HeightMap.raw"), 257, 257, 257, 257, d3dxvScale);
+	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, RESOURCE_MGR->FindResourcePath(eTexture_HeightMap).c_str(), 257, 257, 257, 257, d3dxvScale);
 #endif
 	pTerrain->SetMaterial(pTerrainMaterial);
 
 	CShader *pTerrainShader = new CTerrainShader();
 	pTerrainShader->CreateShader(pd3dDevice);
 	pTerrain->SetShader(pTerrainShader);
-
-	pd3dsrvBaseTexture = NULL;
-	pd3dsrvDetailTexture = NULL;
 #pragma endregion
 
 #pragma region [Create Water]
 	CTexture *pTerrainWaterTexture = new CTexture(2, 2, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	//HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, RESOURCE_MGR->FindResourceFromMap(eTexture_Water).c_str(), NULL, NULL, &pd3dsrvBaseTexture, NULL));
-	pTerrainWaterTexture->SetTexture(0, RESOURCE_MGR->FindResourceFromMap(eTexture_Water));
+	pTerrainWaterTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_Water));
 	pTerrainWaterTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
-//	pd3dsrvBaseTexture->Release();
 
-	//D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Detail_Texture_1.jpg"), NULL, NULL, &pd3dsrvDetailTexture, NULL);
-//	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Water_Detail_Texture_0.dds"), NULL, NULL, &pd3dsrvDetailTexture, NULL));
-	pTerrainWaterTexture->SetTexture(1, RESOURCE_MGR->FindResourceFromMap(eTexture_WaterDetail));
+	pTerrainWaterTexture->SetTexture(1, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_WaterDetail));
 	pTerrainWaterTexture->SetSampler(1, STATEOBJ_MGR->m_pPointWarpSS);
-//	pd3dsrvDetailTexture->Release();
 	
 	CMaterialColors *pWaterColors = new CMaterialColors();
 	pTerrainColors->m_d3dxcDiffuse = XMFLOAT4(0.8f, 1.0f, 0.2f, 1.0f);
@@ -221,13 +205,11 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CMaterial *pPlayerMaterial = new CMaterial();
 
 	CTexture *pPlayerTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_color.png"), NULL, NULL, &pd3dsrvTexture, NULL));
-	pPlayerTexture->SetTexture(0, pd3dsrvTexture);
+	pPlayerTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_DarkFighterColor));
 	pPlayerTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
-	pd3dsrvTexture->Release();
 	pPlayerMaterial->SetTexture(pPlayerTexture);
 
-	CMesh* pPlayerMesh = new CModelMesh_FBX("../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.data");
+	CMesh* pPlayerMesh = new CModelMesh_FBX(RESOURCE_MGR->FindResourcePath(eMesh_DarkFighter));
 
 	CObjectsShader* pModelShader = new CObjectsShader(10);
 	pModelShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0);
@@ -265,24 +247,18 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pInstancingMaterials[2] = new CMaterial(pBlueColor);
 
 	CTexture *pStoneTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Miscellaneous/Stone01.jpg"), NULL, NULL, &pd3dsrvTexture, NULL);
-	pStoneTexture->SetTexture(0, pd3dsrvTexture);
+	pStoneTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_Stone));
 	pStoneTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
-	pd3dsrvTexture->Release();
 	pInstancingMaterials[0]->SetTexture(pStoneTexture);
 	
 	CTexture *pBrickTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Miscellaneous/bricks.dds"), NULL, NULL, &pd3dsrvTexture, NULL);
-	pBrickTexture->SetTexture(0, pd3dsrvTexture);
+	pBrickTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_Bricks));
 	pBrickTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
-	pd3dsrvTexture->Release();
 	pInstancingMaterials[1]->SetTexture(pBrickTexture);
 
 	CTexture *pWoodTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Miscellaneous/Wood01.jpg"), NULL, NULL, &pd3dsrvTexture, NULL);
-	pWoodTexture->SetTexture(0, pd3dsrvTexture);
+	pWoodTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_Wood));
 	pWoodTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
-	pd3dsrvTexture->Release();
 	pInstancingMaterials[2]->SetTexture(pWoodTexture);
 
 	float fSize = 24.0f;

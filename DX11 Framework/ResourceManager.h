@@ -17,9 +17,9 @@ public:
 
 	void AddResourece(Resource_TextrueTag resourceTag, string source);
 	void AddResourece(Resource_MeshTag resourceTag, string source);
-//	wstring FindResourceFromMap(Resource_TextrueTag resourceTag);
-//	string FindResourceFromMap(Resource_MeshTag resourceTag);
 
+	wstring FindResourcePath(Resource_TextrueTag resourceTag);
+	string FindResourcePath(Resource_MeshTag resourceTag);
 
-	ID3D11ShaderResourceView* FindResourceFromMap(Resource_TextrueTag);
+	ID3D11ShaderResourceView* FindResourceAndCreateSRV(Resource_TextrueTag);
 };
