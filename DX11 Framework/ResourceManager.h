@@ -14,8 +14,8 @@ public:
 	CResourceManager();
 	virtual ~CResourceManager();
 
-	virtual void InitializeManager() override;
-	virtual void ReleseManager() override;
+	virtual void InitializeManager();
+
 //	void AddResourece(Resource_TextrueTag resourceTag, string source);
 //	void AddResourece(Resource_MeshTag resourceTag, string source);
 //	wstring FindResourceFromMap(Resource_TextrueTag resourceTag);

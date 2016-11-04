@@ -13,6 +13,6 @@ public:
 
 	void ChangeScene(CScene* newScene);
 
-	virtual void InitializeManager() override;
-	virtual void ReleseManager() override;
+	virtual void InitializeManager();
+	
 };

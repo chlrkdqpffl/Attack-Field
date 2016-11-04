@@ -307,10 +307,10 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader HLSL File\Fog.hlsli">
+    <None Include="Fog.hlsli">
       <Filter>HLSL</Filter>
     </None>
-    <None Include="Shader HLSL File\Light.hlsli">
+    <None Include="Light.hlsli">
       <Filter>HLSL</Filter>
     </None>
     <None Include="NormalMap.hlsli">

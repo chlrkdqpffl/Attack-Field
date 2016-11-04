@@ -7,9 +7,8 @@ public:
 	CStateObjectManager();
 	virtual ~CStateObjectManager();
 
-	virtual void InitializeManager() override;
-	virtual void ReleseManager() override;
-
+	virtual void InitializeManager();
+	
 	ComPtr<ID3D11Device>			m_pd3dDevice;
 	ComPtr<ID3D11DeviceContext>		m_pd3dImmediateDeviceContext;
 
