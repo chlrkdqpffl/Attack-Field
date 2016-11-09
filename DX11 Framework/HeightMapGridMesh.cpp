@@ -7,7 +7,7 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D11Device *pd3dDevice, int xStart, int
 	m_nVertices = nWidth * nLength;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
 
-	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
+	m_pPositions = new XMFLOAT3[m_nVertices];
 	XMFLOAT3 *pd3dxvNormals = new XMFLOAT3[m_nVertices];
 	XMFLOAT2 *pd3dxvTexCoords = new XMFLOAT2[m_nVertices];
 	XMFLOAT2 *pd3dxvDetailTexCoords = new XMFLOAT2[m_nVertices];
@@ -25,7 +25,7 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D11Device *pd3dDevice, int xStart, int
 		for (int x = xStart; x < (xStart + nWidth); x++, i++)
 		{
 			fHeight = OnGetHeight(x, z, pContext);
-			m_pd3dxvPositions[i] = XMFLOAT3((x*m_d3dxvScale.x), fHeight, (z*m_d3dxvScale.z));
+			m_pPositions[i] = XMFLOAT3((x*m_d3dxvScale.x), fHeight, (z*m_d3dxvScale.z));
 			pd3dxvNormals[i] = (pHeightMap) ? XMFLOAT3(XMVectorGetX(pHeightMap->GetHeightMapNormal(x, z)),
 				XMVectorGetY(pHeightMap->GetHeightMapNormal(x, z)),
 				XMVectorGetZ(pHeightMap->GetHeightMapNormal(x, z))) : XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -36,7 +36,7 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D11Device *pd3dDevice, int xStart, int
 		}
 	}
 
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, d3dUsage, (d3dUsage == D3D11_USAGE_DYNAMIC) ? D3D11_CPU_ACCESS_WRITE : 0);
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, d3dUsage, (d3dUsage == D3D11_USAGE_DYNAMIC) ? D3D11_CPU_ACCESS_WRITE : 0);
 	m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, pd3dxvNormals, D3D11_BIND_VERTEX_BUFFER, d3dUsage, (d3dUsage == D3D11_USAGE_DYNAMIC) ? D3D11_CPU_ACCESS_WRITE : 0);
 	//m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, pd3dxvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);	- 물 표현하기 위해 USAGE를 변경한다.
 	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, pd3dxvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);

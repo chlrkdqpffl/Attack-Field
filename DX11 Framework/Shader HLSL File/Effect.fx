@@ -14,7 +14,7 @@ cbuffer cbViewProjectionMatrix : register(b0)                // VS Set
 	matrix		gmtxProjection : packoffset(c4);
 };
 
-cbuffer cbWorldMatrix : register(b1)
+cbuffer cbWorldMatrix : register(b1)                        // VS Set
 {
 	matrix		gmtxWorld : packoffset(c0);
 };
@@ -23,12 +23,12 @@ cbuffer cbTextureMatrix : register(b2)                      // VS Set
 {
 	matrix		gmtxTexture : packoffset(c0);
 };
-
-cbuffer cbCameraPosition : register(b2) // PS Set
+/*
+cbuffer cbCameraPosition : register(b2)                     // PS Set
 {
     float4      gvCameraPosition : packoffset(c0);
 };
-
+*/
 cbuffer cbTerrain : register(b3)
 {
 	int4		gvTerrainTextureIndex : packoffset(c0);

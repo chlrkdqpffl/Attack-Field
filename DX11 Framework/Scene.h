@@ -11,6 +11,7 @@
 #include "HeightMapTerrain.h"
 #include "TerrainWater.h"
 #include "RotatingObject.h"
+#include "NormalMapObject.h"
 
 // System
 #include "ParticleSystem.h"

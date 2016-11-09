@@ -337,7 +337,7 @@ void CGameFramework::BuildObjects()
 	m_pScene->BuildObjects(STATEOBJ_MGR->m_pd3dDevice.Get());
 
 	CHeightMapTerrain *pTerrain = m_pScene->GetTerrain();
-	float fHeight = pTerrain->GetHeight(pTerrain->GetWidth()*0.5f, pTerrain->GetLength()*0.5f, false) + 800.0f;
+	float fHeight = pTerrain->GetHeight(pTerrain->GetWidth()*0.5f, pTerrain->GetLength()*0.5f, false) + 500.0f;
 	m_pPlayer->SetPosition(XMVectorSet(pTerrain->GetWidth()*0.5f, fHeight, pTerrain->GetLength()*0.5f, 0.0f));
 	m_pPlayer->SetPlayerUpdatedContext(pTerrain);
 	m_pPlayer->SetCameraUpdatedContext(pTerrain);

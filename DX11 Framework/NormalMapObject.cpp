@@ -4,10 +4,7 @@
 
 CNormalMapObject::CNormalMapObject()
 {
-	
-
 }
-
 
 CNormalMapObject::~CNormalMapObject()
 {
@@ -16,22 +13,29 @@ CNormalMapObject::~CNormalMapObject()
 
 void CNormalMapObject::CreateMaterial(ID3D11Device *pd3dDevice)
 {
-	CMaterial *pMaterial = new CMaterial();
+	m_pMaterial = new CMaterial();
 
-	CTexture *pNormalTexture = new CTexture(2, 1, PS_SLOT_TEXTURE_TERRAIN, PS_SLOT_SAMPLER_TERRAIN);
+	CTexture *pNormalTexture = new CTexture(2, 1, PS_SLOT_TEXTURE_DIFFUSE, PS_SLOT_SAMPLER);
 
-	ID3D11ShaderResourceView *pd3dsrvDiffuseTexture = NULL;
-	ID3D11ShaderResourceView *pd3dsrvNormalTexture = NULL;
-
-	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Base_Texture.jpg"), NULL, NULL, &pd3dsrvDiffuseTexture, NULL));
-	pNormalTexture->SetTexture(0, pd3dsrvDiffuseTexture);
-	pd3dsrvDiffuseTexture->Release();
-
-	HR(D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Terrain/Base_Texture.jpg"), NULL, NULL, &pd3dsrvNormalTexture, NULL));
-	pNormalTexture->SetTexture(1, pd3dsrvNormalTexture);
-
+	pNormalTexture->SetTexture(0, eTexture_Stone);
+	pNormalTexture->SetTexture(1, eTexture_StoneNormal);
 	pNormalTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
-	pd3dsrvNormalTexture->Release();
+	
+	m_pMaterial->SetTexture(pNormalTexture);
+}
 
-	pMaterial->SetTexture(pNormalTexture);
+void CNormalMapObject::CreateMesh(ID3D11Device *pd3dDevice)
+{
+	CMesh* pMesh = new CCubeNormalMapMesh(pd3dDevice, 300, 300, 300);
+//	CMesh* pMesh = new CCubeMeshTexturedIlluminated(pd3dDevice, 300, 300, 300);
+	SetMesh(pMesh);
+}
+
+void CNormalMapObject::CreateShader(ID3D11Device *pd3dDevice)
+{
+	// 배치 처리 고려해보기
+	
+	m_pShader = new CNormalMapShader(pd3dDevice);
+//	m_pShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0);
+	m_pShader->CreateShader(pd3dDevice);
 }

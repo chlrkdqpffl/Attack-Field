@@ -73,6 +73,12 @@
     <Filter Include="Objects\Terrain">
       <UniqueIdentifier>{519f8bc8-9ccd-42e2-94d7-69e470d6b63a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Mesh\NormalMap">
+      <UniqueIdentifier>{3337359f-fdc1-4be3-8786-e06ef93680cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Mesh\NormalMap">
+      <UniqueIdentifier>{419b3b71-1ecc-4fd8-866e-5ccb6eaed9b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -167,6 +173,15 @@
     </ClCompile>
     <ClCompile Include="NormalMapObject.cpp">
       <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalMapShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeNormalMapMesh.cpp">
+      <Filter>소스 파일\Mesh\NormalMap</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshNormalMap.cpp">
+      <Filter>소스 파일\Mesh\NormalMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -280,6 +295,15 @@
     </ClInclude>
     <ClInclude Include="NormalMapObject.h">
       <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalMapShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeNormalMapMesh.h">
+      <Filter>헤더 파일\Mesh\NormalMap</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshNormalMap.h">
+      <Filter>헤더 파일\Mesh\NormalMap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

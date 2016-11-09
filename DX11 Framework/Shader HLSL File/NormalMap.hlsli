@@ -1,117 +1,74 @@
+#include "Light.hlsli"
+#include "Fog.hlsli"
 
-Texture2D gDiffuseMap : register(t18);
-Texture2D gNormalMap : register(t19);
+//    fxc /E VS_TexturedLightingNormalMap /T vs_5_0 /Od /Zi /Fo CompiledShader.fxo NormalMap.hlsli
+
+cbuffer cbViewProjectionMatrix : register(b0)   // VS Set
+{
+    matrix gmtxView : packoffset(c0);
+    matrix gmtxProjection : packoffset(c4);
+};
+
+cbuffer cbWorldMatrix : register(b1)            // VS Set
+{
+    matrix gmtxWorld : packoffset(c0);
+};
+
+Texture2D gtxtDiffuseMap : register(t18);
+Texture2D gtxtNormalMap : register(t19);
+SamplerState gssDefault : register(s0);
 
 struct VS_TEXTURED_LIGHTING_NORMAL_INPUT
 {
-    float3 PosL : POSITION;
-    float3 NormalL : NORMAL;
-    float2 Tex : TEXCOORD;
-    float3 TangentL : TANGENT;
+    float3 positionL : POSITION;
+    float3 normalL : NORMAL;
+    float3 tangentL : TANGENT;
+    float2 texCoord : TEXCOORD;
 };
 
 struct VS_TEXTURED_LIGHTING_NORMAL_OUTPUT
 {
-    float4 PosH : SV_POSITION;
-    float3 PosW : POSITION;
-    float3 NormalW : NORMAL;
-    float3 TangentW : TANGENT;
-    float2 Tex : TEXCOORD;
+    float4 position : SV_POSITION;
+    float3 positionW : POSITION;
+    float3 normalW : NORMAL;
+    float3 tangentW : TANGENT;
+    float2 texCoord : TEXCOORD;
 };
 
 
 VS_TEXTURED_LIGHTING_NORMAL_OUTPUT VS_TexturedLightingNormalMap(VS_TEXTURED_LIGHTING_NORMAL_INPUT input)
 {
-    VS_TEXTURED_LIGHTING_NORMAL_OUTPUT vout;
+    VS_TEXTURED_LIGHTING_NORMAL_OUTPUT output = (VS_TEXTURED_LIGHTING_NORMAL_OUTPUT) 0;
 	
 	// Transform to world space space.
-    vout.PosW = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
-    vout.NormalW = mul(vin.NormalL, (float3x3) gWorldInvTranspose);
-    vout.TangentW = mul(vin.TangentL, (float3x3) gWorld);
+    output.positionW = mul(float4(input.positionL, 1.0f), gmtxWorld).xyz;
+    output.normalW = mul(input.normalL, (float3x3) gmtxWorld);
+    output.tangentW = mul(input.tangentL, (float3x3) gmtxWorld);
 
 	// Transform to homogeneous clip space.
-    vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
-	
+    output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
 	// Output vertex attributes for interpolation across triangle.
-    vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
+    output.texCoord = input.texCoord;
 
-    return vout;
+    return output;
 }
  
 
 float4 PS_TexturedLightingNormalMap(VS_TEXTURED_LIGHTING_NORMAL_OUTPUT input) : SV_Target
 {
-	// Interpolating normal can unnormalize it, so normalize it.
-    pin.NormalW = normalize(pin.NormalW);
+    float3 N = normalize(input.normalW);
+    float3 T = normalize(input.tangentW - dot(input.tangentW, N) * N);
+    float3 B = cross(N, T);
 
-	// The toEye vector is used in lighting.
-    float3 toEye = gEyePosW - pin.PosW;
+    float3x3 TBN = float3x3(T, B, N);
 
-	// Cache the distance to the eye from this surface point.
-    float distToEye = length(toEye);
+    float3 normalTextureRGB = gtxtNormalMap.Sample(gssDefault, input.texCoord).rgb;
+    float3 normal = 2.0f * normalTextureRGB - 1.0f;
+    float3 normalW = mul(normal, TBN);
 
-	// Normalize.
-    toEye /= distToEye;
+    float4 cIllumination = Lighting(input.positionW, normalW);
 
-	//
-	// Normal mapping
-	//
+    float4 cColor = gtxtDiffuseMap.Sample(gssDefault, input.texCoord) * cIllumination;
 
-    float3 normalMapSample = gNormalMap.Sample(samLinear, pin.Tex).rgb;
-    float3 bumpedNormalW = NormalSampleToWorldSpace(normalMapSample, pin.NormalW, pin.TangentW);
-	 
-	//
-	// Lighting.
-	//
-
-
-    float4 litColor = texColor;
-    if (gLightCount > 0)
-    {
-		// Start with a sum of zero. 
-        float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
-        float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
-        float4 spec = float4(0.0f, 0.0f, 0.0f, 0.0f);
-
-		// Sum the light contribution from each light source.  
-		[unroll]
-        for (int i = 0; i < gLightCount; ++i)
-        {
-            float4 A, D, S;
-            ComputeDirectionalLight(gMaterial, gDirLights[i], bumpedNormalW, toEye,
-				A, D, S);
-
-            ambient += A;
-            diffuse += D;
-            spec += S;
-        }
-
-        litColor = texColor * (ambient + diffuse) + spec;
-
-        if (gReflectionEnabled)
-        {
-            float3 incident = -toEye;
-            float3 reflectionVector = reflect(incident, bumpedNormalW);
-            float4 reflectionColor = gCubeMap.Sample(samLinear, reflectionVector);
-
-            litColor += gMaterial.Reflect * reflectionColor;
-        }
-    }
- 
-	//
-	// Fogging
-	//
-
-    if (gFogEnabled)
-    {
-        float fogLerp = saturate((distToEye - gFogStart) / gFogRange);
-
-		// Blend the fog color and the lit color.
-        litColor = lerp(litColor, gFogColor, fogLerp);
-    }
-
-	// Common to take alpha from diffuse material and texture.
-    litColor.a = gMaterial.Diffuse.a * texColor.a;
-
-    return litColor;
+    return cColor;
 }

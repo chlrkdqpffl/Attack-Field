@@ -100,13 +100,13 @@ protected:
 	DXGI_FORMAT						m_dxgiIndexFormat;
 	UINT							m_nIndexOffset;
 
-	XMFLOAT3						*m_pd3dxvPositions;
+	XMFLOAT3						*m_pPositions;
 	UINT							*m_pnIndices;
 
 	//------------------------------------------------------
-	UINT		  m_nStride;
-	UINT		  m_nOffset;
-	ID3D11Buffer *m_pd3dVertexBuffer;
+	UINT							m_nStride;
+	UINT							m_nOffset;
+	ID3D11Buffer					*m_pd3dVertexBuffer;
 	//------------------------------------------------------
 
 public:
@@ -279,4 +279,3 @@ public:
 	CTexturedRectMesh(ID3D11Device *pd3dDevice, float fWidth = 2.0f, float fHeight = 2.0f, float fLength = 2.0f);
 	virtual ~CTexturedRectMesh();
 };
-

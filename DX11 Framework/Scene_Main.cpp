@@ -2,8 +2,9 @@
 #include "Scene_Main.h"
 
 
-CScene_Main::CScene_Main() : m_pd3dcbLights(nullptr)
+CScene_Main::CScene_Main()
 {
+	m_pd3dcbLights = nullptr;
 }
 
 CScene_Main::~CScene_Main()
@@ -141,24 +142,30 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma region [Create Terrain]
 	CTexture *pTerrainTexture = new CTexture(2, 2, PS_SLOT_TEXTURE_TERRAIN, PS_SLOT_SAMPLER_TERRAIN);
 
-	pTerrainTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_Terrain));
+	pTerrainTexture->SetTexture(0, eTexture_Terrain);
 	pTerrainTexture->SetSampler(0, STATEOBJ_MGR->m_pPointClampSS);
 	
-	pTerrainTexture->SetTexture(1, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_TerrainDetail));
+	pTerrainTexture->SetTexture(1, eTexture_TerrainDetail);
 	pTerrainTexture->SetSampler(1, STATEOBJ_MGR->m_pPointWarpSS);
 	
 	CMaterialColors *pTerrainColors = new CMaterialColors();
+	
 	pTerrainColors->m_d3dxcDiffuse = XMFLOAT4(0.8f, 1.0f, 0.2f, 1.0f);
 	pTerrainColors->m_d3dxcAmbient = XMFLOAT4(0.1f, 0.3f, 0.1f, 1.0f);
 	pTerrainColors->m_d3dxcSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 5.0f);
 	pTerrainColors->m_d3dxcEmissive = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-
+	/*
+	pTerrainColors->m_d3dxcDiffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	pTerrainColors->m_d3dxcAmbient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	pTerrainColors->m_d3dxcSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 5.0f);
+	pTerrainColors->m_d3dxcEmissive = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	*/
 	CMaterial *pTerrainMaterial = new CMaterial(pTerrainColors);
 	pTerrainMaterial->SetTexture(pTerrainTexture);
 
 	XMVECTOR d3dxvScale = XMVectorSet(8.0f, 2.0f, 8.0f, 0.0f);
 
-//	XMVECTOR d3dxvScale = XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f);
+//	XMVECTOR d3dxvScale = XMVectorSet(8.0f, 1.0f, 8.0f, 0.0f);
 #ifdef _WITH_TERRAIN_PARTITION
 	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, RESOURCE_MGR->FindResourcePath(eTexture_HeightMap).c_str(), 257, 257, 17, 17, d3dxvScale);
 #else
@@ -178,13 +185,8 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 	pTerrainWaterTexture->SetTexture(1, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_WaterDetail));
 	pTerrainWaterTexture->SetSampler(1, STATEOBJ_MGR->m_pPointWarpSS);
-	
-	CMaterialColors *pWaterColors = new CMaterialColors();
-	pTerrainColors->m_d3dxcDiffuse = XMFLOAT4(0.8f, 1.0f, 0.2f, 1.0f);
-	pTerrainColors->m_d3dxcAmbient = XMFLOAT4(0.1f, 0.3f, 0.1f, 1.0f);
-	pTerrainColors->m_d3dxcSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 5.0f);
-	pTerrainColors->m_d3dxcEmissive = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
+	CMaterialColors *pWaterColors = new CMaterialColors();
 	CMaterial *pTerrainWaterMaterial = new CMaterial(pWaterColors);
 	pTerrainWaterMaterial->SetTexture(pTerrainWaterTexture);
 
@@ -201,14 +203,27 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_pTerrain = move(pTerrain);
 	m_vObjectsVector.push_back(move(pTerrainWater));
 
+
+
+
+	
+	CNormalMapObject* normalMapObject = new CNormalMapObject();
+	normalMapObject->CreateMaterial(pd3dDevice);
+	normalMapObject->CreateMesh(pd3dDevice);
+	normalMapObject->CreateShader(pd3dDevice);
+
+	normalMapObject->SetPosition(1000, 300, 1000);
+	m_vObjectsVector.push_back(normalMapObject);
+	
 #pragma region [Create Shader Object]
+	/*
 	CMaterial *pPlayerMaterial = new CMaterial();
 
 	CTexture *pPlayerTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	pPlayerTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_DarkFighterColor));
+	pPlayerTexture->SetTexture(0, eTexture_DarkFighterColor);
 	pPlayerTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
 	pPlayerMaterial->SetTexture(pPlayerTexture);
-
+	
 	CMesh* pPlayerMesh = new CModelMesh_FBX(RESOURCE_MGR->FindResourcePath(eMesh_DarkFighter));
 
 	CObjectsShader* pModelShader = new CObjectsShader(10);
@@ -220,6 +235,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pPlayer->SetMesh(pPlayerMesh);
 	pModelShader->AddObject(pPlayer);
 	m_vObjectsShaderVector.push_back(pModelShader);
+	*/
 #pragma endregion
 
 #pragma region [Create Instancing Object]
@@ -247,17 +263,17 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pInstancingMaterials[2] = new CMaterial(pBlueColor);
 
 	CTexture *pStoneTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	pStoneTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_Stone));
+	pStoneTexture->SetTexture(0, eTexture_Stone);
 	pStoneTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
 	pInstancingMaterials[0]->SetTexture(pStoneTexture);
 	
 	CTexture *pBrickTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	pBrickTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_Bricks));
+	pBrickTexture->SetTexture(0, eTexture_Bricks);
 	pBrickTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
 	pInstancingMaterials[1]->SetTexture(pBrickTexture);
 
 	CTexture *pWoodTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	pWoodTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_Wood));
+	pWoodTexture->SetTexture(0, eTexture_Wood);
 	pWoodTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
 	pInstancingMaterials[2]->SetTexture(pWoodTexture);
 
@@ -357,7 +373,7 @@ void CScene_Main::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 {
 	m_pLights = new LIGHTS;
 	::ZeroMemory(m_pLights, sizeof(LIGHTS));
-	float vGlobalAmbient = 0.5f;
+	float vGlobalAmbient = 0.0f;
 	m_pLights->m_d3dxcGlobalAmbient = XMFLOAT4(vGlobalAmbient, vGlobalAmbient, vGlobalAmbient, 1.0f);
 
 	m_pLights->m_pLights[0].m_bEnable = 1.0f;
@@ -389,8 +405,8 @@ void CScene_Main::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 	m_pLights->m_pLights[2].m_d3dxcDiffuse = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	m_pLights->m_pLights[2].m_d3dxcSpecular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	m_pLights->m_pLights[2].m_d3dxvDirection = XMFLOAT3(0.0f, -1.0f, 0.0f);
-	m_pLights->m_pLights[3].m_bEnable = 1.0f;
 
+	m_pLights->m_pLights[3].m_bEnable = 1.0f;
 	m_pLights->m_pLights[3].m_nType = SPOT_LIGHT;
 	m_pLights->m_pLights[3].m_fRange = 60.0f;
 	m_pLights->m_pLights[3].m_d3dxcAmbient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);

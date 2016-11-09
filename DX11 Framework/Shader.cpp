@@ -42,6 +42,17 @@ void CShader::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFil
 		pd3dDevice->CreateInputLayout(pd3dInputElements, nElements, pd3dVertexShaderBlob->GetBufferPointer(), pd3dVertexShaderBlob->GetBufferSize(), ppd3dInputLayout);
 		pd3dVertexShaderBlob->Release();
 	}
+	else {
+		if (pszShaderName)
+		{
+			TCHAR* tStr = new TCHAR[strlen(pszShaderName)];
+			MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, pszShaderName, strlen(pszShaderName), tStr, 256);
+			tStr[strlen(pszShaderName)] = NULL;
+			MessageBox(NULL, tStr, L"Shader Error !", MB_OK);
+		}
+		else
+			MessageBox(NULL, L"ShaderName is NULL!!", pszFileName, MB_OK);
+	}
 }
 
 void CShader::CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11PixelShader **ppd3dPixelShader)
@@ -58,6 +69,17 @@ void CShader::CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFile
 	{
 		pd3dDevice->CreatePixelShader(pd3dPixelShaderBlob->GetBufferPointer(), pd3dPixelShaderBlob->GetBufferSize(), NULL, ppd3dPixelShader);
 		pd3dPixelShaderBlob->Release();
+	}
+	else {
+		if (pszShaderName)
+		{
+			TCHAR* tStr = new TCHAR[strlen(pszShaderName)];
+			MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, pszShaderName, strlen(pszShaderName), tStr, 256);
+			tStr[strlen(pszShaderName)] = NULL;
+			MessageBox(NULL, tStr, L"Shader Error !", MB_OK);
+		}
+		else
+			MessageBox(NULL, L"ShaderName is NULL!!", pszFileName, MB_OK);
 	}
 }
 
@@ -91,6 +113,14 @@ void CShader::CreateShader(ID3D11Device *pd3dDevice, D3D11_INPUT_ELEMENT_DESC *p
 {
 	CreateVertexShaderFromFile(pd3dDevice, pszFileName, pszVSShaderName, pszVSShaderModel, &m_pd3dVertexShader, (pd3dInputElementDesc) ? pd3dInputElementDesc : m_pd3dInputElementDescs, (pd3dInputElementDesc) ? nInputElements : m_nInputElements, &m_pd3dVertexLayout);
 	CreatePixelShaderFromFile(pd3dDevice, pszFileName, pszPSShaderName, pszPSShaderModel, &m_pd3dPixelShader);
+}
+
+void CShader::CreateShader(ID3D11Device *pd3dDevice, eShaderTag shaderTag)
+{
+	cout << "여기 들어오면 안됨" << endl;
+	if (shaderTag == eShader_NormalMap) {
+		// 노말맵 하고나서 구현해보기
+	}
 }
 
 void CShader::CreateShaderVariables(ID3D11Device *pd3dDevice)

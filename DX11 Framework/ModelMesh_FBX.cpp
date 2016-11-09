@@ -18,14 +18,14 @@ CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTextur
 
 	if (size == 1.0f) {
 		for (int i = 0; i < m_nVertices; ++i) {
-			m_pd3dxvPositions[i] = posVector[i];
+			m_pPositions[i] = posVector[i];
 			m_pvNormals[i] = normalVector[i];
 			m_pvTexCoords[i] = uvVector[i];
 		}
 	}
 	else {
 		for (int i = 0; i < m_nVertices; ++i) {
-			XMStoreFloat3(&m_pd3dxvPositions[i], XMVectorScale(XMLoadFloat3(&posVector[i]), size));
+			XMStoreFloat3(&m_pPositions[i], XMVectorScale(XMLoadFloat3(&posVector[i]), size));
 			//		XMStoreFloat3(&m_pvNormals[i], XMVectorScale(XMLoadFloat3(&normalVector[i]), size));
 			//		XMStoreFloat2(&m_pvTexCoords[i], XMVectorScale(XMLoadFloat2(&uvVector[i]), size));
 			m_pvNormals[i] = normalVector[i];
@@ -34,7 +34,7 @@ CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTextur
 	}
 
 	// Create Buffer
-	m_pd3dPositionBuffer = CreateBuffer(STATEOBJ_MGR->m_pd3dDevice.Get(), sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(STATEOBJ_MGR->m_pd3dDevice.Get(), sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dNormalBuffer = CreateBuffer(STATEOBJ_MGR->m_pd3dDevice.Get(), sizeof(XMFLOAT3), m_nVertices, m_pvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dTexCoordBuffer = CreateBuffer(STATEOBJ_MGR->m_pd3dDevice.Get(), sizeof(XMFLOAT2), m_nVertices, m_pvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
@@ -51,17 +51,17 @@ CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTextur
 
 	m_pd3dIndexBuffer = CreateBuffer(STATEOBJ_MGR->m_pd3dDevice.Get(), sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
-	float max_x = m_pd3dxvPositions[0].x, max_y = m_pd3dxvPositions[0].y, max_z = m_pd3dxvPositions[0].z;
+	float max_x = m_pPositions[0].x, max_y = m_pPositions[0].y, max_z = m_pPositions[0].z;
 	for (int i = 0; i < m_nVertices; i++) {
-		if (max_x < m_pd3dxvPositions[i].x) max_x = m_pd3dxvPositions[i].x;
-		if (max_y < m_pd3dxvPositions[i].y) max_y = m_pd3dxvPositions[i].y;
-		if (max_z < m_pd3dxvPositions[i].z) max_z = m_pd3dxvPositions[i].z;
+		if (max_x < m_pPositions[i].x) max_x = m_pPositions[i].x;
+		if (max_y < m_pPositions[i].y) max_y = m_pPositions[i].y;
+		if (max_z < m_pPositions[i].z) max_z = m_pPositions[i].z;
 	}
-	float min_x = m_pd3dxvPositions[0].x, min_y = m_pd3dxvPositions[0].y, min_z = m_pd3dxvPositions[0].z;
+	float min_x = m_pPositions[0].x, min_y = m_pPositions[0].y, min_z = m_pPositions[0].z;
 	for (int i = 0; i < m_nVertices; i++) {
-		if (min_x > m_pd3dxvPositions[i].x) min_x = m_pd3dxvPositions[i].x;
-		if (min_y > m_pd3dxvPositions[i].y) min_y = m_pd3dxvPositions[i].y;
-		if (min_z > m_pd3dxvPositions[i].z) min_z = m_pd3dxvPositions[i].z;
+		if (min_x > m_pPositions[i].x) min_x = m_pPositions[i].x;
+		if (min_y > m_pPositions[i].y) min_y = m_pPositions[i].y;
+		if (min_z > m_pPositions[i].z) min_z = m_pPositions[i].z;
 	}
 
 	m_bcBoundingCube.Center = XMFLOAT3(0, 0, 0);
@@ -165,7 +165,7 @@ bool CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
 	m_nVertices = vertexCount;
 	m_nIndices = indexCount;
 
-	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
+	m_pPositions = new XMFLOAT3[m_nVertices];
 	m_pvNormals = new XMFLOAT3[m_nVertices];
 	m_pvTexCoords = new XMFLOAT2[m_nVertices];
 	m_pnIndices = new UINT[m_nIndices];

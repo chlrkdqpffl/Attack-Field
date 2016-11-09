@@ -34,6 +34,8 @@ public:
 	XMFLOAT4						m_d3dxcEmissive;
 };
 
+enum Resource_TextrueTag;
+
 class CTexture
 {
 public:
@@ -51,11 +53,14 @@ private:
 	ID3D11SamplerState				**m_ppd3dSamplerStates;
 	int								m_nSamplerStartSlot;
 
+	Resource_TextrueTag				m_Tag;
 public:
 	void AddRef() { m_nReferences++; }
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 	void SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture);
+	void SetTexture(int nIndex, Resource_TextrueTag);
+
 	void SetSampler(int nIndex, ID3D11SamplerState *pd3dSamplerState);
 	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext);
 	void UpdateTextureShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, int nIndex = 0, int nSlot = 0);

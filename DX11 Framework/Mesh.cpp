@@ -25,7 +25,7 @@ CMesh::CMesh(ID3D11Device *pd3dDevice)
 	m_nIndexOffset = 0;
 	m_dxgiIndexFormat = DXGI_FORMAT_R32_UINT;
 
-	m_pd3dxvPositions = NULL;
+	m_pPositions = NULL;
 	m_pnIndices = NULL;
 
 	m_bcBoundingCube.Center = { 0.0f, 0.0f, 0.0f };
@@ -43,7 +43,7 @@ CMesh::~CMesh()
 	if (m_pnVertexStrides) delete[] m_pnVertexStrides;
 	if (m_pnVertexOffsets) delete[] m_pnVertexOffsets;
 
-	if (m_pd3dxvPositions) delete[] m_pd3dxvPositions;
+	if (m_pPositions) delete[] m_pPositions;
 	if (m_pnIndices) delete[] m_pnIndices;
 }
 
@@ -147,7 +147,7 @@ bool RayIntersectTriangle(XMVECTOR *pd3dxvOrigin, XMVECTOR *pd3dxvDirection, XMV
 int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRayDirection, MESHINTERSECTINFO *pd3dxIntersectInfo)
 {
 	int nIntersections = 0;
-	BYTE *pbPositions = (BYTE *)m_pd3dxvPositions + m_pnVertexOffsets[0];
+	BYTE *pbPositions = (BYTE *)m_pPositions + m_pnVertexOffsets[0];
 
 	int nOffset = (m_d3dPrimitiveTopology == D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST) ? 3 : 1;
 	int nPrimitives = (m_d3dPrimitiveTopology == D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST) ? (m_nVertices / 3) : (m_nVertices - 2);
@@ -194,12 +194,12 @@ void CMesh::CalculateBoundingCube()
 
 	for (int i = 0; i < m_nVertices; i++)
 	{
-		if (m_pd3dxvPositions[i].x < xmf3min.x) xmf3min.x = m_pd3dxvPositions[i].x;
-		if (m_pd3dxvPositions[i].x > xmf3max.x) xmf3max.x = m_pd3dxvPositions[i].x;
-		if (m_pd3dxvPositions[i].y < xmf3min.y) xmf3min.y = m_pd3dxvPositions[i].y;
-		if (m_pd3dxvPositions[i].y > xmf3max.y) xmf3max.y = m_pd3dxvPositions[i].y;
-		if (m_pd3dxvPositions[i].z < xmf3min.z) xmf3min.z = m_pd3dxvPositions[i].z;
-		if (m_pd3dxvPositions[i].z > xmf3max.z) xmf3max.z = m_pd3dxvPositions[i].z;
+		if (m_pPositions[i].x < xmf3min.x) xmf3min.x = m_pPositions[i].x;
+		if (m_pPositions[i].x > xmf3max.x) xmf3max.x = m_pPositions[i].x;
+		if (m_pPositions[i].y < xmf3min.y) xmf3min.y = m_pPositions[i].y;
+		if (m_pPositions[i].y > xmf3max.y) xmf3max.y = m_pPositions[i].y;
+		if (m_pPositions[i].z < xmf3min.z) xmf3min.z = m_pPositions[i].z;
+		if (m_pPositions[i].z > xmf3max.z) xmf3max.z = m_pPositions[i].z;
 	}
 	xmf3Cen = 
 	{ (xmf3min.x + xmf3max.x) * 0.5f,	(xmf3min.y + xmf3max.y) * 0.5f,	(xmf3min.z + xmf3max.z) * 0.5f,};
@@ -237,9 +237,9 @@ CMeshIlluminated::~CMeshIlluminated()
 XMVECTOR CMeshIlluminated::CalculateTriAngleNormal(UINT nIndex0, UINT nIndex1, UINT nIndex2)
 {
 	XMVECTOR d3dxvNormal = XMVectorZero();
-	XMVECTOR d3dxvP0 = XMLoadFloat3(&m_pd3dxvPositions[nIndex0]);
-	XMVECTOR d3dxvP1 = XMLoadFloat3(&m_pd3dxvPositions[nIndex1]);
-	XMVECTOR d3dxvP2 = XMLoadFloat3(&m_pd3dxvPositions[nIndex2]);
+	XMVECTOR d3dxvP0 = XMLoadFloat3(&m_pPositions[nIndex0]);
+	XMVECTOR d3dxvP1 = XMLoadFloat3(&m_pPositions[nIndex1]);
+	XMVECTOR d3dxvP2 = XMLoadFloat3(&m_pPositions[nIndex2]);
 	XMVECTOR d3dxvEdge1 = d3dxvP1 - d3dxvP0;
 	XMVECTOR d3dxvEdge2 = d3dxvP2 - d3dxvP0;
 	d3dxvNormal = XMVector3Cross(d3dxvEdge1, d3dxvEdge2);
@@ -254,13 +254,12 @@ void CMeshIlluminated::SetTriAngleListVertexNormal(XMVECTOR *pd3dxvNormals)
 	int nPrimitives = m_nVertices / 3;
 	for (int i = 0; i < nPrimitives; i++)
 	{
-
 		d3dxvNormal = CalculateTriAngleNormal((i * 3 + 0), (i * 3 + 1), (i * 3 + 2));
-		pd3dxvPositions = &XMLoadFloat3(m_pd3dxvPositions) + (i * 3 + 0);
+		pd3dxvPositions = &XMLoadFloat3(m_pPositions) + (i * 3 + 0);
 		pd3dxvNormals[i * 3 + 0] = d3dxvNormal;
-		pd3dxvPositions = &XMLoadFloat3(m_pd3dxvPositions) + (i * 3 + 1);
+		pd3dxvPositions = &XMLoadFloat3(m_pPositions) + (i * 3 + 1);
 		pd3dxvNormals[i * 3 + 1] = d3dxvNormal;
-		pd3dxvPositions = &XMLoadFloat3(m_pd3dxvPositions) + (i * 3 + 2);
+		pd3dxvPositions = &XMLoadFloat3(m_pPositions) + (i * 3 + 2);
 		pd3dxvNormals[i * 3 + 2] = d3dxvNormal;
 	}
 }
@@ -285,7 +284,7 @@ void CMeshIlluminated::SetAverageVertexNormal(XMVECTOR *pd3dxvNormals, int nPrim
 		}
 		d3dxvSumOfNormal = XMVector3Normalize(d3dxvSumOfNormal);
 		pd3dxvNormals[j] = d3dxvSumOfNormal;
-		pd3dxvPositions = &XMLoadFloat3(m_pd3dxvPositions) + j;
+		pd3dxvPositions = &XMLoadFloat3(m_pPositions) + j;
 
 	}
 }
@@ -366,113 +365,113 @@ CAirplaneMeshDiffused::CAirplaneMeshDiffused(ID3D11Device *pd3dDevice, float fWi
 
 	float fx = fWidth*0.5f, fy = fHeight*0.5f, fz = fDepth*0.5f;
 
-	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
+	m_pPositions = new XMFLOAT3[m_nVertices];
 
 	float x1 = fx * 0.2f, z1 = fz * 0.2f, x2 = fx * 0.1f, z3 = fz * 0.3f, z2 = ((z1 - (fz - z3)) / x1) * x2 + (fz - z3);
 	int i = 0;
 	//Upper Plane
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, +fy, +(fz + z3));
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
+	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, +(fz + z3));
+	m_pPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, +fy, +(fz + z3));
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, +(fz + z3));
+	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
+	m_pPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x2, +fy, +z2);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, -z3);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(+x2, +fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x2, +fy, +z2);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(-x2, +fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -z3);
 
 	//Lower Plane
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, -fy, 0.0f);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
+	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, 0.0f);
+	m_pPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, -fy, 0.0f);
+	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
+	m_pPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, 0.0f);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x2, -fy, +z2);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(+x2, -fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -z3);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x2, -fy, +z2);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, -z3);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(-x2, -fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
 
 	//Right Plane
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, +fy, +(fz + z3));
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x2, +fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, +(fz + z3));
+	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
+	m_pPositions[i++] = XMFLOAT3(+x2, +fy, +z2);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x2, +fy, +z2);
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x2, -fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(+x2, +fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
+	m_pPositions[i++] = XMFLOAT3(+x2, -fy, +z2);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x2, +fy, +z2);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x2, -fy, +z2);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(+x2, +fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(+x2, -fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -z3);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, -z3);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x2, -fy, +z2);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(+x2, -fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -z3);
 
 	//Back/Right Plane
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, -z3);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -z3);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, -z3);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
+	m_pPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, -fy, 0.0f);
+	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
+	m_pPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, 0.0f);
 
 	//Left Plane
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, +fy, +(fz + z3));
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x2, +fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
+	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, +(fz + z3));
+	m_pPositions[i++] = XMFLOAT3(-x2, +fy, +z2);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x2, +fy, +z2);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x2, -fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
+	m_pPositions[i++] = XMFLOAT3(-x2, +fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(-x2, -fy, +z2);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x2, -fy, +z2);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x2, +fy, +z2);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(-x2, -fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(-x2, +fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -z3);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x2, -fy, +z2);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, -z3);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(-x2, -fy, +z2);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -z3);
 
 	//Back/Left Plane
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, -fy, 0.0f);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
+	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, 0.0f);
+	m_pPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
+	m_pPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -z3);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, -z3);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -z3);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -z3);
 
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	XMCOLOR pd3dxColors[24 * 3];
 	for (int j = 0; j < m_nVertices; j++) XMStoreColor(&pd3dxColors[j], d3dxColor/* + RANDOM_COLOR*/);
 	pd3dxColors[0] = XMCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
@@ -507,22 +506,22 @@ CCubeMeshDiffused::CCubeMeshDiffused(ID3D11Device *pd3dDevice, float fWidth, flo
 
 	float fx = fWidth*0.5f, fy = fHeight*0.5f, fz = fDepth*0.5f;
 
-	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
+	m_pPositions = new XMFLOAT3[m_nVertices];
 
-	m_pd3dxvPositions[0] = XMFLOAT3(-fx, +fy, -fz);
-	m_pd3dxvPositions[1] = XMFLOAT3(+fx, +fy, -fz);
-	m_pd3dxvPositions[2] = XMFLOAT3(+fx, +fy, +fz);
-	m_pd3dxvPositions[3] = XMFLOAT3(-fx, +fy, +fz);
-	m_pd3dxvPositions[4] = XMFLOAT3(-fx, -fy, -fz);
-	m_pd3dxvPositions[5] = XMFLOAT3(+fx, -fy, -fz);
-	m_pd3dxvPositions[6] = XMFLOAT3(+fx, -fy, +fz);
-	m_pd3dxvPositions[7] = XMFLOAT3(-fx, -fy, +fz);
+	m_pPositions[0] = XMFLOAT3(-fx, +fy, -fz);
+	m_pPositions[1] = XMFLOAT3(+fx, +fy, -fz);
+	m_pPositions[2] = XMFLOAT3(+fx, +fy, +fz);
+	m_pPositions[3] = XMFLOAT3(-fx, +fy, +fz);
+	m_pPositions[4] = XMFLOAT3(-fx, -fy, -fz);
+	m_pPositions[5] = XMFLOAT3(+fx, -fy, -fz);
+	m_pPositions[6] = XMFLOAT3(+fx, -fy, +fz);
+	m_pPositions[7] = XMFLOAT3(-fx, -fy, +fz);
 
 	XMCOLOR pd3dxColors[8];
 	for (int i = 0; i < 8; i++) 
 		XMStoreColor(&pd3dxColors[i], d3dxColor/* + RANDOM_COLOR*/);
 
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dColorBuffer = CreateBuffer(pd3dDevice, sizeof(XMCOLOR), m_nVertices, pd3dxColors, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	ID3D11Buffer *pd3dBuffers[2] = { m_pd3dPositionBuffer, m_pd3dColorBuffer };
@@ -591,7 +590,7 @@ CSphereMeshDiffused::CSphereMeshDiffused(ID3D11Device *pd3dDevice, float fRadius
 	m_nVertices = (nSlices * nStacks) * 3 * 2;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
+	m_pPositions = new XMFLOAT3[m_nVertices];
 
 	float theta_i, theta_ii, phi_j, phi_jj, fRadius_j, fRadius_jj, y_j, y_jj;
 	for (int j = 0, k = 0; j < nStacks; j++)
@@ -606,19 +605,19 @@ CSphereMeshDiffused::CSphereMeshDiffused(ID3D11Device *pd3dDevice, float fRadius
 		{
 			theta_i = float(2 * D3DX_PI / nSlices) * i;
 			theta_ii = float(2 * D3DX_PI / nSlices) * (i + 1);
-			m_pd3dxvPositions[k++] = XMFLOAT3(fRadius_j*cosf(theta_i), y_j, fRadius_j*sinf(theta_i));
-			m_pd3dxvPositions[k++] = XMFLOAT3(fRadius_jj*cosf(theta_i), y_jj, fRadius_jj*sinf(theta_i));
-			m_pd3dxvPositions[k++] = XMFLOAT3(fRadius_j*cosf(theta_ii), y_j, fRadius_j*sinf(theta_ii));
-			m_pd3dxvPositions[k++] = XMFLOAT3(fRadius_jj*cosf(theta_i), y_jj, fRadius_jj*sinf(theta_i));
-			m_pd3dxvPositions[k++] = XMFLOAT3(fRadius_jj*cosf(theta_ii), y_jj, fRadius_jj*sinf(theta_ii));
-			m_pd3dxvPositions[k++] = XMFLOAT3(fRadius_j*cosf(theta_ii), y_j, fRadius_j*sinf(theta_ii));
+			m_pPositions[k++] = XMFLOAT3(fRadius_j*cosf(theta_i), y_j, fRadius_j*sinf(theta_i));
+			m_pPositions[k++] = XMFLOAT3(fRadius_jj*cosf(theta_i), y_jj, fRadius_jj*sinf(theta_i));
+			m_pPositions[k++] = XMFLOAT3(fRadius_j*cosf(theta_ii), y_j, fRadius_j*sinf(theta_ii));
+			m_pPositions[k++] = XMFLOAT3(fRadius_jj*cosf(theta_i), y_jj, fRadius_jj*sinf(theta_i));
+			m_pPositions[k++] = XMFLOAT3(fRadius_jj*cosf(theta_ii), y_jj, fRadius_jj*sinf(theta_ii));
+			m_pPositions[k++] = XMFLOAT3(fRadius_j*cosf(theta_ii), y_j, fRadius_j*sinf(theta_ii));
 		}
 	}
 
 	XMCOLOR *pd3dxColors = new XMCOLOR[m_nVertices];
 	for (int i = 0; i < m_nVertices; i++) XMStoreColor(&pd3dxColors[i], d3dxColor/* + RANDOM_COLOR*/);
 
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dColorBuffer = CreateBuffer(pd3dDevice, sizeof(XMCOLOR), m_nVertices, pd3dxColors, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	delete[] pd3dxColors;
@@ -644,18 +643,18 @@ CCubeMeshIlluminated::CCubeMeshIlluminated(ID3D11Device *pd3dDevice, float fWidt
 
 	float fx = fWidth*0.5f, fy = fHeight*0.5f, fz = fDepth*0.5f;
 
-	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
+	m_pPositions = new XMFLOAT3[m_nVertices];
 
-	m_pd3dxvPositions[0] = XMFLOAT3(-fx, +fy, -fz);
-	m_pd3dxvPositions[1] = XMFLOAT3(+fx, +fy, -fz);
-	m_pd3dxvPositions[2] = XMFLOAT3(+fx, +fy, +fz);
-	m_pd3dxvPositions[3] = XMFLOAT3(-fx, +fy, +fz);
-	m_pd3dxvPositions[4] = XMFLOAT3(-fx, -fy, -fz);
-	m_pd3dxvPositions[5] = XMFLOAT3(+fx, -fy, -fz);
-	m_pd3dxvPositions[6] = XMFLOAT3(+fx, -fy, +fz);
-	m_pd3dxvPositions[7] = XMFLOAT3(-fx, -fy, +fz);
+	m_pPositions[0] = XMFLOAT3(-fx, +fy, -fz);
+	m_pPositions[1] = XMFLOAT3(+fx, +fy, -fz);
+	m_pPositions[2] = XMFLOAT3(+fx, +fy, +fz);
+	m_pPositions[3] = XMFLOAT3(-fx, +fy, +fz);
+	m_pPositions[4] = XMFLOAT3(-fx, -fy, -fz);
+	m_pPositions[5] = XMFLOAT3(+fx, -fy, -fz);
+	m_pPositions[6] = XMFLOAT3(+fx, -fy, +fz);
+	m_pPositions[7] = XMFLOAT3(-fx, -fy, +fz);
 
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	XMFLOAT3 pd3dxvNormals[8];
 	for (int i = 0; i < 8; i++) pd3dxvNormals[i] = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -708,11 +707,11 @@ CSphereMeshIlluminated::CSphereMeshIlluminated(ID3D11Device *pd3dDevice, float f
 
 #ifdef _WITH_INDEX_BUFFER
 	m_nVertices = 2 + (nSlices * (nStacks - 1));
-	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
+	m_pPositions = new XMFLOAT3[m_nVertices];
 	XMFLOAT3 *pd3dxvNormals = new XMFLOAT3[m_nVertices];
 
-	m_pd3dxvPositions[k] = XMFLOAT3(0.0f, +fRadius, 0.0f);
-	XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pd3dxvPositions[k]))); k++;
+	m_pPositions[k] = XMFLOAT3(0.0f, +fRadius, 0.0f);
+	XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pPositions[k]))); k++;
 	float theta_i, phi_j;
 	for (int j = 1; j < nStacks; j++)
 	{
@@ -720,14 +719,14 @@ CSphereMeshIlluminated::CSphereMeshIlluminated(ID3D11Device *pd3dDevice, float f
 		for (int i = 0; i < nSlices; i++)
 		{
 			theta_i = fDeltaTheta * i;
-			m_pd3dxvPositions[k] = XMFLOAT3(fRadius*sinf(phi_j)*cosf(theta_i), fRadius*cosf(phi_j), fRadius*sinf(phi_j)*sinf(theta_i));
-			XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pd3dxvPositions[k]))); k++;
+			m_pPositions[k] = XMFLOAT3(fRadius*sinf(phi_j)*cosf(theta_i), fRadius*cosf(phi_j), fRadius*sinf(phi_j)*sinf(theta_i));
+			XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pPositions[k]))); k++;
 		}
 	}
-	m_pd3dxvPositions[k] = XMFLOAT3(0.0f, -fRadius, 0.0f);
-	XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pd3dxvPositions[k]))); k++;
+	m_pPositions[k] = XMFLOAT3(0.0f, -fRadius, 0.0f);
+	XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pPositions[k]))); k++;
 
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, pd3dxvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	if (pd3dxvNormals) delete[] pd3dxvNormals;
@@ -768,7 +767,7 @@ CSphereMeshIlluminated::CSphereMeshIlluminated(ID3D11Device *pd3dDevice, float f
 	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 #else
 	m_nVertices = (nSlices * 3) * 2 + (nSlices * (nStacks - 2) * 3 * 2);
-	m_pd3dxvPositions = new XMVECTOR[m_nVertices];
+	m_pPositions = new XMVECTOR[m_nVertices];
 	XMVECTOR *pd3dxvNormals = new XMVECTOR[m_nVertices];
 
 	float theta_i, theta_ii, phi_j = 0.0f, phi_jj = fDeltaPhi;
@@ -776,12 +775,12 @@ CSphereMeshIlluminated::CSphereMeshIlluminated(ID3D11Device *pd3dDevice, float f
 	{
 		theta_i = fDeltaTheta * i;
 		theta_ii = fDeltaTheta * (i + 1);
-		m_pd3dxvPositions[k] = XMVECTOR(0.0f, +fRadius, 0.0f);
-		D3DXVec3Normalize(&pd3dxvNormals[k], &m_pd3dxvPositions[k]); k++;
-		m_pd3dxvPositions[k] = XMVECTOR(fRadius*cosf(theta_i)*sinf(phi_jj), fRadius*cosf(phi_jj), fRadius*sinf(theta_i)*sinf(phi_jj));
-		D3DXVec3Normalize(&pd3dxvNormals[k], &m_pd3dxvPositions[k]); k++;
-		m_pd3dxvPositions[k] = XMVECTOR(fRadius*cosf(theta_ii)*sinf(phi_jj), fRadius*cosf(phi_jj), fRadius*sinf(theta_ii)*sinf(phi_jj));
-		D3DXVec3Normalize(&pd3dxvNormals[k], &m_pd3dxvPositions[k]); k++;
+		m_pPositions[k] = XMVECTOR(0.0f, +fRadius, 0.0f);
+		D3DXVec3Normalize(&pd3dxvNormals[k], &m_pPositions[k]); k++;
+		m_pPositions[k] = XMVECTOR(fRadius*cosf(theta_i)*sinf(phi_jj), fRadius*cosf(phi_jj), fRadius*sinf(theta_i)*sinf(phi_jj));
+		D3DXVec3Normalize(&pd3dxvNormals[k], &m_pPositions[k]); k++;
+		m_pPositions[k] = XMVECTOR(fRadius*cosf(theta_ii)*sinf(phi_jj), fRadius*cosf(phi_jj), fRadius*sinf(theta_ii)*sinf(phi_jj));
+		D3DXVec3Normalize(&pd3dxvNormals[k], &m_pPositions[k]); k++;
 	}
 
 	for (int j = 1; j < nStacks - 1; j++)
@@ -792,18 +791,18 @@ CSphereMeshIlluminated::CSphereMeshIlluminated(ID3D11Device *pd3dDevice, float f
 		{
 			theta_i = fDeltaTheta * i;
 			theta_ii = fDeltaTheta * (i + 1);
-			m_pd3dxvPositions[k] = XMVECTOR(fRadius*cosf(theta_i)*sinf(phi_j), fRadius*cosf(phi_j), fRadius*sinf(theta_i)*sinf(phi_j));
-			D3DXVec3Normalize(&pd3dxvNormals[k], &m_pd3dxvPositions[k]); k++;
-			m_pd3dxvPositions[k] = XMVECTOR(fRadius*cosf(theta_i)*sinf(phi_jj), fRadius*cosf(phi_jj), fRadius*sinf(theta_i)*sinf(phi_jj));
-			D3DXVec3Normalize(&pd3dxvNormals[k], &m_pd3dxvPositions[k]); k++;
-			m_pd3dxvPositions[k] = XMVECTOR(fRadius*cosf(theta_ii)*sinf(phi_j), fRadius*cosf(phi_j), fRadius*sinf(theta_ii)*sinf(phi_j));
-			D3DXVec3Normalize(&pd3dxvNormals[k], &m_pd3dxvPositions[k]); k++;
-			m_pd3dxvPositions[k] = XMVECTOR(fRadius*cosf(theta_i)*sinf(phi_jj), fRadius*cosf(phi_jj), fRadius*sinf(theta_i)*sinf(phi_jj));
-			D3DXVec3Normalize(&pd3dxvNormals[k], &m_pd3dxvPositions[k]); k++;
-			m_pd3dxvPositions[k] = XMVECTOR(fRadius*cosf(theta_ii)*sinf(phi_jj), fRadius*cosf(phi_jj), fRadius*sinf(theta_ii)*sinf(phi_jj));
-			D3DXVec3Normalize(&pd3dxvNormals[k], &m_pd3dxvPositions[k]); k++;
-			m_pd3dxvPositions[k] = XMVECTOR(fRadius*cosf(theta_ii)*sinf(phi_j), fRadius*cosf(phi_j), fRadius*sinf(theta_ii)*sinf(phi_j));
-			D3DXVec3Normalize(&pd3dxvNormals[k], &m_pd3dxvPositions[k]); k++;
+			m_pPositions[k] = XMVECTOR(fRadius*cosf(theta_i)*sinf(phi_j), fRadius*cosf(phi_j), fRadius*sinf(theta_i)*sinf(phi_j));
+			D3DXVec3Normalize(&pd3dxvNormals[k], &m_pPositions[k]); k++;
+			m_pPositions[k] = XMVECTOR(fRadius*cosf(theta_i)*sinf(phi_jj), fRadius*cosf(phi_jj), fRadius*sinf(theta_i)*sinf(phi_jj));
+			D3DXVec3Normalize(&pd3dxvNormals[k], &m_pPositions[k]); k++;
+			m_pPositions[k] = XMVECTOR(fRadius*cosf(theta_ii)*sinf(phi_j), fRadius*cosf(phi_j), fRadius*sinf(theta_ii)*sinf(phi_j));
+			D3DXVec3Normalize(&pd3dxvNormals[k], &m_pPositions[k]); k++;
+			m_pPositions[k] = XMVECTOR(fRadius*cosf(theta_i)*sinf(phi_jj), fRadius*cosf(phi_jj), fRadius*sinf(theta_i)*sinf(phi_jj));
+			D3DXVec3Normalize(&pd3dxvNormals[k], &m_pPositions[k]); k++;
+			m_pPositions[k] = XMVECTOR(fRadius*cosf(theta_ii)*sinf(phi_jj), fRadius*cosf(phi_jj), fRadius*sinf(theta_ii)*sinf(phi_jj));
+			D3DXVec3Normalize(&pd3dxvNormals[k], &m_pPositions[k]); k++;
+			m_pPositions[k] = XMVECTOR(fRadius*cosf(theta_ii)*sinf(phi_j), fRadius*cosf(phi_j), fRadius*sinf(theta_ii)*sinf(phi_j));
+			D3DXVec3Normalize(&pd3dxvNormals[k], &m_pPositions[k]); k++;
 		}
 	}
 	phi_j = fDeltaPhi * (nStacks - 1);
@@ -811,15 +810,15 @@ CSphereMeshIlluminated::CSphereMeshIlluminated(ID3D11Device *pd3dDevice, float f
 	{
 		theta_i = fDeltaTheta * i;
 		theta_ii = fDeltaTheta * (i + 1);
-		m_pd3dxvPositions[k] = XMVECTOR(0.0f, -fRadius, 0.0f);
-		D3DXVec3Normalize(&pd3dxvNormals[k], &m_pd3dxvPositions[k]); k++;
-		m_pd3dxvPositions[k] = XMVECTOR(fRadius*cosf(theta_ii)*sinf(phi_j), fRadius*cosf(phi_j), fRadius*sinf(theta_ii)*sinf(phi_j));
-		D3DXVec3Normalize(&pd3dxvNormals[k], &m_pd3dxvPositions[k]); k++;
-		m_pd3dxvPositions[k] = XMVECTOR(fRadius*cosf(theta_i)*sinf(phi_j), fRadius*cosf(phi_j), fRadius*sinf(theta_i)*sinf(phi_j));
-		D3DXVec3Normalize(&pd3dxvNormals[k], &m_pd3dxvPositions[k]); k++;
+		m_pPositions[k] = XMVECTOR(0.0f, -fRadius, 0.0f);
+		D3DXVec3Normalize(&pd3dxvNormals[k], &m_pPositions[k]); k++;
+		m_pPositions[k] = XMVECTOR(fRadius*cosf(theta_ii)*sinf(phi_j), fRadius*cosf(phi_j), fRadius*sinf(theta_ii)*sinf(phi_j));
+		D3DXVec3Normalize(&pd3dxvNormals[k], &m_pPositions[k]); k++;
+		m_pPositions[k] = XMVECTOR(fRadius*cosf(theta_i)*sinf(phi_j), fRadius*cosf(phi_j), fRadius*sinf(theta_i)*sinf(phi_j));
+		D3DXVec3Normalize(&pd3dxvNormals[k], &m_pPositions[k]); k++;
 	}
 
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMVECTOR), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMVECTOR), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMVECTOR), m_nVertices, pd3dxvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	if (pd3dxvNormals) delete[] pd3dxvNormals;
@@ -847,55 +846,55 @@ CCubeMeshTextured::CCubeMeshTextured(ID3D11Device *pd3dDevice, float fWidth, flo
 
 	float fx = fWidth*0.5f, fy = fHeight*0.5f, fz = fDepth*0.5f;
 
-	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
+	m_pPositions = new XMFLOAT3[m_nVertices];
 	int i = 0;
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
 	
 	XMFLOAT2 pd3dxvTexCoords[36];
 	i = 0;
@@ -947,7 +946,7 @@ CCubeMeshTextured::CCubeMeshTextured(ID3D11Device *pd3dDevice, float fWidth, flo
 	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 1.0f);
 	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 1.0f);
 
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, pd3dxvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	ID3D11Buffer *pd3dBuffers[2] = { m_pd3dPositionBuffer, m_pd3dTexCoordBuffer };
@@ -970,7 +969,7 @@ CSphereMeshTextured::CSphereMeshTextured(ID3D11Device *pd3dDevice, float fRadius
 	m_nVertices = (nSlices * nStacks) * 3 * 2;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
+	m_pPositions = new XMFLOAT3[m_nVertices];
 	XMFLOAT2 *pd3dxvTexCoords = new XMFLOAT2[m_nVertices];
 
 	float theta_i, theta_ii, phi_j, phi_jj, fRadius_j, fRadius_jj, y_j, y_jj;
@@ -986,22 +985,22 @@ CSphereMeshTextured::CSphereMeshTextured(ID3D11Device *pd3dDevice, float fRadius
 		{
 			theta_i = float(2 * D3DX_PI / nSlices) * i;
 			theta_ii = float(2 * D3DX_PI / nSlices) * (i + 1);
-			m_pd3dxvPositions[k] = XMFLOAT3(fRadius_j*cosf(theta_i), y_j, fRadius_j*sinf(theta_i));
+			m_pPositions[k] = XMFLOAT3(fRadius_j*cosf(theta_i), y_j, fRadius_j*sinf(theta_i));
 			pd3dxvTexCoords[k++] = XMFLOAT2(float(i) / float(nSlices), float(j) / float(nStacks));
-			m_pd3dxvPositions[k] = XMFLOAT3(fRadius_jj*cosf(theta_i), y_jj, fRadius_jj*sinf(theta_i));
+			m_pPositions[k] = XMFLOAT3(fRadius_jj*cosf(theta_i), y_jj, fRadius_jj*sinf(theta_i));
 			pd3dxvTexCoords[k++] = XMFLOAT2(float(i) / float(nSlices), float(j + 1) / float(nStacks));
-			m_pd3dxvPositions[k] = XMFLOAT3(fRadius_j*cosf(theta_ii), y_j, fRadius_j*sinf(theta_ii));
+			m_pPositions[k] = XMFLOAT3(fRadius_j*cosf(theta_ii), y_j, fRadius_j*sinf(theta_ii));
 			pd3dxvTexCoords[k++] = XMFLOAT2(float(i + 1) / float(nSlices), float(j) / float(nStacks));
-			m_pd3dxvPositions[k] = XMFLOAT3(fRadius_jj*cosf(theta_i), y_jj, fRadius_jj*sinf(theta_i));
+			m_pPositions[k] = XMFLOAT3(fRadius_jj*cosf(theta_i), y_jj, fRadius_jj*sinf(theta_i));
 			pd3dxvTexCoords[k++] = XMFLOAT2(float(i) / float(nSlices), float(j + 1) / float(nStacks));
-			m_pd3dxvPositions[k] = XMFLOAT3(fRadius_jj*cosf(theta_ii), y_jj, fRadius_jj*sinf(theta_ii));
+			m_pPositions[k] = XMFLOAT3(fRadius_jj*cosf(theta_ii), y_jj, fRadius_jj*sinf(theta_ii));
 			pd3dxvTexCoords[k++] = XMFLOAT2(float(i + 1) / float(nSlices), float(j + 1) / float(nStacks));
-			m_pd3dxvPositions[k] = XMFLOAT3(fRadius_j*cosf(theta_ii), y_j, fRadius_j*sinf(theta_ii));
+			m_pPositions[k] = XMFLOAT3(fRadius_j*cosf(theta_ii), y_j, fRadius_j*sinf(theta_ii));
 			pd3dxvTexCoords[k++] = XMFLOAT2(float(i + 1) / float(nSlices), float(j) / float(nStacks));
 		}
 	}
 
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, pd3dxvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	delete[] pd3dxvTexCoords;
@@ -1028,55 +1027,55 @@ CCubeMeshTexturedIlluminated::CCubeMeshTexturedIlluminated(ID3D11Device *pd3dDev
 
 	float fx = fWidth*0.5f, fy = fHeight*0.5f, fz = fDepth*0.5f;
 
-	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
+	m_pPositions = new XMFLOAT3[m_nVertices];
 	int i = 0;
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
 
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
-	m_pd3dxvPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
+	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
 
 	XMFLOAT2 pd3dxvTexCoords[36];
 	i = 0;
@@ -1135,7 +1134,7 @@ CCubeMeshTexturedIlluminated::CCubeMeshTexturedIlluminated(ID3D11Device *pd3dDev
 	CalculateVertexNormal(pxm);
 	for (int i = 0; i < 36; i++) XMStoreFloat3(&pd3dxvNormals[i], pxm[i]);
 
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, pd3dxvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, pd3dxvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
@@ -1158,7 +1157,7 @@ CSphereMeshTexturedIlluminated::CSphereMeshTexturedIlluminated(ID3D11Device *pd3
 	m_nVertices = (nSlices * nStacks) * 3 * 2;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
+	m_pPositions = new XMFLOAT3[m_nVertices];
 	XMFLOAT3 *pd3dxvNormals = new XMFLOAT3[m_nVertices];
 	XMFLOAT2 *pd3dxvTexCoords = new XMFLOAT2[m_nVertices];
 
@@ -1175,28 +1174,28 @@ CSphereMeshTexturedIlluminated::CSphereMeshTexturedIlluminated(ID3D11Device *pd3
 		{
 			theta_i = float(2 * D3DX_PI / nSlices) * i;
 			theta_ii = float(2 * D3DX_PI / nSlices) * (i + 1);
-			m_pd3dxvPositions[k] = XMFLOAT3(fRadius_j*cosf(theta_i), y_j, fRadius_j*sinf(theta_i));
+			m_pPositions[k] = XMFLOAT3(fRadius_j*cosf(theta_i), y_j, fRadius_j*sinf(theta_i));
 			pd3dxvTexCoords[k] = XMFLOAT2(float(i) / float(nSlices), float(j) / float(nStacks));
-			XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pd3dxvPositions[k]))); k++;
-			m_pd3dxvPositions[k] = XMFLOAT3(fRadius_jj*cosf(theta_i), y_jj, fRadius_jj*sinf(theta_i));
+			XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pPositions[k]))); k++;
+			m_pPositions[k] = XMFLOAT3(fRadius_jj*cosf(theta_i), y_jj, fRadius_jj*sinf(theta_i));
 			pd3dxvTexCoords[k] = XMFLOAT2(float(i) / float(nSlices), float(j + 1) / float(nStacks));
-			XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pd3dxvPositions[k]))); k++;
-			m_pd3dxvPositions[k] = XMFLOAT3(fRadius_j*cosf(theta_ii), y_j, fRadius_j*sinf(theta_ii));
+			XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pPositions[k]))); k++;
+			m_pPositions[k] = XMFLOAT3(fRadius_j*cosf(theta_ii), y_j, fRadius_j*sinf(theta_ii));
 			pd3dxvTexCoords[k] = XMFLOAT2(float(i + 1) / float(nSlices), float(j) / float(nStacks));
-			XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pd3dxvPositions[k]))); k++;
-			m_pd3dxvPositions[k] = XMFLOAT3(fRadius_jj*cosf(theta_i), y_jj, fRadius_jj*sinf(theta_i));
+			XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pPositions[k]))); k++;
+			m_pPositions[k] = XMFLOAT3(fRadius_jj*cosf(theta_i), y_jj, fRadius_jj*sinf(theta_i));
 			pd3dxvTexCoords[k] = XMFLOAT2(float(i) / float(nSlices), float(j + 1) / float(nStacks));
-			XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pd3dxvPositions[k]))); k++;
-			m_pd3dxvPositions[k] = XMFLOAT3(fRadius_jj*cosf(theta_ii), y_jj, fRadius_jj*sinf(theta_ii));
+			XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pPositions[k]))); k++;
+			m_pPositions[k] = XMFLOAT3(fRadius_jj*cosf(theta_ii), y_jj, fRadius_jj*sinf(theta_ii));
 			pd3dxvTexCoords[k] = XMFLOAT2(float(i + 1) / float(nSlices), float(j + 1) / float(nStacks));
-			XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pd3dxvPositions[k]))); k++;
-			m_pd3dxvPositions[k] = XMFLOAT3(fRadius_j*cosf(theta_ii), y_j, fRadius_j*sinf(theta_ii));
+			XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pPositions[k]))); k++;
+			m_pPositions[k] = XMFLOAT3(fRadius_j*cosf(theta_ii), y_j, fRadius_j*sinf(theta_ii));
 			pd3dxvTexCoords[k] = XMFLOAT2(float(i + 1) / float(nSlices), float(j) / float(nStacks));
-			XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pd3dxvPositions[k]))); k++;
+			XMStoreFloat3(&pd3dxvNormals[k], XMVector3Normalize(XMLoadFloat3(&m_pPositions[k]))); k++;
 		}
 	}
 
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, pd3dxvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, pd3dxvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
@@ -1224,17 +1223,17 @@ CTextureToScreenRectMesh::CTextureToScreenRectMesh(ID3D11Device *pd3dDevice, flo
 
 	float fx = fWidth*0.5f, fy = fHeight*0.5f;
 
-	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
+	m_pPositions = new XMFLOAT3[m_nVertices];
 	XMFLOAT2 *pd3dxvTexCoords = new XMFLOAT2[m_nVertices];
 
-	m_pd3dxvPositions[0] = XMFLOAT3(+fx, +fy, 0.0f); pd3dxvTexCoords[0] = XMFLOAT2(1.0f, 0.0f);
-	m_pd3dxvPositions[1] = XMFLOAT3(+fx, -fy, 0.0f); pd3dxvTexCoords[1] = XMFLOAT2(1.0f, 1.0f);
-	m_pd3dxvPositions[2] = XMFLOAT3(-fx, -fy, 0.0f); pd3dxvTexCoords[2] = XMFLOAT2(0.0f, 1.0f);
-	m_pd3dxvPositions[3] = XMFLOAT3(-fx, -fy, 0.0f); pd3dxvTexCoords[3] = XMFLOAT2(0.0f, 1.0f);
-	m_pd3dxvPositions[4] = XMFLOAT3(-fx, +fy, 0.0f); pd3dxvTexCoords[4] = XMFLOAT2(0.0f, 0.0f);
-	m_pd3dxvPositions[5] = XMFLOAT3(+fx, +fy, 0.0f); pd3dxvTexCoords[5] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[0] = XMFLOAT3(+fx, +fy, 0.0f); pd3dxvTexCoords[0] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[1] = XMFLOAT3(+fx, -fy, 0.0f); pd3dxvTexCoords[1] = XMFLOAT2(1.0f, 1.0f);
+	m_pPositions[2] = XMFLOAT3(-fx, -fy, 0.0f); pd3dxvTexCoords[2] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[3] = XMFLOAT3(-fx, -fy, 0.0f); pd3dxvTexCoords[3] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[4] = XMFLOAT3(-fx, +fy, 0.0f); pd3dxvTexCoords[4] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[5] = XMFLOAT3(+fx, +fy, 0.0f); pd3dxvTexCoords[5] = XMFLOAT2(1.0f, 0.0f);
 
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, pd3dxvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	delete[] pd3dxvTexCoords;
@@ -1260,38 +1259,38 @@ CTexturedRectMesh::CTexturedRectMesh(ID3D11Device *pd3dDevice, float fWidth, flo
 
 	float fx = fWidth*0.5f, fy = fHeight*0.5f, fz = fLength*0.5f;
 
-	m_pd3dxvPositions = new XMFLOAT3[m_nVertices];
+	m_pPositions = new XMFLOAT3[m_nVertices];
 	XMFLOAT2 *pd3dxvTexCoords = new XMFLOAT2[m_nVertices];
 
 	if ((fx != 0.0f) && (fz != 0.0f) && (fy == 0.0f))
 	{
-		m_pd3dxvPositions[0] = XMFLOAT3(+fx, 0.0f, +fz); pd3dxvTexCoords[0] = XMFLOAT2(1.0f, 0.0f);
-		m_pd3dxvPositions[1] = XMFLOAT3(+fx, 0.0f, -fz); pd3dxvTexCoords[1] = XMFLOAT2(1.0f, 1.0f);
-		m_pd3dxvPositions[2] = XMFLOAT3(-fx, 0.0f, -fz); pd3dxvTexCoords[2] = XMFLOAT2(0.0f, 1.0f);
-		m_pd3dxvPositions[3] = XMFLOAT3(-fx, 0.0f, -fz); pd3dxvTexCoords[3] = XMFLOAT2(0.0f, 1.0f);
-		m_pd3dxvPositions[4] = XMFLOAT3(-fx, 0.0f, +fz); pd3dxvTexCoords[4] = XMFLOAT2(0.0f, 0.0f);
-		m_pd3dxvPositions[5] = XMFLOAT3(+fx, 0.0f, +fz); pd3dxvTexCoords[5] = XMFLOAT2(1.0f, 0.0f);
+		m_pPositions[0] = XMFLOAT3(+fx, 0.0f, +fz); pd3dxvTexCoords[0] = XMFLOAT2(1.0f, 0.0f);
+		m_pPositions[1] = XMFLOAT3(+fx, 0.0f, -fz); pd3dxvTexCoords[1] = XMFLOAT2(1.0f, 1.0f);
+		m_pPositions[2] = XMFLOAT3(-fx, 0.0f, -fz); pd3dxvTexCoords[2] = XMFLOAT2(0.0f, 1.0f);
+		m_pPositions[3] = XMFLOAT3(-fx, 0.0f, -fz); pd3dxvTexCoords[3] = XMFLOAT2(0.0f, 1.0f);
+		m_pPositions[4] = XMFLOAT3(-fx, 0.0f, +fz); pd3dxvTexCoords[4] = XMFLOAT2(0.0f, 0.0f);
+		m_pPositions[5] = XMFLOAT3(+fx, 0.0f, +fz); pd3dxvTexCoords[5] = XMFLOAT2(1.0f, 0.0f);
 	}
 	else if ((fx != 0.0f) && (fy != 0.0f) && (fz == 0.0f))
 	{
-		m_pd3dxvPositions[0] = XMFLOAT3(+fx, +fy, 0.0f); pd3dxvTexCoords[0] = XMFLOAT2(1.0f, 0.0f);
-		m_pd3dxvPositions[1] = XMFLOAT3(+fx, -fy, 0.0f); pd3dxvTexCoords[1] = XMFLOAT2(1.0f, 1.0f);
-		m_pd3dxvPositions[2] = XMFLOAT3(-fx, -fy, 0.0f); pd3dxvTexCoords[2] = XMFLOAT2(0.0f, 1.0f);
-		m_pd3dxvPositions[3] = XMFLOAT3(-fx, -fy, 0.0f); pd3dxvTexCoords[3] = XMFLOAT2(0.0f, 1.0f);
-		m_pd3dxvPositions[4] = XMFLOAT3(-fx, +fy, 0.0f); pd3dxvTexCoords[4] = XMFLOAT2(0.0f, 0.0f);
-		m_pd3dxvPositions[5] = XMFLOAT3(+fx, +fy, 0.0f); pd3dxvTexCoords[5] = XMFLOAT2(1.0f, 0.0f);
+		m_pPositions[0] = XMFLOAT3(+fx, +fy, 0.0f); pd3dxvTexCoords[0] = XMFLOAT2(1.0f, 0.0f);
+		m_pPositions[1] = XMFLOAT3(+fx, -fy, 0.0f); pd3dxvTexCoords[1] = XMFLOAT2(1.0f, 1.0f);
+		m_pPositions[2] = XMFLOAT3(-fx, -fy, 0.0f); pd3dxvTexCoords[2] = XMFLOAT2(0.0f, 1.0f);
+		m_pPositions[3] = XMFLOAT3(-fx, -fy, 0.0f); pd3dxvTexCoords[3] = XMFLOAT2(0.0f, 1.0f);
+		m_pPositions[4] = XMFLOAT3(-fx, +fy, 0.0f); pd3dxvTexCoords[4] = XMFLOAT2(0.0f, 0.0f);
+		m_pPositions[5] = XMFLOAT3(+fx, +fy, 0.0f); pd3dxvTexCoords[5] = XMFLOAT2(1.0f, 0.0f);
 	}
 	else
 	{
-		m_pd3dxvPositions[0] = XMFLOAT3(0.0f, +fy, -fz); pd3dxvTexCoords[0] = XMFLOAT2(1.0f, 0.0f);
-		m_pd3dxvPositions[1] = XMFLOAT3(0.0f, -fy, -fz); pd3dxvTexCoords[1] = XMFLOAT2(1.0f, 1.0f);
-		m_pd3dxvPositions[2] = XMFLOAT3(0.0f, -fy, +fz); pd3dxvTexCoords[2] = XMFLOAT2(0.0f, 1.0f);
-		m_pd3dxvPositions[3] = XMFLOAT3(0.0f, -fy, +fz); pd3dxvTexCoords[3] = XMFLOAT2(0.0f, 1.0f);
-		m_pd3dxvPositions[4] = XMFLOAT3(0.0f, +fy, +fz); pd3dxvTexCoords[4] = XMFLOAT2(0.0f, 0.0f);
-		m_pd3dxvPositions[5] = XMFLOAT3(0.0f, +fy, -fz); pd3dxvTexCoords[5] = XMFLOAT2(1.0f, 0.0f);
+		m_pPositions[0] = XMFLOAT3(0.0f, +fy, -fz); pd3dxvTexCoords[0] = XMFLOAT2(1.0f, 0.0f);
+		m_pPositions[1] = XMFLOAT3(0.0f, -fy, -fz); pd3dxvTexCoords[1] = XMFLOAT2(1.0f, 1.0f);
+		m_pPositions[2] = XMFLOAT3(0.0f, -fy, +fz); pd3dxvTexCoords[2] = XMFLOAT2(0.0f, 1.0f);
+		m_pPositions[3] = XMFLOAT3(0.0f, -fy, +fz); pd3dxvTexCoords[3] = XMFLOAT2(0.0f, 1.0f);
+		m_pPositions[4] = XMFLOAT3(0.0f, +fy, +fz); pd3dxvTexCoords[4] = XMFLOAT2(0.0f, 0.0f);
+		m_pPositions[5] = XMFLOAT3(0.0f, +fy, -fz); pd3dxvTexCoords[5] = XMFLOAT2(1.0f, 0.0f);
 	}
 
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, pd3dxvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	delete[] pd3dxvTexCoords;

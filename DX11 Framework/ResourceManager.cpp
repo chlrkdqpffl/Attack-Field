@@ -23,14 +23,22 @@ void CResourceManager::InitializeManager()
 	AddResourece(eTexture_Terrain,				"../Assets/Image/Terrain/Base_Texture.jpg");
 	AddResourece(eTexture_TerrainDetail,		"../Assets/Image/Terrain/Detail_Texture_7.jpg");
 	AddResourece(eTexture_HeightMap,			"../Assets/Image/Terrain/HeightMap.raw");
+
+	//	AddResourece(eTexture_Terrain,				"../Assets/Image/Terrain/TerrainDiffuse2.jpg");
+	//	AddResourece(eTexture_TerrainDetail,		"../Assets/Image/Terrain/Detail_Texture_7.jpg");
+	//	AddResourece(eTexture_HeightMap,			"../Assets/Image/Terrain/TerrainHeightMap2.raw");
+	AddResourece(eTexture_TerrainNormal,		"../Assets/Image/Terrain/TerrainNormal2.jpg");
+	
+
 	AddResourece(eTexture_Water,				"../Assets/Image/Terrain/water.jpg");
 	AddResourece(eTexture_WaterDetail,			"../Assets/Image/Terrain/Water_Detail_Texture_0.dds");
 
 	//  etc
-	AddResourece(eTexture_Stone,				"../Assets/Image/Miscellaneous/Stone01.jpg");
+	AddResourece(eTexture_Stone,				"../Assets/Image/Miscellaneous/stones.dds");
+	AddResourece(eTexture_StoneNormal,			"../Assets/Image/Miscellaneous/stones_nmap.dds");
 	AddResourece(eTexture_Bricks,				"../Assets/Image/Miscellaneous/bricks.dds");
+	AddResourece(eTexture_BricksNormal,			"../Assets/Image/Miscellaneous/bricks_nmap.dds");
 	AddResourece(eTexture_Wood,					"../Assets/Image/Miscellaneous/Wood01.jpg");
-	
 
 
 
@@ -61,27 +69,37 @@ void CResourceManager::AddResourece(Resource_MeshTag resourceTag, string source)
 	}
 }
 
-
 wstring CResourceManager::FindResourcePath(Resource_TextrueTag resourceTag)
 {
-	auto f = textureMap.find(resourceTag);
-
-	string str = (*f).second.c_str();
+	auto find = textureMap.find(resourceTag);
+	if (find == textureMap.end()) {
+		cout << "Resource Texture Tag " << resourceTag << " is not exist." << endl;
+		return nullptr;
+	}
+	string str = (*find).second.c_str();
 	wstring wstr;
 	wstr.assign(str.begin(), str.end());
 
 	return wstr;
 }
+
 string CResourceManager::FindResourcePath(Resource_MeshTag resourceTag)
 {
-	auto f = meshMap.find(resourceTag);
-	return (*f).second;
+	auto find = meshMap.find(resourceTag);
+	if (find == meshMap.end()) {
+		cout << "Resource Mesh Tag " << resourceTag << " is not exist." << endl;
+		return nullptr;
+	}
+	return (*find).second;
 }
 
 ID3D11ShaderResourceView* CResourceManager::FindResourceAndCreateSRV(Resource_TextrueTag resourceTag)
 {
 	auto findResource = textureMap.find(resourceTag);
-
+	if (findResource == textureMap.end()) {
+		cout << "Resource Texture Tag " << resourceTag << " is not exist." << endl;
+		return nullptr;
+	}
 	string str = (*findResource).second.c_str();
 	wstring wstr;
 	wstr.assign(str.begin(), str.end());

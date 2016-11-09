@@ -4,7 +4,7 @@
 #define SPOT_LIGHT			2.0f
 #define DIRECTIONAL_LIGHT	3.0f
 
-//         fxc /E Lighting /T vs_5_0 /Od /Zi /Fo CompiledVS.fxo Light.fx
+//         fxc /E Lighting /T vs_5_0 /Od /Zi /Fo CompiledVS.fxo Light.hlsli
 
 #define _WITH_LOCAL_VIEWER_HIGHLIGHTING
 #define _WITH_THETA_PHI_CONES
@@ -35,23 +35,21 @@ struct LIGHT
     float padding; // 쓰레기 값
 };
 
-cbuffer cbLights : register(b0) // PS Buffer
+cbuffer cbLights : register(b0)              // PS Buffer
 {
     LIGHT gLights[MAX_LIGHTS];
     float4 gcLightGlobalAmbient;
 };
 
-cbuffer cbMaterial : register(b1) // PS Buffer
+cbuffer cbMaterial : register(b1)            // PS Buffer
 {
     MATERIAL gMaterial;
 };
 
-/*  Effect.fx 에서 참조
-cbuffer cbCameraPosition : register(b2) // PS Set
+cbuffer cbCameraPosition : register(b2)      // PS Set
 {
     float4 gvCameraPosition : packoffset(c0);
 };
-*/
 
 struct LIGHTEDCOLOR
 {
