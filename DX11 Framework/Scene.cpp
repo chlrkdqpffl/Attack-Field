@@ -271,10 +271,10 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 {
 	if (m_pSkyBox)
 		m_pSkyBox->Render(pd3dDeviceContext, pCamera);
-	/*
+	
 	if (m_pTerrain->IsVisible(pCamera)) 
 		m_pTerrain->Render(pd3dDeviceContext, pCamera);
-		*/
+
 	if (m_bShowRGBAxis) m_pAxisObjects->Render(pd3dDeviceContext, pCamera);
 
 	for(auto object : m_vObjectsVector)
