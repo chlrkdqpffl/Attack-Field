@@ -12,6 +12,7 @@
 #include "TerrainWater.h"
 #include "RotatingObject.h"
 #include "NormalMapObject.h"
+#include "AxisObjects.h"
 
 // System
 #include "ParticleSystem.h"
@@ -94,16 +95,17 @@ protected:
 	LIGHTS							*m_pLights;
 
 	// Environment
-	CSkyBox							*m_pSkyBox;
-	CHeightMapTerrain				*m_pTerrain;
+	CSkyBox							*m_pSkyBox			= nullptr;
+	CHeightMapTerrain				*m_pTerrain			= nullptr;
 
 	// Particle
 	float							m_fGametime;
 	CParticleSystem					*m_pParticleSystem;
 
 	// RenderOption
+	CAxisObjects					*m_pAxisObjects		= nullptr;
+	bool							m_bShowRGBAxis		= false;
 	XMFLOAT4						m_vRenderOption;		// (x : Fog )
-
 
 	// Constant Buffer
 	ID3D11Buffer					*m_pd3dcbRenderOption;

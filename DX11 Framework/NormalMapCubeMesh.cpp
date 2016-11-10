@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "CubeNormalMapMesh.h"
+#include "NormalMapCubeMesh.h"
 
 
-CCubeNormalMapMesh::CCubeNormalMapMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth) : CMeshNormalMap(pd3dDevice)
+CNormalMapCubeMesh::CNormalMapCubeMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth) : CMeshNormalMap(pd3dDevice)
 {
 	m_nVertices = 36;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -138,6 +138,6 @@ CCubeNormalMapMesh::CCubeNormalMapMesh(ID3D11Device *pd3dDevice, float fWidth, f
 	m_bcBoundingCube.Extents = { fx, fy, fz };
 }
 
-CCubeNormalMapMesh::~CCubeNormalMapMesh()
+CNormalMapCubeMesh::~CNormalMapCubeMesh()
 {
 }

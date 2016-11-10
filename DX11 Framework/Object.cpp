@@ -229,15 +229,13 @@ ID3D11ShaderResourceView *CTexture::CreateTexture2DArraySRV(ID3D11Device *pd3dDe
 
 ID3D11Buffer *CGameObject::m_pd3dcbWorldMatrix = NULL;
 ID3D11Buffer *CGameObject::m_pd3dcbMaterialColors = NULL;
-XMMATRIX CGameObject::m_d3dxmtxIdentity;
 
 CGameObject::CGameObject(int nMeshes)
 {
 	XMStoreFloat4x4(&m_d3dxmtxLocal, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_d3dxmtxWorld, XMMatrixIdentity());
-
-	m_d3dxmtxIdentity = XMMatrixIdentity();
-
+	XMStoreFloat4x4(&m_d3dxmtxShadow, XMMatrixIdentity());
+	
 	m_pShader = NULL;
 	m_pMaterial = NULL;
 
@@ -421,6 +419,13 @@ void CGameObject::SetPosition(XMVECTOR d3dxvPosition)
 	XMFLOAT4 f4vPosition;
 	XMStoreFloat4(&f4vPosition, d3dxvPosition);
 	SetPosition(f4vPosition.x, f4vPosition.y, f4vPosition.z);
+}
+
+void CGameObject::SetPosition(XMFLOAT3 pos)
+{
+	m_d3dxmtxWorld._41 = pos.x;
+	m_d3dxmtxWorld._42 = pos.y;
+	m_d3dxmtxWorld._43 = pos.z;
 }
 
 void CGameObject::MoveStrafe(float fDistance)

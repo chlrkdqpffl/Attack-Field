@@ -26,7 +26,7 @@ public:
 
 private:
 
-	ID3D11Buffer					*m_pd3dcbLights;
+	ID3D11Buffer					*m_pd3dcbLights		= nullptr;
 	
 };
 

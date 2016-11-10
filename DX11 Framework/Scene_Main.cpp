@@ -4,7 +4,6 @@
 
 CScene_Main::CScene_Main()
 {
-	m_pd3dcbLights = nullptr;
 }
 
 CScene_Main::~CScene_Main()
@@ -137,6 +136,8 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CShader *pSkyBoxShader = new CSkyBoxShader();
 	pSkyBoxShader->CreateShader(pd3dDevice);
 	pSkyBox->SetShader(pSkyBoxShader);
+
+	m_pSkyBox = move(pSkyBox);
 #pragma endregion
 
 #pragma region [Create Terrain]
@@ -176,6 +177,8 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CShader *pTerrainShader = new CTerrainShader();
 	pTerrainShader->CreateShader(pd3dDevice);
 	pTerrain->SetShader(pTerrainShader);
+
+	m_pTerrain = move(pTerrain);
 #pragma endregion
 
 #pragma region [Create Water]
@@ -197,14 +200,9 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CShader *pTerrainWaterShader = new CWaterShader();
 	pTerrainWaterShader->CreateShader(pd3dDevice);
 	pTerrainWater->SetShader(pTerrainWaterShader);
-#pragma endregion
-
-	m_pSkyBox = move(pSkyBox);
-	m_pTerrain = move(pTerrain);
+	
 	m_vObjectsVector.push_back(move(pTerrainWater));
-
-
-
+#pragma endregion
 
 	
 	CNormalMapObject* normalMapObject = new CNormalMapObject();
@@ -373,7 +371,7 @@ void CScene_Main::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 {
 	m_pLights = new LIGHTS;
 	::ZeroMemory(m_pLights, sizeof(LIGHTS));
-	float vGlobalAmbient = 0.0f;
+	float vGlobalAmbient = 0.5f;
 	m_pLights->m_d3dxcGlobalAmbient = XMFLOAT4(vGlobalAmbient, vGlobalAmbient, vGlobalAmbient, 1.0f);
 
 	m_pLights->m_pLights[0].m_bEnable = 1.0f;

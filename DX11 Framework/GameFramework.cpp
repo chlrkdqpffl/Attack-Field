@@ -321,7 +321,7 @@ void CGameFramework::BuildObjects()
 {
 	CreateShaderVariables();
 
-	CCubeMeshIlluminated *pCubeMesh = new CCubeMeshIlluminated(STATEOBJ_MGR->m_pd3dDevice.Get(), 4.0f, 12.0f, 4.0f);
+	CCubeMeshDiffused *pCubeMesh = new CCubeMeshDiffused(STATEOBJ_MGR->m_pd3dDevice.Get(), 4.0f, 12.0f, 4.0f);
 	m_pPlayer = new CTerrainPlayer(1);
 	m_pPlayer->AddRef();
 	m_pPlayer->SetMesh(pCubeMesh);
@@ -348,7 +348,8 @@ void CGameFramework::BuildObjects()
 
 	m_pScene->SetCamera(m_pCamera);
 
-
+	SCENE_MGR->m_pPlayer = m_pPlayer;
+	SCENE_MGR->m_pCamera = m_pCamera;
 }
 
 void CGameFramework::ReleaseObjects()

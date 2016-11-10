@@ -115,9 +115,6 @@ public:
 public:
 	XMFLOAT4X4						m_d3dxmtxLocal;
 	XMFLOAT4X4						m_d3dxmtxWorld;
-
-	static XMMATRIX					m_d3dxmtxIdentity;
-
 	XMFLOAT4X4						m_d3dxmtxShadow;
 
 protected:
@@ -158,6 +155,7 @@ public:
 
 	void SetPosition(float x, float y, float z);
 	void SetPosition(XMVECTOR d3dxvPosition);
+	void SetPosition(XMFLOAT3 d3dxvPosition);
 
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);

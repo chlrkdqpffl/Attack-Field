@@ -157,13 +157,14 @@
   <ItemGroup>
     <ClCompile Include="AirplanePlayer.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CubeNormalMapMesh.cpp" />
+    <ClCompile Include="NormalMapCubeMesh.cpp" />
     <ClCompile Include="DirectX11_Project.cpp" />
     <ClCompile Include="FirstPersonCamera.cpp" />
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="HeightMap.cpp" />
     <ClCompile Include="HeightMapGridMesh.cpp" />
     <ClCompile Include="HeightMapTerrain.cpp" />
+    <ClCompile Include="LineMesh.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshNormalMap.cpp" />
     <ClCompile Include="ModelMesh_FBX.cpp" />
@@ -173,6 +174,7 @@
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="AxisObjects.cpp" />
     <ClCompile Include="RotatingObject.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -194,13 +196,14 @@
     <ClInclude Include="AirplanePlayer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConstantBuffer_Slot.h" />
-    <ClInclude Include="CubeNormalMapMesh.h" />
+    <ClInclude Include="NormalMapCubeMesh.h" />
     <ClInclude Include="DirectX11_Project.h" />
     <ClInclude Include="FirstPersonCamera.h" />
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="HeightMap.h" />
     <ClInclude Include="HeightMapGridMesh.h" />
     <ClInclude Include="HeightMapTerrain.h" />
+    <ClInclude Include="LineMesh.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshNormalMap.h" />
     <ClInclude Include="ModelMesh_FBX.h" />
@@ -211,6 +214,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="AxisObjects.h" />
     <ClInclude Include="RotatingObject.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />

@@ -3,12 +3,10 @@
 
 CSceneManager::CSceneManager()
 {
-	m_nowScene = nullptr;
 }
 
 CSceneManager::~CSceneManager()
 {
-
 }
 
 void CSceneManager::InitializeManager()

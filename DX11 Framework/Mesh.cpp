@@ -517,15 +517,15 @@ CCubeMeshDiffused::CCubeMeshDiffused(ID3D11Device *pd3dDevice, float fWidth, flo
 	m_pPositions[6] = XMFLOAT3(+fx, -fy, +fz);
 	m_pPositions[7] = XMFLOAT3(-fx, -fy, +fz);
 
-	XMCOLOR pd3dxColors[8];
+	XMVECTOR pd3dxColors[8];
 	for (int i = 0; i < 8; i++) 
-		XMStoreColor(&pd3dxColors[i], d3dxColor/* + RANDOM_COLOR*/);
+		pd3dxColors[i] = d3dxColor;
 
 	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	m_pd3dColorBuffer = CreateBuffer(pd3dDevice, sizeof(XMCOLOR), m_nVertices, pd3dxColors, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dColorBuffer = CreateBuffer(pd3dDevice, sizeof(XMVECTOR), m_nVertices, pd3dxColors, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	ID3D11Buffer *pd3dBuffers[2] = { m_pd3dPositionBuffer, m_pd3dColorBuffer };
-	UINT pnBufferStrides[2] = { sizeof(XMFLOAT3), sizeof(XMCOLOR) };
+	UINT pnBufferStrides[2] = { sizeof(XMFLOAT3), sizeof(XMVECTOR) };
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
@@ -1129,7 +1129,7 @@ CCubeMeshTexturedIlluminated::CCubeMeshTexturedIlluminated(ID3D11Device *pd3dDev
 
 	XMFLOAT3 pd3dxvNormals[36];
 	XMVECTOR pxm[36];
-	//	for (int i = 0; i < 36; i++) pd3dxvNormals[i] = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	
 	for (int i = 0; i < 36; i++) pxm[i] = XMLoadFloat3(&pd3dxvNormals[i]);
 	CalculateVertexNormal(pxm);
 	for (int i = 0; i < 36; i++) XMStoreFloat3(&pd3dxvNormals[i], pxm[i]);

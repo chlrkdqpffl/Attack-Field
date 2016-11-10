@@ -57,22 +57,15 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	case WM_KEYDOWN:
 		switch (wParam) {
 		case '1':
-		{	
-			cout << "Enable Fog" << endl;
-			m_vRenderOption.x = 1.0f;
-
-			D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-			STATEOBJ_MGR->m_pd3dImmediateDeviceContext->Map(m_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-			XMFLOAT4 *pcbRenderOption = (XMFLOAT4 *)d3dMappedResource.pData;
-			*pcbRenderOption = m_vRenderOption;
-			STATEOBJ_MGR->m_pd3dImmediateDeviceContext->Unmap(m_pd3dcbRenderOption, 0);
+		{
+			cout << "RGB Axis Option" << endl;
+			m_bShowRGBAxis = !m_bShowRGBAxis;
 		}
-			break;
-
+		break;
 		case '2':
 		{
-			cout << "Disable Fog" << endl;
-			m_vRenderOption.x = 0.0f;
+			cout << "Fog Option" << endl;
+			(m_vRenderOption.x == 0.0f) ? (m_vRenderOption.x = 1.0f) : (m_vRenderOption.x = 0.0f);
 
 			D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 			STATEOBJ_MGR->m_pd3dImmediateDeviceContext->Map(m_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
@@ -83,14 +76,17 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		}
 		case '3':
 		{
-		//	cout << "后 加己" << endl;
-			
+			//	cout << "后 加己" << endl;
+
+			break;
+		}
+		case '4':
+		{	
+
 			break;
 		}
 		}
 		break;
-
-		
 	case WM_KEYUP:
 		switch (wParam) {
 		case VK_A:
@@ -109,10 +105,15 @@ void CScene::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMateri
 void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 {
 	CScene::CreateConstantBuffers(pd3dDevice);
+
+	m_pAxisObjects = new CAxisObjects();
+	m_pAxisObjects->CreateAxisObjects(pd3dDevice);
 }
 
 void CScene::ReleaseObjects()
 {
+	m_pAxisObjects->Release();
+
 	for (auto& object : m_vObjectsVector) {
 		object->Release();
 		object = nullptr;
@@ -247,9 +248,10 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 void CScene::UpdateObjects(float fTimeElapsed)
 {
 	CScene::UpdateConstantBuffers(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get());
-
-	m_pSkyBox->Update(fTimeElapsed, NULL);
-	m_pTerrain->Update(fTimeElapsed, NULL);
+	
+	if(m_pSkyBox) m_pSkyBox->Update(fTimeElapsed, NULL);
+	if(m_pTerrain) m_pTerrain->Update(fTimeElapsed, NULL);
+	if(m_bShowRGBAxis) m_pAxisObjects->Update(fTimeElapsed);
 
 	for (auto object : m_vObjectsVector)
 		object->Update(fTimeElapsed);
@@ -272,6 +274,8 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 
 	if (m_pTerrain->IsVisible(pCamera)) 
 		m_pTerrain->Render(pd3dDeviceContext, pCamera);
+
+	if (m_bShowRGBAxis) m_pAxisObjects->Render(pd3dDeviceContext, pCamera);
 
 	for(auto object : m_vObjectsVector)
 		object->Render(pd3dDeviceContext, pCamera);

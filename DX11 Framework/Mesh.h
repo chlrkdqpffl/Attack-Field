@@ -209,7 +209,7 @@ public:
 class CCubeMeshDiffused : public CMeshDiffused
 {
 public:
-	CCubeMeshDiffused(ID3D11Device *pd3dDevice, float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f, XMVECTOR d3dxColor = XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f));
+	CCubeMeshDiffused(ID3D11Device *pd3dDevice, float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f, XMVECTOR d3dxColor = XMVectorSet(0.8f, 0.8f, 1.0f, 0.0f));
 	virtual ~CCubeMeshDiffused();
 };
 

@@ -5,11 +5,12 @@
 class CSceneManager : public CSingletonManager<CSceneManager>
 {
 public:
-	CScene				*m_nowScene;
+	CScene				*m_nowScene		= nullptr;
+	CPlayer				*m_pPlayer		= nullptr;
+	CCamera				*m_pCamera		= nullptr;
 
 	CSceneManager();
 	virtual ~CSceneManager();
-
 
 	void ChangeScene(CScene* newScene);
 

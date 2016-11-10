@@ -1,7 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "NormalMapShader.h"
-#include "CubeNormalMapMesh.h"
+#include "NormalMapCubeMesh.h"
 
 class CNormalMapObject : public CGameObject
 {
