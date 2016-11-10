@@ -39,10 +39,8 @@ private:
 	int								m_nWndClientWidth;
 	int								m_nWndClientHeight;
 
-//	ID3D11Device					*m_pd3dDevice;
 	IDXGISwapChain					*m_pDXGISwapChain;
 	ID3D11RenderTargetView			*m_pd3dRenderTargetView;
-//	ID3D11DeviceContext				*m_pd3dDeviceContext;
 
 	UINT							m_n4xMSAAQualities;
 
