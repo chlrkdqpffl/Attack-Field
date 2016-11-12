@@ -38,7 +38,7 @@
 #define SafeDelete(x) { delete x; x = 0; }
 //---------------------------------------------------------------------------------------
 
-// 사진 저장 매크로 D3DX11SaveTextureToFile(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get(), &texture2d, D3DX11_IFF_JPG, L"save.jpg");
+// 사진 저장 매크로 D3DX11SaveTextureToFile(STATEOBJ_MGR->g_pd3dImmediateDeviceContext.Get(), &texture2d, D3DX11_IFF_JPG, L"save.jpg");
 
 #define VK_A 0x41 
 #define VK_B 0x42

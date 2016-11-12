@@ -2,24 +2,24 @@
 #include "StateObjectManager.h"
 
 
-ID3D11RasterizerState*	CStateObjectManager::m_pDefaultRS			= 0;
-ID3D11RasterizerState*	CStateObjectManager::m_pWireframeRS			= 0;
-ID3D11RasterizerState*	CStateObjectManager::m_pNoCullRS			= 0;
+ID3D11RasterizerState*	CStateObjectManager::g_pDefaultRS			= 0;
+ID3D11RasterizerState*	CStateObjectManager::g_pWireframeRS			= 0;
+ID3D11RasterizerState*	CStateObjectManager::g_pNoCullRS			= 0;
 
-ID3D11BlendState*		CStateObjectManager::m_pAlphaToCoverageBS	= 0;
-ID3D11BlendState*		CStateObjectManager::m_pTransparentBS		= 0;
+ID3D11BlendState*		CStateObjectManager::g_pAlphaToCoverageBS	= 0;
+ID3D11BlendState*		CStateObjectManager::g_pTransparentBS		= 0;
 
-ID3D11SamplerState*		CStateObjectManager::m_pLinearClampSS		= 0;
-ID3D11SamplerState*		CStateObjectManager::m_pPointClampSS		= 0;
-ID3D11SamplerState*		CStateObjectManager::m_pLinearWarpSS		= 0;
-ID3D11SamplerState*		CStateObjectManager::m_pPointWarpSS			= 0;
+ID3D11SamplerState*		CStateObjectManager::g_pLinearClampSS		= 0;
+ID3D11SamplerState*		CStateObjectManager::g_pPointClampSS		= 0;
+ID3D11SamplerState*		CStateObjectManager::g_pLinearWarpSS		= 0;
+ID3D11SamplerState*		CStateObjectManager::g_pPointWarpSS			= 0;
 
 
 
 CStateObjectManager::CStateObjectManager()
 {
-	m_pd3dDevice = nullptr;
-	m_pd3dImmediateDeviceContext = nullptr;
+	g_pd3dDevice = nullptr;
+	g_pd3dImmediateDeviceContext = nullptr;
 }
 
 CStateObjectManager::~CStateObjectManager()
@@ -38,18 +38,18 @@ void CStateObjectManager::InitializeManager()
 	rasterizerDesc.FrontCounterClockwise = false;
 	rasterizerDesc.DepthClipEnable = true;
 
-	HR(m_pd3dDevice->CreateRasterizerState(&rasterizerDesc, &m_pDefaultRS));
+	HR(g_pd3dDevice->CreateRasterizerState(&rasterizerDesc, &g_pDefaultRS));
 
 	// WireframeRS
 	rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
 
-	HR(m_pd3dDevice->CreateRasterizerState(&rasterizerDesc, &m_pWireframeRS));
+	HR(g_pd3dDevice->CreateRasterizerState(&rasterizerDesc, &g_pWireframeRS));
 
 	// NoCullRS
 	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
 	rasterizerDesc.CullMode = D3D11_CULL_NONE;
 
-	HR(m_pd3dDevice->CreateRasterizerState(&rasterizerDesc, &m_pNoCullRS));
+	HR(g_pd3dDevice->CreateRasterizerState(&rasterizerDesc, &g_pNoCullRS));
 
 	// ---------------------------------------------------------------------------- //
 	// ------------------------------- Blend State -------------------------------- //
@@ -60,7 +60,7 @@ void CStateObjectManager::InitializeManager()
 	alphaToCoverageDesc.RenderTarget[0].BlendEnable = false;
 	alphaToCoverageDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	HR(m_pd3dDevice->CreateBlendState(&alphaToCoverageDesc, &m_pAlphaToCoverageBS));
+	HR(g_pd3dDevice->CreateBlendState(&alphaToCoverageDesc, &g_pAlphaToCoverageBS));
 
 	// TransparentBS
 	D3D11_BLEND_DESC transparentDesc = { 0 };
@@ -76,7 +76,7 @@ void CStateObjectManager::InitializeManager()
 	transparentDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	transparentDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	HR(m_pd3dDevice->CreateBlendState(&transparentDesc, &m_pTransparentBS));
+	HR(g_pd3dDevice->CreateBlendState(&transparentDesc, &g_pTransparentBS));
 
 
 	// ---------------------------------------------------------------------------- //
@@ -90,32 +90,32 @@ void CStateObjectManager::InitializeManager()
 	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	d3dSamplerDesc.MinLOD = 0;
 	d3dSamplerDesc.MaxLOD = 0;
-	HR(m_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &m_pLinearClampSS));
+	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pLinearClampSS));
 
 	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-	HR(m_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &m_pPointClampSS));
+	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pPointClampSS));
 
 	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	HR(m_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &m_pPointWarpSS));
+	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pPointWarpSS));
 
 	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	HR(m_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &m_pLinearWarpSS));
+	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pLinearWarpSS));
 	
 }
 
 void CStateObjectManager::ReleseManager()
 {
-	ReleaseCOM(m_pDefaultRS);
-	ReleaseCOM(m_pWireframeRS);
-	ReleaseCOM(m_pNoCullRS);
+	ReleaseCOM(g_pDefaultRS);
+	ReleaseCOM(g_pWireframeRS);
+	ReleaseCOM(g_pNoCullRS);
 
-	ReleaseCOM(m_pAlphaToCoverageBS);
-	ReleaseCOM(m_pTransparentBS);
+	ReleaseCOM(g_pAlphaToCoverageBS);
+	ReleaseCOM(g_pTransparentBS);
 
-	ReleaseCOM(m_pLinearClampSS);
-	ReleaseCOM(m_pPointClampSS);
-	ReleaseCOM(m_pLinearWarpSS);
-	ReleaseCOM(m_pPointWarpSS);
+	ReleaseCOM(g_pLinearClampSS);
+	ReleaseCOM(g_pPointClampSS);
+	ReleaseCOM(g_pLinearWarpSS);
+	ReleaseCOM(g_pPointWarpSS);
 }

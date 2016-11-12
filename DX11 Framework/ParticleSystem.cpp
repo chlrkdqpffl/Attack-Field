@@ -156,12 +156,12 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 
 	pd3dDeviceContext->VSSetShader(m_pd3dSOVertexShader, NULL, 0);//
 	pd3dDeviceContext->GSSetShader(m_pd3dSOGeometryShader, NULL, 0);//
-	pd3dDeviceContext->RSSetState(STATEOBJ_MGR->m_pNoCullRS);
+	pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pNoCullRS);
 	
 	pd3dDeviceContext->PSSetShader(NULL, NULL, 0);
 
 	pd3dDeviceContext->OMSetDepthStencilState(m_pd3dSODepthStencilState, 0);
-	pd3dDeviceContext->GSSetSamplers(0, 1, &STATEOBJ_MGR->m_pPointWarpSS);
+	pd3dDeviceContext->GSSetSamplers(0, 1, &STATEOBJ_MGR->g_pPointWarpSS);
 	pd3dDeviceContext->GSSetShaderResources(0, 1, &m_pd3dsrvRandomTexture);
 
 	if (m_bInitializeParticle)
@@ -188,13 +188,13 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 	pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 0);
 	pd3dDeviceContext->OMSetBlendState(m_pd3dBlendState, NULL, 0xffffffff);
 
-	pd3dDeviceContext->PSSetSamplers(0, 1, &STATEOBJ_MGR->m_pPointWarpSS);
+	pd3dDeviceContext->PSSetSamplers(0, 1, &STATEOBJ_MGR->g_pPointWarpSS);
 	pd3dDeviceContext->PSSetShaderResources(5, 1, &m_pd3dsrvTextureArray);
 
 	pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dDrawVertexBuffer, &m_nStride, &m_nOffset);
 	pd3dDeviceContext->DrawAuto();
 
-	pd3dDeviceContext->RSSetState(STATEOBJ_MGR->m_pDefaultRS);
+	pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 
 	pd3dDeviceContext->OMSetDepthStencilState(NULL, 0);
 	pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);

@@ -2,7 +2,7 @@
 #include "ModelMesh_FBX.h"
 
 
-CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTexturedIlluminated(STATEOBJ_MGR->m_pd3dDevice.Get())
+CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTexturedIlluminated(STATEOBJ_MGR->g_pd3dDevice.Get())
 {
 	bool isLoad = LoadFBXfromFile(fileName);
 #if defined(DEBUG) || defined(_DEBUG)
@@ -34,9 +34,9 @@ CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTextur
 	}
 
 	// Create Buffer
-	m_pd3dPositionBuffer = CreateBuffer(STATEOBJ_MGR->m_pd3dDevice.Get(), sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	m_pd3dNormalBuffer = CreateBuffer(STATEOBJ_MGR->m_pd3dDevice.Get(), sizeof(XMFLOAT3), m_nVertices, m_pvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	m_pd3dTexCoordBuffer = CreateBuffer(STATEOBJ_MGR->m_pd3dDevice.Get(), sizeof(XMFLOAT2), m_nVertices, m_pvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dPositionBuffer = CreateBuffer(STATEOBJ_MGR->g_pd3dDevice.Get(), sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dNormalBuffer = CreateBuffer(STATEOBJ_MGR->g_pd3dDevice.Get(), sizeof(XMFLOAT3), m_nVertices, m_pvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dTexCoordBuffer = CreateBuffer(STATEOBJ_MGR->g_pd3dDevice.Get(), sizeof(XMFLOAT2), m_nVertices, m_pvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	ID3D11Buffer *pd3dBuffers[3] = { m_pd3dPositionBuffer, m_pd3dNormalBuffer, m_pd3dTexCoordBuffer };
 	UINT pnBufferStrides[3] = { sizeof(XMFLOAT3), sizeof(XMFLOAT3), sizeof(XMFLOAT2) };
@@ -49,7 +49,7 @@ CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTextur
 		m_pnIndices[j + 2] = (UINT)indexVector[i].z;
 	}
 
-	m_pd3dIndexBuffer = CreateBuffer(STATEOBJ_MGR->m_pd3dDevice.Get(), sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dIndexBuffer = CreateBuffer(STATEOBJ_MGR->g_pd3dDevice.Get(), sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	float max_x = m_pPositions[0].x, max_y = m_pPositions[0].y, max_z = m_pPositions[0].z;
 	for (int i = 0; i < m_nVertices; i++) {

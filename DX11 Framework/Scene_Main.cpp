@@ -122,7 +122,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	#endif
 #endif
 
-	pSkyboxTexture->SetSampler(0, STATEOBJ_MGR->m_pPointClampSS);
+	pSkyboxTexture->SetSampler(0, STATEOBJ_MGR->g_pPointClampSS);
 	
 	CMaterial *pSkyboxMaterial = new CMaterial(NULL);
 	pSkyboxMaterial->SetTexture(pSkyboxTexture);
@@ -144,10 +144,10 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CTexture *pTerrainTexture = new CTexture(2, 2, PS_SLOT_TEXTURE_TERRAIN, PS_SLOT_SAMPLER_TERRAIN);
 
 	pTerrainTexture->SetTexture(0, eTexture_Terrain);
-	pTerrainTexture->SetSampler(0, STATEOBJ_MGR->m_pPointClampSS);
+	pTerrainTexture->SetSampler(0, STATEOBJ_MGR->g_pPointClampSS);
 	
 	pTerrainTexture->SetTexture(1, eTexture_TerrainDetail);
-	pTerrainTexture->SetSampler(1, STATEOBJ_MGR->m_pPointWarpSS);
+	pTerrainTexture->SetSampler(1, STATEOBJ_MGR->g_pPointWarpSS);
 	
 	CMaterialColors *pTerrainColors = new CMaterialColors();
 	
@@ -184,10 +184,10 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma region [Create Water]
 	CTexture *pTerrainWaterTexture = new CTexture(2, 2, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
 	pTerrainWaterTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_Water));
-	pTerrainWaterTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
+	pTerrainWaterTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 
 	pTerrainWaterTexture->SetTexture(1, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_WaterDetail));
-	pTerrainWaterTexture->SetSampler(1, STATEOBJ_MGR->m_pPointWarpSS);
+	pTerrainWaterTexture->SetSampler(1, STATEOBJ_MGR->g_pPointWarpSS);
 
 	CMaterialColors *pWaterColors = new CMaterialColors();
 	CMaterial *pTerrainWaterMaterial = new CMaterial(pWaterColors);
@@ -219,7 +219,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 	CTexture *pPlayerTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
 	pPlayerTexture->SetTexture(0, eTexture_DarkFighterColor);
-	pPlayerTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
+	pPlayerTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pPlayerMaterial->SetTexture(pPlayerTexture);
 	
 	CMesh* pPlayerMesh = new CModelMesh_FBX(RESOURCE_MGR->FindResourcePath(eMesh_DarkFighter));
@@ -262,17 +262,17 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 	CTexture *pStoneTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
 	pStoneTexture->SetTexture(0, eTexture_Stone);
-	pStoneTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
+	pStoneTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pInstancingMaterials[0]->SetTexture(pStoneTexture);
 	
 	CTexture *pBrickTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
 	pBrickTexture->SetTexture(0, eTexture_Bricks);
-	pBrickTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
+	pBrickTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pInstancingMaterials[1]->SetTexture(pBrickTexture);
 
 	CTexture *pWoodTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
 	pWoodTexture->SetTexture(0, eTexture_Wood);
-	pWoodTexture->SetSampler(0, STATEOBJ_MGR->m_pPointWarpSS);
+	pWoodTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pInstancingMaterials[2]->SetTexture(pWoodTexture);
 
 	float fSize = 24.0f;
@@ -482,7 +482,7 @@ void CScene_Main::UpdateObjects(float fTimeElapsed)
 	}
 
 	// Light Shader Update
-	if (m_pLights && m_pd3dcbLights) UpdateConstantBuffers(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get(), m_pLights);
+	if (m_pLights && m_pd3dcbLights) UpdateConstantBuffers(STATEOBJ_MGR->g_pd3dImmediateDeviceContext.Get(), m_pLights);
 
 	// Particle
 	m_fGametime += fTimeElapsed;

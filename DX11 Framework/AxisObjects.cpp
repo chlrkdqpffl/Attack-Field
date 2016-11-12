@@ -7,14 +7,10 @@ CAxisObjects::CAxisObjects()
 
 CAxisObjects::~CAxisObjects()
 {
-	if (m_pPlayerWorldAxis) {
-		m_pPlayerWorldAxis->Release();
+	if (m_pPlayerWorldAxis)
 		delete m_pPlayerWorldAxis;
-	}
-	if (m_pWorldCenterAxis) {
-		m_pWorldCenterAxis->Release();
+	if (m_pWorldCenterAxis)
 		delete m_pWorldCenterAxis;
-	}
 }
 
 void CAxisObjects::CreateAxisObjects(ID3D11Device *pd3dDevice)

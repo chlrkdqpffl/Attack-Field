@@ -106,7 +106,7 @@ ID3D11ShaderResourceView* CResourceManager::FindResourceAndCreateSRV(Resource_Te
 	
 	HRESULT hResult;
 	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
-	D3DX11CreateShaderResourceViewFromFile(STATEOBJ_MGR->m_pd3dDevice.Get(), wstr.c_str(), NULL, NULL, &pd3dsrvTexture, &hResult);
+	D3DX11CreateShaderResourceViewFromFile(STATEOBJ_MGR->g_pd3dDevice.Get(), wstr.c_str(), NULL, NULL, &pd3dsrvTexture, &hResult);
 	
 #if defined(DEBUG) || defined(_DEBUG)
 	if ((HRESULT)hResult >= 0)

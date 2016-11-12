@@ -68,10 +68,10 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			(m_vRenderOption.x == 0.0f) ? (m_vRenderOption.x = 1.0f) : (m_vRenderOption.x = 0.0f);
 
 			D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-			STATEOBJ_MGR->m_pd3dImmediateDeviceContext->Map(m_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+			STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Map(m_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 			XMFLOAT4 *pcbRenderOption = (XMFLOAT4 *)d3dMappedResource.pData;
 			*pcbRenderOption = m_vRenderOption;
-			STATEOBJ_MGR->m_pd3dImmediateDeviceContext->Unmap(m_pd3dcbRenderOption, 0);
+			STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(m_pd3dcbRenderOption, 0);
 			break;
 		}
 		case '3':
@@ -149,7 +149,7 @@ void CScene::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 	d3dBufferData.pSysMem = &m_vRenderOption;
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbRenderOption);
 
-	STATEOBJ_MGR->m_pd3dImmediateDeviceContext->PSSetConstantBuffers(PS_CB_SLOT_RENDEROPTION, 1, &m_pd3dcbRenderOption);
+	STATEOBJ_MGR->g_pd3dImmediateDeviceContext->PSSetConstantBuffers(PS_CB_SLOT_RENDEROPTION, 1, &m_pd3dcbRenderOption);
 }
 
 void CScene::UpdateConstantBuffers(ID3D11DeviceContext *pd3dDeviceContext)
@@ -247,7 +247,7 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 
 void CScene::UpdateObjects(float fTimeElapsed)
 {
-	CScene::UpdateConstantBuffers(STATEOBJ_MGR->m_pd3dImmediateDeviceContext.Get());
+	CScene::UpdateConstantBuffers(STATEOBJ_MGR->g_pd3dImmediateDeviceContext.Get());
 	
 	if(m_pSkyBox) m_pSkyBox->Update(fTimeElapsed, NULL);
 	if(m_pTerrain) m_pTerrain->Update(fTimeElapsed, NULL);

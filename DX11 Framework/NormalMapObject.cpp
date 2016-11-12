@@ -19,7 +19,7 @@ void CNormalMapObject::CreateMaterial(ID3D11Device *pd3dDevice)
 
 	pNormalTexture->SetTexture(0, eTexture_Stone);
 	pNormalTexture->SetTexture(1, eTexture_StoneNormal);
-	pNormalTexture->SetSampler(0, STATEOBJ_MGR->m_pLinearWarpSS);
+	pNormalTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
 	
 	m_pMaterial->SetTexture(pNormalTexture);
 }
