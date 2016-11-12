@@ -29,17 +29,18 @@ cbuffer cbCameraPosition : register(b2)                     // PS Set
     float4      gvCameraPosition : packoffset(c0);
 };
 */
-cbuffer cbTerrain : register(b3)
+/*
+cbuffer cbTerrain : register(b3)                            // PS Set
 {
 	int4		gvTerrainTextureIndex : packoffset(c0);
 };
 
-cbuffer cbSkyBox : register(b4)
+cbuffer cbSkyBox : register(b4)                             // PS Set
 {
 	int4		gvSkyBoxTextureIndex : packoffset(c0);
 };
-
-cbuffer cbRenderOption : register(b5)           // PS Set
+*/
+cbuffer cbRenderOption : register(b5)                       // PS Set
 {
     float4      gbRenderOption : packoffset(c0);     // (x : Fog)
 };

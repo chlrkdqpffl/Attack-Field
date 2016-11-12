@@ -489,6 +489,6 @@ void CGameFramework::FrameAdvance()
 
 	m_pDXGISwapChain->Present(0, 0);
 
-	m_GameTimer.GetFrameRate(m_pszBuffer + 16, 37);
+	m_GameTimer.GetFrameRate(m_pszBuffer + 16, 34);
 	::SetWindowText(m_hWnd, m_pszBuffer);
 }
