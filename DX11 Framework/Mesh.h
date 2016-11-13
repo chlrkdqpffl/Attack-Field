@@ -20,7 +20,6 @@
 #define VERTEX_BONE_WEIGHT_ELEMENT		0x0800
 
 #define VERTEX_BLENDING_SHADER			0x1000
-#define INSTANCING_SHADER				0x2000
 
 struct MESHINTERSECTINFO {
 	DWORD	m_dwFaceIndex;
@@ -262,20 +261,4 @@ class CSphereMeshTexturedIlluminated : public CMeshTexturedIlluminated
 public:
 	CSphereMeshTexturedIlluminated(ID3D11Device *pd3dDevice, float fRadius = 2.0f, int nSlices = 20, int nStacks = 20);
 	virtual ~CSphereMeshTexturedIlluminated();
-};
-
-//--------------------------------------------------------------------------------------------------
-class CTextureToScreenRectMesh : public CMeshTextured
-{
-public:
-	CTextureToScreenRectMesh(ID3D11Device *pd3dDevice, float fWidth = 2.0f, float fHeight = 2.0f);
-	virtual ~CTextureToScreenRectMesh();
-};
-
-//------------------------------------------------------------------------------------------------
-class CTexturedRectMesh : public CMeshTextured
-{
-public:
-	CTexturedRectMesh(ID3D11Device *pd3dDevice, float fWidth = 2.0f, float fHeight = 2.0f, float fLength = 2.0f);
-	virtual ~CTexturedRectMesh();
 };

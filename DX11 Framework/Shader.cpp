@@ -100,6 +100,23 @@ void CShader::CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszF
 	}
 }
 
+void CShader::CreateComputeShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11ComputeShader **ppd3dComputeShader)
+{
+	HRESULT hResult;
+
+	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined(DEBUG) || defined(_DEBUG)
+	dwShaderFlags |= D3DCOMPILE_DEBUG;
+#endif
+
+	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
+	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
+	{
+		pd3dDevice->CreateComputeShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dComputeShader);
+		pd3dShaderBlob->Release();
+	}
+}
+
 void CShader::CreateShader(ID3D11Device *pd3dDevice, UINT nType)
 {
 	m_nType |= nType;
@@ -205,7 +222,6 @@ ID3D11Buffer *CShader::CreateBuffer(ID3D11Device *pd3dDevice, UINT nStride, int 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
 CTerrainShader::CTerrainShader()
 {
 }
@@ -229,7 +245,6 @@ void CTerrainShader::CreateShader(ID3D11Device *pd3dDevice)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
 CSkyBoxShader::CSkyBoxShader()
 {
 }
@@ -262,7 +277,6 @@ void CSkyBoxShader::CreateShader(ID3D11Device *pd3dDevice)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
 CWaterShader::CWaterShader()
 {
 }
@@ -286,7 +300,6 @@ void CWaterShader::CreateShader(ID3D11Device *pd3dDevice)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
 CObjectsShader::CObjectsShader(int nObjects)
 {
 	m_vObjectsVector.reserve(nObjects);

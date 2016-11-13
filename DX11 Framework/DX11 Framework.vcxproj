@@ -157,6 +157,8 @@
   <ItemGroup>
     <ClCompile Include="AirplanePlayer.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ScreenShader.cpp" />
+    <ClCompile Include="TextureToScreenRectMesh.cpp" />
     <ClCompile Include="NormalMapCubeMesh.cpp" />
     <ClCompile Include="DirectX11_Project.cpp" />
     <ClCompile Include="FirstPersonCamera.cpp" />
@@ -188,6 +190,7 @@
     <ClCompile Include="TerrainPlayer.cpp" />
     <ClCompile Include="TerrainWater.cpp" />
     <ClCompile Include="TextManager.cpp" />
+    <ClCompile Include="TexturedRectMesh.cpp" />
     <ClCompile Include="ThirdPersonCamera.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WaterGridMesh.cpp" />
@@ -219,6 +222,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Scene_Main.h" />
+    <ClInclude Include="ScreenShader.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SingletonManager.h" />
     <ClInclude Include="SkyBox.h" />
@@ -230,6 +234,8 @@
     <ClInclude Include="TerrainPlayer.h" />
     <ClInclude Include="TerrainWater.h" />
     <ClInclude Include="TextManager.h" />
+    <ClInclude Include="TexturedRectMesh.h" />
+    <ClInclude Include="TextureToScreenRectMesh.h" />
     <ClInclude Include="ThirdPersonCamera.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UserDefine.h" />
@@ -266,6 +272,7 @@
     <None Include="Shader HLSL File\Fog.hlsli" />
     <None Include="Shader HLSL File\Light.hlsli" />
     <None Include="Shader HLSL File\NormalMap.hlsli" />
+    <None Include="Shader HLSL File\TextureToScreen.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -285,7 +285,6 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 
 	for (auto instancedShaderObject : m_vInstancedObjectsShaderVector)
 		instancedShaderObject->Render(pd3dDeviceContext, pCamera);
-
 }
 
 void CScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)

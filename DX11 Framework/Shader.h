@@ -41,17 +41,18 @@ protected:
 	int								m_nInputElements;
 	D3D11_INPUT_ELEMENT_DESC		*m_pd3dInputElementDescs;
 
-	ID3D11VertexShader				*m_pd3dVertexShader;
-	ID3D11InputLayout				*m_pd3dVertexLayout;
+	ID3D11VertexShader				*m_pd3dVertexShader		= nullptr;
+	ID3D11InputLayout				*m_pd3dVertexLayout		= nullptr;
 
-	ID3D11PixelShader				*m_pd3dPixelShader;
-
-	ID3D11GeometryShader			*m_pd3dGeometryShader;
+	ID3D11PixelShader				*m_pd3dPixelShader		= nullptr;
+	ID3D11ComputeShader				*m_pd3dComputeShader	= nullptr;
+	ID3D11GeometryShader			*m_pd3dGeometryShader	= nullptr;
 
 protected:
 	void CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader, D3D11_INPUT_ELEMENT_DESC *pd3dInputElements, UINT nElements, ID3D11InputLayout **ppd3dInputLayout);
 	void CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11PixelShader **ppd3dPixelShader);
 	void CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader);
+	void CreateComputeShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11ComputeShader **ppd3dComputeShader);
 
 public:
 	virtual void GetInputElementDesc(UINT nVertexElementType);
@@ -102,7 +103,6 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-//
 class CObjectsShader : public CShader
 {
 public:
