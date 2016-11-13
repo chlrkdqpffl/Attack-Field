@@ -262,6 +262,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shader HLSL File\Blurring.hlsli" />
     <None Include="Shader HLSL File\Fog.hlsli" />
     <None Include="Shader HLSL File\Light.hlsli" />
     <None Include="Shader HLSL File\NormalMap.hlsli" />
