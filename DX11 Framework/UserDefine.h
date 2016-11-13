@@ -30,7 +30,7 @@
 #define TEXT_MGR CTextManager::GetInstance()
 
 // Returns random float in [a, b).
-#define RAND_FLOAT(a, b) float(a + ((float)(rand()) / (float)RAND_MAX) * (b - a));
+#define RAND_FLOAT(a, b) float(a + ((float)(rand()) / (float)RAND_MAX) * (b - a))
 
 //---------------------------------------------------------------------------------------
 // Convenience macro for releasing, deleteing COM objects.
