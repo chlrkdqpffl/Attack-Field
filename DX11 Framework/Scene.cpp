@@ -112,7 +112,9 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 
 void CScene::ReleaseObjects()
 {
+	// 메모리 누수 확인
 	m_pAxisObjects->Release();
+	m_pAxisObjects = nullptr;
 
 	for (auto& object : m_vObjectsVector) {
 		object->Release();

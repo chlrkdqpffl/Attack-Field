@@ -4,6 +4,7 @@
 
 CNormalMapObject::CNormalMapObject()
 {
+	AddRef();
 }
 
 CNormalMapObject::~CNormalMapObject()

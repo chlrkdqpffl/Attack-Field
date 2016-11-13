@@ -68,10 +68,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	if (!RegisterClassEx(&wcex)) return(FALSE);
 
 	RECT rc = { 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT };
+	// 윈도우 창 크기 조절		
+	//DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_THICKFRAME;
 	DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_BORDER;
 	AdjustWindowRect(&rc, dwStyle, FALSE);
-	//HWND hMainWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);
-	HWND hMainWnd = CreateWindow(szWindowClass, szTitle, dwStyle, 200, 100, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);	// 윈도우 창 시작 위치 조절 가능
+	
+	HWND hMainWnd = CreateWindow(szWindowClass, szTitle, dwStyle, 150, 30, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);	// 윈도우 창 시작 위치 조절 가능
 	if (!hMainWnd) return(FALSE);
 
 	if (!gGameFramework.OnCreate(hInstance, hMainWnd)) return(FALSE);

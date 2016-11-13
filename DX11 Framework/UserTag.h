@@ -20,6 +20,9 @@ enum Resource_TextrueTag {
 	// Model
 	eTexture_DarkFighterColor,
 
+	// UI
+	eTexture_Title,
+
 	// etc
 	eTexture_Stone, eTexture_StoneNormal, eTexture_Bricks, eTexture_BricksNormal, eTexture_Wood, 
 };

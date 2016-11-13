@@ -461,6 +461,7 @@ void CGameFramework::BuildObjects()
 
 	// Screen Shader
 	m_pScreenShader = new CScreenShader();
+	m_pScreenShader->CreateMesh(m_pd3dDevice, m_pd3dSRVTexture);
 	m_pScreenShader->CreateShader(m_pd3dDevice);
 }
 
@@ -502,8 +503,7 @@ void CGameFramework::ReleaseShaderVariables()
 
 void CGameFramework::DrawBlurredSceneToScreen()
 {
-
-	//m_pScreenObject->Render(STATEOBJ_MGR->g_pd3dImmediateDeviceContext.Get());
+	m_pScreenShader->Render(m_pd3dDeviceContext);
 }
 
 void CGameFramework::ProcessInput()
@@ -581,12 +581,12 @@ void CGameFramework::FrameAdvance()
 
 	SCENE_MGR->m_nowScene->OnPreRender(m_pd3dDeviceContext);
 
-//	ID3D11RenderTargetView *pd3dRenderTargetView[1] = { m_pd3dRTVOffScreen };
-//	m_pd3dDeviceContext->OMSetRenderTargets(1, pd3dRenderTargetView, m_pd3dDepthStencilView);
+	/*	// ºí·¯¸µ
+	ID3D11RenderTargetView *pd3dRenderTargetView[1] = { m_pd3dRTVOffScreen };
+	m_pd3dDeviceContext->OMSetRenderTargets(1, pd3dRenderTargetView, m_pd3dDepthStencilView);
 
 	float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-	//if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRTVOffScreen, fClearColor);
-	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
+	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRTVOffScreen, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
 	if (m_pPlayer) m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
@@ -605,13 +605,36 @@ void CGameFramework::FrameAdvance()
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
 
-//	pd3dRenderTargetView[0] = m_pd3dRenderTargetView;
-//	m_pd3dDeviceContext->OMSetRenderTargets(1, pd3dRenderTargetView, m_pd3dDepthStencilView);
+	pd3dRenderTargetView[0] = m_pd3dRenderTargetView;
+	m_pd3dDeviceContext->OMSetRenderTargets(1, pd3dRenderTargetView, m_pd3dDepthStencilView);
 
-//	SceneBlurring(4);
+	SceneBlurring(4);
 
-//	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
-//	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
+	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	DrawBlurredSceneToScreen();
+	*/
+
+	float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
+	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
+	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	if (m_pPlayer) m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
+	m_pCamera->SetViewport(m_pd3dDeviceContext);
+
+	// WireFrame Mode
+	if (GetAsyncKeyState('3') & 0x8000)
+		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
+	else
+		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
+
+
+	SCENE_MGR->m_nowScene->Render(m_pd3dDeviceContext, m_pCamera);
+
+#ifdef _WITH_PLAYER_TOP
+	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+#endif
 
 	DrawBlurredSceneToScreen();
 

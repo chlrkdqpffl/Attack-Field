@@ -18,7 +18,8 @@ void CResourceManager::InitializeManager()
 	AddResourece(eTexture_DarkFighterColor,		"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_color.png");
 
 	// UI
-	
+	AddResourece(eTexture_Title,				"../Assets/Image/UI/BackGround2.jpg");
+
 	// Environment
 	AddResourece(eTexture_Terrain,				"../Assets/Image/Terrain/Base_Texture.jpg");
 	AddResourece(eTexture_TerrainDetail,		"../Assets/Image/Terrain/Detail_Texture_7.jpg");

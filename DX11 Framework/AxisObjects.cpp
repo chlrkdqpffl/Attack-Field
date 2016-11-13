@@ -3,6 +3,7 @@
 
 CAxisObjects::CAxisObjects()
 {
+	AddRef();
 }
 
 CAxisObjects::~CAxisObjects()
