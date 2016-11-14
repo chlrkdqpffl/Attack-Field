@@ -25,7 +25,6 @@
 
 #define USE_CONSOLE					// Open Console Windows
 
-
 // --------------------- Manager -------------------- //
 #define STATEOBJ_MGR CStateObjectManager::GetInstance()
 #define RESOURCE_MGR CResourceManager::GetInstance()

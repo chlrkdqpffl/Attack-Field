@@ -25,6 +25,7 @@ public:
 	void SetGaussianWeights(float fSigma);
 	void CreateShaderVariable_Weights();
 	void DrawBlurredSceneToScreen();
+	void CreateComputeShader(ID3D11Device* pd3dDevice);
 	// -------------------- //
 	void BuildObjects();
 	void ReleaseObjects();
@@ -37,6 +38,8 @@ public:
 	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
+	void ScreenCapture(ID3D11Resource* resource);
+	void ScreenCapture(ID3D11ShaderResourceView* shaderResourceView);
 private:
 	HINSTANCE						m_hInstance;
 	HWND							m_hWnd;
@@ -60,6 +63,9 @@ private:
 	float							m_fGaussianWeights[11];
 	ID3D11Buffer					*m_pd3dcbWeights	= nullptr;
 	CScreenShader					*m_pScreenShader	= nullptr;
+
+	ID3D11ComputeShader				*m_pHorizontalBlurShader	= nullptr;
+	ID3D11ComputeShader				*m_pVerticalBlurShader		= nullptr;
 	// -------------------- //
 
 	UINT							m_n4xMSAAQualities;

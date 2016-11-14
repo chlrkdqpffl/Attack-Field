@@ -1,4 +1,6 @@
 
+//     fxc /E HorzBlurCS /T cs_5_0 /Od /Zi /Fo CompiledShader.fxo Blurring.hlsli
+
 Texture2D gtxInput;
 RWTexture2D<float4> gtxtRWOutput;
 
@@ -15,7 +17,6 @@ void HorzBlurCS(int3 vGroupThreadID : SV_GroupThreadID, int3 vDispatchThreadID :
 	// Fill local thread storage to reduce bandwidth.  To blur 
 	// N pixels, we will need to load N + 2*BlurRadius pixels
 	// due to the blur radius.
-	//
 	
 	// This thread group runs N threads.  To get the extra 2*BlurRadius pixels, 
 	// have 2*BlurRadius threads sample an extra pixel.
