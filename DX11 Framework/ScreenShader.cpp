@@ -22,14 +22,17 @@ void CScreenShader::CreateShader(ID3D11Device *pd3dDevice)
 	CreatePixelShaderFromFile(pd3dDevice, L"Shader HLSL File/TextureToScreen.hlsli", "PSTextureToScreen", "ps_5_0", &m_pd3dPixelShader);
 }
 
-void CScreenShader::CreateMesh(ID3D11Device *pd3dDevice, ID3D11ShaderResourceView *pd3dsrvTexture)
+void CScreenShader::CreateMesh(ID3D11Device *pd3dDevice)
 {
 	m_pScreenMesh = new CTextureToScreenRectMesh(pd3dDevice);
 
 	m_pTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	m_pTexture->SetTexture(0, pd3dsrvTexture);
-	//m_pTexture->SetTexture(0, eTexture_Title);
 	m_pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearClampSS);
+}
+
+void CScreenShader::SetTexture(ID3D11ShaderResourceView* pShaderResourceView)
+{
+	m_pTexture->SetTexture(0, pShaderResourceView);
 }
 
 void CScreenShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
@@ -45,6 +48,8 @@ void CScreenShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
 void CScreenShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
 	OnPrepareRender(pd3dDeviceContext);
+
+	m_pTexture->UpdateShaderVariable(pd3dDeviceContext);
 
 	m_pScreenMesh->Render(pd3dDeviceContext);
 }

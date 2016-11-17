@@ -291,4 +291,16 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 
 void CScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 {
+	string str;
+	
+	// Draw FrameRate
+	int fps = (int)SCENE_MGR->fFrameRate;
+	str = to_string(fps) + " FPS";
+
+	if (60 <= fps)
+		TEXT_MGR->RenderText(pd3dDeviceContext, str, 40, 1500, 20, 0xFFFFFFFF, FW1_LEFT);
+	else if(30 <= fps && fps < 60)
+		TEXT_MGR->RenderText(pd3dDeviceContext, str, 40, 1500, 20, 0xFF1270FF, FW1_LEFT);
+	else if (fps < 30)
+		TEXT_MGR->RenderText(pd3dDeviceContext, str, 40, 1500, 20, 0xFF0000FF, FW1_LEFT);
 }

@@ -158,6 +158,8 @@
     <ClCompile Include="AirplanePlayer.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ScreenShader.cpp" />
+    <ClCompile Include="TerrainShader.cpp" />
+    <ClCompile Include="TessellationShader.cpp" />
     <ClCompile Include="TextureToScreenRectMesh.cpp" />
     <ClCompile Include="NormalMapCubeMesh.cpp" />
     <ClCompile Include="DirectX11_Project.cpp" />
@@ -232,7 +234,9 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TerrainPlayer.h" />
+    <ClInclude Include="TerrainShader.h" />
     <ClInclude Include="TerrainWater.h" />
+    <ClInclude Include="TessellationShader.h" />
     <ClInclude Include="TextManager.h" />
     <ClInclude Include="TexturedRectMesh.h" />
     <ClInclude Include="TextureToScreenRectMesh.h" />
@@ -272,6 +276,9 @@
     <None Include="Shader HLSL File\Fog.hlsli" />
     <None Include="Shader HLSL File\Light.hlsli" />
     <None Include="Shader HLSL File\NormalMap.hlsli" />
+    <None Include="Shader HLSL File\Terrain.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </None>
     <None Include="Shader HLSL File\TextureToScreen.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

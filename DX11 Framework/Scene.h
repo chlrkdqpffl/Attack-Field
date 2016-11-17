@@ -6,6 +6,9 @@
 // Mesh
 #include "ModelMesh_FBX.h"
 
+// Shader
+#include "TerrainShader.h"
+
 // Object
 #include "SkyBox.h"
 #include "HeightMapTerrain.h"

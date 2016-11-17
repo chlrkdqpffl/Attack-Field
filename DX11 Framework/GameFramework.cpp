@@ -81,7 +81,8 @@ bool CGameFramework::CreateDirect3DDisplay()
 
 	UINT dwCreateDeviceFlags = 0;
 #ifdef _DEBUG
-	dwCreateDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+	// 이 플래그를 활성화 할 경우 오류 발생 -> Windows 10 SDK와 관련 있다 함
+//	dwCreateDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
 	D3D_DRIVER_TYPE d3dDriverTypes[] =
@@ -110,6 +111,9 @@ bool CGameFramework::CreateDirect3DDisplay()
 	if (FAILED(hResult = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void **)&pdxgiFactory))) return(false);
 	IDXGIDevice *pdxgiDevice = NULL;
 
+	// 그래픽 디버깅 도구가 외장 그래픽 카드를 지원하지 않음
+	// 따라서 디버그 모드는 내장 그래픽 카드로 실행
+#if !defined (DEBUG) && !defined(_DEBUG)
 	// Select Graphic Drive
 	if (FAILED(pdxgiFactory->EnumAdapters(0, (IDXGIAdapter**)&pAdapter))) {
 		return false;
@@ -124,9 +128,7 @@ bool CGameFramework::CreateDirect3DDisplay()
 		if (2 <= adapterIndex)
 			break;
 	}
-
-	if (pdxgiFactory) pdxgiFactory->Release();
-	
+#endif
 	// Create Device
 #ifdef _WITH_DEVICE_AND_SWAPCHAIN
 	for (UINT i = 0; i < nDriverTypes; i++)
@@ -138,8 +140,16 @@ bool CGameFramework::CreateDirect3DDisplay()
 	for (UINT i = 0; i < nDriverTypes; i++)
 	{
 		nd3dDriverType = d3dDriverTypes[i];
-		if (SUCCEEDED(hResult = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext))) break;
-		//if (SUCCEEDED(hResult = D3D11CreateDevice(nullptr, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext))) break;
+#if defined(DEBUG) || defined(_DEBUG)
+		if (SUCCEEDED(hResult = D3D11CreateDevice(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext))) 
+#else
+		if (SUCCEEDED(hResult = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
+#endif
+			break;
+		else {
+			MessageBox(m_hWnd, L"D3D11 Device 생성 실패", L"", MB_OK);
+			exit(0);
+		}
 	}
 	if (!m_pd3dDevice) return(false);
 
@@ -323,8 +333,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case VK_F5:
 		{
-			ScreenCapture(m_pd3dSRVTexture);
-		}
+			ScreenCapture(m_pd3dRenderTargetView, "Blur - ");
+		}				  
 			break;
 		case VK_F9:
 		{
@@ -368,7 +378,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 		m_nWndClientWidth = LOWORD(lParam);
 		m_nWndClientHeight = HIWORD(lParam);
 
-		m_pd3dDeviceContext->OMSetRenderTargets(0, NULL, NULL);
+//		m_pd3dDeviceContext->OMSetRenderTargets(0, NULL, NULL);
 
 		if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();		// 왜 최소화 하면 안만들어지는가 ?
 		if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
@@ -396,23 +406,36 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	return(0);
 }
 
-void CGameFramework::ScreenCapture(ID3D11Resource* resource)
+void CGameFramework::ScreenCapture(ID3D11Resource* resource, string str)
 {
+	string screenStr = "ScreenShot/";
+	screenStr.append(str);
+	screenStr.append(".jpg");
+
+	wstring wstr;
+	wstr.assign(screenStr.begin(), screenStr.end());
+
 	HRESULT hr = -1;
-	hr = D3DX11SaveTextureToFile(m_pd3dDeviceContext, resource, D3DX11_IFF_JPG, L"ScreenShot/Test.jpg");
+	hr = D3DX11SaveTextureToFile(m_pd3dDeviceContext, resource, D3DX11_IFF_JPG, wstr.c_str());
 	if (hr == S_OK)
 		cout << "스크린샷 저장 완료" << endl;
 	else
 		cout << "스크린샷 저장 실패" << endl;
 }
 
-void CGameFramework::ScreenCapture(ID3D11ShaderResourceView* shaderResourceView)
+void CGameFramework::ScreenCapture(ID3D11View* resourceView, string str)
 {
-	HRESULT hr = -1;
+	string screenStr = "ScreenShot/";
+	screenStr.append(str);
+	screenStr.append(".jpg");
 
+	wstring wstr;
+	wstr.assign(screenStr.begin(), screenStr.end());
+
+	HRESULT hr = -1;
 	ID3D11Resource* tempResource = nullptr;
-	shaderResourceView->GetResource(&tempResource);
-	hr = D3DX11SaveTextureToFile(m_pd3dDeviceContext, tempResource, D3DX11_IFF_JPG, L"ScreenShot/Test.jpg");
+	resourceView->GetResource(&tempResource);
+	hr = D3DX11SaveTextureToFile(m_pd3dDeviceContext, tempResource, D3DX11_IFF_JPG, wstr.c_str());
 	tempResource->Release();
 	if (hr == S_OK)
 		cout << "스크린샷 저장 완료" << endl;
@@ -422,11 +445,16 @@ void CGameFramework::ScreenCapture(ID3D11ShaderResourceView* shaderResourceView)
 
 void CGameFramework::SceneBlurring(int nBlurCount)
 {
+	if (nBlurCount == 0)
+		return;
+
 	UINT cxGroups = (UINT)ceilf(m_nWndClientWidth / 256.0f);
 	UINT cyGroups = (UINT)ceilf(m_nWndClientHeight / 256.0f);
 
 	ID3D11ShaderResourceView *pd3dNullResourceViews[1] = { nullptr };
 	ID3D11UnorderedAccessView *pd3dNullUnorderedViews[1] = { nullptr };
+
+	SetGaussianWeights(2);
 
 	for (int i = 0; i < nBlurCount; ++i)
 	{
@@ -457,27 +485,32 @@ void CGameFramework::SetGaussianWeights(float fSigma)
 		m_fGaussianWeights[i] = expf(-(float)(i*i) / f2Sigma);
 		fSum += m_fGaussianWeights[i];
 	}
-	for (int i = 0; i < 11; ++i)
+	for (int i = 0; i < 11; ++i) {
 		m_fGaussianWeights[i] /= fSum;
 
+
+	}
+
+	cout << fSum << endl;
 	D3D11_MAPPED_SUBRESOURCE d3dMapResource;
-	
 	m_pd3dDeviceContext->Map(m_pd3dcbWeights, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMapResource);
-	float *pcbWeights = (float*)d3dMapResource.pData;
+
+	float* pcbWeights = (float*)d3dMapResource.pData;
 	memcpy(pcbWeights, m_fGaussianWeights, sizeof(float) * 11);
+
 	m_pd3dDeviceContext->Unmap(m_pd3dcbWeights, 0);
-	m_pd3dDeviceContext->PSSetConstantBuffers(CS_SLOT_WEIGHTS, 1, &m_pd3dcbWeights);
+	m_pd3dDeviceContext->CSSetConstantBuffers(CS_SLOT_WEIGHTS, 1, &m_pd3dcbWeights);
 }
 
-void CGameFramework::CreateShaderVariable_Weights()
+void CGameFramework::CreateConstantBuffer_Weights()
 {
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
 	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	d3dBufferDesc.ByteWidth = sizeof(float) * 11;
+	d3dBufferDesc.ByteWidth = sizeof(float) * 16;		// 16의 배수
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	STATEOBJ_MGR->g_pd3dDevice.Get()->CreateBuffer(&d3dBufferDesc, nullptr, &m_pd3dcbWeights);
+	HR(m_pd3dDevice->CreateBuffer(&d3dBufferDesc, nullptr, &m_pd3dcbWeights));
 }
 
 void CGameFramework::CreateComputeShader(ID3D11Device* pd3dDevice)
@@ -489,14 +522,15 @@ void CGameFramework::CreateComputeShader(ID3D11Device* pd3dDevice)
 	delete pComputeShader;
 }
 
-void CGameFramework::DrawBlurredSceneToScreen()
+void CGameFramework::DrawBlurredSceneToScreen(ID3D11DeviceContext* pd3dDeviceContext)
 {
+	m_pScreenShader->SetTexture(m_pd3dSRVTexture);
 	m_pScreenShader->Render(m_pd3dDeviceContext);
 }
 
 void CGameFramework::BuildObjects()
 {
-	CreateShaderVariables();
+	CreateConstantBuffers();
 
 	CCubeMeshDiffused *pCubeMesh = new CCubeMeshDiffused(m_pd3dDevice, 4.0f, 12.0f, 4.0f);
 	m_pPlayer = new CTerrainPlayer(1);
@@ -514,8 +548,9 @@ void CGameFramework::BuildObjects()
 	m_pScene->BuildObjects(m_pd3dDevice);
 
 	CHeightMapTerrain *pTerrain = m_pScene->GetTerrain();
-	float fHeight = pTerrain->GetHeight(pTerrain->GetWidth()*0.5f, pTerrain->GetLength()*0.5f, false) + 500.0f;
-	m_pPlayer->SetPosition(XMVectorSet(pTerrain->GetWidth()*0.5f, fHeight, pTerrain->GetLength()*0.5f, 0.0f));
+//	m_pPlayer->SetPosition(XMVectorSet(pTerrain->GetWidth()*0.5f, 500.0f, pTerrain->GetLength()*0.5f, 0.0f));
+	m_pPlayer->SetPosition(XMVectorSet(597.0f, 230.0f, 800.0f, 0.0f));
+
 	m_pPlayer->SetPlayerUpdatedContext(pTerrain);
 	m_pPlayer->SetCameraUpdatedContext(pTerrain);
 
@@ -530,16 +565,16 @@ void CGameFramework::BuildObjects()
 
 	// Screen Shader
 	m_pScreenShader = new CScreenShader();
-	m_pScreenShader->CreateMesh(m_pd3dDevice, m_pd3dSRVTexture);
+	m_pScreenShader->CreateMesh(m_pd3dDevice);
 	m_pScreenShader->CreateShader(m_pd3dDevice);
-
+	
 	// Create ComputeShader
 	CreateComputeShader(m_pd3dDevice);
 }
 
 void CGameFramework::ReleaseObjects()
 {
-	ReleaseShaderVariables();
+	ReleaseConstantBuffers();
 
 	SCENE_MGR->m_nowScene->ReleaseObjects();
 	delete SCENE_MGR->m_nowScene;
@@ -547,7 +582,7 @@ void CGameFramework::ReleaseObjects()
 	if (m_pPlayer) delete m_pPlayer;
 }
 
-void CGameFramework::CreateShaderVariables()
+void CGameFramework::CreateConstantBuffers()
 {
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
@@ -555,19 +590,21 @@ void CGameFramework::CreateShaderVariables()
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	d3dBufferDesc.ByteWidth = sizeof(VS_CB_WORLD_MATRIX);
-	m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &CGameObject::m_pd3dcbWorldMatrix);
+	HR(m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &CGameObject::m_pd3dcbWorldMatrix));
 
 	d3dBufferDesc.ByteWidth = sizeof(XMVECTOR) * 4;
-	m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &CGameObject::m_pd3dcbMaterialColors);
+	HR(m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &CGameObject::m_pd3dcbMaterialColors));
 
 	CCamera::CreateShaderVariables(m_pd3dDevice);
 	CTexture::CreateShaderVariables(m_pd3dDevice);
 
-//	CreateShaderVariable_Weights();
+	CreateConstantBuffer_Weights();
 }
 
-void CGameFramework::ReleaseShaderVariables()
+void CGameFramework::ReleaseConstantBuffers()
 {
+	if(m_pd3dcbWeights) m_pd3dcbWeights->Release();
+
 	CGameObject::ReleaseConstantBuffers();
 	CCamera::ReleaseShaderVariables();
 	CTexture::ReleaseShaderVariables();
@@ -629,10 +666,12 @@ void CGameFramework::ProcessInput()
 void CGameFramework::UpdateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
-
+	
 	if (m_pPlayer) 
 		m_pPlayer->Animate(fTimeElapsed, NULL);
 
+	SCENE_MGR->fTimeElapsed = fTimeElapsed;
+	SCENE_MGR->fFrameRate = m_GameTimer.GetFrameRate();
 	SCENE_MGR->m_nowScene->UpdateObjects(fTimeElapsed);
 }
 
@@ -647,6 +686,7 @@ void CGameFramework::FrameAdvance()
 	UpdateObjects();
 
 	SCENE_MGR->m_nowScene->OnPreRender(m_pd3dDeviceContext);
+	
 	/*
 	// 블러링
 	ID3D11RenderTargetView *pd3dRenderTargetView[1] = { m_pd3dRTVOffScreen };
@@ -675,13 +715,12 @@ void CGameFramework::FrameAdvance()
 	pd3dRenderTargetView[0] = m_pd3dRenderTargetView;
 	m_pd3dDeviceContext->OMSetRenderTargets(1, pd3dRenderTargetView, m_pd3dDepthStencilView);
 
-	SceneBlurring(4);
+	SceneBlurring(3);
 
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 	
-	DrawBlurredSceneToScreen();
-	
+	DrawBlurredSceneToScreen(m_pd3dDeviceContext);
 	*/
 	
 	float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
@@ -697,14 +736,11 @@ void CGameFramework::FrameAdvance()
 	else
 		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 
-
 	SCENE_MGR->m_nowScene->Render(m_pd3dDeviceContext, m_pCamera);
 
 #ifdef _WITH_PLAYER_TOP
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
-
-	DrawBlurredSceneToScreen();
 	
 	if (m_pPlayer) 
 		m_pPlayer->Render(m_pd3dDeviceContext, m_pCamera);

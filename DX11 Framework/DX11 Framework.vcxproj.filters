@@ -198,6 +198,12 @@
     <ClCompile Include="ScreenShader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="TerrainShader.cpp">
+      <Filter>Objects\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="TessellationShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -335,6 +341,12 @@
     <ClInclude Include="ScreenShader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="TessellationShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainShader.h">
+      <Filter>Objects\Terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -374,6 +386,9 @@
       <Filter>HLSL</Filter>
     </None>
     <None Include="Shader HLSL File\TextureToScreen.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\Terrain.hlsli">
       <Filter>HLSL</Filter>
     </None>
   </ItemGroup>

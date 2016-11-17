@@ -59,3 +59,13 @@ CHeightMapTerrain::~CHeightMapTerrain(void)
 #endif
 	if (m_pHeightMap) delete m_pHeightMap;
 }
+
+void CHeightMapTerrain::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
+{
+	if (m_pShader) m_pShader->Render(pd3dDeviceContext, pCamera);
+
+	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&m_d3dxmtxWorld));
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
+
+	RenderMesh(pd3dDeviceContext, pCamera);
+}

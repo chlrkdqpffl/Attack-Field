@@ -2,7 +2,7 @@
 
 /*
 	Max Sampler State				: 16
-	Max Constant Buffer				: 16
+	Max Constant Buffer				: 14 (2개는 내부 사용)
 	Max Constant Buffer Size		: 4096 Byte
 	Max Resource(Texture, Buffer)	: 128
 

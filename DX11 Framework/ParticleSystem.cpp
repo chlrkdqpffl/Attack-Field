@@ -195,6 +195,7 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 	pd3dDeviceContext->DrawAuto();
 
 	pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
+//	pd3dDeviceContext->GSSetConstantBuffers(GS_CB_SLOT_PARTICLE, 1, nullptr);
 
 	pd3dDeviceContext->OMSetDepthStencilState(NULL, 0);
 	pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);

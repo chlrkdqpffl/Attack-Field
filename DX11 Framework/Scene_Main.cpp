@@ -502,6 +502,8 @@ void CScene_Main::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 
 void CScene_Main::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 {
+	CScene::RenderAllText(pd3dDeviceContext);
+
 	string str;
 	wstring wstr;
 	

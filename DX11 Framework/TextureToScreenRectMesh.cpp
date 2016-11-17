@@ -12,10 +12,10 @@ CTextureToScreenRectMesh::CTextureToScreenRectMesh(ID3D11Device *pd3dDevice, flo
 	m_pPositions = new XMFLOAT3[m_nVertices];
 	XMFLOAT2 *pd3dxvTexCoords = new XMFLOAT2[m_nVertices];
 
-	m_pPositions[0] = XMFLOAT3(-fx, -0.5f, 0.0f); 
-	m_pPositions[1] = XMFLOAT3(-fx, +0.5f, 0.0f); 
-	m_pPositions[2] = XMFLOAT3(+fx, -0.5f, 0.0f); 
-	m_pPositions[3] = XMFLOAT3(+fx, +0.5f, 0.0f);
+	m_pPositions[0] = XMFLOAT3(-fx, -fy, 0.9f); 
+	m_pPositions[1] = XMFLOAT3(-fx, +fy, 0.9f); 
+	m_pPositions[2] = XMFLOAT3(+fx, -fy, 0.9f); 
+	m_pPositions[3] = XMFLOAT3(+fx, +fy, 0.9f);
 	
 	pd3dxvTexCoords[0] = XMFLOAT2(0.0f, 1.0f);
 	pd3dxvTexCoords[1] = XMFLOAT2(0.0f, 0.0f);

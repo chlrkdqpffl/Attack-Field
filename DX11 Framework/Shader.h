@@ -75,16 +75,8 @@ public:
 	static ID3D11Buffer *CreateBuffer(ID3D11Device *pd3dDevice, UINT nStride, int nElements, void *pBufferData, UINT nBindFlags, D3D11_USAGE d3dUsage, UINT nCPUAccessFlags);
 };
 
-////////////////////////////////////////////////////////////////////////////////
-//
-class CTerrainShader : public CShader
-{
-public:
-	CTerrainShader();
-	virtual ~CTerrainShader();
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	virtual void CreateShader(ID3D11Device *pd3dDevice);
-};
 
 class CSkyBoxShader : public CShader
 {
@@ -92,7 +84,7 @@ public:
 	CSkyBoxShader();
 	virtual ~CSkyBoxShader();
 
-	virtual void CreateShader(ID3D11Device *pd3dDevice);
+	virtual void CreateShader(ID3D11Device *pd3dDevice) override;
 };
 
 class CWaterShader : public CShader
@@ -101,7 +93,7 @@ public:
 	CWaterShader();
 	virtual ~CWaterShader();
 
-	virtual void CreateShader(ID3D11Device *pd3dDevice);
+	virtual void CreateShader(ID3D11Device *pd3dDevice) override;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,8 +114,8 @@ public:
 	virtual void BuildObjects(ID3D11Device *pd3dDevice, void *pContext = NULL);
 	virtual void ReleaseObjects();
 	virtual void UpdateObjects(float fTimeElapsed);
-	virtual void OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
+	virtual void OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext) override;
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 
 	void SetObject(int nIndex, CGameObject *pGameObject);
 	void AddObject(CGameObject *pGameObject);

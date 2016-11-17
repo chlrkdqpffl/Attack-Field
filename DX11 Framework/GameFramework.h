@@ -18,13 +18,13 @@ public:
 	bool CreateRenderTargetDepthStencilView();
 	bool CreateDirect3DDisplay();
 
-	void CreateShaderVariables();
-	void ReleaseShaderVariables();
+	void CreateConstantBuffers();
+	void ReleaseConstantBuffers();
 	// ----- Blurring ----- //
 	void SceneBlurring(int nBlurCount);
 	void SetGaussianWeights(float fSigma);
-	void CreateShaderVariable_Weights();
-	void DrawBlurredSceneToScreen();
+	void CreateConstantBuffer_Weights();
+	void DrawBlurredSceneToScreen(ID3D11DeviceContext* pd3dDeviceContext);
 	void CreateComputeShader(ID3D11Device* pd3dDevice);
 	// -------------------- //
 	void BuildObjects();
@@ -38,8 +38,8 @@ public:
 	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
-	void ScreenCapture(ID3D11Resource* resource);
-	void ScreenCapture(ID3D11ShaderResourceView* shaderResourceView);
+	void ScreenCapture(ID3D11Resource* resource, string str);
+	void ScreenCapture(ID3D11View* shaderResourceView, string str);
 private:
 	HINSTANCE						m_hInstance;
 	HWND							m_hWnd;
@@ -66,6 +66,7 @@ private:
 
 	ID3D11ComputeShader				*m_pHorizontalBlurShader	= nullptr;
 	ID3D11ComputeShader				*m_pVerticalBlurShader		= nullptr;
+	UINT							m_nBlurCount = 0;
 	// -------------------- //
 
 	UINT							m_n4xMSAAQualities;

@@ -30,6 +30,8 @@ public:
 
 	float GetPeakHeight() { return(m_bcMeshBoundingCube.Center.y + m_bcMeshBoundingCube.Extents.y); }
 
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
+
 #ifdef _WITH_TERRAIN_TEXTURE_ARRAY
 	ID3D11Buffer				*m_pd3dcbTextureIndex;
 #endif

@@ -40,14 +40,12 @@ VS_TEXTURED_LIGHTING_NORMAL_OUTPUT VS_TexturedLightingNormalMap(VS_TEXTURED_LIGH
 {
     VS_TEXTURED_LIGHTING_NORMAL_OUTPUT output = (VS_TEXTURED_LIGHTING_NORMAL_OUTPUT) 0;
 	
-	// Transform to world space space.
     output.positionW = mul(float4(input.positionL, 1.0f), gmtxWorld).xyz;
     output.normalW = mul(input.normalL, (float3x3) gmtxWorld);
     output.tangentW = mul(input.tangentL, (float3x3) gmtxWorld);
 
-	// Transform to homogeneous clip space.
     output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
-	// Output vertex attributes for interpolation across triangle.
+	
     output.texCoord = input.texCoord;
 
     return output;
