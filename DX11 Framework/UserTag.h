@@ -15,7 +15,8 @@ enum eShaderTag {
 
 enum Resource_TextrueTag {
 	// Environment
-	eTexture_Water, eTexture_WaterDetail, eTexture_SkyBox, eTexture_Terrain, eTexture_TerrainDetail, eTexture_HeightMap, eTexture_TerrainNormal,
+	eTexture_Water, eTexture_WaterDetail, eTexture_SkyBox, 
+	eTexture_TerrainDiffuse, eTexture_TerrainDetail, eTexture_TerrainNormal, eTexture_TerrainHeightMap, eTexture_TerrainHeightMapRaw,
 
 	// Model
 	eTexture_DarkFighterColor,

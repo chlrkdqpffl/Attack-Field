@@ -14,6 +14,12 @@ CMeshNormalMap::~CMeshNormalMap()
 XMVECTOR CMeshNormalMap::CalculateTriAngleTangent(UINT nIndex0, UINT nIndex1, UINT nIndex2)
 {
 	XMFLOAT3 vTangent{ 0.0f, 0.0f, 0.0f };
+	vTangent.x = (m_pTexCoords[nIndex0].x * (m_pPositions[nIndex2].x - m_pPositions[nIndex0].x)) + (m_pTexCoords[nIndex0].y * (m_pPositions[nIndex1].x - m_pPositions[nIndex0].x));
+	vTangent.y = (m_pTexCoords[nIndex1].x * (m_pPositions[nIndex2].y - m_pPositions[nIndex0].y)) + (m_pTexCoords[nIndex1].y * (m_pPositions[nIndex1].y - m_pPositions[nIndex0].y));
+	vTangent.z = (m_pTexCoords[nIndex2].x * (m_pPositions[nIndex2].z - m_pPositions[nIndex0].z)) + (m_pTexCoords[nIndex2].y * (m_pPositions[nIndex1].z - m_pPositions[nIndex0].z));
+	return(XMLoadFloat3(&vTangent));
+
+
 	XMFLOAT3 vector1, vector2;
 	XMFLOAT2 tuVector, tvVector;
 	float den;

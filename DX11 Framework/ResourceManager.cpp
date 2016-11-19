@@ -21,9 +21,9 @@ void CResourceManager::InitializeManager()
 	AddResourece(eTexture_Title,				"../Assets/Image/UI/BackGround2.jpg");
 
 	// Environment
-	AddResourece(eTexture_Terrain,				"../Assets/Image/Terrain/Base_Texture.jpg");
+	AddResourece(eTexture_TerrainDiffuse,		"../Assets/Image/Terrain/Base_Texture.jpg");
 	AddResourece(eTexture_TerrainDetail,		"../Assets/Image/Terrain/Detail_Texture_7.jpg");
-	AddResourece(eTexture_HeightMap,			"../Assets/Image/Terrain/HeightMap.raw");
+	AddResourece(eTexture_TerrainHeightMapRaw,	"../Assets/Image/Terrain/HeightMap.raw");
 
 	//	AddResourece(eTexture_Terrain,				"../Assets/Image/Terrain/TerrainDiffuse2.jpg");
 	//	AddResourece(eTexture_TerrainDetail,		"../Assets/Image/Terrain/Detail_Texture_7.jpg");

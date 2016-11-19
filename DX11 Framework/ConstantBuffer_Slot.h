@@ -1,12 +1,12 @@
 #pragma once
 
 /*
-	Max Sampler State				: 16
-	Max Constant Buffer				: 14 (2개는 내부 사용)
-	Max Constant Buffer Size		: 4096 Byte
-	Max Resource(Texture, Buffer)	: 128
+Max Sampler State				: 16
+Max Constant Buffer				: 14 (2개는 내부 사용)
+Max Constant Buffer Size		: 4096 Byte
+Max Resource(Texture, Buffer)	: 128
 
-	※ 주의 : 여기 있는 값들은 쉐이더 코드와 연동되므로 register 값과 일치해야 한다.
+※ 주의 : 쉐이더 코드와 연동되므로 register 값과 일치해야 한다.
 */
 
 
@@ -42,7 +42,11 @@
 // ================== Slot ==================== //
 // texture
 #define PS_SLOT_TEXTURE						0x00
-#define PS_SLOT_TEXTURE_TERRAIN				0x02
+#define PS_SLOT_TEXTURE_TERRAIN_DIFUSE		0x02
+//		PS_SLOT_TEXTURE_TERRAIN_DETAIL		0x03
+//		PS_SLOT_TEXTURE_TERRAIN_NORMAL		0x04
+//		PS_SLOT_TEXTURE_TERRAIN_HEIGHT		0x05
+
 #define PS_SLOT_TEXTURE_SKYBOX				0x0D
 #define PS_SLOT_TEXTURE_CUBEMAPPED			0x0E
 #define PS_SLOT_TEXTURE_PROJECTION			0x0F
@@ -58,6 +62,7 @@
 #define PS_SLOT_SAMPLER						0x00
 #define PS_SLOT_SAMPLER_DETAIL				0x01
 #define PS_SLOT_SAMPLER_TERRAIN				0x02
+//		PS_SLOT_SAMPLER_TERRAINDETAIL		0x03
 #define PS_SLOT_SAMPLER_SKYBOX				0x04
 #define PS_SLOT_SAMPLER_CUBEMAPPED			0x05
 #define PS_SLOT_SAMPLER_PROJECTION			0x06

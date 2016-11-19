@@ -104,31 +104,40 @@ bool CGameFramework::CreateDirect3DDisplay()
 	D3D_DRIVER_TYPE		nd3dDriverType = D3D_DRIVER_TYPE_NULL;
 	D3D_FEATURE_LEVEL	nd3dFeatureLevel = D3D_FEATURE_LEVEL_11_0;
 	HRESULT				hResult = S_OK;
-	IDXGIFactory1 *pdxgiFactory = nullptr;
-	IDXGIAdapter *pAdapter = nullptr;
+	IDXGIFactory1		*pdxgiFactory = nullptr;
+	IDXGIAdapter		*pAdapter = nullptr;
+	IDXGIDevice			*pdxgiDevice = NULL;
+	DXGI_ADAPTER_DESC	adapterDesc;
+	::ZeroMemory(&adapterDesc, sizeof(DXGI_ADAPTER_DESC));
 
 	// Create DXGI Factory
 	if (FAILED(hResult = CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void **)&pdxgiFactory))) return(false);
-	IDXGIDevice *pdxgiDevice = NULL;
 
-	// 그래픽 디버깅 도구가 외장 그래픽 카드를 지원하지 않음
-	// 따라서 디버그 모드는 내장 그래픽 카드로 실행
-#if !defined (DEBUG) && !defined(_DEBUG)
-	// Select Graphic Drive
-	if (FAILED(pdxgiFactory->EnumAdapters(0, (IDXGIAdapter**)&pAdapter))) {
+	// Select Default Graphic Drive
+	if (FAILED(pdxgiFactory->EnumAdapters(0, (IDXGIAdapter**)&pAdapter)))
 		return false;
-	}
-	unsigned int adapterIndex = 0;
-	while (pdxgiFactory->EnumAdapters(adapterIndex, &pAdapter) != DXGI_ERROR_NOT_FOUND) {
-		adapterIndex++;
-		
-		// 0번 : 내장 그래픽
-		// 1번 : 외장 그래픽
-		// 2번 : Microsoft Basic Render Driver
-		if (2 <= adapterIndex)
+
+	pAdapter->GetDesc(&adapterDesc);
+	m_ui64VideoMemory = (unsigned __int64)(adapterDesc.DedicatedVideoMemory + adapterDesc.SharedSystemMemory);
+	m_wsGraphicBrandName = adapterDesc.Description;
+	
+	int gpu_index = 0;
+	unsigned __int64 comparison_videoMemory;
+	
+	// Find the Best Performance Graphic Cards.
+	while (pdxgiFactory->EnumAdapters(gpu_index, &pAdapter) != DXGI_ERROR_NOT_FOUND) {
+		pAdapter->GetDesc(&adapterDesc);
+		comparison_videoMemory = (unsigned __int64)(adapterDesc.DedicatedVideoMemory + adapterDesc.SharedSystemMemory);
+
+		if (comparison_videoMemory > m_ui64VideoMemory)	{
+			m_wsGraphicBrandName = adapterDesc.Description;
+			m_ui64VideoMemory = comparison_videoMemory;
 			break;
+		}
+		else
+			++gpu_index;
 	}
-#endif
+
 	// Create Device
 #ifdef _WITH_DEVICE_AND_SWAPCHAIN
 	for (UINT i = 0; i < nDriverTypes; i++)
@@ -746,6 +755,10 @@ void CGameFramework::FrameAdvance()
 		m_pPlayer->Render(m_pd3dDeviceContext, m_pCamera);
 
 	SCENE_MGR->m_nowScene->RenderAllText(m_pd3dDeviceContext);		// 텍스트는 항상 제일 마지막에 그려야 정상적으로 그려짐
+
+	// Graphic Crad Info
+	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_wsGraphicBrandName, 30, 20, 830, 0xFF41FF3A, FW1_LEFT);
+	TEXT_MGR->RenderText(m_pd3dDeviceContext, "Video Memory : " + to_string(m_ui64VideoMemory / 1048576) + "MB", 30, 20, 860, 0xFF0000FF, FW1_LEFT);
 
 	m_pDXGISwapChain->Present(0, 0);
 

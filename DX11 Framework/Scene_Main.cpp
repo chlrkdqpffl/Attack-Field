@@ -141,9 +141,9 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma endregion
 
 #pragma region [Create Terrain]
-	CTexture *pTerrainTexture = new CTexture(2, 2, PS_SLOT_TEXTURE_TERRAIN, PS_SLOT_SAMPLER_TERRAIN);
+	CTexture *pTerrainTexture = new CTexture(2, 2, PS_SLOT_TEXTURE_TERRAIN_DIFUSE, PS_SLOT_SAMPLER_TERRAIN);
 
-	pTerrainTexture->SetTexture(0, eTexture_Terrain);
+	pTerrainTexture->SetTexture(0, eTexture_TerrainDiffuse);
 	pTerrainTexture->SetSampler(0, STATEOBJ_MGR->g_pPointClampSS);
 	
 	pTerrainTexture->SetTexture(1, eTexture_TerrainDetail);
@@ -168,7 +168,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 //	XMVECTOR d3dxvScale = XMVectorSet(8.0f, 1.0f, 8.0f, 0.0f);
 #ifdef _WITH_TERRAIN_PARTITION
-	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, RESOURCE_MGR->FindResourcePath(eTexture_HeightMap).c_str(), 257, 257, 17, 17, d3dxvScale);
+	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, RESOURCE_MGR->FindResourcePath(eTexture_TerrainHeightMapRaw).c_str(), 257, 257, 17, 17, d3dxvScale);
 #else
 	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, RESOURCE_MGR->FindResourcePath(eTexture_HeightMap).c_str(), 257, 257, 257, 257, d3dxvScale);
 #endif
@@ -354,7 +354,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_pParticleSystem->Initialize(pd3dDevice, NULL, m_pParticleSystem->CreateRandomTexture1DSRV(pd3dDevice), 200);
 	m_pParticleSystem->CreateShader(pd3dDevice);
 #pragma endregion
-
+	CreateLights();
 	CreateConstantBuffers(pd3dDevice);
 }
 
@@ -368,6 +368,40 @@ void CScene_Main::ReleaseObjects()
 }
 
 void CScene_Main::CreateConstantBuffers(ID3D11Device *pd3dDevice)
+{
+	D3D11_BUFFER_DESC d3dBufferDesc;
+	ZeroMemory(&d3dBufferDesc, sizeof(d3dBufferDesc));
+	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	d3dBufferDesc.ByteWidth = sizeof(LIGHTS);
+	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	D3D11_SUBRESOURCE_DATA d3dBufferData;
+	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
+	d3dBufferData.pSysMem = m_pLights;
+	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbLights);
+}
+
+void CScene_Main::UpdateConstantBuffers(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights)
+{
+	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+	pd3dDeviceContext->Map(m_pd3dcbLights, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	LIGHTS *pcbLight = (LIGHTS *)d3dMappedResource.pData;
+	memcpy(pcbLight, pLights, sizeof(LIGHTS));
+	pd3dDeviceContext->Unmap(m_pd3dcbLights, 0);
+	pd3dDeviceContext->PSSetConstantBuffers(PS_CB_SLOT_LIGHT, 1, &m_pd3dcbLights);
+}
+
+void CScene_Main::ReleaseConstantBuffers()
+{
+	if (m_pLights) {
+		delete m_pLights;
+		m_pLights = nullptr;
+	}
+
+	ReleaseCOM(m_pd3dcbLights);
+}
+
+void CScene_Main::CreateLights()
 {
 	m_pLights = new LIGHTS;
 	::ZeroMemory(m_pLights, sizeof(LIGHTS));
@@ -417,36 +451,10 @@ void CScene_Main::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 	m_pLights->m_pLights[3].m_fPhi = (float)cos(D3DXToRadian(40.0f));
 	m_pLights->m_pLights[3].m_fTheta = (float)cos(D3DXToRadian(15.0f));
 
-	D3D11_BUFFER_DESC d3dBufferDesc;
-	ZeroMemory(&d3dBufferDesc, sizeof(d3dBufferDesc));
-	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	d3dBufferDesc.ByteWidth = sizeof(LIGHTS);
-	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	D3D11_SUBRESOURCE_DATA d3dBufferData;
-	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
-	d3dBufferData.pSysMem = m_pLights;
-	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbLights);
-}
+	// Light Object
+	CGameObject* pLightObject;
 
-void CScene_Main::UpdateConstantBuffers(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights)
-{
-	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	pd3dDeviceContext->Map(m_pd3dcbLights, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-	LIGHTS *pcbLight = (LIGHTS *)d3dMappedResource.pData;
-	memcpy(pcbLight, pLights, sizeof(LIGHTS));
-	pd3dDeviceContext->Unmap(m_pd3dcbLights, 0);
-	pd3dDeviceContext->PSSetConstantBuffers(PS_CB_SLOT_LIGHT, 1, &m_pd3dcbLights);
-}
-
-void CScene_Main::ReleaseConstantBuffers()
-{
-	if (m_pLights) {
-		delete m_pLights;
-		m_pLights = nullptr;
-	}
-
-	ReleaseCOM(m_pd3dcbLights);
+//	for 
 }
 
 bool CScene_Main::ProcessInput(UCHAR *pKeysBuffer)

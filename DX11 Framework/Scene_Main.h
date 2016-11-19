@@ -18,6 +18,8 @@ public:
 	virtual void UpdateConstantBuffers(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights);
 	virtual void ReleaseConstantBuffers();
 
+	virtual void CreateLights() override;
+
 	virtual bool ProcessInput(UCHAR *pKeysBuffer);
 	virtual void UpdateObjects(float fTimeElapsed);
 	virtual void OnPreRender(ID3D11DeviceContext *pd3dDeviceContext);

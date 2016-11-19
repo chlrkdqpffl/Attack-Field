@@ -81,4 +81,9 @@ private:
 
 	POINT							m_ptOldCursorPos;
 	_TCHAR							m_pszBuffer[50];
+
+
+	// Graphic Card Info
+	wstring							m_wsGraphicBrandName;
+	unsigned __int64				m_ui64VideoMemory		= 0;
 };
