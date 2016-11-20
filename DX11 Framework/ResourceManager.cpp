@@ -40,9 +40,9 @@ void CResourceManager::InitializeManager()
 	AddResourece(eTexture_Bricks,				"../Assets/Image/Miscellaneous/bricks.dds");
 	AddResourece(eTexture_BricksNormal,			"../Assets/Image/Miscellaneous/bricks_nmap.dds");
 	AddResourece(eTexture_Wood,					"../Assets/Image/Miscellaneous/Wood01.jpg");
-
-
-
+	AddResourece(eTexture_WallDiffuse,			"../Assets/Image/Miscellaneous/wall.jpg");
+	AddResourece(eTexture_WallNormalHeight,		"../Assets/Image/Miscellaneous/wall_NM_height.dds");
+	
 	// ------------------------ Mesh ---------------------------- //
 	AddResourece(eMesh_DarkFighter,				"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.data");
 }
@@ -113,8 +113,40 @@ ID3D11ShaderResourceView* CResourceManager::FindResourceAndCreateSRV(Resource_Te
 	if ((HRESULT)hResult >= 0)
 		cout << "File Load Success!! <" << (*findResource).second << ">" << endl;
 	else 
-		cout << "File Load Error!! <" << (*findResource).second << "> \t 파일 또는 경로를 확인하세요." << endl;
+		cout << "File Load Error!! <" << (*findResource).second << "> \t\t 파일 또는 경로를 확인하세요." << endl;
 #endif
 
 	return pd3dsrvTexture;
 }
+
+#if defined(DEBUG) || defined(_DEBUG)
+void CResourceManager::ShowImageInfo(Resource_TextrueTag resourceTag)
+{
+	auto findResource = textureMap.find(resourceTag);
+	if (findResource == textureMap.end()) {
+		cout << "Resource Texture Tag " << resourceTag << " is not exist." << endl;
+		return;
+	}
+	string str = (*findResource).second.c_str();
+	wstring wstr;
+	wstr.assign(str.begin(), str.end());
+	HRESULT hResult;
+
+	D3DX11_IMAGE_INFO info;
+	D3DX11GetImageInfoFromFile(wstr.c_str(), nullptr, &info, &hResult);
+
+	if ((HRESULT)hResult >= 0) {
+		cout << endl << " ===== < Image File Info > =====" << endl;
+		cout << " Image Name	: " << str << endl;
+		cout << " Array Size	: " << info.ArraySize << endl;
+		cout << " Depth		: " << info.Depth << endl;
+		cout << " Width		: " << info.Width << endl;
+		cout << " Height		: " << info.Height << endl;
+		cout << " MipLevels	: " << info.MipLevels << endl;
+		cout << " Format		: " << info.Format << endl;
+		cout << " ===============================" << endl << endl;
+	}
+	else
+		cout << "File Load Error!! <" << (*findResource).second << "> \t\t 파일 또는 경로를 확인하세요." << endl;
+}
+#endif

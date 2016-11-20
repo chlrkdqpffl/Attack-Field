@@ -14,18 +14,10 @@ CMeshNormalMap::~CMeshNormalMap()
 XMVECTOR CMeshNormalMap::CalculateTriAngleTangent(UINT nIndex0, UINT nIndex1, UINT nIndex2)
 {
 	XMFLOAT3 vTangent{ 0.0f, 0.0f, 0.0f };
-	vTangent.x = (m_pTexCoords[nIndex0].x * (m_pPositions[nIndex2].x - m_pPositions[nIndex0].x)) + (m_pTexCoords[nIndex0].y * (m_pPositions[nIndex1].x - m_pPositions[nIndex0].x));
-	vTangent.y = (m_pTexCoords[nIndex1].x * (m_pPositions[nIndex2].y - m_pPositions[nIndex0].y)) + (m_pTexCoords[nIndex1].y * (m_pPositions[nIndex1].y - m_pPositions[nIndex0].y));
-	vTangent.z = (m_pTexCoords[nIndex2].x * (m_pPositions[nIndex2].z - m_pPositions[nIndex0].z)) + (m_pTexCoords[nIndex2].y * (m_pPositions[nIndex1].z - m_pPositions[nIndex0].z));
-	return(XMLoadFloat3(&vTangent));
-
-
 	XMFLOAT3 vector1, vector2;
 	XMFLOAT2 tuVector, tvVector;
 	float den;
-	float length;
 
-	// Calculate the two vectors for this face.
 	vector1.x = m_pPositions[nIndex1].x - m_pPositions[nIndex0].x;
 	vector1.y = m_pPositions[nIndex1].y - m_pPositions[nIndex0].y;
 	vector1.z = m_pPositions[nIndex1].z - m_pPositions[nIndex0].z;
@@ -34,64 +26,18 @@ XMVECTOR CMeshNormalMap::CalculateTriAngleTangent(UINT nIndex0, UINT nIndex1, UI
 	vector2.y = m_pPositions[nIndex2].y - m_pPositions[nIndex0].y;
 	vector2.z = m_pPositions[nIndex2].z - m_pPositions[nIndex0].z;
 
-	// Calculate the tu and tv texture space vectors.
 	tuVector.x = m_pTexCoords[nIndex1].x - m_pTexCoords[nIndex0].x;
-	tuVector.y = m_pTexCoords[nIndex2].x - m_pTexCoords[nIndex0].x;
-
-	tvVector.x = m_pTexCoords[nIndex1].y - m_pTexCoords[nIndex0].y;
-	tvVector.y = m_pTexCoords[nIndex2].y- m_pTexCoords[nIndex0].y;
-
-	// Calculate the denominator of the tangent/binormal equation.
+	tuVector.y = m_pTexCoords[nIndex1].y - m_pTexCoords[nIndex0].y;
+	tvVector.x = m_pTexCoords[nIndex2].x - m_pTexCoords[nIndex0].x;
+	tvVector.y = m_pTexCoords[nIndex2].y - m_pTexCoords[nIndex0].y;
+	
 	den = 1.0f / (tuVector.x * tvVector.y - tuVector.y * tvVector.x);
+	
+	vTangent.x = (tuVector.x * vector2.x - tvVector.x * vector1.x) * den;
+	vTangent.y = (tuVector.x * vector2.y - tvVector.x * vector1.y) * den;
+	vTangent.z = (tuVector.x * vector2.z - tvVector.x * vector1.z) * den;
 
-	// Calculate the cross products and multiply by the coefficient to get the tangent and binormal.
-	vTangent.x = (tvVector.y * vector1.x - tvVector.y * vector2.x) * den;
-	vTangent.y = (tvVector.y * vector1.y - tvVector.y * vector2.y) * den;
-	vTangent.z = (tvVector.y * vector1.z - tvVector.y * vector2.z) * den;
-
-	// Calculate the length of this normal.
-	length = sqrt((vTangent.x * vTangent.x) + (vTangent.y * vTangent.y) + (vTangent.z * vTangent.z));
-
-	// Normalize the normal and then store it
-	vTangent.x = vTangent.x / length;
-	vTangent.y = vTangent.y / length;
-	vTangent.z = vTangent.z / length;
-
-	return(XMLoadFloat3(&vTangent));
-}
-
-void CMeshNormalMap::CalculateTriAngleTangent2(UINT nIndex0, UINT nIndex1, UINT nIndex2)
-{
-	XMFLOAT3 edge1, edge2;
-	edge1.x = m_pPositions[nIndex1].x - m_pPositions[nIndex0].x;
-	edge1.y = m_pPositions[nIndex1].y - m_pPositions[nIndex0].y;
-	edge1.z = m_pPositions[nIndex1].z - m_pPositions[nIndex0].z;
-
-	edge2.x = m_pPositions[nIndex2].x - m_pPositions[nIndex0].x;
-	edge2.y = m_pPositions[nIndex2].y - m_pPositions[nIndex0].y;
-	edge2.z = m_pPositions[nIndex2].z - m_pPositions[nIndex0].z;
-
-	XMFLOAT2 uvEdge1, uvEdge2;
-	uvEdge1.x = m_pTexCoords[nIndex1].x - m_pTexCoords[nIndex0].x;
-	uvEdge1.y = m_pTexCoords[nIndex1].y - m_pTexCoords[nIndex0].y;
-
-	uvEdge2.x = m_pTexCoords[nIndex2].x - m_pTexCoords[nIndex0].x;
-	uvEdge2.y = m_pTexCoords[nIndex2].y - m_pTexCoords[nIndex0].y;
-
-	float det = (uvEdge1.x * uvEdge2.y) - (uvEdge2.x * uvEdge1.y);
-
-	// 범위 안으로 들어가는지 확인
-	if (-0.0001f < det && det < 0.0001f)
-	{
-		m_pTangents[nIndex0].x = ((uvEdge2.y * edge1.x) + ((-1) * uvEdge1.y * edge2.x)) * (1.0f / det);
-		m_pTangents[nIndex0].y = ((uvEdge2.y * edge1.y) + ((-1) * uvEdge1.y * edge2.y)) * (1.0f / det);
-		m_pTangents[nIndex0].z = ((uvEdge2.y * edge1.z) + ((-1) * uvEdge1.y * edge2.z)) * (1.0f / det);
-		float length = sqrt((m_pTangents[nIndex0].x * m_pTangents[nIndex0].x) + (m_pTangents[nIndex0].y * m_pTangents[nIndex0].y) + (m_pTangents[nIndex0].z * m_pTangents[nIndex0].z));
-
-		m_pTangents[nIndex0].x = m_pTangents[nIndex0].x / length;
-		m_pTangents[nIndex0].y = m_pTangents[nIndex0].y / length;
-		m_pTangents[nIndex0].z = m_pTangents[nIndex0].z / length;
-	}
+	return(XMVector3Normalize(XMLoadFloat3(&vTangent)));
 }
 
 void CMeshNormalMap::SetTriAngleListVertexTangent(XMVECTOR *pd3dxvTangents)
@@ -141,7 +87,7 @@ void CMeshNormalMap::CalculateVertexTangent(XMVECTOR *pd3dxvTangents)
 	switch (m_d3dPrimitiveTopology)
 	{
 	case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST:
-		if (m_pnIndices == nullptr)
+		if (!m_pnIndices)
 			SetTriAngleListVertexTangent(pd3dxvTangents);
 		else
 			SetAverageVertexTangent(pd3dxvTangents, (m_nIndices / 3), 3, false);

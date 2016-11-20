@@ -14,14 +14,19 @@ CNormalMapObject::~CNormalMapObject()
 
 void CNormalMapObject::CreateMaterial(ID3D11Device *pd3dDevice)
 {
-	m_pMaterial = new CMaterial();
+	CMaterialColors *pColors = new CMaterialColors();
+	pColors->m_d3dxcDiffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	pColors->m_d3dxcAmbient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	pColors->m_d3dxcSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 16.0f);
+	pColors->m_d3dxcEmissive = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	m_pMaterial = new CMaterial(pColors);
 
 	CTexture *pNormalTexture = new CTexture(2, 1, PS_SLOT_TEXTURE_DIFFUSE, PS_SLOT_SAMPLER);
 
-	pNormalTexture->SetTexture(0, eTexture_Stone);
-	pNormalTexture->SetTexture(1, eTexture_StoneNormal);
+	pNormalTexture->SetTexture(0, eTexture_WallDiffuse);
+	pNormalTexture->SetTexture(1, eTexture_WallNormalHeight);
 	pNormalTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
-	
+
 	m_pMaterial->SetTexture(pNormalTexture);
 }
 

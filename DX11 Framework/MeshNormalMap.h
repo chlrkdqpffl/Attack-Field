@@ -8,7 +8,6 @@ public:
 	virtual ~CMeshNormalMap();
 
 	XMVECTOR CalculateTriAngleTangent(UINT nIndex0, UINT nIndex1, UINT nIndex2);
-	void CalculateTriAngleTangent2(UINT nIndex0, UINT nIndex1, UINT nIndex2);
 
 	void SetTriAngleListVertexTangent(XMVECTOR *pd3dxvTangents);
 	void SetAverageVertexTangent(XMVECTOR *pd3dxvTangents, int nPrimitives, int nOffset, bool bStrip);
@@ -19,6 +18,6 @@ protected:
 	XMFLOAT3				*m_pNormals = nullptr;
 	XMFLOAT3				*m_pTangents = nullptr;
 
-	ID3D11Buffer			*m_pd3dTangentBuffer;
+	ID3D11Buffer			*m_pd3dTangentBuffer = nullptr;
 };
 

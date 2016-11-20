@@ -61,11 +61,10 @@ float4 PS_TexturedLightingNormalMap(VS_TEXTURED_LIGHTING_NORMAL_OUTPUT input) : 
     float3x3 TBN = float3x3(T, B, N);
 
     float3 normalTextureRGB = gtxtNormalMap.Sample(gssDefault, input.texCoord).rgb;
-    float3 normal = 2.0f * normalTextureRGB - 1.0f;
-    float3 normalW = mul(normal, TBN);
+    float3 normalW = (2.0f * normalTextureRGB - 1.0f);
+    normalW = mul(normalW, TBN);
 
     float4 cIllumination = Lighting(input.positionW, normalW);
-    return cIllumination;
     float4 cColor = gtxtDiffuseMap.Sample(gssDefault, input.texCoord) * cIllumination;
 
     return cColor;

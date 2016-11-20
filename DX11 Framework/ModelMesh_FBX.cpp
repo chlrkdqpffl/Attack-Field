@@ -19,8 +19,8 @@ CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTextur
 	if (size == 1.0f) {
 		for (int i = 0; i < m_nVertices; ++i) {
 			m_pPositions[i] = posVector[i];
-			m_pvNormals[i] = normalVector[i];
-			m_pvTexCoords[i] = uvVector[i];
+			m_pNormals[i] = normalVector[i];
+			m_pTexCoords[i] = uvVector[i];
 		}
 	}
 	else {
@@ -28,15 +28,15 @@ CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTextur
 			XMStoreFloat3(&m_pPositions[i], XMVectorScale(XMLoadFloat3(&posVector[i]), size));
 			//		XMStoreFloat3(&m_pvNormals[i], XMVectorScale(XMLoadFloat3(&normalVector[i]), size));
 			//		XMStoreFloat2(&m_pvTexCoords[i], XMVectorScale(XMLoadFloat2(&uvVector[i]), size));
-			m_pvNormals[i] = normalVector[i];
-			m_pvTexCoords[i] = uvVector[i];
+			m_pNormals[i] = normalVector[i];
+			m_pTexCoords[i] = uvVector[i];
 		}
 	}
 
 	// Create Buffer
 	m_pd3dPositionBuffer = CreateBuffer(STATEOBJ_MGR->g_pd3dDevice.Get(), sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	m_pd3dNormalBuffer = CreateBuffer(STATEOBJ_MGR->g_pd3dDevice.Get(), sizeof(XMFLOAT3), m_nVertices, m_pvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	m_pd3dTexCoordBuffer = CreateBuffer(STATEOBJ_MGR->g_pd3dDevice.Get(), sizeof(XMFLOAT2), m_nVertices, m_pvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dNormalBuffer = CreateBuffer(STATEOBJ_MGR->g_pd3dDevice.Get(), sizeof(XMFLOAT3), m_nVertices, m_pNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dTexCoordBuffer = CreateBuffer(STATEOBJ_MGR->g_pd3dDevice.Get(), sizeof(XMFLOAT2), m_nVertices, m_pTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	ID3D11Buffer *pd3dBuffers[3] = { m_pd3dPositionBuffer, m_pd3dNormalBuffer, m_pd3dTexCoordBuffer };
 	UINT pnBufferStrides[3] = { sizeof(XMFLOAT3), sizeof(XMFLOAT3), sizeof(XMFLOAT2) };
@@ -166,8 +166,8 @@ bool CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
 	m_nIndices = indexCount;
 
 	m_pPositions = new XMFLOAT3[m_nVertices];
-	m_pvNormals = new XMFLOAT3[m_nVertices];
-	m_pvTexCoords = new XMFLOAT2[m_nVertices];
+	m_pNormals = new XMFLOAT3[m_nVertices];
+	m_pTexCoords = new XMFLOAT2[m_nVertices];
 	m_pnIndices = new UINT[m_nIndices];
 
 	return true;

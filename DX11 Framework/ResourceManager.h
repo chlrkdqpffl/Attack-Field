@@ -22,4 +22,9 @@ public:
 	string FindResourcePath(Resource_MeshTag resourceTag);
 
 	ID3D11ShaderResourceView* FindResourceAndCreateSRV(Resource_TextrueTag);
+
+#if defined(DEBUG) || defined(_DEBUG)
+	void ShowImageInfo(Resource_TextrueTag resourceTag);
+#endif
+
 };

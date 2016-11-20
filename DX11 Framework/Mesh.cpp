@@ -18,15 +18,15 @@ CMesh::CMesh(ID3D11Device *pd3dDevice)
 	m_nSlot = 0;
 	m_nStartVertex = 0;
 
-	m_pd3dIndexBuffer = NULL;
+	m_pd3dIndexBuffer = nullptr;
 	m_nIndices = 0;
 	m_nStartIndex = 0;
 	m_nBaseVertex = 0;
 	m_nIndexOffset = 0;
 	m_dxgiIndexFormat = DXGI_FORMAT_R32_UINT;
 
-	m_pPositions = NULL;
-	m_pnIndices = NULL;
+	m_pPositions = nullptr;
+	m_pnIndices = nullptr;
 
 	m_bcBoundingCube.Center = { 0.0f, 0.0f, 0.0f };
 	m_bcBoundingCube.Extents = { 0.0f, 0.0f, 0.0f};

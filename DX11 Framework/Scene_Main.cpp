@@ -210,7 +210,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	normalMapObject->CreateMesh(pd3dDevice);
 	normalMapObject->CreateShader(pd3dDevice);
 
-	normalMapObject->SetPosition(1000, 300, 1000);
+	normalMapObject->SetPosition(1000, 700, 1000);
 	m_vObjectsVector.push_back(normalMapObject);
 	
 #pragma region [Create Shader Object]
@@ -434,8 +434,8 @@ void CScene_Main::CreateLights()
 	m_pLights->m_pLights[2].m_bEnable = 1.0f;
 	m_pLights->m_pLights[2].m_nType = DIRECTIONAL_LIGHT;
 	m_pLights->m_pLights[2].m_d3dxcAmbient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	m_pLights->m_pLights[2].m_d3dxcDiffuse = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	m_pLights->m_pLights[2].m_d3dxcSpecular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	m_pLights->m_pLights[2].m_d3dxcDiffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	m_pLights->m_pLights[2].m_d3dxcSpecular = XMFLOAT4(0.3f, 0.3f, 0.3f, 16.0f);
 	m_pLights->m_pLights[2].m_d3dxvDirection = XMFLOAT3(0.0f, -1.0f, 0.0f);
 
 	m_pLights->m_pLights[3].m_bEnable = 1.0f;

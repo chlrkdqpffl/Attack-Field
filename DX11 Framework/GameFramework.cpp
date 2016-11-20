@@ -342,7 +342,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case VK_F5:
 		{
-			ScreenCapture(m_pd3dRenderTargetView, "Blur - ");
+			ScreenCapture(m_pd3dRenderTargetView, "Screen - ");
 		}				  
 			break;
 		case VK_F9:
