@@ -117,6 +117,40 @@ void CShader::CreateComputeShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFi
 	}
 }
 
+void CShader::CreateHullShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11HullShader **ppd3dHullShader)
+{
+	HRESULT hResult;
+
+	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined(DEBUG) || defined(_DEBUG)
+	dwShaderFlags |= D3DCOMPILE_DEBUG;
+#endif
+
+	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
+	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
+	{
+		pd3dDevice->CreateHullShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dHullShader);
+		pd3dShaderBlob->Release();
+	}
+}
+
+void CShader::CreateDomainShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11DomainShader **ppd3dDomainShader)
+{
+	HRESULT hResult;
+
+	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined(DEBUG) || defined(_DEBUG)
+	dwShaderFlags |= D3DCOMPILE_DEBUG;
+#endif
+
+	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
+	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
+	{
+		pd3dDevice->CreateDomainShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dDomainShader);
+		pd3dShaderBlob->Release();
+	}
+}
+
 void CShader::CreateShader(ID3D11Device *pd3dDevice, UINT nType)
 {
 	m_nType |= nType;
@@ -194,9 +228,11 @@ void CShader::GetShaderName(UINT nVertexElementType, LPCSTR *ppszVSShaderName, L
 void CShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	pd3dDeviceContext->IASetInputLayout(m_pd3dVertexLayout);
-	pd3dDeviceContext->VSSetShader(m_pd3dVertexShader, NULL, 0);
-	pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, NULL, 0);
-	pd3dDeviceContext->GSSetShader(m_pd3dGeometryShader, NULL, 0);
+	pd3dDeviceContext->VSSetShader(m_pd3dVertexShader, nullptr, 0);
+	pd3dDeviceContext->HSSetShader(m_pd3dHullShader, nullptr, 0);
+	pd3dDeviceContext->DSSetShader(m_pd3dDomainShader, nullptr, 0);
+	pd3dDeviceContext->GSSetShader(m_pd3dGeometryShader, nullptr, 0);
+	pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, nullptr, 0);
 }
 
 void CShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)

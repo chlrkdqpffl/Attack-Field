@@ -26,6 +26,10 @@ Max Resource(Texture, Buffer)	: 128
 #define GS_CB_SLOT_CAMERA					0x00
 #define GS_CB_SLOT_PARTICLE					0x01
 
+// Domain Shader
+#define DS_CB_SLOT_CAMERA_VIEW_PROJECTION	0x00
+#define DS_CB_SLOT_CAMERA_POSITION			0x02
+
 // Computer Shader
 #define CS_SLOT_WEIGHTS						0x00
 

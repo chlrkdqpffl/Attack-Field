@@ -130,6 +130,7 @@ void CCamera::UpdateConstantBuffer_ViewProjection(ID3D11DeviceContext *pd3dDevic
 
 	pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_CAMERA_VIEW_PROJECTION, 1, &m_pd3dcbCamera);
 	pd3dDeviceContext->GSSetConstantBuffers(VS_CB_SLOT_CAMERA_VIEW_PROJECTION, 1, &m_pd3dcbCamera);
+	pd3dDeviceContext->DSSetConstantBuffers(DS_CB_SLOT_CAMERA_VIEW_PROJECTION, 1, &m_pd3dcbCamera);
 #ifdef _WITH_GEOMETRY_SHADER_SHADOW
 	pd3dDeviceContext->GSSetConstantBuffers(GS_CB_SLOT_CAMERA, 1, &m_pd3dcbCamera);
 #endif
@@ -143,6 +144,7 @@ void CCamera::UpdateConstantBuffer_CameraPos(ID3D11DeviceContext *pd3dDeviceCont
 	XMStoreFloat4(pcbCameraPosition, *pf3CameraPosition);
 	pd3dDeviceContext->Unmap(m_pd3dcbCameraPosition, 0);
 
+	pd3dDeviceContext->PSSetConstantBuffers(DS_CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
 	pd3dDeviceContext->PSSetConstantBuffers(PS_CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
 }
 

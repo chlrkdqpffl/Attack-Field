@@ -449,12 +449,7 @@ void CScene_Main::CreateLights()
 	m_pLights->m_pLights[3].m_d3dxvAttenuation = XMFLOAT3(1.0f, 0.01f, 0.001f);
 	m_pLights->m_pLights[3].m_fFalloff = 20.0f;
 	m_pLights->m_pLights[3].m_fPhi = (float)cos(D3DXToRadian(40.0f));
-	m_pLights->m_pLights[3].m_fTheta = (float)cos(D3DXToRadian(15.0f));
-
-	// Light Object
-	CGameObject* pLightObject;
-
-//	for 
+	m_pLights->m_pLights[3].m_fTheta = (float)cos(D3DXToRadian(15.0f)); 
 }
 
 bool CScene_Main::ProcessInput(UCHAR *pKeysBuffer)

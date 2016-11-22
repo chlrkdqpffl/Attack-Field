@@ -201,7 +201,7 @@
     <ClCompile Include="TerrainShader.cpp">
       <Filter>Objects\Terrain</Filter>
     </ClCompile>
-    <ClCompile Include="TessellationShader.cpp">
+    <ClCompile Include="NormalDisplaceMapShader.cpp">
       <Filter>소스 파일\Shader</Filter>
     </ClCompile>
   </ItemGroup>
@@ -341,11 +341,11 @@
     <ClInclude Include="ScreenShader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="TessellationShader.h">
-      <Filter>헤더 파일\Shader</Filter>
-    </ClInclude>
     <ClInclude Include="TerrainShader.h">
       <Filter>Objects\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalDisplaceMapShader.h">
+      <Filter>헤더 파일\Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -389,6 +389,9 @@
       <Filter>HLSL</Filter>
     </None>
     <None Include="Shader HLSL File\Terrain.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\DisplacementMap.hlsli">
       <Filter>HLSL</Filter>
     </None>
   </ItemGroup>

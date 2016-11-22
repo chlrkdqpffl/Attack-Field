@@ -1,7 +1,9 @@
 #pragma once
 #include "Object.h"
 #include "NormalMapShader.h"
+#include "NormalDisplaceMapShader.h"
 #include "NormalMapCubeMesh.h"
+
 
 class CNormalMapObject : public CGameObject
 {
@@ -13,4 +15,3 @@ public:
 	void CreateMesh(ID3D11Device *pd3dDevice);
 	void CreateShader(ID3D11Device *pd3dDevice);
 };
-

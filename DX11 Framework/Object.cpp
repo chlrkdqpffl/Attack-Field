@@ -109,6 +109,9 @@ void CTexture::SetSampler(int nIndex, ID3D11SamplerState *pd3dSamplerState)
 
 void CTexture::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext)
 {
+	pd3dDeviceContext->DSSetShaderResources(m_nTextureStartSlot, m_nTextures, m_ppd3dsrvTextures);
+	pd3dDeviceContext->DSSetSamplers(m_nSamplerStartSlot, m_nSamplers, m_ppd3dSamplerStates);
+
 	pd3dDeviceContext->PSSetShaderResources(m_nTextureStartSlot, m_nTextures, m_ppd3dsrvTextures);
 	pd3dDeviceContext->PSSetSamplers(m_nSamplerStartSlot, m_nSamplers, m_ppd3dSamplerStates);
 }

@@ -1,7 +1,7 @@
 #pragma once
-#include "TessellationShader.h"
+#include "Shader.h"
 
-class CTerrainShader :	public CTessellationShader
+class CTerrainShader :	public CShader
 {
 public:
 	CTerrainShader();

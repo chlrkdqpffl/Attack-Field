@@ -87,6 +87,7 @@ void CMeshNormalMap::CalculateVertexTangent(XMVECTOR *pd3dxvTangents)
 	switch (m_d3dPrimitiveTopology)
 	{
 	case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST:
+	case D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST:
 		if (!m_pnIndices)
 			SetTriAngleListVertexTangent(pd3dxvTangents);
 		else

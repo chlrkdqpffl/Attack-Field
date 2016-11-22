@@ -14,6 +14,11 @@ cbuffer cbWorldMatrix : register(b1)            // VS Set
     matrix gmtxWorld : packoffset(c0);
 };
 
+cbuffer cbRenderOption : register(b5) // PS Set
+{
+    float4 gbRenderOption : packoffset(c0); // (x : Fog)
+};
+
 Texture2D gtxtDiffuseMap : register(t18);
 Texture2D gtxtNormalMap : register(t19);
 SamplerState gssDefault : register(s0);
@@ -66,6 +71,12 @@ float4 PS_TexturedLightingNormalMap(VS_TEXTURED_LIGHTING_NORMAL_OUTPUT input) : 
 
     float4 cIllumination = Lighting(input.positionW, normalW);
     float4 cColor = gtxtDiffuseMap.Sample(gssDefault, input.texCoord) * cIllumination;
+    
+
+    return float4(normalW, 1.0f);
+   
+    if (gbRenderOption.x == 1.0f)
+        cColor = Fog(cColor, input.positionW);
 
     return cColor;
 }

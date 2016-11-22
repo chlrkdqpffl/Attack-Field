@@ -157,9 +157,9 @@
   <ItemGroup>
     <ClCompile Include="AirplanePlayer.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="NormalDisplaceMapShader.cpp" />
     <ClCompile Include="ScreenShader.cpp" />
     <ClCompile Include="TerrainShader.cpp" />
-    <ClCompile Include="TessellationShader.cpp" />
     <ClCompile Include="TextureToScreenRectMesh.cpp" />
     <ClCompile Include="NormalMapCubeMesh.cpp" />
     <ClCompile Include="DirectX11_Project.cpp" />
@@ -201,6 +201,7 @@
     <ClInclude Include="AirplanePlayer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConstantBuffer_Slot.h" />
+    <ClInclude Include="NormalDisplaceMapShader.h" />
     <ClInclude Include="NormalMapCubeMesh.h" />
     <ClInclude Include="DirectX11_Project.h" />
     <ClInclude Include="FirstPersonCamera.h" />
@@ -236,7 +237,6 @@
     <ClInclude Include="TerrainPlayer.h" />
     <ClInclude Include="TerrainShader.h" />
     <ClInclude Include="TerrainWater.h" />
-    <ClInclude Include="TessellationShader.h" />
     <ClInclude Include="TextManager.h" />
     <ClInclude Include="TexturedRectMesh.h" />
     <ClInclude Include="TextureToScreenRectMesh.h" />
@@ -273,6 +273,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader HLSL File\Blurring.hlsli" />
+    <None Include="Shader HLSL File\DisplacementMap.hlsli" />
     <None Include="Shader HLSL File\Fog.hlsli" />
     <None Include="Shader HLSL File\Light.hlsli" />
     <None Include="Shader HLSL File\NormalMap.hlsli" />

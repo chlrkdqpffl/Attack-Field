@@ -121,6 +121,8 @@ bool CGameFramework::CreateDirect3DDisplay()
 	m_ui64VideoMemory = (unsigned __int64)(adapterDesc.DedicatedVideoMemory + adapterDesc.SharedSystemMemory);
 	m_wsGraphicBrandName = adapterDesc.Description;
 	
+	
+#if !defined(DEBUG) && !defined(_DEBUG)
 	int gpu_index = 0;
 	unsigned __int64 comparison_videoMemory;
 	
@@ -137,6 +139,8 @@ bool CGameFramework::CreateDirect3DDisplay()
 		else
 			++gpu_index;
 	}
+#endif
+	
 
 	// Create Device
 #ifdef _WITH_DEVICE_AND_SWAPCHAIN
@@ -149,7 +153,7 @@ bool CGameFramework::CreateDirect3DDisplay()
 	for (UINT i = 0; i < nDriverTypes; i++)
 	{
 		nd3dDriverType = d3dDriverTypes[i];
-#if defined(DEBUG) || defined(_DEBUG)
+#if defined(DEBUG) || defined(_DEBUG)	// 그래픽 디버깅 도구는 외장 그래픽에서 지원이 안됨
 		if (SUCCEEDED(hResult = D3D11CreateDevice(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext))) 
 #else
 		if (SUCCEEDED(hResult = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))

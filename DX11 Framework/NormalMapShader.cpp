@@ -2,7 +2,7 @@
 #include "NormalMapShader.h"
 
 
-CNormalMapShader::CNormalMapShader(ID3D11Device* pd3dDevice)
+CNormalMapShader::CNormalMapShader() : CShader()
 {
 }
 

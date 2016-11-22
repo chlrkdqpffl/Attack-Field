@@ -5,8 +5,8 @@
 CNormalMapCubeMesh::CNormalMapCubeMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth) : CMeshNormalMap(pd3dDevice)
 {
 	m_nVertices = 36;
-	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
+	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST;
+//	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	float fx = fWidth*0.5f, fy = fHeight*0.5f, fz = fDepth*0.5f;
 
 	m_pPositions = new XMFLOAT3[36];
