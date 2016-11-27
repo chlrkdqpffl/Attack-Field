@@ -524,6 +524,8 @@ void CGameFramework::CreateConstantBuffer_Weights()
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	HR(m_pd3dDevice->CreateBuffer(&d3dBufferDesc, nullptr, &m_pd3dcbWeights));
+
+	DXUT_SetDebugName(m_pd3dcbWeights, "Weights");
 }
 
 void CGameFramework::CreateComputeShader(ID3D11Device* pd3dDevice)
@@ -608,6 +610,9 @@ void CGameFramework::CreateConstantBuffers()
 	d3dBufferDesc.ByteWidth = sizeof(XMVECTOR) * 4;
 	HR(m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &CGameObject::m_pd3dcbMaterialColors));
 
+	DXUT_SetDebugName(CGameObject::m_pd3dcbWorldMatrix, "WorldMatrix");
+	DXUT_SetDebugName(CGameObject::m_pd3dcbMaterialColors, "MaterialColors");
+
 	CCamera::CreateShaderVariables(m_pd3dDevice);
 	CTexture::CreateShaderVariables(m_pd3dDevice);
 
@@ -682,7 +687,7 @@ void CGameFramework::UpdateObjects()
 	
 	if (m_pPlayer) 
 		m_pPlayer->Animate(fTimeElapsed, NULL);
-
+	
 	SCENE_MGR->fTimeElapsed = fTimeElapsed;
 	SCENE_MGR->fFrameRate = m_GameTimer.GetFrameRate();
 	SCENE_MGR->m_nowScene->UpdateObjects(fTimeElapsed);

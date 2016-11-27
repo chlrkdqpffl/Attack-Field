@@ -51,7 +51,6 @@ void CResourceManager::ReleseManager()
 {
 }
 
-
 void CResourceManager::AddResourece(Resource_TextrueTag resourceTag, string source)
 {
 	textureMap.insert(make_pair(resourceTag, source));
@@ -108,7 +107,10 @@ ID3D11ShaderResourceView* CResourceManager::FindResourceAndCreateSRV(Resource_Te
 	HRESULT hResult;
 	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
 	D3DX11CreateShaderResourceViewFromFile(STATEOBJ_MGR->g_pd3dDevice.Get(), wstr.c_str(), NULL, NULL, &pd3dsrvTexture, &hResult);
-	
+
+	str = "TextureTag : " + to_string(resourceTag);
+	DXUT_SetDebugName(pd3dsrvTexture, str.c_str());
+
 #if defined(DEBUG) || defined(_DEBUG)
 	if ((HRESULT)hResult >= 0)
 		cout << "File Load Success!! <" << (*findResource).second << ">" << endl;

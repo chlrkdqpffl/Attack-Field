@@ -90,6 +90,12 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D11Device *pd3dDevice, int xStart, int
 		fabs(d3dxvMinimum.y - d3dxvMaximum.y) * 0.5f,
 		fabs(d3dxvMinimum.z - d3dxvMaximum.z) * 0.5f
 	};
+
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
+	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
+	DXUT_SetDebugName(m_pd3dDetailTexCoordBuffer, "DetailTexCoord");
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 }
 
 CHeightMapGridMesh::~CHeightMapGridMesh()

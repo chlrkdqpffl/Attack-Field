@@ -46,7 +46,7 @@ cbuffer cbMaterial : register(b1)            // PS Buffer
     MATERIAL gMaterial;
 };
 
-cbuffer cbCameraPosition : register(b2)      // PS Set
+cbuffer cbCameraPosition : register(b10)      // VS, DS, PS Set
 {
     float4 gvCameraPosition : packoffset(c0);
 };

@@ -26,7 +26,7 @@ SamplerState gssDefault : register(s0);
 static const float gfMinDistance        = 10;
 static const float gfMaxDistance        = 500;
 static const float gfMinTessFactor      = 1;
-static const float gfMaxTessFactor      = 6;
+static const float gfMaxTessFactor      = 32;
 static const float gfMipLevelInterval   = 20;
 static const float gfMaxMipLevel        = 6.0f;
 static const float gfHeightScale        = 10.0f;
@@ -60,38 +60,11 @@ VS_NormalDisplace_Output VS_NormalDisplace(VS_NormalDisplace_Input input)
 
     float fDistToCamera = distance(output.positionW, gvCameraPosition);
     float fTessFactor = saturate((fDistToCamera - gfMinDistance) / (gfMaxDistance - gfMinDistance));
-
     output.fTessFactor = gfMinTessFactor + fTessFactor * (gfMaxTessFactor - gfMinTessFactor);
- //   output.fTessFactor = 1;
+
     return output;
 }
-/*
-VertexOut VS(VertexIn vin)
-{
-    VertexOut vout;
-	
-	// Transform to world space space.
-    vout.PosW = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
-    vout.NormalW = mul(vin.NormalL, (float3x3) gWorldInvTranspose);
-    vout.TangentW = mul(vin.TangentL, (float3x3) gWorld);
 
-	// Output vertex attributes for interpolation across triangle.
-    vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
-	
-    float d = distance(vout.PosW, gEyePosW);
-
-	// Normalized tessellation factor. 
-	// The tessellation is 
-	//   0 if d >= gMinTessDistance and
-	//   1 if d <= gMaxTessDistance.  
-    float tess = saturate((gMinTessDistance - d) / (gMinTessDistance - gMaxTessDistance));
-	
-	// Rescale [0,1] --> [gMinTessFactor, gMaxTessFactor].
-    vout.TessFactor = gMinTessFactor + tess * (gMaxTessFactor - gMinTessFactor);
-
-    return vout;
-}
-*/
 
 struct HSC_Output
 {

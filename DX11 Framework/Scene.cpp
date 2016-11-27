@@ -152,6 +152,7 @@ void CScene::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbRenderOption);
 
 	STATEOBJ_MGR->g_pd3dImmediateDeviceContext->PSSetConstantBuffers(PS_CB_SLOT_RENDEROPTION, 1, &m_pd3dcbRenderOption);
+	DXUT_SetDebugName(m_pd3dcbRenderOption, "Render Option");
 }
 
 void CScene::UpdateConstantBuffers(ID3D11DeviceContext *pd3dDeviceContext)

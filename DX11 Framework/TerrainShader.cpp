@@ -35,10 +35,10 @@ void CTerrainShader::CreateShader(ID3D11Device *pd3dDevice)
 void CTerrainShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	pd3dDeviceContext->IASetInputLayout(m_pd3dVertexLayout);
-	pd3dDeviceContext->VSSetShader(m_pd3dVertexShader, NULL, 0);
+	pd3dDeviceContext->VSSetShader(m_pd3dVertexShader, nullptr, 0);
 	pd3dDeviceContext->HSSetShader(m_pd3dHullShader, nullptr, 0);
 	pd3dDeviceContext->DSSetShader(m_pd3dDomainShader, nullptr, 0);
-	pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, NULL, 0);
+	pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, nullptr, 0);
 }
 
 void CTerrainShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)

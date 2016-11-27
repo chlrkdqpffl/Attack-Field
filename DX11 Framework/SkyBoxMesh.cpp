@@ -65,6 +65,10 @@ CSkyBoxMesh::CSkyBoxMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, 
 
 	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
 	m_bcBoundingCube.Extents = { fx, fy, fz };
+
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");	
 }
 
 CSkyBoxMesh::~CSkyBoxMesh()

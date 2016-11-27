@@ -197,14 +197,6 @@ protected:
 };
 
 //------------------------------------------------------------------------------------------------
-class CAirplaneMeshDiffused : public CMeshDiffused
-{
-public:
-	CAirplaneMeshDiffused(ID3D11Device *pd3dDevice, float fWidth = 20.0f, float fHeight = 4.0f, float fDepth = 20.0f, XMVECTOR d3dxColor = XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f));
-	virtual ~CAirplaneMeshDiffused();
-};
-
-//------------------------------------------------------------------------------------------------
 class CCubeMeshDiffused : public CMeshDiffused
 {
 public:

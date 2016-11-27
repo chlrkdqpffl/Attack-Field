@@ -34,6 +34,10 @@ CTextureToScreenRectMesh::CTextureToScreenRectMesh(ID3D11Device *pd3dDevice, flo
 
 	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
 	m_bcBoundingCube.Extents = { fx, fy, 0.0f };
+
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 }
 
 CTextureToScreenRectMesh::~CTextureToScreenRectMesh()

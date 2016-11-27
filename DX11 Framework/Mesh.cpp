@@ -359,147 +359,6 @@ CMeshDetailTexturedIlluminated::~CMeshDetailTexturedIlluminated()
 }
 
 //------------------------------------------------------------------------------------------------
-CAirplaneMeshDiffused::CAirplaneMeshDiffused(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth, XMVECTOR d3dxColor) : CMeshDiffused(pd3dDevice)
-{
-	m_nVertices = 24 * 3;
-	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
-	float fx = fWidth*0.5f, fy = fHeight*0.5f, fz = fDepth*0.5f;
-
-	m_pPositions = new XMFLOAT3[m_nVertices];
-
-	float x1 = fx * 0.2f, z1 = fz * 0.2f, x2 = fx * 0.1f, z3 = fz * 0.3f, z2 = ((z1 - (fz - z3)) / x1) * x2 + (fz - z3);
-	int i = 0;
-	//Upper Plane
-	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, +(fz + z3));
-	m_pPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
-	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
-
-	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, +(fz + z3));
-	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
-	m_pPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
-
-	m_pPositions[i++] = XMFLOAT3(+x2, +fy, +z2);
-	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -z3);
-	m_pPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
-
-	m_pPositions[i++] = XMFLOAT3(-x2, +fy, +z2);
-	m_pPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
-	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -z3);
-
-	//Lower Plane
-	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
-	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, 0.0f);
-	m_pPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
-
-	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
-	m_pPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
-	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, 0.0f);
-
-	m_pPositions[i++] = XMFLOAT3(+x2, -fy, +z2);
-	m_pPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
-	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -z3);
-
-	m_pPositions[i++] = XMFLOAT3(-x2, -fy, +z2);
-	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -z3);
-	m_pPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
-
-	//Right Plane
-	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, +(fz + z3));
-	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
-	m_pPositions[i++] = XMFLOAT3(+x2, +fy, +z2);
-
-	m_pPositions[i++] = XMFLOAT3(+x2, +fy, +z2);
-	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
-	m_pPositions[i++] = XMFLOAT3(+x2, -fy, +z2);
-
-	m_pPositions[i++] = XMFLOAT3(+x2, +fy, +z2);
-	m_pPositions[i++] = XMFLOAT3(+x2, -fy, +z2);
-	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -z3);
-
-	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -z3);
-	m_pPositions[i++] = XMFLOAT3(+x2, -fy, +z2);
-	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -z3);
-
-	//Back/Right Plane
-	m_pPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
-	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -z3);
-	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -z3);
-
-	m_pPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
-	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -z3);
-	m_pPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
-
-	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
-	m_pPositions[i++] = XMFLOAT3(+x1, +fy, -z1);
-	m_pPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
-
-	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
-	m_pPositions[i++] = XMFLOAT3(+x1, -fy, -z1);
-	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, 0.0f);
-
-	//Left Plane
-	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
-	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, +(fz + z3));
-	m_pPositions[i++] = XMFLOAT3(-x2, +fy, +z2);
-
-	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, +(fz + z3));
-	m_pPositions[i++] = XMFLOAT3(-x2, +fy, +z2);
-	m_pPositions[i++] = XMFLOAT3(-x2, -fy, +z2);
-
-	m_pPositions[i++] = XMFLOAT3(-x2, -fy, +z2);
-	m_pPositions[i++] = XMFLOAT3(-x2, +fy, +z2);
-	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -z3);
-
-	m_pPositions[i++] = XMFLOAT3(-x2, -fy, +z2);
-	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -z3);
-	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -z3);
-
-	//Back/Left Plane
-	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
-	m_pPositions[i++] = XMFLOAT3(0.0f, -fy, 0.0f);
-	m_pPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
-
-	m_pPositions[i++] = XMFLOAT3(0.0f, +fy, 0.0f);
-	m_pPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
-	m_pPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
-
-	m_pPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
-	m_pPositions[i++] = XMFLOAT3(-x1, -fy, -z1);
-	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -z3);
-
-	m_pPositions[i++] = XMFLOAT3(-x1, +fy, -z1);
-	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -z3);
-	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -z3);
-
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	XMCOLOR pd3dxColors[24 * 3];
-	for (int j = 0; j < m_nVertices; j++) XMStoreColor(&pd3dxColors[j], d3dxColor/* + RANDOM_COLOR*/);
-	pd3dxColors[0] = XMCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
-	pd3dxColors[3] = XMCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
-	pd3dxColors[6] = XMCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
-	pd3dxColors[9] = XMCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
-	pd3dxColors[12] = XMCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
-	pd3dxColors[15] = XMCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
-	pd3dxColors[18] = XMCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
-	pd3dxColors[21] = XMCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
-
-	m_pd3dColorBuffer = CreateBuffer(pd3dDevice, sizeof(XMCOLOR), m_nVertices, pd3dxColors, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-
-	ID3D11Buffer *ppd3dBuffers[2] = { m_pd3dPositionBuffer, m_pd3dColorBuffer };
-	UINT pnBufferStrides[2] = { sizeof(XMFLOAT3), sizeof(XMCOLOR) };
-	UINT pnBufferOffsets[2] = { 0, 0 };
-	AssembleToVertexBuffer(2, ppd3dBuffers, pnBufferStrides, pnBufferOffsets);
-
-	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-	m_bcBoundingCube.Extents = { fx, fy, fz };
-}
-
-CAirplaneMeshDiffused::~CAirplaneMeshDiffused()
-{
-}
-
-//------------------------------------------------------------------------------------------------
 CCubeMeshDiffused::CCubeMeshDiffused(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth, XMVECTOR d3dxColor) : CMeshDiffused(pd3dDevice)
 {
 	m_nVertices = 8;
@@ -524,6 +383,9 @@ CCubeMeshDiffused::CCubeMeshDiffused(ID3D11Device *pd3dDevice, float fWidth, flo
 
 	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dColorBuffer = CreateBuffer(pd3dDevice, sizeof(XMVECTOR), m_nVertices, pd3dxColors, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dColorBuffer, "Color");
 
 	ID3D11Buffer *pd3dBuffers[2] = { m_pd3dPositionBuffer, m_pd3dColorBuffer };
 	UINT pnBufferStrides[2] = { sizeof(XMFLOAT3), sizeof(XMVECTOR) };
@@ -576,6 +438,7 @@ CCubeMeshDiffused::CCubeMeshDiffused(ID3D11Device *pd3dDevice, float fWidth, flo
 #endif
 
 	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 
 	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
 	m_bcBoundingCube.Extents = { fx, fy, fz };
@@ -621,6 +484,9 @@ CSphereMeshDiffused::CSphereMeshDiffused(ID3D11Device *pd3dDevice, float fRadius
 	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dColorBuffer = CreateBuffer(pd3dDevice, sizeof(XMCOLOR), m_nVertices, pd3dxColors, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dColorBuffer, "Color");
+
 	delete[] pd3dxColors;
 
 	ID3D11Buffer *pd3dBuffers[2] = { m_pd3dPositionBuffer, m_pd3dColorBuffer };
@@ -655,8 +521,6 @@ CCubeMeshIlluminated::CCubeMeshIlluminated(ID3D11Device *pd3dDevice, float fWidt
 	m_pPositions[6] = XMFLOAT3(+fx, -fy, +fz);
 	m_pPositions[7] = XMFLOAT3(-fx, -fy, +fz);
 
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-
 	XMFLOAT3 pd3dxvNormals[8];
 	for (int i = 0; i < 8; i++) pd3dxvNormals[i] = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
@@ -678,7 +542,10 @@ CCubeMeshIlluminated::CCubeMeshIlluminated(ID3D11Device *pd3dDevice, float fWidt
 
 	CalculateVertexNormal(&XMLoadFloat3(pd3dxvNormals));
 
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, pd3dxvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
 
 	ID3D11Buffer *pd3dBuffers[2] = { m_pd3dPositionBuffer, m_pd3dNormalBuffer };
 	UINT pnBufferStrides[2] = { sizeof(XMFLOAT3), sizeof(XMFLOAT3) };
@@ -686,6 +553,8 @@ CCubeMeshIlluminated::CCubeMeshIlluminated(ID3D11Device *pd3dDevice, float fWidt
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
 	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
+
 
 	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
 	m_bcBoundingCube.Extents = { fx, fy, fz };
@@ -829,6 +698,9 @@ CSphereMeshIlluminated::CSphereMeshIlluminated(ID3D11Device *pd3dDevice, float f
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 #endif
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 
 	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
 	m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
@@ -958,6 +830,9 @@ CCubeMeshTextured::CCubeMeshTextured(ID3D11Device *pd3dDevice, float fWidth, flo
 	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
 	m_bcBoundingCube.Extents = { fx, fy, fz };
 	
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 }
 
 CCubeMeshTextured::~CCubeMeshTextured()
@@ -1014,6 +889,9 @@ CSphereMeshTextured::CSphereMeshTextured(ID3D11Device *pd3dDevice, float fRadius
 	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
 	m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
 	
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 }
 
 CSphereMeshTextured::~CSphereMeshTextured()
@@ -1146,6 +1024,11 @@ CCubeMeshTexturedIlluminated::CCubeMeshTexturedIlluminated(ID3D11Device *pd3dDev
 
 	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
 	m_bcBoundingCube.Extents = { fx, fy, fz };
+
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
+	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 }
 
 CCubeMeshTexturedIlluminated::~CCubeMeshTexturedIlluminated()
@@ -1210,6 +1093,11 @@ CSphereMeshTexturedIlluminated::CSphereMeshTexturedIlluminated(ID3D11Device *pd3
 	
 	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
 	m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
+
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
+	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 }
 
 CSphereMeshTexturedIlluminated::~CSphereMeshTexturedIlluminated()

@@ -22,6 +22,9 @@ CLineMesh::CLineMesh(ID3D11Device *pd3dDevice, XMFLOAT3 start, XMFLOAT3 end, XMV
 	UINT pnBufferStrides[2] = { sizeof(XMFLOAT3), sizeof(XMVECTOR) };
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
+
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dColorBuffer, "Color");
 }
 
 CLineMesh::~CLineMesh()

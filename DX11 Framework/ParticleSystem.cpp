@@ -341,13 +341,15 @@ void CParticleSystem::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	D3D11_SUBRESOURCE_DATA d3dSubResourceData;
 	d3dSubResourceData.pSysMem = &particle;
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dSubResourceData, &m_pd3dInitialVertexBuffer);
+	DXUT_SetDebugName(m_pd3dInitialVertexBuffer, "InitialVertex");
 
 	m_nStride = sizeof(CParticleVertex);
 	d3dBufferDesc.ByteWidth = sizeof(CParticleVertex) * m_nMaxParticles;//PARTICLES = 500
 	d3dBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dStreamOutVertexBuffer);
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dDrawVertexBuffer);
-	// 버퍼 두개를 만든다.
+	DXUT_SetDebugName(m_pd3dStreamOutVertexBuffer, "StreamOutVertex");
+	DXUT_SetDebugName(m_pd3dDrawVertexBuffer, "DrawVertex");
 
 	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
 	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -356,6 +358,7 @@ void CParticleSystem::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbParticleInfo);
+	DXUT_SetDebugName(m_pd3dcbParticleInfo, "ParticleInfo");
 }
 
 void CParticleSystem::UpdateShaderVariables(ID3D11DeviceContext* pd3dDeviceContext)
@@ -412,6 +415,8 @@ void CParticleSystem::CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, W
 			NULL, ppd3dGeometryShader);
 
 		pd3dShaderBlob->Release();
+
+		DXUT_SetDebugName(*ppd3dGeometryShader, "GSWithSO Shader");
 	}
 	else
 	{

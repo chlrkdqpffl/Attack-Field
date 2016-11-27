@@ -66,6 +66,13 @@ CModelMesh_FBX::CModelMesh_FBX(const string& fileName, float size) : CMeshTextur
 
 	m_bcBoundingCube.Center = XMFLOAT3(0, 0, 0);
 	m_bcBoundingCube.Extents = XMFLOAT3(max_x, max_y, max_z);
+
+
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
+//	DXUT_SetDebugName(m_pd3dTangentBuffer, "Tangent");		 계산 안하고 있음
+	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 }
 
 CModelMesh_FBX::~CModelMesh_FBX()
@@ -79,8 +86,8 @@ bool CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
 	if (!fin.is_open())
 		return false;
 
-	int meshCount;
-	int vertexCount, indexCount, boneCount, animationCount;
+	int meshCount = 0;
+	int vertexCount = 0, indexCount = 0, boneCount = 0, animationCount = 0;
 	XMFLOAT3 pos, normal, index;
 	XMFLOAT2 uv;
 

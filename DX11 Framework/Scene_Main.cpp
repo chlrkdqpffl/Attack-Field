@@ -82,6 +82,8 @@ void CScene_Main::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pM
 	_stprintf_s(pstrTextureNames, _T("../Assets/Image/SkyBox/SkyBox_%d.dds"), nIndex, 128);
 	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, pstrTextureNames, NULL, NULL, &pd3dsrvTexture, NULL);
+	DXUT_SetDebugName(pd3dsrvTexture, "SKYBox");
+	
 	pMaterial->m_pTexture->SetTexture(0, pd3dsrvTexture); pd3dsrvTexture->Release();
 #else
 	_TCHAR pstrTextureName[80];
@@ -379,6 +381,8 @@ void CScene_Main::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
 	d3dBufferData.pSysMem = m_pLights;
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbLights);
+
+	DXUT_SetDebugName(m_pd3dcbLights, "Lights");
 }
 
 void CScene_Main::UpdateConstantBuffers(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights)

@@ -41,14 +41,14 @@ void CShader::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFil
 		pd3dDevice->CreateVertexShader(pd3dVertexShaderBlob->GetBufferPointer(), pd3dVertexShaderBlob->GetBufferSize(), NULL, ppd3dVertexShader);
 		pd3dDevice->CreateInputLayout(pd3dInputElements, nElements, pd3dVertexShaderBlob->GetBufferPointer(), pd3dVertexShaderBlob->GetBufferSize(), ppd3dInputLayout);
 		pd3dVertexShaderBlob->Release();
+
+		DXUT_SetDebugName(*ppd3dInputLayout, pszShaderName);
+		DXUT_SetDebugName(*ppd3dVertexShader, pszShaderName);
 	}
 	else {
-		if (pszShaderName)
-		{
-			TCHAR* tStr = new TCHAR[strlen(pszShaderName)];
-			MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, pszShaderName, strlen(pszShaderName), tStr, 256);
-			tStr[strlen(pszShaderName)] = NULL;
-			MessageBox(NULL, tStr, L"Shader Error !", MB_OK);
+		if (pszShaderName) {
+			WCHAR* wstr = ConverCtoWC(pszShaderName);
+			MessageBox(NULL, wstr, L"Shader Error !", MB_OK);
 		}
 		else
 			MessageBox(NULL, L"ShaderName is NULL!!", pszFileName, MB_OK);
@@ -69,14 +69,12 @@ void CShader::CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFile
 	{
 		pd3dDevice->CreatePixelShader(pd3dPixelShaderBlob->GetBufferPointer(), pd3dPixelShaderBlob->GetBufferSize(), NULL, ppd3dPixelShader);
 		pd3dPixelShaderBlob->Release();
+		DXUT_SetDebugName(*ppd3dPixelShader, pszShaderName);
 	}
 	else {
-		if (pszShaderName)
-		{
-			TCHAR* tStr = new TCHAR[strlen(pszShaderName)];
-			MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, pszShaderName, strlen(pszShaderName), tStr, 256);
-			tStr[strlen(pszShaderName)] = NULL;
-			MessageBox(NULL, tStr, L"Shader Error !", MB_OK);
+		if (pszShaderName) {
+			WCHAR* wstr = ConverCtoWC(pszShaderName);
+			MessageBox(NULL, wstr, L"Shader Error !", MB_OK);
 		}
 		else
 			MessageBox(NULL, L"ShaderName is NULL!!", pszFileName, MB_OK);
@@ -97,6 +95,16 @@ void CShader::CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszF
 	{
 		pd3dDevice->CreateGeometryShader(pd3dPixelShaderBlob->GetBufferPointer(), pd3dPixelShaderBlob->GetBufferSize(), NULL, ppd3dGeometryShader);
 		pd3dPixelShaderBlob->Release();
+
+		DXUT_SetDebugName(*ppd3dGeometryShader, pszShaderName);
+	}
+	else {
+		if (pszShaderName) {
+			WCHAR* wstr = ConverCtoWC(pszShaderName);
+			MessageBox(NULL, wstr, L"Shader Error !", MB_OK);
+		}
+		else
+			MessageBox(NULL, L"ShaderName is NULL!!", pszFileName, MB_OK);
 	}
 }
 
@@ -114,6 +122,16 @@ void CShader::CreateComputeShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFi
 	{
 		pd3dDevice->CreateComputeShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dComputeShader);
 		pd3dShaderBlob->Release();
+
+		DXUT_SetDebugName(*ppd3dComputeShader, pszShaderName);
+	}
+	else {
+		if (pszShaderName) {
+			WCHAR* wstr = ConverCtoWC(pszShaderName);
+			MessageBox(NULL, wstr, L"Shader Error !", MB_OK);
+		}
+		else
+			MessageBox(NULL, L"ShaderName is NULL!!", pszFileName, MB_OK);
 	}
 }
 
@@ -131,6 +149,15 @@ void CShader::CreateHullShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileN
 	{
 		pd3dDevice->CreateHullShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dHullShader);
 		pd3dShaderBlob->Release();
+		DXUT_SetDebugName(*ppd3dHullShader, pszShaderName);
+	}
+	else {
+		if (pszShaderName) {
+			WCHAR* wstr = ConverCtoWC(pszShaderName);
+			MessageBox(NULL, wstr, L"Shader Error !", MB_OK);
+		}
+		else
+			MessageBox(NULL, L"ShaderName is NULL!!", pszFileName, MB_OK);
 	}
 }
 
@@ -148,6 +175,15 @@ void CShader::CreateDomainShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFil
 	{
 		pd3dDevice->CreateDomainShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dDomainShader);
 		pd3dShaderBlob->Release();
+		DXUT_SetDebugName(*ppd3dDomainShader, pszShaderName);
+	}
+	else {
+		if (pszShaderName) {
+			WCHAR* wstr = ConverCtoWC(pszShaderName);
+			MessageBox(NULL, wstr, L"Shader Error !", MB_OK);
+		}
+		else
+			MessageBox(NULL, L"ShaderName is NULL!!", pszFileName, MB_OK);
 	}
 }
 
@@ -229,9 +265,14 @@ void CShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	pd3dDeviceContext->IASetInputLayout(m_pd3dVertexLayout);
 	pd3dDeviceContext->VSSetShader(m_pd3dVertexShader, nullptr, 0);
-	pd3dDeviceContext->HSSetShader(m_pd3dHullShader, nullptr, 0);
-	pd3dDeviceContext->DSSetShader(m_pd3dDomainShader, nullptr, 0);
-	pd3dDeviceContext->GSSetShader(m_pd3dGeometryShader, nullptr, 0);
+
+	if(m_pd3dHullShader)
+		pd3dDeviceContext->HSSetShader(m_pd3dHullShader, nullptr, 0);
+	if (m_pd3dDomainShader)
+		pd3dDeviceContext->DSSetShader(m_pd3dDomainShader, nullptr, 0);
+	if (m_pd3dGeometryShader)
+		pd3dDeviceContext->GSSetShader(m_pd3dGeometryShader, nullptr, 0);
+
 	pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, nullptr, 0);
 }
 
@@ -254,6 +295,8 @@ ID3D11Buffer *CShader::CreateBuffer(ID3D11Device *pd3dDevice, UINT nStride, int 
 
 	ID3D11Buffer *pd3dInstanceBuffer = NULL;
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, (pBufferData) ? &d3dBufferData : NULL, &pd3dInstanceBuffer);
+
+	DXUT_SetDebugName(pd3dInstanceBuffer, "Instance");
 	return(pd3dInstanceBuffer);
 }
 

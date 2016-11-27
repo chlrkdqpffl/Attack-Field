@@ -135,6 +135,8 @@ void CTexture::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbTextureMatrix);
+
+	DXUT_SetDebugName(m_pd3dcbTextureMatrix, "TextureMatrix");
 }
 
 void CTexture::ReleaseShaderVariables()
@@ -519,6 +521,9 @@ void CGameObject::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 
 	d3dBufferDesc.ByteWidth = sizeof(XMVECTOR) * 4;
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterialColors);
+
+	DXUT_SetDebugName(m_pd3dcbWorldMatrix, "WorldMatrix");
+	DXUT_SetDebugName(m_pd3dcbMaterialColors, "MaterialColors");
 }
 
 void CGameObject::ReleaseConstantBuffers()

@@ -39,18 +39,19 @@ void CStateObjectManager::InitializeManager()
 	rasterizerDesc.DepthClipEnable = true;
 
 	HR(g_pd3dDevice->CreateRasterizerState(&rasterizerDesc, &g_pDefaultRS));
+	DXUT_SetDebugName(g_pDefaultRS, "DefaultRS:");
 
 	// WireframeRS
 	rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
 
 	HR(g_pd3dDevice->CreateRasterizerState(&rasterizerDesc, &g_pWireframeRS));
-
+	DXUT_SetDebugName(g_pWireframeRS, "WireFrameRS:");
 	// NoCullRS
 	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
 	rasterizerDesc.CullMode = D3D11_CULL_NONE;
 
 	HR(g_pd3dDevice->CreateRasterizerState(&rasterizerDesc, &g_pNoCullRS));
-
+	DXUT_SetDebugName(g_pNoCullRS, "NoCullRS:");
 	// ---------------------------------------------------------------------------- //
 	// ------------------------------- Blend State -------------------------------- //
 	// AlphaToCoverageBS
@@ -61,7 +62,7 @@ void CStateObjectManager::InitializeManager()
 	alphaToCoverageDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 	HR(g_pd3dDevice->CreateBlendState(&alphaToCoverageDesc, &g_pAlphaToCoverageBS));
-
+	DXUT_SetDebugName(g_pAlphaToCoverageBS, "AlphaToCoverageBS:");
 	// TransparentBS
 	D3D11_BLEND_DESC transparentDesc = { 0 };
 	transparentDesc.AlphaToCoverageEnable = false;
@@ -77,7 +78,7 @@ void CStateObjectManager::InitializeManager()
 	transparentDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 	HR(g_pd3dDevice->CreateBlendState(&transparentDesc, &g_pTransparentBS));
-
+	DXUT_SetDebugName(g_pTransparentBS, "TransparentBS:");
 
 	// ---------------------------------------------------------------------------- //
 	// ------------------------------ Sampler State ------------------------------- //
@@ -91,18 +92,21 @@ void CStateObjectManager::InitializeManager()
 	d3dSamplerDesc.MinLOD = 0;
 	d3dSamplerDesc.MaxLOD = 0;
 	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pLinearClampSS));
+	DXUT_SetDebugName(g_pLinearClampSS, "LinearClampSS:");
 
 	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pPointClampSS));
+	DXUT_SetDebugName(g_pPointClampSS, "PointClampSS:");
 
 	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pPointWarpSS));
+	DXUT_SetDebugName(g_pPointWarpSS, "PointWarpSS:");
 
 	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pLinearWarpSS));
-	
+	DXUT_SetDebugName(g_pLinearWarpSS, "LinearWarpSS:");
 }
 
 void CStateObjectManager::ReleseManager()
