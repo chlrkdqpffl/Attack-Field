@@ -27,7 +27,7 @@ CGameFramework::CGameFramework()
 	ShowCursor(false);
 	m_ptOldCursorPos.x = m_nWndClientWidth / 2;
 	m_ptOldCursorPos.y = m_nWndClientHeight / 2;
-	SetCursorPos(m_nWndClientWidth / 2, m_nWndClientHeight / 2);	// 정중앙
+	SetCursorPos(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2);	// 정중앙
 
 
 #if defined(DEBUG) || defined(_DEBUG)
@@ -318,8 +318,8 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 	SCENE_MGR->m_nowScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
-		GetCursorPos(&m_ptOldCursorPos);
 		if (false == m_bMouseBindFlag) {
+			GetCursorPos(&m_ptOldCursorPos);
 			SetCapture(hWnd);
 		}
 		break;
@@ -328,13 +328,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 			ReleaseCapture();
 		}
 	case WM_MOUSEMOVE:
-		/*
-		if (false == m_bMouseBindFlag) {
-			POINT nowCursorPos;
-			GetCursorPos(&nowCursorPos);
-			SetCursorPos(nowCursorPos.x, nowCursorPos.y);
-		}
-		*/
+
 		break;
 	default:
 		break;
@@ -418,11 +412,17 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 
 LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
+	if (false == m_bTweakInit) {
+		// 최초 한 번 호출 -> 호출하지 않는다면 TwDraw 오류 발생
+		TwEventWin(m_hWnd, nMessageID, wParam, lParam);
+		m_bTweakInit = true;
+	}
+
 	if (m_bMouseBindFlag)
 		TwEventWin(m_hWnd, nMessageID, wParam, lParam);
 	else 
 		TwEventWin(m_hWnd, 0, wParam, lParam);
-	
+
 	switch (nMessageID) {
 	case WM_SIZE:
 	{
@@ -537,7 +537,6 @@ void CGameFramework::SetGaussianWeights(float fSigma)
 	}
 	for (int i = 0; i < 11; ++i) {
 		m_fGaussianWeights[i] /= fSum;
-
 
 	}
 
@@ -703,7 +702,7 @@ void CGameFramework::ProcessInput()
 				SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
 			}
 			else {
-				SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
+				SetCursorPos(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2);
 			}
 		}
 		
@@ -809,14 +808,12 @@ void CGameFramework::FrameAdvance()
 
 	// Draw tweak bars
 	if (true == m_bMouseBindFlag) {
-	//	TwDraw();
-		
 		if (0 == TwDraw()) {
 			MessageBoxA(m_hWnd, TwGetLastError(), "TwDraw Error!", MB_OK | MB_ICONERROR);
 			exit(0);
-		}
-		
+		}	
 	}
+
 	m_pDXGISwapChain->Present(0, 0);
 
 	m_GameTimer.GetFrameRate(m_pszBuffer + 16, 34);

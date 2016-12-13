@@ -114,8 +114,7 @@ void CScene_Main::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pM
 void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 {
 	CScene::BuildObjects(pd3dDevice);
-	CreateTweakBars();
-
+	
 #pragma region [Create SkyBox]
 #ifdef _WITH_SKYBOX_TEXTURE_ARRAY
 	CTexture *pSkyboxTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_SKYBOX, PS_SAMPLER_SLOT_SKYBOX);
@@ -361,6 +360,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma endregion
 	CreateLights();
 	CreateConstantBuffers(pd3dDevice);
+	CreateTweakBars();
 }
 
 void CScene_Main::CreateTweakBars()
@@ -368,25 +368,26 @@ void CScene_Main::CreateTweakBars()
 	TwBar *bar = TwNewBar("TweakBar");
 
 	TwDefine(" GLOBAL help='This example shows how to integrate AntTweakBar into a DirectX11 application.' "); // Message added to the help bar.
-	int barSize[2] = { 400, 500 };
-	TwSetParam(bar, NULL, "size", TW_PARAM_INT32, 2, barSize);
+	TwDefine(" TweakBar size = '300 300'"); 
+	TwDefine(" TweakBar alpha = 230");   // transparent bar
+	TwDefine(" TweakBar position = '30 100'");
 
-	D3DXVECTOR3 xyz;
-	//TwAddVarRW(bar, "Light direction", TW_TYPE_DIR3F, &m_pLights->m_pLights[0].m_d3dxvDirection, "opened=true axisz=-z showval=false");
-	TwAddVarRW(bar, "Light direction", TW_TYPE_DIR3F, &xyz, "opened=true axisz=-z showval=false");
+	TwAddVarRW(bar, "Light direction", TW_TYPE_DIR3F, &m_pLights->m_pLights[0].m_d3dxvDirection, "group = Light opened = true axisz = -z");
+	TwAddVarRW(bar, "Global Ambient", TW_TYPE_FLOAT, &m_fGlobalAmbient, "group = Light min = 0 max = 1 step = 0.05");
+	
+	// Option
+	TwAddVarRW(bar, "RGB Axis Option", TW_TYPE_BOOLCPP, &m_bShowRGBAxis, "group = Option key=o");
 	
 	/*
 	// Add variables to the tweak bar
 	TwAddVarCB(bar, "Level", TW_TYPE_INT32, SetSpongeLevelCB, GetSpongeLevelCB, NULL, "min=0 max=3 group=Sponge keyincr=l keydecr=L");
 	TwAddVarCB(bar, "Ambient Occlusion", TW_TYPE_BOOLCPP, SetSpongeAOCB, GetSpongeAOCB, NULL, "group=Sponge key=o");
 	TwAddVarRW(bar, "Rotation", TW_TYPE_QUAT4F, &g_SpongeRotation, "opened=true axisz=-z group=Sponge");
-	TwAddVarRW(bar, "Animation", TW_TYPE_BOOLCPP, &g_Animate, "group=Sponge key=a");
-	TwAddVarRW(bar, "Animation speed", TW_TYPE_FLOAT, &g_AnimationSpeed, "min=-10 max=10 step=0.1 group=Sponge keyincr=+ keydecr=-");
+	
 	
 	TwAddVarRW(bar, "Camera distance", TW_TYPE_FLOAT, &g_CamDistance, "min=0 max=4 step=0.01 keyincr=PGUP keydecr=PGDOWN");
 	TwAddVarRW(bar, "Background", TW_TYPE_COLOR4F, &g_BackgroundColor, "colormode=hls");
 	*/
-
 }
 
 void CScene_Main::ReleaseObjects()
@@ -416,6 +417,8 @@ void CScene_Main::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 
 void CScene_Main::UpdateConstantBuffers(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights)
 {
+	m_pLights->m_d3dxcGlobalAmbient = XMFLOAT4(m_fGlobalAmbient, m_fGlobalAmbient, m_fGlobalAmbient, 1.0f);
+
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	pd3dDeviceContext->Map(m_pd3dcbLights, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	LIGHTS *pcbLight = (LIGHTS *)d3dMappedResource.pData;
@@ -438,8 +441,9 @@ void CScene_Main::CreateLights()
 {
 	m_pLights = new LIGHTS;
 	::ZeroMemory(m_pLights, sizeof(LIGHTS));
-	float vGlobalAmbient = 0.5f;
-	m_pLights->m_d3dxcGlobalAmbient = XMFLOAT4(vGlobalAmbient, vGlobalAmbient, vGlobalAmbient, 1.0f);
+
+	m_fGlobalAmbient = 0.5f;
+	m_pLights->m_d3dxcGlobalAmbient = XMFLOAT4(m_fGlobalAmbient, m_fGlobalAmbient, m_fGlobalAmbient, 1.0f);
 
 	m_pLights->m_pLights[0].m_bEnable = 1.0f;
 	m_pLights->m_pLights[0].m_nType = DIRECTIONAL_LIGHT;

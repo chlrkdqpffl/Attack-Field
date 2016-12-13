@@ -90,4 +90,5 @@ private:
 
 	// TweakBar
 	bool							m_bMouseBindFlag		= false;
+	bool							m_bTweakInit			= false;
 };

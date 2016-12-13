@@ -28,8 +28,7 @@ public:
 	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext);
 
 private:
-
+	float							m_fGlobalAmbient;
 	ID3D11Buffer					*m_pd3dcbLights		= nullptr;
-	
 };
 
