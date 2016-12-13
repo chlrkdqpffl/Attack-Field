@@ -195,13 +195,13 @@
     <ClCompile Include="TexturedRectMesh.cpp">
       <Filter>소스 파일\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="ScreenShader.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="TerrainShader.cpp">
       <Filter>Objects\Terrain</Filter>
     </ClCompile>
     <ClCompile Include="NormalDisplaceMapShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenShader.cpp">
       <Filter>소스 파일\Shader</Filter>
     </ClCompile>
   </ItemGroup>
@@ -338,13 +338,13 @@
     <ClInclude Include="TexturedRectMesh.h">
       <Filter>헤더 파일\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="ScreenShader.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="TerrainShader.h">
       <Filter>Objects\Terrain</Filter>
     </ClInclude>
     <ClInclude Include="NormalDisplaceMapShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenShader.h">
       <Filter>헤더 파일\Shader</Filter>
     </ClInclude>
   </ItemGroup>
@@ -392,6 +392,9 @@
       <Filter>HLSL</Filter>
     </None>
     <None Include="Shader HLSL File\DisplacementMap.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\Normal.hlsli">
       <Filter>HLSL</Filter>
     </None>
   </ItemGroup>

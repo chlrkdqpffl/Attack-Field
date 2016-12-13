@@ -26,7 +26,7 @@ void CScreenShader::CreateMesh(ID3D11Device *pd3dDevice)
 {
 	m_pScreenMesh = new CTextureToScreenRectMesh(pd3dDevice);
 
-	m_pTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
+	m_pTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
 	m_pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearClampSS);
 }
 

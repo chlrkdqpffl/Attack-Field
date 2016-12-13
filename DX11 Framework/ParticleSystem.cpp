@@ -59,8 +59,7 @@ CParticleSystem::~CParticleSystem()
 	if (m_pd3dsrvTextureArray) m_pd3dsrvTextureArray->Release();
 }
 
-void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceView* pd3dsrvTexArray,
-	ID3D11ShaderResourceView* pd3dsrvRandomTexture, UINT nMaxParticles)
+void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceView* pd3dsrvTexArray, ID3D11ShaderResourceView* pd3dsrvRandomTexture, UINT nMaxParticles)
 {
 	m_pd3dsrvTextureArray = pd3dsrvTexArray;
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &m_pd3dsrvTextureArray, NULL);
@@ -138,6 +137,8 @@ void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice)
 	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	d3dBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	pd3dDevice->CreateBlendState(&d3dBlendStateDesc, &m_pd3dBlendState);
+
+	DXUT_SetDebugName(m_pd3dBlendState, "ParticleBST");
 }
 
 void CParticleSystem::Update(float fTimeStep, float fGameTime)
@@ -149,7 +150,7 @@ void CParticleSystem::Update(float fTimeStep, float fGameTime)
 void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 {
 	UpdateShaderVariables(pd3dDeviceContext);
-	
+	 
 	pd3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	pd3dDeviceContext->IASetInputLayout(m_pd3dVertexLayout);
 	pd3dDeviceContext->SOSetTargets(1, &m_pd3dStreamOutVertexBuffer, &m_nOffset);
@@ -175,6 +176,7 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 		pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dDrawVertexBuffer, &m_nStride, &m_nOffset);
 		pd3dDeviceContext->DrawAuto();
 	}
+	// 스트림 출력 버퍼를 입력 조립기에 넣을 버퍼로 변경
 	ID3D11Buffer *pd3dBuffer = m_pd3dDrawVertexBuffer;
 	m_pd3dDrawVertexBuffer = m_pd3dStreamOutVertexBuffer;
 	m_pd3dStreamOutVertexBuffer = pd3dBuffer;
@@ -194,6 +196,7 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 	pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dDrawVertexBuffer, &m_nStride, &m_nOffset);
 	pd3dDeviceContext->DrawAuto();
 
+	pd3dDeviceContext->GSSetShader(NULL, NULL, 0);
 	pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 //	pd3dDeviceContext->GSSetConstantBuffers(GS_CB_SLOT_PARTICLE, 1, nullptr);
 
@@ -223,13 +226,13 @@ ID3D11ShaderResourceView* CParticleSystem::CreateRandomTexture1DSRV(ID3D11Device
 	pd3dDevice->CreateTexture1D(&d3dTextureDesc, &d3dSubResourceData, &pd3dTexture);
 	ID3D11ShaderResourceView *pd3dsrvTexture;
 	pd3dDevice->CreateShaderResourceView(pd3dTexture, NULL, &pd3dsrvTexture);
+	DXUT_SetDebugName(pd3dsrvTexture, "Random1DTexture");
 	pd3dTexture->Release();
+
 	return(pd3dsrvTexture);
 }
 
-void CParticleSystem::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName,
-	LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader,
-	D3D11_INPUT_ELEMENT_DESC *pd3dInputLayout, UINT nElements, ID3D11InputLayout **ppd3dVertexLayout)
+void CParticleSystem::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader,	D3D11_INPUT_ELEMENT_DESC *pd3dInputLayout, UINT nElements, ID3D11InputLayout **ppd3dVertexLayout)
 {
 	HRESULT hResult;
 
@@ -294,6 +297,8 @@ void CParticleSystem::CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCH
 	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL))) {
 		//컴파일된 쉐이더 코드의 메모리 주소에서 픽셀-쉐이더를 생성한다. 
 		pd3dDevice->CreateGeometryShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dGeometryShader);
+
+		DXUT_SetDebugName(*ppd3dGeometryShader, "ParticleGS");
 		pd3dShaderBlob->Release();
 	}
 	else {
@@ -301,32 +306,6 @@ void CParticleSystem::CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCH
 		exit(0);
 	}
 }
-
-
-//typedef struct D3D11_SO_DECLARATION_ENTRY{
-//	
-//	UINT Stream;
-//	LPCSTR SemanticName;
-//	UINT SemanticIndex;
-//	BYTE StartComponent;
-//	BYTE ComponentCount;
-//	BYTE OutputSlot;
-//
-//}D3D11_SO_DECLARATION_ENTRY;
-
-//void CParticleSystem::CreateShaderVariables(ID3D11Device *pd3dDevice)
-//{
-//	ID3D11Buffer *m_pd3dSOBufferA;
-//
-//
-//	D3D11_BUFFER_DESC d3dBufferDesc;
-//	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
-//	d3dBufferDesc.ByteWidth = MAX_PARTICLES * sizeof(PARTICLE_VERTEX);//크기를 어디서 지정해주나 했더니.
-//	d3dBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-//	d3dBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
-//	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dSOBufferA);
-//
-//}
 
 void CParticleSystem::CreateShaderVariables(ID3D11Device *pd3dDevice)
 {
@@ -381,12 +360,9 @@ void CParticleSystem::UpdateShaderVariables(ID3D11DeviceContext* pd3dDeviceConte
 void CParticleSystem::CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader)
 {
 	HRESULT hResult;
-	/*
-	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "VELOCITY", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TYPE", 0, DXGI_FORMAT_R32_UINT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "AGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0 }*/
+	
+	// UINT Stream, LPCSTR SemanticName, BYTE SemanticIndex, BYTE StartComponent, BYTE ComponentCount, BYTE OuputSlot
+	// 
 	D3D11_SO_DECLARATION_ENTRY pSODecls[] = {
 		{ 0, "POSITION", 0, 0, 3, 0 },
 		{ 0, "VELOCITY", 0, 0, 3, 0 },
@@ -405,8 +381,7 @@ void CParticleSystem::CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, W
 	/*파일(pszFileName)에서 쉐이더 함수(pszShaderName)를 컴파일하여 컴파일된 쉐이더 코드의 메모리 주소(pd3dShaderBlob)를 반환한다.*/
 	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
 	{
-		pd3dDevice->CreateGeometryShaderWithStreamOutput(pd3dShaderBlob->GetBufferPointer(),
-			pd3dShaderBlob->GetBufferSize(),
+		pd3dDevice->CreateGeometryShaderWithStreamOutput(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(),
 			pSODecls,			// 스트림아웃 디클러레이션
 			5,					// 엔트리 개수
 			pBufferStrides,		// 버퍼 스트라이드
@@ -416,7 +391,7 @@ void CParticleSystem::CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, W
 
 		pd3dShaderBlob->Release();
 
-		DXUT_SetDebugName(*ppd3dGeometryShader, "GSWithSO Shader");
+		DXUT_SetDebugName(*ppd3dGeometryShader, "ParticleGSWithSO");
 	}
 	else
 	{
@@ -493,6 +468,8 @@ ID3D11ShaderResourceView *CParticleSystem::CreateTexture2DArraySRV(ID3D11Device 
 
 	ID3D11ShaderResourceView *pd3dsrvTextureArray;
 	pd3dDevice->CreateShaderResourceView(pd3dTexture2DArray, &d3dTextureSRVDesc, &pd3dsrvTextureArray);
+
+	DXUT_SetDebugName(pd3dsrvTextureArray, "ParticleTexture2DArray");
 
 	if (pd3dTexture2DArray) pd3dTexture2DArray->Release();
 

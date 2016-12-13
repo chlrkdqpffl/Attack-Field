@@ -265,20 +265,18 @@ void CShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	pd3dDeviceContext->IASetInputLayout(m_pd3dVertexLayout);
 	pd3dDeviceContext->VSSetShader(m_pd3dVertexShader, nullptr, 0);
-
-	if(m_pd3dHullShader)
-		pd3dDeviceContext->HSSetShader(m_pd3dHullShader, nullptr, 0);
-	if (m_pd3dDomainShader)
-		pd3dDeviceContext->DSSetShader(m_pd3dDomainShader, nullptr, 0);
-	if (m_pd3dGeometryShader)
-		pd3dDeviceContext->GSSetShader(m_pd3dGeometryShader, nullptr, 0);
-
+	pd3dDeviceContext->GSSetShader(m_pd3dGeometryShader, nullptr, 0);
 	pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, nullptr, 0);
 }
 
 void CShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
 	OnPrepareRender(pd3dDeviceContext);
+	
+}
+
+void CShader::OnPostRender(ID3D11DeviceContext *pd3dDeviceContext)
+{
 }
 
 ID3D11Buffer *CShader::CreateBuffer(ID3D11Device *pd3dDevice, UINT nStride, int nElements, void *pBufferData, UINT nBindFlags, D3D11_USAGE d3dUsage, UINT nCPUAccessFlags)
@@ -362,7 +360,6 @@ CObjectsShader::CObjectsShader(int nObjects)
 
 	m_pMaterial = NULL;
 	m_pContext = NULL;
-
 }
 
 CObjectsShader::~CObjectsShader()
@@ -418,7 +415,7 @@ void CObjectsShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
 
 void CObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	CShader::Render(pd3dDeviceContext, pCamera);
+	CShader::OnPrepareRender(pd3dDeviceContext);
 
 	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
 
@@ -427,6 +424,8 @@ void CObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCa
 			object->Render(pd3dDeviceContext, pCamera);
 		}
 	}
+
+	CShader::OnPostRender(pd3dDeviceContext);
 }
 
 CGameObject *CObjectsShader::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, MESHINTERSECTINFO *pd3dxIntersectInfo)
@@ -523,5 +522,7 @@ void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCa
 	pd3dDeviceContext->Unmap(m_pd3dInstanceBuffer, 0);
 
 	m_pMesh->RenderInstanced(pd3dDeviceContext, nInstances, 0);
+
+	CShader::OnPostRender(pd3dDeviceContext);
 }
 

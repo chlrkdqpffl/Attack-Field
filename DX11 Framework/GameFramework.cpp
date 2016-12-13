@@ -22,6 +22,13 @@ CGameFramework::CGameFramework()
 	_tcscpy_s(m_pszBuffer, _T("DX11_Framework ("));
 
 	srand(timeGetTime());
+	
+	// 마우스 정보
+	ShowCursor(false);
+	m_ptOldCursorPos.x = m_nWndClientWidth / 2;
+	m_ptOldCursorPos.y = m_nWndClientHeight / 2;
+	SetCursorPos(m_nWndClientWidth / 2, m_nWndClientHeight / 2);	// 정중앙
+
 
 #if defined(DEBUG) || defined(_DEBUG)
 	#ifdef USE_CONSOLE
@@ -45,12 +52,15 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 
 	if (!CreateDirect3DDisplay()) return(false);
 
-	// Manager Init
+	// Initialize Manager
 	STATEOBJ_MGR->InitializeManager();
 	TEXT_MGR->InitializeManager(m_pd3dDevice, L"Koverwatch");
 //	TEXT_MGR->InitializeManager(m_pd3dDevice, L"a반달곰");			// 폰트 여러개 만들 수 있음
 	SCENE_MGR->InitializeManager();
 	RESOURCE_MGR->InitializeManager();
+
+	// Initialize AntTweakBar
+	TwInit(TW_DIRECT3D11, m_pd3dDevice);
 
 	BuildObjects();
 
@@ -293,28 +303,38 @@ void CGameFramework::OnDestroy()
 	if (m_pd3dDeviceContext) m_pd3dDevice->Release();
 	if (m_pd3dDevice) m_pd3dDevice->Release();
 
-	// Manager Relese
+	// Relesed Manager
 	STATEOBJ_MGR->ReleseInstance();
 	TEXT_MGR->ReleseInstance();
 	SCENE_MGR->ReleseInstance();
 	RESOURCE_MGR->ReleseInstance();
+
+	// Relesed AntTweakBar
+	TwTerminate();
 }
 
 void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	SCENE_MGR->m_nowScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
-	switch (nMessageID)
-	{
+	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
-	case WM_RBUTTONDOWN:
-		SetCapture(hWnd);
 		GetCursorPos(&m_ptOldCursorPos);
+		if (false == m_bMouseBindFlag) {
+			SetCapture(hWnd);
+		}
 		break;
 	case WM_LBUTTONUP:
-	case WM_RBUTTONUP:
-		ReleaseCapture();
-		break;
+		if (false == m_bMouseBindFlag) {
+			ReleaseCapture();
+		}
 	case WM_MOUSEMOVE:
+		/*
+		if (false == m_bMouseBindFlag) {
+			POINT nowCursorPos;
+			GetCursorPos(&nowCursorPos);
+			SetCursorPos(nowCursorPos.x, nowCursorPos.y);
+		}
+		*/
 		break;
 	default:
 		break;
@@ -327,8 +347,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 	switch (nMessageID)
 	{
 	case WM_KEYDOWN:
-		switch (wParam)
-		{
+		switch (wParam) {
+		case VK_CONTROL:
+			if (m_bMouseBindFlag == false){
+				ShowCursor(true);
+				ReleaseCapture();
+			}
+			m_bMouseBindFlag = true;
+			break;
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
 			break;
@@ -346,9 +372,9 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case VK_F5:
 		{
-			ScreenCapture(m_pd3dRenderTargetView, "Screen - ");
-		}				  
-			break;
+			ScreenCapture(m_pd3dRenderTargetView);
+		}
+		break;
 		case VK_F9:
 		{
 			BOOL bFullScreenState = FALSE;
@@ -367,25 +393,37 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			}
 			m_pDXGISwapChain->SetFullscreenState(!bFullScreenState, NULL);
 		}
-			break;
+		break;
 		case VK_F10:
 		{
 			cout << "F10 안된다.";
 		}
-			break;
+		break;
 		default:
 			break;
 		}
 		break;
 	default:
 		break;
+	case WM_KEYUP:
+		switch (wParam)	{
+		case VK_CONTROL:
+			m_bMouseBindFlag = false;
+			ShowCursor(false);
+			break;
+		}
+		break;
 	}
 }
 
 LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	switch (nMessageID)
-	{
+	if (m_bMouseBindFlag)
+		TwEventWin(m_hWnd, nMessageID, wParam, lParam);
+	else 
+		TwEventWin(m_hWnd, 0, wParam, lParam);
+	
+	switch (nMessageID) {
 	case WM_SIZE:
 	{
 		m_nWndClientWidth = LOWORD(lParam);
@@ -419,36 +457,35 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	return(0);
 }
 
-void CGameFramework::ScreenCapture(ID3D11Resource* resource, string str)
+void CGameFramework::ScreenCapture(ID3D11Resource* resource)
 {
-	string screenStr = "ScreenShot/";
-	screenStr.append(str);
-	screenStr.append(".jpg");
+	SYSTEMTIME st;
+	GetLocalTime(&st);
 
-	wstring wstr;
-	wstr.assign(screenStr.begin(), screenStr.end());
+	char save_path[128];
+	sprintf_s(save_path, "ScreenShot/%d.%d.%d_%d-%d-%d.jpg", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 
 	HRESULT hr = -1;
-	hr = D3DX11SaveTextureToFile(m_pd3dDeviceContext, resource, D3DX11_IFF_JPG, wstr.c_str());
+	hr = D3DX11SaveTextureToFileA(m_pd3dDeviceContext, resource, D3DX11_IFF_JPG, save_path);
 	if (hr == S_OK)
 		cout << "스크린샷 저장 완료" << endl;
 	else
 		cout << "스크린샷 저장 실패" << endl;
 }
 
-void CGameFramework::ScreenCapture(ID3D11View* resourceView, string str)
+void CGameFramework::ScreenCapture(ID3D11View* resourceView)
 {
-	string screenStr = "ScreenShot/";
-	screenStr.append(str);
-	screenStr.append(".jpg");
+	// 현재 날짜
+	SYSTEMTIME st;
+	GetLocalTime(&st);
 
-	wstring wstr;
-	wstr.assign(screenStr.begin(), screenStr.end());
+	char save_path[128];
+	sprintf_s(save_path, "ScreenShot/%d.%d.%d_%d-%d-%d.jpg", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 
 	HRESULT hr = -1;
 	ID3D11Resource* tempResource = nullptr;
 	resourceView->GetResource(&tempResource);
-	hr = D3DX11SaveTextureToFile(m_pd3dDeviceContext, tempResource, D3DX11_IFF_JPG, wstr.c_str());
+	hr = D3DX11SaveTextureToFileA(m_pd3dDeviceContext, tempResource, D3DX11_IFF_JPG, save_path);
 	tempResource->Release();
 	if (hr == S_OK)
 		cout << "스크린샷 저장 완료" << endl;
@@ -657,15 +694,19 @@ void CGameFramework::ProcessInput()
 
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 		POINT ptCursorPos;
-		if (GetCapture() == m_hWnd)
-		{
-			SetCursor(NULL);
-			GetCursorPos(&ptCursorPos);
-			cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
-			cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
-			SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
+		
+		if (false == m_bMouseBindFlag) {
+			if (GetCapture() == m_hWnd) {
+				GetCursorPos(&ptCursorPos);
+				cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
+				cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
+				SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
+			}
+			else {
+				SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
+			}
 		}
-
+		
 		if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
 		{
 			if (cxDelta || cyDelta)
@@ -688,8 +729,6 @@ void CGameFramework::UpdateObjects()
 	if (m_pPlayer) 
 		m_pPlayer->Animate(fTimeElapsed, NULL);
 	
-	SCENE_MGR->fTimeElapsed = fTimeElapsed;
-	SCENE_MGR->fFrameRate = m_GameTimer.GetFrameRate();
 	SCENE_MGR->m_nowScene->UpdateObjects(fTimeElapsed);
 }
 
@@ -700,7 +739,6 @@ void CGameFramework::FrameAdvance()
 	m_GameTimer.Tick();
 
 	ProcessInput();
-
 	UpdateObjects();
 
 	SCENE_MGR->m_nowScene->OnPreRender(m_pd3dDeviceContext);
@@ -744,7 +782,7 @@ void CGameFramework::FrameAdvance()
 	float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-
+	
 	if (m_pPlayer) m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
 	m_pCamera->SetViewport(m_pd3dDeviceContext);
 
@@ -769,6 +807,16 @@ void CGameFramework::FrameAdvance()
 	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_wsGraphicBrandName, 30, 20, 830, 0xFF41FF3A, FW1_LEFT);
 	TEXT_MGR->RenderText(m_pd3dDeviceContext, "Video Memory : " + to_string(m_ui64VideoMemory / 1048576) + "MB", 30, 20, 860, 0xFF0000FF, FW1_LEFT);
 
+	// Draw tweak bars
+	if (true == m_bMouseBindFlag) {
+	//	TwDraw();
+		
+		if (0 == TwDraw()) {
+			MessageBoxA(m_hWnd, TwGetLastError(), "TwDraw Error!", MB_OK | MB_ICONERROR);
+			exit(0);
+		}
+		
+	}
 	m_pDXGISwapChain->Present(0, 0);
 
 	m_GameTimer.GetFrameRate(m_pszBuffer + 16, 34);

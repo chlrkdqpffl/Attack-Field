@@ -1,4 +1,5 @@
 #include "Light.hlsli"
+#include "Normal.hlsli"
 #include "Fog.hlsli"
 
 //    fxc /E PS_NormalDisplace /T ps_5_0 /Od /Zi /Fo CompiledShader.fxo DisplacementMap.hlsli
@@ -20,16 +21,16 @@ cbuffer cbRenderOption : register(b5) // PS Set
 };
 
 Texture2D gtxtDiffuseMap : register(t18);
-Texture2D gtxtNormalMap : register(t19);
+
 SamplerState gssDefault : register(s0);
 
 static const float gfMinDistance        = 10;
 static const float gfMaxDistance        = 500;
 static const float gfMinTessFactor      = 1;
-static const float gfMaxTessFactor      = 32;
+static const float gfMaxTessFactor      = 20;
 static const float gfMipLevelInterval   = 20;
 static const float gfMaxMipLevel        = 6.0f;
-static const float gfHeightScale        = 10.0f;
+static const float gfHeightScale        = 7.0f;
 
 struct VS_NormalDisplace_Input
 {
@@ -45,9 +46,7 @@ struct VS_NormalDisplace_Output
     float3 normalW   : NORMAL;  
     float3 tangentW  : TANGENT;
     float2 texCoord  : TEXCOORD;
-    float fTessFactor : TESSFACTOR;
 };
-
 
 VS_NormalDisplace_Output VS_NormalDisplace(VS_NormalDisplace_Input input)
 {
@@ -58,30 +57,44 @@ VS_NormalDisplace_Output VS_NormalDisplace(VS_NormalDisplace_Input input)
     output.tangentW = mul(input.tangentL, (float3x3) gmtxWorld);
     output.texCoord = input.texCoord;
 
-    float fDistToCamera = distance(output.positionW, gvCameraPosition);
-    float fTessFactor = saturate((fDistToCamera - gfMinDistance) / (gfMaxDistance - gfMinDistance));
-    output.fTessFactor = gfMinTessFactor + fTessFactor * (gfMaxTessFactor - gfMinTessFactor);
-
     return output;
 }
 
+float CalcTessFactor(float3 posW)
+{
+    float fDistToCamera = distance(posW, gvCameraPosition.xyz);
+
+	// max norm in xz plane (useful to see detail levels from a bird's eye).
+	//float d = max( abs(p.x-gEyePosW.x), abs(p.z-gEyePosW.z) );
+	
+    float fTessFactor = saturate((fDistToCamera - gfMinDistance) / (gfMaxDistance - gfMinDistance));
+	
+    return pow(2, (lerp(gfMaxTessFactor, gfMinTessFactor, fTessFactor)));
+}
 
 struct HSC_Output
 {
     float fTessEdges[3] : SV_TessFactor;
-    float fTessInsides : SV_InsideTessFactor;
+    float fTessInsides[1] : SV_InsideTessFactor;
 };
 
 HSC_Output ConstantHS(InputPatch<VS_NormalDisplace_Output, 3> patch, uint nPatchID : SV_PrimitiveID)
 {
     HSC_Output output = (HSC_Output) 0;
 
-    output.fTessEdges[0] = 0.5f * (patch[1].fTessFactor + patch[2].fTessFactor);
-    output.fTessEdges[1] = 0.5f * (patch[2].fTessFactor + patch[0].fTessFactor);
-    output.fTessEdges[2] = 0.5f * (patch[0].fTessFactor + patch[1].fTessFactor);
-    output.fTessInsides = output.fTessEdges[0];
+    float3 e0 = 0.5f * (patch[1].positionW + patch[2].positionW);
+    float3 e1 = 0.5f * (patch[2].positionW + patch[0].positionW);
+    float3 e2 = 0.5f * (patch[0].positionW + patch[1].positionW);
 
-    return output;
+    float3 c = 0.25f * (patch[0].positionW + patch[1].positionW + patch[2].positionW);
+
+    output.fTessEdges[0] = CalcTessFactor(e0);
+    output.fTessEdges[1] = CalcTessFactor(e1);
+    output.fTessEdges[2] = CalcTessFactor(e2);
+
+    output.fTessInsides[0] = CalcTessFactor(c);
+
+    return (output);
 }
 
 struct HS_Output
@@ -130,7 +143,7 @@ DS_Output DS_NormalDisplace(HSC_Output input, float3 uv : SV_DomainLocation, Out
     output.texCoord = uv.x * tri[0].texCoord + uv.y * tri[1].texCoord + uv.z * tri[2].texCoord;
     output.normalW = normalize(output.normalW);
 
-    float fDistToCamera = distance(output.positionW, gvCameraPosition);
+    float fDistToCamera = distance(output.positionW, gvCameraPosition.xyz);
     float fMipLevel = clamp(((fDistToCamera - gfMipLevelInterval) / gfMipLevelInterval), 0.0f, gfMaxMipLevel);
     float fHeight = gtxtNormalMap.SampleLevel(gssDefault, output.texCoord, fMipLevel).a;
 
@@ -142,16 +155,7 @@ DS_Output DS_NormalDisplace(HSC_Output input, float3 uv : SV_DomainLocation, Out
 
 float4 PS_NormalDisplace(DS_Output input) : SV_Target
 {
-    float3 N = normalize(input.normalW);
-    float3 T = normalize(input.tangentW - dot(input.tangentW, N) * N);
-    float3 B = cross(N, T);
-
-    float3x3 TBN = float3x3(T, B, N);
-
-    float3 normalTextureRGB = gtxtNormalMap.Sample(gssDefault, input.texCoord).rgb;
-    float3 normalW = (2.0f * normalTextureRGB - 1.0f);
-    normalW = mul(normalW, TBN);
-
+    float3 normalW = CalcNormal(input.normalW, input.tangentW, input.texCoord);
     float4 cIllumination = Lighting(input.positionW, normalW);
     float4 cColor = gtxtDiffuseMap.Sample(gssDefault, input.texCoord) * cIllumination;
 

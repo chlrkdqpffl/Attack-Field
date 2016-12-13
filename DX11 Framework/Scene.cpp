@@ -35,7 +35,7 @@ bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 	switch (nMessageID)
 	{
 	case WM_LBUTTONDOWN:
-		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam));
+//		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam));
 		break;
 	case WM_RBUTTONDOWN:
 		break;
@@ -105,9 +105,14 @@ void CScene::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMateri
 void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 {
 	CScene::CreateConstantBuffers(pd3dDevice);
+	CScene::CreateTweakBars();
 
 	m_pAxisObjects = new CAxisObjects();
 	m_pAxisObjects->CreateAxisObjects(pd3dDevice);
+}
+
+void CScene::CreateTweakBars()
+{
 }
 
 void CScene::ReleaseObjects()
@@ -259,11 +264,13 @@ void CScene::UpdateObjects(float fTimeElapsed)
 	for (auto object : m_vObjectsVector)
 		object->Update(fTimeElapsed);
 
+	/*
 	for (auto shaderObject : m_vObjectsShaderVector)
 		shaderObject->UpdateObjects(fTimeElapsed);
 
 	for (auto instancedShaderObject : m_vInstancedObjectsShaderVector)
 		instancedShaderObject->UpdateObjects(fTimeElapsed);
+		*/
 }
 
 void CScene::OnPreRender(ID3D11DeviceContext *pd3dDeviceContext)
@@ -280,6 +287,7 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 
 	if (m_bShowRGBAxis) m_pAxisObjects->Render(pd3dDeviceContext, pCamera);
 
+	/*
 	for(auto object : m_vObjectsVector)
 		object->Render(pd3dDeviceContext, pCamera);
 
@@ -288,6 +296,7 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 
 	for (auto instancedShaderObject : m_vInstancedObjectsShaderVector)
 		instancedShaderObject->Render(pd3dDeviceContext, pCamera);
+		*/
 }
 
 void CScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)

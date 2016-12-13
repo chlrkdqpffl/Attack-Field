@@ -37,6 +37,8 @@ void CResourceManager::InitializeManager()
 	//  etc
 	AddResourece(eTexture_Stone,				"../Assets/Image/Miscellaneous/stones.dds");
 	AddResourece(eTexture_StoneNormal,			"../Assets/Image/Miscellaneous/stones_nmap.dds");
+	AddResourece(eTexture_Stone02,				"../Assets/Image/Miscellaneous/Stone02_Diffuse.jpg");
+	AddResourece(eTexture_Stone02Normal,		"../Assets/Image/Miscellaneous/Stone02_nmap.dds");
 	AddResourece(eTexture_Bricks,				"../Assets/Image/Miscellaneous/bricks.dds");
 	AddResourece(eTexture_BricksNormal,			"../Assets/Image/Miscellaneous/bricks_nmap.dds");
 	AddResourece(eTexture_Wood,					"../Assets/Image/Miscellaneous/Wood01.jpg");

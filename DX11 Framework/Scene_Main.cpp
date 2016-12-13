@@ -16,10 +16,12 @@ bool CScene_Main::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 
 	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
+		/*
 		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam));
 		
 		if (m_pSelectedObject)
 			cout << m_pSelectedObject->GetPosition().x << ", " << m_pSelectedObject->GetPosition().y << ", " << m_pSelectedObject->GetPosition().z << endl;
+			*/
 
 		break;
 	case WM_RBUTTONDOWN:
@@ -112,15 +114,16 @@ void CScene_Main::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pM
 void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 {
 	CScene::BuildObjects(pd3dDevice);
+	CreateTweakBars();
 
 #pragma region [Create SkyBox]
 #ifdef _WITH_SKYBOX_TEXTURE_ARRAY
-	CTexture *pSkyboxTexture = new CTexture(1, 1, PS_SLOT_TEXTURE_SKYBOX, PS_SLOT_SAMPLER_SKYBOX);
+	CTexture *pSkyboxTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_SKYBOX, PS_SAMPLER_SLOT_SKYBOX);
 #else
 	#ifdef _WITH_SKYBOX_TEXTURE_CUBE
-		CTexture *pSkyboxTexture = new CTexture(1, 1, PS_SLOT_TEXTURE_SKYBOX, PS_SLOT_SAMPLER_SKYBOX);
+		CTexture *pSkyboxTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_SKYBOX, PS_SAMPLER_SLOT_SKYBOX);
 	#else
-		CTexture *pSkyboxTexture = new CTexture(6, 1, PS_SLOT_TEXTURE_SKYBOX, PS_SLOT_SAMPLER_SKYBOX);
+		CTexture *pSkyboxTexture = new CTexture(6, 1, PS_TEXTURE_SLOT_SKYBOX, PS_SAMPLER_SLOT_SKYBOX);
 	#endif
 #endif
 
@@ -143,7 +146,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma endregion
 
 #pragma region [Create Terrain]
-	CTexture *pTerrainTexture = new CTexture(2, 2, PS_SLOT_TEXTURE_TERRAIN_DIFUSE, PS_SLOT_SAMPLER_TERRAIN);
+	CTexture *pTerrainTexture = new CTexture(2, 2, PS_TEXTURE_SLOT_TERRAIN_DIFUSE, PS_SAMPLER_SLOT_TERRAIN);
 
 	pTerrainTexture->SetTexture(0, eTexture_TerrainDiffuse);
 	pTerrainTexture->SetSampler(0, STATEOBJ_MGR->g_pPointClampSS);
@@ -184,7 +187,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma endregion
 
 #pragma region [Create Water]
-	CTexture *pTerrainWaterTexture = new CTexture(2, 2, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
+	CTexture *pTerrainWaterTexture = new CTexture(2, 2, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
 	pTerrainWaterTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_Water));
 	pTerrainWaterTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 
@@ -219,7 +222,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	/*
 	CMaterial *pPlayerMaterial = new CMaterial();
 
-	CTexture *pPlayerTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
+	CTexture *pPlayerTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
 	pPlayerTexture->SetTexture(0, eTexture_DarkFighterColor);
 	pPlayerTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pPlayerMaterial->SetTexture(pPlayerTexture);
@@ -262,17 +265,17 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pBlueColor->m_d3dxcEmissive = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	pInstancingMaterials[2] = new CMaterial(pBlueColor);
 
-	CTexture *pStoneTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
+	CTexture *pStoneTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
 	pStoneTexture->SetTexture(0, eTexture_Stone);
 	pStoneTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pInstancingMaterials[0]->SetTexture(pStoneTexture);
 	
-	CTexture *pBrickTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
+	CTexture *pBrickTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
 	pBrickTexture->SetTexture(0, eTexture_Bricks);
 	pBrickTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pInstancingMaterials[1]->SetTexture(pBrickTexture);
 
-	CTexture *pWoodTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
+	CTexture *pWoodTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
 	pWoodTexture->SetTexture(0, eTexture_Wood);
 	pWoodTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pInstancingMaterials[2]->SetTexture(pWoodTexture);
@@ -360,6 +363,32 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CreateConstantBuffers(pd3dDevice);
 }
 
+void CScene_Main::CreateTweakBars()
+{
+	TwBar *bar = TwNewBar("TweakBar");
+
+	TwDefine(" GLOBAL help='This example shows how to integrate AntTweakBar into a DirectX11 application.' "); // Message added to the help bar.
+	int barSize[2] = { 400, 500 };
+	TwSetParam(bar, NULL, "size", TW_PARAM_INT32, 2, barSize);
+
+	D3DXVECTOR3 xyz;
+	//TwAddVarRW(bar, "Light direction", TW_TYPE_DIR3F, &m_pLights->m_pLights[0].m_d3dxvDirection, "opened=true axisz=-z showval=false");
+	TwAddVarRW(bar, "Light direction", TW_TYPE_DIR3F, &xyz, "opened=true axisz=-z showval=false");
+	
+	/*
+	// Add variables to the tweak bar
+	TwAddVarCB(bar, "Level", TW_TYPE_INT32, SetSpongeLevelCB, GetSpongeLevelCB, NULL, "min=0 max=3 group=Sponge keyincr=l keydecr=L");
+	TwAddVarCB(bar, "Ambient Occlusion", TW_TYPE_BOOLCPP, SetSpongeAOCB, GetSpongeAOCB, NULL, "group=Sponge key=o");
+	TwAddVarRW(bar, "Rotation", TW_TYPE_QUAT4F, &g_SpongeRotation, "opened=true axisz=-z group=Sponge");
+	TwAddVarRW(bar, "Animation", TW_TYPE_BOOLCPP, &g_Animate, "group=Sponge key=a");
+	TwAddVarRW(bar, "Animation speed", TW_TYPE_FLOAT, &g_AnimationSpeed, "min=-10 max=10 step=0.1 group=Sponge keyincr=+ keydecr=-");
+	
+	TwAddVarRW(bar, "Camera distance", TW_TYPE_FLOAT, &g_CamDistance, "min=0 max=4 step=0.01 keyincr=PGUP keydecr=PGDOWN");
+	TwAddVarRW(bar, "Background", TW_TYPE_COLOR4F, &g_BackgroundColor, "colormode=hls");
+	*/
+
+}
+
 void CScene_Main::ReleaseObjects()
 {
 	CScene::ReleaseObjects();
@@ -413,14 +442,11 @@ void CScene_Main::CreateLights()
 	m_pLights->m_d3dxcGlobalAmbient = XMFLOAT4(vGlobalAmbient, vGlobalAmbient, vGlobalAmbient, 1.0f);
 
 	m_pLights->m_pLights[0].m_bEnable = 1.0f;
-	m_pLights->m_pLights[0].m_nType = POINT_LIGHT;
-	m_pLights->m_pLights[0].m_fRange = 300.0f;
-	m_pLights->m_pLights[0].m_d3dxcAmbient = XMFLOAT4(0.1f, 0.0f, 0.0f, 1.0f);
-	m_pLights->m_pLights[0].m_d3dxcDiffuse = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	m_pLights->m_pLights[0].m_d3dxcSpecular = XMFLOAT4(0.1f, 0.1f, 0.1f, 0.0f);
-	m_pLights->m_pLights[0].m_d3dxvPosition = XMFLOAT3(300.0f, 300.0f, 300.0f);
-	m_pLights->m_pLights[0].m_d3dxvDirection = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_pLights->m_pLights[0].m_d3dxvAttenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
+	m_pLights->m_pLights[0].m_nType = DIRECTIONAL_LIGHT;
+	m_pLights->m_pLights[0].m_d3dxcAmbient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	m_pLights->m_pLights[0].m_d3dxcDiffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	m_pLights->m_pLights[0].m_d3dxcSpecular = XMFLOAT4(0.3f, 0.3f, 0.3f, 16.0f);
+	m_pLights->m_pLights[0].m_d3dxvDirection = XMFLOAT3(0.0f, -1.0f, 0.0f);
 
 	m_pLights->m_pLights[1].m_bEnable = 1.0f;
 	m_pLights->m_pLights[1].m_nType = SPOT_LIGHT;
@@ -436,11 +462,14 @@ void CScene_Main::CreateLights()
 	m_pLights->m_pLights[1].m_fTheta = (float)cos(D3DXToRadian(20.0f));
 
 	m_pLights->m_pLights[2].m_bEnable = 1.0f;
-	m_pLights->m_pLights[2].m_nType = DIRECTIONAL_LIGHT;
-	m_pLights->m_pLights[2].m_d3dxcAmbient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	m_pLights->m_pLights[2].m_d3dxcDiffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	m_pLights->m_pLights[2].m_d3dxcSpecular = XMFLOAT4(0.3f, 0.3f, 0.3f, 16.0f);
-	m_pLights->m_pLights[2].m_d3dxvDirection = XMFLOAT3(0.0f, -1.0f, 0.0f);
+	m_pLights->m_pLights[2].m_nType = POINT_LIGHT;
+	m_pLights->m_pLights[2].m_fRange = 300.0f;
+	m_pLights->m_pLights[2].m_d3dxcAmbient = XMFLOAT4(0.1f, 0.0f, 0.0f, 1.0f);
+	m_pLights->m_pLights[2].m_d3dxcDiffuse = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	m_pLights->m_pLights[2].m_d3dxcSpecular = XMFLOAT4(0.1f, 0.1f, 0.1f, 0.0f);
+	m_pLights->m_pLights[2].m_d3dxvPosition = XMFLOAT3(300.0f, 300.0f, 300.0f);
+	m_pLights->m_pLights[2].m_d3dxvDirection = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_pLights->m_pLights[2].m_d3dxvAttenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
 
 	m_pLights->m_pLights[3].m_bEnable = 1.0f;
 	m_pLights->m_pLights[3].m_nType = SPOT_LIGHT;
@@ -504,7 +533,7 @@ void CScene_Main::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 {
 	CScene::Render(pd3dDeviceContext, pCamera);
 
-	m_pParticleSystem->Render(pd3dDeviceContext);
+//	m_pParticleSystem->Render(pd3dDeviceContext);
 }
 
 void CScene_Main::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)

@@ -1,7 +1,8 @@
 #include "Light.hlsli"
+#include "Normal.hlsli"
 #include "Fog.hlsli"
 
-//    fxc /E VS_TexturedLightingNormalMap /T vs_5_0 /Od /Zi /Fo CompiledShader.fxo NormalMap.hlsli
+//    fxc /E PS_TexturedLightingNormalMap /T ps_5_0 /Od /Zi /Fo CompiledShader.fxo NormalMap.hlsli
 
 cbuffer cbViewProjectionMatrix : register(b0)   // VS Set
 {
@@ -20,7 +21,6 @@ cbuffer cbRenderOption : register(b5) // PS Set
 };
 
 Texture2D gtxtDiffuseMap : register(t18);
-Texture2D gtxtNormalMap : register(t19);
 SamplerState gssDefault : register(s0);
 
 struct VS_TEXTURED_LIGHTING_NORMAL_INPUT
@@ -40,7 +40,6 @@ struct VS_TEXTURED_LIGHTING_NORMAL_OUTPUT
     float2 texCoord : TEXCOORD;
 };
 
-
 VS_TEXTURED_LIGHTING_NORMAL_OUTPUT VS_TexturedLightingNormalMap(VS_TEXTURED_LIGHTING_NORMAL_INPUT input)
 {
     VS_TEXTURED_LIGHTING_NORMAL_OUTPUT output = (VS_TEXTURED_LIGHTING_NORMAL_OUTPUT) 0;
@@ -55,26 +54,13 @@ VS_TEXTURED_LIGHTING_NORMAL_OUTPUT VS_TexturedLightingNormalMap(VS_TEXTURED_LIGH
 
     return output;
 }
- 
 
 float4 PS_TexturedLightingNormalMap(VS_TEXTURED_LIGHTING_NORMAL_OUTPUT input) : SV_Target
 {
-    float3 N = normalize(input.normalW);
-    float3 T = normalize(input.tangentW - dot(input.tangentW, N) * N);
-    float3 B = cross(N, T);
-
-    float3x3 TBN = float3x3(T, B, N);
-
-    float3 normalTextureRGB = gtxtNormalMap.Sample(gssDefault, input.texCoord).rgb;
-    float3 normalW = (2.0f * normalTextureRGB - 1.0f);
-    normalW = mul(normalW, TBN);
-
+    float3 normalW = CalcNormal(input.normalW, input.tangentW, input.texCoord);
     float4 cIllumination = Lighting(input.positionW, normalW);
     float4 cColor = gtxtDiffuseMap.Sample(gssDefault, input.texCoord) * cIllumination;
-    
-
-    return float4(normalW, 1.0f);
-   
+  
     if (gbRenderOption.x == 1.0f)
         cColor = Fog(cColor, input.positionW);
 

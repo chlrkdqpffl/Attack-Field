@@ -89,6 +89,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 
+	// 최초 한 번 호출 -> 호출하지 않는다면 TwDraw 오류 발생
+	TwEventWin(hWnd, message, wParam, lParam);
+
 	switch (message)
 	{
         case WM_SIZE:

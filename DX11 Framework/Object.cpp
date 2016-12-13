@@ -644,6 +644,8 @@ void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 	if (m_pSibling) m_pSibling->Render(pd3dDeviceContext, pCamera);
 	if (m_pChild) m_pChild->Render(pd3dDeviceContext, pCamera);
 
+
+	if (m_pShader) m_pShader->OnPostRender(pd3dDeviceContext);
 	if (m_pd3dDepthStencilState) pd3dDeviceContext->OMSetDepthStencilState(NULL, 0);
 	if (m_pd3dBlendState) pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
 }

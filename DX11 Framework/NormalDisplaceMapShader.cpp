@@ -26,3 +26,21 @@ void CNormalDisplaceMapShader::CreateShader(ID3D11Device *pd3dDevice)
 	CreateDomainShaderFromFile(pd3dDevice, L"Shader HLSL File/DisplacementMap.hlsli", "DS_NormalDisplace", "ds_5_0", &m_pd3dDomainShader);
 	CreatePixelShaderFromFile(pd3dDevice, L"Shader HLSL File/DisplacementMap.hlsli", "PS_NormalDisplace", "ps_5_0", &m_pd3dPixelShader);
 }
+
+void CNormalDisplaceMapShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
+{
+	pd3dDeviceContext->IASetInputLayout(m_pd3dVertexLayout);
+	pd3dDeviceContext->VSSetShader(m_pd3dVertexShader, nullptr, 0);
+	pd3dDeviceContext->HSSetShader(m_pd3dHullShader, nullptr, 0);
+	pd3dDeviceContext->DSSetShader(m_pd3dDomainShader, nullptr, 0);
+	pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, nullptr, 0);
+}
+
+void CNormalDisplaceMapShader::OnPostRender(ID3D11DeviceContext *pd3dDeviceContext)
+{
+//	pd3dDeviceContext->IASetInputLayout(nullptr);
+//	pd3dDeviceContext->VSSetShader(nullptr, nullptr, 0);
+	pd3dDeviceContext->HSSetShader(nullptr, nullptr, 0);
+	pd3dDeviceContext->DSSetShader(nullptr, nullptr, 0);
+//	pd3dDeviceContext->PSSetShader(nullptr, nullptr, 0);
+}

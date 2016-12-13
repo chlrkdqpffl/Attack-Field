@@ -25,7 +25,7 @@ enum Resource_TextrueTag {
 	eTexture_Title,
 
 	// etc
-	eTexture_Stone, eTexture_StoneNormal, eTexture_Bricks, eTexture_BricksNormal, eTexture_Wood, 
+	eTexture_Stone, eTexture_StoneNormal, eTexture_Stone02, eTexture_Stone02Normal, eTexture_Bricks, eTexture_BricksNormal, eTexture_Wood,
 	eTexture_WallDiffuse, eTexture_WallNormalHeight
 };
 

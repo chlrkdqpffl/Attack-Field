@@ -38,8 +38,8 @@ public:
 	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
-	void ScreenCapture(ID3D11Resource* resource, string str);
-	void ScreenCapture(ID3D11View* shaderResourceView, string str);
+	void ScreenCapture(ID3D11Resource* resource);
+	void ScreenCapture(ID3D11View* shaderResourceView);
 private:
 	HINSTANCE						m_hInstance;
 	HWND							m_hWnd;
@@ -52,6 +52,7 @@ private:
 	ID3D11RenderTargetView			*m_pd3dRenderTargetView;
 	ID3D11Device					*m_pd3dDevice			= nullptr;
 	ID3D11DeviceContext				*m_pd3dDeviceContext	= nullptr;
+
 	// ----- Blurring ----- //
 	ID3D11ShaderResourceView		*m_pd3dSRVOffScreen = nullptr;
 	ID3D11UnorderedAccessView		*m_pd3dUAVOffScreen = nullptr;
@@ -86,4 +87,7 @@ private:
 	// Graphic Card Info
 	wstring							m_wsGraphicBrandName;
 	unsigned __int64				m_ui64VideoMemory		= 0;
+
+	// TweakBar
+	bool							m_bMouseBindFlag		= false;
 };

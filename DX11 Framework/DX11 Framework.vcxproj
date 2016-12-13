@@ -71,23 +71,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>../Setting\DirectX\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>../Setting\DirectX\Lib\x86;./FW1FontWrapper\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>../Setting\DirectX\Include;../Setting\AntTweakBar\include;$(IncludePath)</IncludePath>
+    <LibraryPath>../Setting\DirectX\Lib\x86;./FW1FontWrapper\x86;$(LibraryPath);../Setting\AntTweakBar\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>../Setting\DirectX\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>../Setting\DirectX\Lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>../Setting\DirectX\Include;../Setting\AntTweakBar\include;$(IncludePath)</IncludePath>
+    <LibraryPath>../Setting\DirectX\Lib\x64;$(LibraryPath);../Setting\AntTweakBar\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>../Setting\DirectX\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>../Setting\DirectX\Lib\x86;./FW1FontWrapper\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>../Setting\DirectX\Include;../Setting\AntTweakBar\include;$(IncludePath)</IncludePath>
+    <LibraryPath>../Setting\DirectX\Lib\x86;./FW1FontWrapper\x86;$(LibraryPath);../Setting\AntTweakBar\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>../Setting\DirectX\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>../Setting\DirectX\Lib\x64;./FW1FontWrapper\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>../Setting\DirectX\Include;../Setting\AntTweakBar\include;$(IncludePath)</IncludePath>
+    <LibraryPath>../Setting\DirectX\Lib\x64;./FW1FontWrapper\x64;$(LibraryPath);../Setting\AntTweakBar\lib</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -276,6 +276,7 @@
     <None Include="Shader HLSL File\DisplacementMap.hlsli" />
     <None Include="Shader HLSL File\Fog.hlsli" />
     <None Include="Shader HLSL File\Light.hlsli" />
+    <None Include="Shader HLSL File\Normal.hlsli" />
     <None Include="Shader HLSL File\NormalMap.hlsli" />
     <None Include="Shader HLSL File\Terrain.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

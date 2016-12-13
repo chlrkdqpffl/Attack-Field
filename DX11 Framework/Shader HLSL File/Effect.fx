@@ -561,7 +561,6 @@ float4 PSInstancedTexturedLightingColor(VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT in
 	float4 cIllumination = Lighting(input.positionW, input.normalW);
 	float4 cColor = gtxtDefault.Sample(gssDefault, input.texCoord) * cIllumination;
 
-
     if (gbRenderOption.x == 1.0f)
         cColor = Fog(cColor, input.positionW);
 

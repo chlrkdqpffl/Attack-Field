@@ -46,6 +46,9 @@
 #include <process.h>
 #include <utility>
 
+// AntTweakBar
+#include <AntTweakBar.h>
+
 // Comptr
 #include <wrl.h>
 #include <wrl\client.h>

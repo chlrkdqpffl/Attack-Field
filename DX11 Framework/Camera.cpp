@@ -146,7 +146,8 @@ void CCamera::UpdateConstantBuffer_CameraPos(ID3D11DeviceContext *pd3dDeviceCont
 	XMStoreFloat4(pcbCameraPosition, *pf3CameraPosition);
 	pd3dDeviceContext->Unmap(m_pd3dcbCameraPosition, 0);
 
-	pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
+//	pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
+	pd3dDeviceContext->HSSetConstantBuffers(HS_CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
 	pd3dDeviceContext->DSSetConstantBuffers(DS_CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
 	pd3dDeviceContext->PSSetConstantBuffers(PS_CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
 }
