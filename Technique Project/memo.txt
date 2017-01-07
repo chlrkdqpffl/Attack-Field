@@ -1,0 +1,55 @@
+//////////////////////////////16.08.30 메모
+
+dsound.lib
+windowscodecs.lib
+d3d11.lib
+d2d1.lib
+dwrite.lib
+d3dcompiler.lib
+d3dx9d.lib
+d3dx11d.lib
+dxerr.lib
+dxgi.lib
+dxguid.lib
+winmm.lib
+kernel32.lib
+user32.lib
+gdi32.lib
+winspool.lib
+comdlg32.lib
+advapi32.lib
+shell32.lib
+ole32.lib
+oleaut32.lib
+uuid.lib
+odbc32.lib
+odbccp32.lib
+
+
+
+
+이 추가종속성을 속성시트로 추가하고 부모값 종속하면 에러가난다 왜지?
+
+그리고 라이브러리 추가 그냥
+
+#pragma comment(lib, "legacy_stdio_definitions.lib") 이런 방법 사용함.
+
+
+그리고 윈도우 10이기때문에 프로젝트 속성페이지(속성시트말고) - 구성속성 - 일반 - 대상 플랫폼 버전을 8.1이 아닌
+10.010~으로 설정해주어야한다.
+
+----------------------------------------
+
+속성시트에서 포함디렉터리에 Windows Kit이나 Windows SDK보다 DirectX SDK의 인클루드가 하단에 있어야(위치 이동할 것)
+d2d <-> d3d11.lib간 충돌이 안남 신기하게
+
+관련 사진 찍어놨으니 확인하고
+
+프로젝트 속성의 포함, 라이브러리 디렉터리들은 부모값 종속으로 해둠
+
+
+-----------------------------------------
+
+hlsl파일 꼭 우클릭 - 구성속성 - HLSL컴파일러 - 일반 셰이더형식 정해줄것
+
+

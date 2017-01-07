@@ -761,7 +761,7 @@ void CGameFramework::FrameAdvance()
 
 	SCENE_MGR->m_nowScene->OnPreRender(m_pd3dDeviceContext);
 	
-	/*
+	
 	// ºí·¯¸µ
 	ID3D11RenderTargetView *pd3dRenderTargetView[1] = { m_pd3dRTVOffScreen };
 	m_pd3dDeviceContext->OMSetRenderTargets(1, pd3dRenderTargetView, m_pd3dDepthStencilView);
@@ -795,8 +795,8 @@ void CGameFramework::FrameAdvance()
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 	
 	DrawBlurredSceneToScreen(m_pd3dDeviceContext);
-	*/
 	
+	/*
 	float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
@@ -814,7 +814,7 @@ void CGameFramework::FrameAdvance()
 #ifdef _WITH_PLAYER_TOP
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
-	
+	*/
 	
 	if (m_pPlayer) 
 		m_pPlayer->Render(m_pd3dDeviceContext, m_pCamera);
