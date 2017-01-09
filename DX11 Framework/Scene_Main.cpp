@@ -208,6 +208,23 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_vObjectsVector.push_back(move(pTerrainWater));
 #pragma endregion
 
+	// Character
+	ID3D11ShaderResourceView *pd3dsrvNPCTexture;
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Character/SimpleMilitary_GasMask_White.png"), nullptr, nullptr, &pd3dsrvNPCTexture, nullptr);
+	CTexture *pNPCTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
+	pNPCTexture->SetSampler(0, pd3dSamplerState);
+	pNPCTexture->SetTexture(0, pd3dsrvNPCTexture);
+	pd3dsrvNPCTexture->Release();
+
+	CMaterialColors* pNPCColors = new CMaterialColors();
+	pNPCColors->m_d3dxcDiffuse = D3DXCOLOR(0, 1.0f, 0.0f, 1.0f);
+	CMaterial* NPCMaterial = new CMaterial(pNPCColors);
+	NPCMaterial->SetTexture(pNPCTexture);
+
+	CSkinnedMesh* pNPCMesh = new CSkinnedMesh(pd3dDevice, "Character/Gasmask.data", 0.011f);
+
+
+
 	
 	CNormalMapObject* normalMapObject = new CNormalMapObject();
 	normalMapObject->CreateMaterial(pd3dDevice);

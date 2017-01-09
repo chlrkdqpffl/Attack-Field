@@ -204,6 +204,9 @@
     <ClCompile Include="ScreenShader.cpp">
       <Filter>소스 파일\Shader</Filter>
     </ClCompile>
+    <ClCompile Include="SkinnedMesh.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -346,6 +349,9 @@
     </ClInclude>
     <ClInclude Include="ScreenShader.h">
       <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedMesh.h">
+      <Filter>헤더 파일\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
