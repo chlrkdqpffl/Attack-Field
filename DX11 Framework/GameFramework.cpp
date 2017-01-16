@@ -619,7 +619,7 @@ void CGameFramework::BuildObjects()
 
 	CHeightMapTerrain *pTerrain = m_pScene->GetTerrain();
 //	m_pPlayer->SetPosition(XMVectorSet(pTerrain->GetWidth()*0.5f, 500.0f, pTerrain->GetLength()*0.5f, 0.0f));
-	m_pPlayer->SetPosition(XMVectorSet(597.0f, 230.0f, 800.0f, 0.0f));
+	m_pPlayer->SetPosition(XMVectorSet(100.0f, 300.0f, 100.0f, 0.0f));
 
 	m_pPlayer->SetPlayerUpdatedContext(pTerrain);
 	m_pPlayer->SetCameraUpdatedContext(pTerrain);

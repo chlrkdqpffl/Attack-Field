@@ -159,7 +159,9 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="NormalDisplaceMapShader.cpp" />
     <ClCompile Include="ScreenShader.cpp" />
-    <ClCompile Include="SkinnedMesh.cpp" />
+    <ClCompile Include="ModelSkinnedMesh.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="TerrainShader.cpp" />
     <ClCompile Include="TextureToScreenRectMesh.cpp" />
     <ClCompile Include="NormalMapCubeMesh.cpp" />
@@ -229,7 +231,9 @@
     <ClInclude Include="ScreenShader.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SingletonManager.h" />
-    <ClInclude Include="SkinnedMesh.h" />
+    <ClInclude Include="ModelSkinnedMesh.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="SkyBoxMesh.h" />
     <ClInclude Include="SpaceShipCamera.h" />

@@ -2,7 +2,7 @@
 #include "ModelMesh_FBX.h"
 
 
-CModelMesh_FBX::CModelMesh_FBX(ID3D11Device *pd3dDevice, const string& fileName, float size) : CMeshTexturedIlluminated(STATEOBJ_MGR->g_pd3dDevice.Get())
+CModelMesh_FBX::CModelMesh_FBX(ID3D11Device *pd3dDevice, const string& fileName, float size) : CMeshTexturedIlluminated(pd3dDevice), m_fModelSize(size)
 {
 	bool isLoad = LoadFBXfromFile(fileName);
 #if defined(DEBUG) || defined(_DEBUG)
@@ -15,7 +15,7 @@ CModelMesh_FBX::CModelMesh_FBX(ID3D11Device *pd3dDevice, const string& fileName,
 #endif
 
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
+	
 	if (size == 1.0f) {
 		for (int i = 0; i < m_nVertices; ++i) {
 			m_pPositions[i] = posVector[i];
@@ -77,6 +77,12 @@ CModelMesh_FBX::CModelMesh_FBX(ID3D11Device *pd3dDevice, const string& fileName,
 
 CModelMesh_FBX::~CModelMesh_FBX()
 {
+	//if (m_pPositions) delete[] m_pPositions;
+	if (m_pNormals) delete[] m_pNormals;
+	if (m_pTexCoords) delete[] m_pTexCoords;
+//	if (m_pnIndices) delete[] m_pnIndices;
+	ReleaseCOM(m_pd3dTangentBuffer);
+	
 }
 
 bool CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
@@ -86,86 +92,78 @@ bool CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
 	if (!fin.is_open())
 		return false;
 
-	int meshCount = 0;
-	int vertexCount = 0, indexCount = 0, boneCount = 0, animationCount = 0;
+	UINT meshCount = 0;
+	UINT vertexCount = 0, indexCount = 0, boneCount = 0, animationCount = 0;
 	XMFLOAT3 pos, normal, index;
 	XMFLOAT2 uv;
 
 	string buf;
 
 	while (!fin.eof()) {
-		fin >> buf;
-
-		// FBX Meta Data
-		if (buf == "MeshCount:")
-			fin >> meshCount;
-		// Mesh Data
-		else if (buf == "VertexCount:") {
-			fin >> vertexCount;
+		fin >> buf; // [FBX_META_DATA]
+		fin >> buf >> meshCount;
+		
+		fin >> buf; // [MESH_DATA]
+		fin >> buf >> vertexCount;
+		{
 			posVector.reserve(vertexCount);
 			normalVector.reserve(vertexCount);
 			uvVector.reserve(vertexCount);
 		}
-		else if (buf == "IndexCount:") {
-			fin >> indexCount;
-			indexVector.reserve(indexCount);
+		fin >> buf >> indexCount;
+		{
+			indexVector.reserve(indexCount / 3);
 		}
-		else if (buf == "BoneCount:")
-			fin >> boneCount;
-		else if (buf == "AnimationClips:")
-			fin >> animationCount;
-		// Vertex Data
+		fin >> buf >> boneCount;
+		fin >> buf >> animationCount;
 
-		else if (buf == "[VERTEX_DATA]") {
-			for (int i = 0; i < vertexCount; ++i) {
-				fin >> buf;		// Position:
-				fin >> pos.x >> pos.y >> pos.z;
-				fin >> buf;		// Normal: 
-				fin >> normal.x >> normal.y >> normal.z;
-				fin >> buf;		// UV: 
-				fin >> uv.x >> uv.y;
+		fin >> buf; // [VERTEX_DATA]
+		for (int i = 0; i < vertexCount; ++i) {
+			fin >> buf;	// Position
+			fin >> pos.x >> pos.y >> pos.z;
+			fin >> buf;	// Normal
+			fin >> normal.x >> normal.y >> normal.z;
+			fin >> buf;	// UV
+			fin >> uv.x >> uv.y;
 
-				posVector.push_back(pos);
-				normalVector.push_back(normal);
-				uvVector.push_back(uv);
-
-				// BonWegiht
-				//				for (int i = 0; i < 10; ++i)
-				//					fin >> buf;
-			}
+			posVector.push_back(pos);
+			normalVector.push_back(normal);
+			uvVector.push_back(uv);
 		}
-		// Index Data
-		else if (buf == "[INDEX_DATA]") {
-			for (int i = 0; i < indexCount / 3; ++i) {
-				fin >> index.x >> index.y >> index.z;
 
-				indexVector.push_back(index);
-			}
-			fin >> buf;
-			break;
+		fin >> buf; // [INDEX_DATA]
+		for (int i = 0; i < indexCount / 3; ++i) {
+			fin >> index.x >> index.y >> index.z;
+
+			indexVector.push_back(index);
 		}
-		//		else if (buf == "[BONE_HIERARCHY]") {
-		//			cout << "³¡";
-		//			break;
+
+		// End
+		fin >> buf;
 	}
 	fin.close();
-
+	
 	/*
 	cout << "Mesh Count : " << meshCount << endl;
 	cout << "Vertex Count : " << vertexCount << endl;
 	cout << "Index Count : " << indexCount << endl;
 
+	cout << "PosVector Size : " << posVector.size() << " Capacity : " << posVector.capacity() << endl;
+	cout << "NormalVector Size : " << normalVector.size() << " Capacity : " << normalVector.capacity() << endl;
+	cout << "UvVector Size : " << uvVector.size() << " Capacity : " << uvVector.capacity() << endl;
+	cout << "IndexVector Size : " << indexVector.size() << " Capacity : " << indexVector.capacity() << endl;
+
 	for (auto i : posVector)
-	cout << "Position : " << i.x << ", " << i.y << ", " << i.z << endl;
+		cout << "Position : " << i.x << ", " << i.y << ", " << i.z << endl;
 
 	for (auto i : normalVector)
-	cout << "Normal : " << i.x << ", " << i.y << ", " << i.z << endl;
+		cout << "Normal : " << i.x << ", " << i.y << ", " << i.z << endl;
 
 	for (auto i : uvVector)
-	cout << "UV : " << i.x << ", " << i.y << endl;
+		cout << "UV : " << i.x << ", " << i.y << endl;
 
 	for (auto i : indexVector) {
-	cout << "Index : " << i.x << ", " << i.y << ", " << i.z << endl;
+		cout << "Index : " << i.x << ", " << i.y << ", " << i.z << endl;
 	}
 	*/
 

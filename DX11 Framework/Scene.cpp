@@ -287,16 +287,16 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 
 	if (m_bShowRGBAxis) m_pAxisObjects->Render(pd3dDeviceContext, pCamera);
 
-	/*
+	
 	for(auto object : m_vObjectsVector)
 		object->Render(pd3dDeviceContext, pCamera);
 
 	for (auto shaderObject : m_vObjectsShaderVector)
 		shaderObject->Render(pd3dDeviceContext, pCamera);
-
+	/*
 	for (auto instancedShaderObject : m_vInstancedObjectsShaderVector)
 		instancedShaderObject->Render(pd3dDeviceContext, pCamera);
-		*/
+	*/
 }
 
 void CScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)

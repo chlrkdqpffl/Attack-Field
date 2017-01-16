@@ -710,7 +710,6 @@ CSphereMeshIlluminated::~CSphereMeshIlluminated()
 {
 }
 
-
 //------------------------------------------------------------------------------------------------
 CCubeMeshTextured::CCubeMeshTextured(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth) : CMeshTextured(pd3dDevice)
 {

@@ -208,6 +208,8 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_vObjectsVector.push_back(move(pTerrainWater));
 #pragma endregion
 
+#pragma region [Create Character]
+	/*
 	// Character
 	ID3D11ShaderResourceView *pd3dsrvNPCTexture;
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Character/SimpleMilitary_GasMask_White.png"), nullptr, nullptr, &pd3dsrvNPCTexture, nullptr);
@@ -222,8 +224,8 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	NPCMaterial->SetTexture(pNPCTexture);
 
 	CSkinnedMesh* pNPCMesh = new CSkinnedMesh(pd3dDevice, "Character/Gasmask.data", 0.011f);
-
-
+	*/
+#pragma endregion 
 
 	
 	CNormalMapObject* normalMapObject = new CNormalMapObject();
@@ -235,7 +237,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_vObjectsVector.push_back(normalMapObject);
 	
 #pragma region [Create Shader Object]
-	/*
+	
 	CMaterial *pPlayerMaterial = new CMaterial();
 
 	CTexture *pPlayerTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
@@ -243,18 +245,18 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pPlayerTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pPlayerMaterial->SetTexture(pPlayerTexture);
 	
-	CMesh* pPlayerMesh = new CModelMesh_FBX(RESOURCE_MGR->FindResourcePath(eMesh_DarkFighter));
+	CMesh* pPlayerMesh = new CModelMesh_FBX(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_DarkFighter));
 
 	CObjectsShader* pModelShader = new CObjectsShader(10);
 	pModelShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0);
 	pModelShader->SetMaterial(pPlayerMaterial);
 	
 	CGameObject* pPlayer = new CGameObject();
-	pPlayer->SetPosition(1028, 200, 1028);
+	pPlayer->SetPosition(200, 250, 200);
 	pPlayer->SetMesh(pPlayerMesh);
 	pModelShader->AddObject(pPlayer);
 	m_vObjectsShaderVector.push_back(pModelShader);
-	*/
+	
 #pragma endregion
 
 #pragma region [Create Instancing Object]
