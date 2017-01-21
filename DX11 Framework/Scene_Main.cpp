@@ -223,8 +223,9 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CMaterial* NPCMaterial = new CMaterial(pNPCColors);
 	NPCMaterial->SetTexture(pNPCTexture);
 
-	CSkinnedMesh* pNPCMesh = new CSkinnedMesh(pd3dDevice, "Character/Gasmask.data", 0.011f);
-	*/
+*/
+	CSkinnedMesh* pNPCMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_Siegetank));
+	pNPCMesh->Initialize(pd3dDevice);
 #pragma endregion 
 
 	
@@ -245,7 +246,8 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pPlayerTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pPlayerMaterial->SetTexture(pPlayerTexture);
 	
-	CMesh* pPlayerMesh = new CModelMesh_FBX(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_DarkFighter));
+	CModelMesh_FBX* pPlayerMesh = new CModelMesh_FBX(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_DarkFighter));
+	pPlayerMesh->Initialize(pd3dDevice);
 
 	CObjectsShader* pModelShader = new CObjectsShader(10);
 	pModelShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0);

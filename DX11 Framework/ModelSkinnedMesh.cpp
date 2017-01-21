@@ -3,11 +3,27 @@
 
 int CSkinnedMesh::s_nAnimationClip = 2;
 int CSkinnedMesh::s_nBoneCount = 18;
-BoneAnimationData** CSkinnedMesh::s_ppBoneAnimationData = NULL;
+//BoneAnimationData** CSkinnedMesh::s_ppBoneAnimationData = NULL;
 
 D3DXMATRIX* CSkinnedMesh::s_pd3dxmtxBoneOffsets = NULL;
 
 CSkinnedMesh::CSkinnedMesh(ID3D11Device *pd3dDevice, const string& fileName, float size) : CModelMesh_FBX(pd3dDevice, fileName, size)
+{
+}
+
+CSkinnedMesh::~CSkinnedMesh()
+{
+	if (m_pd3dWeightBuffer) m_pd3dWeightBuffer->Release();
+	if (m_pd3dBoneIndiceBuffer) m_pd3dBoneIndiceBuffer->Release();
+	if (m_pd3dcbBones) m_pd3dcbBones->Release();
+
+	if (m_pboneWeights) delete[] m_pboneWeights;
+	if (m_pboneIndices) delete[] m_pboneIndices;
+//	if (m_pd3dxmtxFinalBone) delete[] m_pd3dxmtxFinalBone;
+//	if (m_pd3dxmtxSQTTransform) delete[] m_pd3dxmtxSQTTransform;
+}
+
+void CSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 {
 	/*
 	m_fFBXAnimationTime = 0.0f;
@@ -26,50 +42,50 @@ CSkinnedMesh::CSkinnedMesh(ID3D11Device *pd3dDevice, const string& fileName, flo
 
 	if (!fin.fail())
 	{
-		// 데이터를 읽어와 필요한 정점, 인덱스, 본, 애니메이션 수 파악
-		fin >> ignore;//[FBX_META_DATA]
-		fin >> ignore >> ignore;
-		fin >> ignore;
-		fin >> ignore >> m_nVertices;
-		fin >> ignore >> m_nIndices;
-		fin >> ignore >> ignore;
-		fin >> ignore >> ignore;
+	// 데이터를 읽어와 필요한 정점, 인덱스, 본, 애니메이션 수 파악
+	fin >> ignore;//[FBX_META_DATA]
+	fin >> ignore >> ignore;
+	fin >> ignore;
+	fin >> ignore >> m_nVertices;
+	fin >> ignore >> m_nIndices;
+	fin >> ignore >> ignore;
+	fin >> ignore >> ignore;
 
-		// 정점 데이터를 저장
-		m_pd3dxvPositions = new D3DXVECTOR3[m_nVertices];
-		m_pd3dxvNormals = new D3DXVECTOR3[m_nVertices];
-		m_pd3dxvTexCoords = new D3DXVECTOR2[m_nVertices];
+	// 정점 데이터를 저장
+	m_pd3dxvPositions = new D3DXVECTOR3[m_nVertices];
+	m_pd3dxvNormals = new D3DXVECTOR3[m_nVertices];
+	m_pd3dxvTexCoords = new D3DXVECTOR2[m_nVertices];
 
-		if (s_nBoneCount)
-		{
-			m_pd3dxvBoneIndices = new D3DXVECTOR4[m_nVertices];
-			m_pd3dxvBoneWeights = new D3DXVECTOR4[m_nVertices];
-		}
+	if (s_nBoneCount)
+	{
+	m_pd3dxvBoneIndices = new D3DXVECTOR4[m_nVertices];
+	m_pd3dxvBoneWeights = new D3DXVECTOR4[m_nVertices];
+	}
 
-		fin >> ignore;
+	fin >> ignore;
 
-		for (int i = 0; i < m_nVertices; i++)
-		{
-			fin >> ignore >> m_pd3dxvPositions[i].x >> m_pd3dxvPositions[i].y >> m_pd3dxvPositions[i].z;
-			fin >> ignore >> m_pd3dxvNormals[i].x >> m_pd3dxvNormals[i].y >> m_pd3dxvNormals[i].z;
-			fin >> ignore >> m_pd3dxvTexCoords[i].x >> m_pd3dxvTexCoords[i].y;
-			if (s_nBoneCount)
-			{
-				fin >> ignore >> m_pd3dxvBoneIndices[i].x >> m_pd3dxvBoneIndices[i].y >> m_pd3dxvBoneIndices[i].z >> m_pd3dxvBoneIndices[i].w;
-				fin >> ignore >> m_pd3dxvBoneWeights[i].x >> m_pd3dxvBoneWeights[i].y >> m_pd3dxvBoneWeights[i].z >> m_pd3dxvBoneWeights[i].w;
-			}
-		}
-		m_pnIndices = new UINT[m_nIndices];
-		fin >> ignore;//[INDEX_DATA]
-		for (int i = 0; i < m_nIndices; ++i)
-			fin >> m_pnIndices[i];
+	for (int i = 0; i < m_nVertices; i++)
+	{
+	fin >> ignore >> m_pd3dxvPositions[i].x >> m_pd3dxvPositions[i].y >> m_pd3dxvPositions[i].z;
+	fin >> ignore >> m_pd3dxvNormals[i].x >> m_pd3dxvNormals[i].y >> m_pd3dxvNormals[i].z;
+	fin >> ignore >> m_pd3dxvTexCoords[i].x >> m_pd3dxvTexCoords[i].y;
+	if (s_nBoneCount)
+	{
+	fin >> ignore >> m_pd3dxvBoneIndices[i].x >> m_pd3dxvBoneIndices[i].y >> m_pd3dxvBoneIndices[i].z >> m_pd3dxvBoneIndices[i].w;
+	fin >> ignore >> m_pd3dxvBoneWeights[i].x >> m_pd3dxvBoneWeights[i].y >> m_pd3dxvBoneWeights[i].z >> m_pd3dxvBoneWeights[i].w;
+	}
+	}
+	m_pnIndices = new UINT[m_nIndices];
+	fin >> ignore;//[INDEX_DATA]
+	for (int i = 0; i < m_nIndices; ++i)
+	fin >> m_pnIndices[i];
 
-		// (애니메이션을 포함한 메쉬일 경우) 본 정보와 애니메이션 정보 저장
-		if (s_nBoneCount)
-		{
-			m_pd3dxmtxSQTTransform = new D3DXMATRIX[s_nBoneCount];
-			m_pd3dxmtxFinalBone = new D3DXMATRIX[s_nBoneCount];
-		}
+	// (애니메이션을 포함한 메쉬일 경우) 본 정보와 애니메이션 정보 저장
+	if (s_nBoneCount)
+	{
+	m_pd3dxmtxSQTTransform = new D3DXMATRIX[s_nBoneCount];
+	m_pd3dxmtxFinalBone = new D3DXMATRIX[s_nBoneCount];
+	}
 	}
 	fin.close();
 
@@ -90,24 +106,24 @@ CSkinnedMesh::CSkinnedMesh(ID3D11Device *pd3dDevice, const string& fileName, flo
 	//CreateRasterizerState(pd3dDevice);
 	CreateConstantBuffer(pd3dDevice);
 
-	IdleSet();//애니메이션 데이터 초기화	
+	IdleSet();//애니메이션 데이터 초기화
 
 	float fx ,fy,fz;
 	fx = fy = fz = 0.2f;
 	*/
-	bool isLoad = LoadFBXfromFile(fileName);
+	bool isLoad = LoadFBXfromFile(m_fileName);
 #if defined(DEBUG) || defined(_DEBUG)
 	if (isLoad)
-		cout << "File Load Success!! <" << fileName.c_str() << ">" << endl;
+		cout << "File Load Success!! <" << m_fileName.c_str() << ">" << endl;
 	else {
-		cout << "File Load Error!! <" << fileName.c_str() << "> \t 파일 또는 경로를 확인하세요." << endl;
+		cout << "File Load Error!! <" << m_fileName.c_str() << "> \t 파일 또는 경로를 확인하세요." << endl;
 		return;
 	}
 #endif
 
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-	if (size == 1.0f) {
+	if (m_fModelSize == 1.0f) {
 		for (int i = 0; i < m_nVertices; ++i) {
 			m_pPositions[i] = posVector[i];
 			m_pNormals[i] = normalVector[i];
@@ -116,7 +132,7 @@ CSkinnedMesh::CSkinnedMesh(ID3D11Device *pd3dDevice, const string& fileName, flo
 	}
 	else {
 		for (int i = 0; i < m_nVertices; ++i) {
-			XMStoreFloat3(&m_pPositions[i], XMVectorScale(XMLoadFloat3(&posVector[i]), size));
+			XMStoreFloat3(&m_pPositions[i], XMVectorScale(XMLoadFloat3(&posVector[i]), m_fModelSize));
 			//		XMStoreFloat3(&m_pvNormals[i], XMVectorScale(XMLoadFloat3(&normalVector[i]), size));
 			//		XMStoreFloat2(&m_pvTexCoords[i], XMVectorScale(XMLoadFloat2(&uvVector[i]), size));
 			m_pNormals[i] = normalVector[i];
@@ -161,19 +177,6 @@ CSkinnedMesh::CSkinnedMesh(ID3D11Device *pd3dDevice, const string& fileName, flo
 	//	DXUT_SetDebugName(m_pd3dTangentBuffer, "Tangent");		 계산 안하고 있음
 }
 
-
-CSkinnedMesh::~CSkinnedMesh()
-{
-	if (m_pd3dWeightBuffer) m_pd3dWeightBuffer->Release();
-	if (m_pd3dBoneIndiceBuffer) m_pd3dBoneIndiceBuffer->Release();
-	if (m_pd3dcbBones) m_pd3dcbBones->Release();
-
-	if (m_pboneWeights) delete[] m_pboneWeights;
-	if (m_pboneIndices) delete[] m_pboneIndices;
-//	if (m_pd3dxmtxFinalBone) delete[] m_pd3dxmtxFinalBone;
-//	if (m_pd3dxmtxSQTTransform) delete[] m_pd3dxmtxSQTTransform;
-}
-
 bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 {
 	ifstream fin(fileName);
@@ -181,11 +184,17 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 	if (!fin.is_open())
 		return false;
 
-	int meshCount = 0;
-	UINT vertexCount = 0, indexCount = 0, boneCount = 0, animationCount = 0;
+	UINT meshCount = 0;
+	UINT vertexCount = 0, indexCount = 0, boneCount = 0, animationClips = 0;
 	XMFLOAT3 pos, normal, index;
 	XMFLOAT2 uv;
-	XMFLOAT4 boneIndices, boneWeights;
+	XMFLOAT4 boneIndex, boneWeight;
+	int boneHierarchy;
+	XMFLOAT4X4 boneOffset, SQTTransform, finalBone;
+
+	AnimationData animaitionData;
+	KeyframeData keyframeData;
+	BoneData boneData;
 
 	string buf;
 
@@ -205,7 +214,7 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 			indexVector.reserve(indexCount / 3);
 		}
 		fin >> buf >> boneCount;
-		fin >> buf >> animationCount;
+		fin >> buf >> animationClips;
 
 		fin >> buf; // [VERTEX_DATA]
 		for (int i = 0; i < vertexCount; ++i) {
@@ -216,15 +225,15 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 			fin >> buf;	// UV
 			fin >> uv.x >> uv.y;
 			fin >> buf;	// BoneIndices 
-			fin >> boneIndices.x >> boneIndices.y >> boneIndices.z >> boneIndices.w;
+			fin >> boneIndex.x >> boneIndex.y >> boneIndex.z >> boneIndex.w;
 			fin >> buf;	// BoneWeights 
-			fin >> boneWeights.x >> boneWeights.y >> boneWeights.z >> boneWeights.w;
+			fin >> boneWeight.x >> boneWeight.y >> boneWeight.z >> boneWeight.w;
 
 			posVector.push_back(pos);
 			normalVector.push_back(normal);
 			uvVector.push_back(uv);
-			boneIndicesVector.push_back(boneIndices);
-			boneWeightsVector.push_back(boneWeights);
+			boneIndicesVector.push_back(boneIndex);
+			boneWeightsVector.push_back(boneWeight);
 		}
 
 		fin >> buf; // [INDEX_DATA]
@@ -236,14 +245,55 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 
 		fin >> buf; // [BONE_HIERARCHY]
 		for (int i = 0; i < boneCount; ++i) {
-			fin >> index.x >> index.y >> index.z;
+			fin >> buf >> boneHierarchy;
 
-			indexVector.push_back(index);
+			boneHierarchyVector.push_back(boneHierarchy);
 		}
 
+		fin >> buf; // [OFFSET_MATRIX]
+		for (int i = 0; i < boneCount; ++i) {
+			fin >> buf; // BoneOffSet
+			fin >> boneOffset._11 >> boneOffset._12 >> boneOffset._13 >> boneOffset._14;
+			fin >> boneOffset._21 >> boneOffset._22 >> boneOffset._23 >> boneOffset._24;
+			fin >> boneOffset._31 >> boneOffset._32 >> boneOffset._33 >> boneOffset._34;
+			fin >> boneOffset._41 >> boneOffset._42 >> boneOffset._43 >> boneOffset._44;
+
+			boneOffsetsVector.push_back(boneOffset);
+		}
+
+		animaitionData.m_boneDataVector.reserve(boneCount);
+		fin >> buf; // [ANIMATION_CLIPS]
+		for (int clip = 0; clip < animationClips; ++clip) {
+			fin >> buf; // AnimationClip 
+			fin >> animaitionData.m_strAnimationName;
+			fin >> buf;	// {
+			
+			for (int bone = 0; bone < boneCount; ++bone) {
+				fin >> buf; // Bone			Bone 0 : 351
+				fin >> buf >> animaitionData.m_nAnimaitionKeys;
+				fin >> buf;	// {
+		
+				boneData.m_keyframeDataVector.reserve(animaitionData.m_nAnimaitionKeys);
+				for (int frame = 0; frame < animaitionData.m_nAnimaitionKeys; ++frame) {
+					fin >> buf >> keyframeData.m_fAnimationTime;
+					fin >> buf >> keyframeData.m_xmf3Translate.x >> keyframeData.m_xmf3Translate.y >> keyframeData.m_xmf3Translate.z;
+					fin >> buf >> keyframeData.m_xmf3Scale.x >> keyframeData.m_xmf3Scale.y >> keyframeData.m_xmf3Scale.z;
+					fin >> buf >> keyframeData.m_xmf4Quaternion.x >> keyframeData.m_xmf4Quaternion.y >> keyframeData.m_xmf4Quaternion.z >> keyframeData.m_xmf4Quaternion.w;
+					
+					boneData.m_keyframeDataVector.push_back(keyframeData);
+				}
+
+				animaitionData.m_boneDataVector.push_back(boneData);
+				boneData.m_keyframeDataVector.clear();
+				fin >> buf; // }
+			}
+			m_animationMap.insert(make_pair(animaitionData.m_strAnimationName, animaitionData));
+		}
 
 		// End
 		fin >> buf;
+		fin >> buf;
+
 	}
 	fin.close();
 
@@ -278,10 +328,12 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 	m_pNormals = new XMFLOAT3[m_nVertices];
 	m_pTexCoords = new XMFLOAT2[m_nVertices];
 	m_pnIndices = new UINT[m_nIndices];
+	m_pboneIndices = new XMFLOAT4[m_nVertices];
+	m_pboneWeights = new XMFLOAT4[m_nVertices];
 
 	return true;
 }
-
+/*
 void CSkinnedMesh::UpdateBoneTransform(ID3D11DeviceContext *pd3dDeviceContext, int nAnimationNum, int nNowFrame)
 {
 	for (int i = 0; i < s_nBoneCount; i++)
@@ -536,3 +588,4 @@ void CSkinnedMesh::AnimationDestroy()
 		delete[] s_ppBoneAnimationData;
 	}
 }
+*/

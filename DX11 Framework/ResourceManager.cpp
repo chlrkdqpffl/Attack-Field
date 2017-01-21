@@ -47,6 +47,8 @@ void CResourceManager::InitializeManager()
 	
 	// ------------------------ Mesh ---------------------------- //
 	AddResourece(eMesh_DarkFighter,				"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.data");
+	AddResourece(eMesh_Siegetank,				"../Assets/FBX Model/siegetank.data");
+	
 }
 
 void CResourceManager::ReleseManager()

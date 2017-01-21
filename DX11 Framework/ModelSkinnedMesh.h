@@ -7,20 +7,38 @@ struct VS_CB_SKINNED
 	D3DXMATRIX	m_d3dxmtxBone[30];
 };
 
-struct BoneAnimationData
+struct KeyframeData
 {
-	int m_nFrameCount;//필요한가? 필요하다
-	float	*m_pfAniTime;//불필요하다. 허나 아직 모름
-	D3DXVECTOR3 *m_pd3dxvScale;
-	D3DXVECTOR3 *m_pd3dxvTranslate;
-	D3DXVECTOR4 *m_pd3dxvQuaternion;
+	float	m_fAnimationTime;
+
+	XMFLOAT3 m_xmf3Scale;
+	XMFLOAT3 m_xmf3Translate;
+	XMFLOAT4 m_xmf4Quaternion;
 };
+
+struct BoneData
+{
+	vector<KeyframeData> m_keyframeDataVector;
+};
+
+struct AnimationData
+{
+	string m_strAnimationName;
+	int m_nAnimaitionKeys;
+	vector<BoneData> m_boneDataVector;
+
+	// 키프레임에 모든 애니메이션을 담고 있을 경우 사용하는 것으로 추정
+	// float m_nStartFrameKey;
+	// float m_nEndFrameKey;
+};
+
 
 class CSkinnedMesh : public CModelMesh_FBX
 {
 	vector<XMFLOAT4>	boneIndicesVector;
 	vector<XMFLOAT4>	boneWeightsVector;
-	vector<int>		boneHierarchyVector;
+
+	vector<int>			boneHierarchyVector;
 	vector<XMFLOAT4X4>	boneOffsetsVector;
 	vector<XMFLOAT4X4>	SQTTransformVector;
 	vector<XMFLOAT4X4>	finalBoneVector;
@@ -28,10 +46,14 @@ class CSkinnedMesh : public CModelMesh_FBX
 
 	XMFLOAT4			*m_pboneIndices = nullptr;
 	XMFLOAT4			*m_pboneWeights = nullptr;
+	
+	map<string, AnimationData> m_animationMap;
+	
 
 
 
-	static BoneAnimationData **s_ppBoneAnimationData;//이건 static으로 공유할 수 있는 데이터
+
+//	static BoneAnimationData **s_ppBoneAnimationData;//이건 static으로 공유할 수 있는 데이터
 	static int s_nBoneCount;		//18
 	static int s_nAnimationClip;	//2
 	static D3DXMATRIX *s_pd3dxmtxBoneOffsets;
@@ -66,6 +88,7 @@ public:
 	CSkinnedMesh(ID3D11Device *pd3dDevice, const string&, float size = 1.0f);
 	virtual ~CSkinnedMesh();
 
+	virtual void Initialize(ID3D11Device *pd3dDevice);
 	virtual bool LoadFBXfromFile(const string& fileName);
 	// 해당 프레임의 SR(Q)T 회전이 반영된 행렬을 반환
 	void MakeBoneMatrix(int nNowframe, int nAnimationNum, int nBoneNum, D3DXMATRIX& BoneMatrix);

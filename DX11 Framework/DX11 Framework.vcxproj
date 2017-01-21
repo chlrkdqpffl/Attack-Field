@@ -160,7 +160,7 @@
     <ClCompile Include="NormalDisplaceMapShader.cpp" />
     <ClCompile Include="ScreenShader.cpp" />
     <ClCompile Include="ModelSkinnedMesh.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="TerrainShader.cpp" />
     <ClCompile Include="TextureToScreenRectMesh.cpp" />
@@ -232,7 +232,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SingletonManager.h" />
     <ClInclude Include="ModelSkinnedMesh.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="SkyBoxMesh.h" />

@@ -93,3 +93,19 @@ namespace Colors
 		#define HR(x) (x)
 	#endif
 #endif
+
+#define PRINTTEXT(str) cout << str << endl
+
+
+template <typename T >
+void print(const T& firstArg)
+{
+	cout << firstArg << ", ";
+}
+
+template <typename T, typename ...Types >
+void print(const T& firstArg, const Types& ...argv)
+{
+	cout << firstArg << ", ";
+	print(argv...);
+}

@@ -5,6 +5,7 @@
 
 // Mesh
 #include "ModelMesh_FBX.h"
+#include "ModelSkinnedMesh.h"
 
 // Shader
 #include "TerrainShader.h"

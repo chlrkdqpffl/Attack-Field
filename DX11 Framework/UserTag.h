@@ -32,5 +32,5 @@ enum Resource_TextrueTag {
 
 // eMesh
 enum Resource_MeshTag {
-	eMesh_DarkFighter
+	eMesh_DarkFighter, eMesh_Siegetank
 };

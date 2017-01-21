@@ -2,21 +2,34 @@
 #include "ModelMesh_FBX.h"
 
 
-CModelMesh_FBX::CModelMesh_FBX(ID3D11Device *pd3dDevice, const string& fileName, float size) : CMeshTexturedIlluminated(pd3dDevice), m_fModelSize(size)
+CModelMesh_FBX::CModelMesh_FBX(ID3D11Device *pd3dDevice, const string& fileName, float size) : CMeshTexturedIlluminated(pd3dDevice), m_fileName(fileName), m_fModelSize(size)
 {
-	bool isLoad = LoadFBXfromFile(fileName);
+}
+
+CModelMesh_FBX::~CModelMesh_FBX()
+{
+	//if (m_pPositions) delete[] m_pPositions;
+	if (m_pNormals) delete[] m_pNormals;
+	if (m_pTexCoords) delete[] m_pTexCoords;
+//	if (m_pnIndices) delete[] m_pnIndices;
+	ReleaseCOM(m_pd3dTangentBuffer);
+}
+
+void CModelMesh_FBX::Initialize(ID3D11Device *pd3dDevice)
+{
+	bool isLoad = LoadFBXfromFile(m_fileName);
 #if defined(DEBUG) || defined(_DEBUG)
 	if (isLoad)
-		cout << "File Load Success!! <" << fileName.c_str() << ">" << endl;
+		cout << "File Load Success!! <" << m_fileName.c_str() << ">" << endl;
 	else {
-		cout << "File Load Error!! <" << fileName.c_str() << "> \t 파일 또는 경로를 확인하세요." << endl;
+		cout << "File Load Error!! <" << m_fileName.c_str() << "> \t 파일 또는 경로를 확인하세요." << endl;
 		return;
 	}
 #endif
 
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	
-	if (size == 1.0f) {
+
+	if (m_fModelSize == 1.0f) {
 		for (int i = 0; i < m_nVertices; ++i) {
 			m_pPositions[i] = posVector[i];
 			m_pNormals[i] = normalVector[i];
@@ -25,7 +38,7 @@ CModelMesh_FBX::CModelMesh_FBX(ID3D11Device *pd3dDevice, const string& fileName,
 	}
 	else {
 		for (int i = 0; i < m_nVertices; ++i) {
-			XMStoreFloat3(&m_pPositions[i], XMVectorScale(XMLoadFloat3(&posVector[i]), size));
+			XMStoreFloat3(&m_pPositions[i], XMVectorScale(XMLoadFloat3(&posVector[i]), m_fModelSize));
 			//		XMStoreFloat3(&m_pvNormals[i], XMVectorScale(XMLoadFloat3(&normalVector[i]), size));
 			//		XMStoreFloat2(&m_pvTexCoords[i], XMVectorScale(XMLoadFloat2(&uvVector[i]), size));
 			m_pNormals[i] = normalVector[i];
@@ -70,19 +83,9 @@ CModelMesh_FBX::CModelMesh_FBX(ID3D11Device *pd3dDevice, const string& fileName,
 
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
-//	DXUT_SetDebugName(m_pd3dTangentBuffer, "Tangent");		 계산 안하고 있음
+	//	DXUT_SetDebugName(m_pd3dTangentBuffer, "Tangent");		 계산 안하고 있음
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
 	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
-}
-
-CModelMesh_FBX::~CModelMesh_FBX()
-{
-	//if (m_pPositions) delete[] m_pPositions;
-	if (m_pNormals) delete[] m_pNormals;
-	if (m_pTexCoords) delete[] m_pTexCoords;
-//	if (m_pnIndices) delete[] m_pnIndices;
-	ReleaseCOM(m_pd3dTangentBuffer);
-	
 }
 
 bool CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
