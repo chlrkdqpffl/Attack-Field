@@ -721,6 +721,7 @@ void CGameFramework::ProcessInput()
 				SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
 			}
 			else {
+				//	ScreenToClient(m_hWnd, POINT(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2));
 				SetCursorPos(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2);
 			}
 		}

@@ -60,7 +60,7 @@ ID3D11Buffer *CMesh::CreateBuffer(ID3D11Device *pd3dDevice, UINT nStride, int nE
 	d3dBufferData.pSysMem = pBufferData;
 
 	ID3D11Buffer *pd3dBuffer = NULL;
-	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &pd3dBuffer);
+	HR(pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &pd3dBuffer));
 	return(pd3dBuffer);
 }
 

@@ -9,6 +9,13 @@ enum eShaderTag {
 	eShader_NormalMap
 };
 
+namespace AnimationType
+{
+	enum Character
+	{
+		eAnim_Idle,	eAnim_Attack, eAnim_Death
+	};
+}
 
 // eTexture
 // RESOURCE_MGR->FindResourceAndCreateSRV(     )

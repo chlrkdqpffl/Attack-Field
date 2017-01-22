@@ -21,6 +21,7 @@ Max Resource(Texture, Buffer)	: 128
 #define VS_CB_SLOT_SKYBOX					0x04
 #define VS_CB_SLOT_PROJECTION				0x05
 #define VS_CB_SLOT_SHADOW					0x06
+#define VS_CB_SLOT_BONETRANSFORM			0x07
 #define VS_CB_SLOT_CAMERA_POSITION			10
 
 // Hull Shader

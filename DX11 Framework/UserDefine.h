@@ -14,6 +14,7 @@
 #define SHADOW_RENDER_TARGET_HEIGHT		1024
 
 #define RANDOM_COLOR	D3DXCOLOR((rand() * 0xFFFFFF) / RAND_MAX)
+#define MAXBONECOUNT					80
 
 #define _WITH_TERRAIN_PARTITION
 #define _WITH_FRUSTUM_CULLING_BY_OBJECT
@@ -39,6 +40,8 @@
 #define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
 #define SafeDelete(x) { delete x; x = 0; }
 //---------------------------------------------------------------------------------------
+
+#define ANIMFRAMETIME			0.0333333f
 
 // 사진 저장 매크로 D3DX11SaveTextureToFile(STATEOBJ_MGR->g_pd3dImmediateDeviceContext.Get(), &texture2d, D3DX11_IFF_JPG, L"save.jpg");
 
@@ -93,9 +96,6 @@ namespace Colors
 		#define HR(x) (x)
 	#endif
 #endif
-
-#define PRINTTEXT(str) cout << str << endl
-
 
 template <typename T >
 void print(const T& firstArg)

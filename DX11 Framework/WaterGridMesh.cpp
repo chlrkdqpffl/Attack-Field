@@ -115,7 +115,6 @@ void CWaterGridMesh::Update(float fTimeElapsed)
 
 void CWaterGridMesh::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
-	// Update the wave vertex buffer with the new position.
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	pd3dDeviceContext->Map(m_pd3dPositionBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	// 노말, 텍스쳐 좌표도 업데이트 해야 하는듯

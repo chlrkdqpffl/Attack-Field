@@ -162,6 +162,7 @@
     <ClCompile Include="ModelSkinnedMesh.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="SkinnedObject.cpp" />
     <ClCompile Include="TerrainShader.cpp" />
     <ClCompile Include="TextureToScreenRectMesh.cpp" />
     <ClCompile Include="NormalMapCubeMesh.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="ModelSkinnedMesh.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="SkinnedObject.h" />
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="SkyBoxMesh.h" />
     <ClInclude Include="SpaceShipCamera.h" />
@@ -280,6 +282,7 @@
   <ItemGroup>
     <None Include="Shader HLSL File\Blurring.hlsli" />
     <None Include="Shader HLSL File\DisplacementMap.hlsli" />
+    <None Include="Shader HLSL File\CharacterSkinned.hlsli" />
     <None Include="Shader HLSL File\Fog.hlsli" />
     <None Include="Shader HLSL File\Light.hlsli" />
     <None Include="Shader HLSL File\Normal.hlsli" />
