@@ -1,13 +1,70 @@
 #include "stdafx.h"
 #include "ModelSkinnedMesh.h"
 
-/*
-int CSkinnedMesh::s_nAnimationClip = 2;
-int CSkinnedMesh::s_nBoneCount = 18;
-//BoneAnimationData** CSkinnedMesh::s_ppBoneAnimationData = NULL;
+void BoneData::Interpolate(float fTimePos, XMFLOAT4X4& boneTransforms) const
+{
+	if (fTimePos <= m_keyframeDataVector.front().m_fAnimationTime)
+	{
+		XMVECTOR S = XMLoadFloat3(&m_keyframeDataVector.front().m_xmf3Scale);
+		XMVECTOR P = XMLoadFloat3(&m_keyframeDataVector.front().m_xmf3Translate);
+		XMVECTOR Q = XMLoadFloat4(&m_keyframeDataVector.front().m_xmf4Quaternion);
 
-D3DXMATRIX* CSkinnedMesh::s_pd3dxmtxBoneOffsets = NULL;
-*/
+		XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+		XMStoreFloat4x4(&boneTransforms, XMMatrixAffineTransformation(S, zero, Q, P));
+	}
+	else if (fTimePos >= m_keyframeDataVector.back().m_fAnimationTime)
+	{
+		XMVECTOR S = XMLoadFloat3(&m_keyframeDataVector.back().m_xmf3Scale);
+		XMVECTOR P = XMLoadFloat3(&m_keyframeDataVector.back().m_xmf3Translate);
+		XMVECTOR Q = XMLoadFloat4(&m_keyframeDataVector.back().m_xmf4Quaternion);
+
+		XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+		XMStoreFloat4x4(&boneTransforms, XMMatrixAffineTransformation(S, zero, Q, P));
+	}
+	else
+	{
+		for (UINT i = 0; i < m_keyframeDataVector.size() - 1; ++i)
+		{
+			if (fTimePos >= m_keyframeDataVector[i].m_fAnimationTime && fTimePos <= m_keyframeDataVector[i + 1].m_fAnimationTime)
+			{
+				float lerpPercent = (fTimePos - m_keyframeDataVector[i].m_fAnimationTime) / (m_keyframeDataVector[i + 1].m_fAnimationTime - m_keyframeDataVector[i].m_fAnimationTime);
+
+				XMVECTOR s0 = XMLoadFloat3(&m_keyframeDataVector[i].m_xmf3Scale);
+				XMVECTOR s1 = XMLoadFloat3(&m_keyframeDataVector[i + 1].m_xmf3Scale);
+											
+				XMVECTOR p0 = XMLoadFloat3(&m_keyframeDataVector[i].m_xmf3Translate);
+				XMVECTOR p1 = XMLoadFloat3(&m_keyframeDataVector[i + 1].m_xmf3Translate);
+											
+				XMVECTOR q0 = XMLoadFloat4(&m_keyframeDataVector[i].m_xmf4Quaternion);
+				XMVECTOR q1 = XMLoadFloat4(&m_keyframeDataVector[i + 1].m_xmf4Quaternion);
+
+				XMVECTOR S = XMVectorLerp(s0, s1, lerpPercent);
+				XMVECTOR P = XMVectorLerp(p0, p1, lerpPercent);
+				XMVECTOR Q = XMQuaternionSlerp(q0, q1, lerpPercent);
+				XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+
+				XMStoreFloat4x4(&boneTransforms, XMMatrixAffineTransformation(S, zero, Q, P));
+
+				break;
+			}
+		}
+	}
+}
+
+void AnimationData::Interpolate(float fTimePos, vector<XMFLOAT4X4>& boneTransforms) const
+{
+	for (UINT i = 0; i < m_boneDataVector.size(); ++i)
+	{
+		if (m_boneDataVector[i].m_nAnimaitionKeys > 0)
+			m_boneDataVector[i].Interpolate(fTimePos, boneTransforms[i]);
+		else
+		{
+			XMMATRIX identityMtx = XMMatrixIdentity();
+			XMStoreFloat4x4(&boneTransforms[i], identityMtx);
+		}
+	}
+}
+
 CSkinnedMesh::CSkinnedMesh(ID3D11Device *pd3dDevice, const string& fileName, float size) : CModelMesh_FBX(pd3dDevice, fileName, size)
 {
 }
@@ -26,92 +83,6 @@ CSkinnedMesh::~CSkinnedMesh()
 
 void CSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 {
-	/*
-	m_fFBXAnimationTime = 0.0f;
-	m_nFBXAnimationNum = 0;
-
-	ifstream fin(fileName);
-
-	D3DXMatrixIdentity(&m_d3dxmtxLocalTransform);
-	D3DXMATRIX mtxScale;
-	D3DXMATRIX mtxRotate;
-	D3DXMatrixScaling(&mtxScale, size, size, size);
-	D3DXMatrixRotationYawPitchRoll(&mtxRotate, (float)D3DXToRadian(-90.0f), (float)D3DXToRadian(-90.0f), (float)D3DXToRadian(-90.0f));
-	m_d3dxmtxLocalTransform = mtxScale * mtxRotate;
-
-	string ignore;
-
-	if (!fin.fail())
-	{
-	// 데이터를 읽어와 필요한 정점, 인덱스, 본, 애니메이션 수 파악
-	fin >> ignore;//[FBX_META_DATA]
-	fin >> ignore >> ignore;
-	fin >> ignore;
-	fin >> ignore >> m_nVertices;
-	fin >> ignore >> m_nIndices;
-	fin >> ignore >> ignore;
-	fin >> ignore >> ignore;
-
-	// 정점 데이터를 저장
-	m_pd3dxvPositions = new D3DXVECTOR3[m_nVertices];
-	m_pd3dxvNormals = new D3DXVECTOR3[m_nVertices];
-	m_pd3dxvTexCoords = new D3DXVECTOR2[m_nVertices];
-
-	if (s_nBoneCount)
-	{
-	m_pd3dxvBoneIndices = new D3DXVECTOR4[m_nVertices];
-	m_pd3dxvBoneWeights = new D3DXVECTOR4[m_nVertices];
-	}
-
-	fin >> ignore;
-
-	for (int i = 0; i < m_nVertices; i++)
-	{
-	fin >> ignore >> m_pd3dxvPositions[i].x >> m_pd3dxvPositions[i].y >> m_pd3dxvPositions[i].z;
-	fin >> ignore >> m_pd3dxvNormals[i].x >> m_pd3dxvNormals[i].y >> m_pd3dxvNormals[i].z;
-	fin >> ignore >> m_pd3dxvTexCoords[i].x >> m_pd3dxvTexCoords[i].y;
-	if (s_nBoneCount)
-	{
-	fin >> ignore >> m_pd3dxvBoneIndices[i].x >> m_pd3dxvBoneIndices[i].y >> m_pd3dxvBoneIndices[i].z >> m_pd3dxvBoneIndices[i].w;
-	fin >> ignore >> m_pd3dxvBoneWeights[i].x >> m_pd3dxvBoneWeights[i].y >> m_pd3dxvBoneWeights[i].z >> m_pd3dxvBoneWeights[i].w;
-	}
-	}
-	m_pnIndices = new UINT[m_nIndices];
-	fin >> ignore;//[INDEX_DATA]
-	for (int i = 0; i < m_nIndices; ++i)
-	fin >> m_pnIndices[i];
-
-	// (애니메이션을 포함한 메쉬일 경우) 본 정보와 애니메이션 정보 저장
-	if (s_nBoneCount)
-	{
-	m_pd3dxmtxSQTTransform = new D3DXMATRIX[s_nBoneCount];
-	m_pd3dxmtxFinalBone = new D3DXMATRIX[s_nBoneCount];
-	}
-	}
-	fin.close();
-
-	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
-	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(D3DXVECTOR3), m_nVertices, m_pd3dxvPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(D3DXVECTOR3), m_nVertices, m_pd3dxvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(D3DXVECTOR2), m_nVertices, m_pd3dxvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	m_pd3dWeightBuffer = CreateBuffer(pd3dDevice, sizeof(D3DXVECTOR4), m_nVertices, m_pd3dxvBoneWeights, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	m_pd3dBoneIndiceBuffer = CreateBuffer(pd3dDevice, sizeof(D3DXVECTOR4), m_nVertices, m_pd3dxvBoneIndices, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	ID3D11Buffer *pd3dBuffers[5] = { m_pd3dPositionBuffer, m_pd3dNormalBuffer, m_pd3dTexCoordBuffer, m_pd3dBoneIndiceBuffer, m_pd3dWeightBuffer};
-	UINT pnBufferStrides[5] = { sizeof(D3DXVECTOR3), sizeof(D3DXVECTOR3), sizeof(D3DXVECTOR2), sizeof(D3DXVECTOR4), sizeof(D3DXVECTOR4) };
-	UINT pnBufferOffsets[5] = { 0, 0, 0, 0, 0 };
-	AssembleToVertexBuffer(5, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
-
-	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-
-	//CreateRasterizerState(pd3dDevice);
-	CreateConstantBuffer(pd3dDevice);
-
-	IdleSet();//애니메이션 데이터 초기화
-
-	float fx ,fy,fz;
-	fx = fy = fz = 0.2f;
-	*/
 	bool isLoad = LoadFBXfromFile(m_fileName);
 #if defined(DEBUG) || defined(_DEBUG)
 	if (isLoad)
@@ -188,6 +159,12 @@ void CSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 	m_bcBoundingCube.Extents = XMFLOAT3(max_x, max_y, max_z);
 
 	CreateConstantBuffer(pd3dDevice);
+
+
+	m_strClipName = "idle";
+	// idle 임의로 일단 고정
+	m_nMaxFrameNum = 108; // idle
+//	m_nMaxFrameNum = 37; // CrossPunch
 }
 
 bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
@@ -216,30 +193,30 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 		fin >> buf >> meshCount;
 
 		fin >> buf; // [MESH_DATA]
-		fin >> buf >> vertexCount;
+		fin >> vertexCount;
 		{
 			posVector.reserve(vertexCount);
 			normalVector.reserve(vertexCount);
 			uvVector.reserve(vertexCount);
 		}
-		fin >> buf >> indexCount;
+		fin >> indexCount;
 		{
 			indexVector.reserve(indexCount / 3);
 		}
-		fin >> buf >> boneCount;
-		fin >> buf >> animationClips;
+		fin >> boneCount;
+		fin >> animationClips;
 
 		fin >> buf; // [VERTEX_DATA]
 		for (int i = 0; i < vertexCount; ++i) {
-			fin >> buf;	// Position
+//			fin >> buf;	// Position
 			fin >> pos.x >> pos.y >> pos.z;
-			fin >> buf;	// Normal
+//			fin >> buf;	// Normal
 			fin >> normal.x >> normal.y >> normal.z;
-			fin >> buf;	// UV
+//			fin >> buf;	// UV
 			fin >> uv.x >> uv.y;
-			fin >> buf;	// BoneIndices 
+//			fin >> buf;	// BoneIndices 
 			fin >> boneIndex.x >> boneIndex.y >> boneIndex.z >> boneIndex.w;
-			fin >> buf;	// BoneWeights 
+//			fin >> buf;	// BoneWeights 
 			fin >> boneWeight.x >> boneWeight.y >> boneWeight.z >> boneWeight.w;
 
 			posVector.push_back(pos);
@@ -258,14 +235,14 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 
 		fin >> buf; // [BONE_HIERARCHY]
 		for (int i = 0; i < boneCount; ++i) {
-			fin >> buf >> boneHierarchy;
+			fin >> boneHierarchy;
 
 			boneHierarchyVector.push_back(boneHierarchy);
 		}
 
 		fin >> buf; // [OFFSET_MATRIX]
 		for (int i = 0; i < boneCount; ++i) {
-			fin >> buf; // BoneOffSet
+//			fin >> buf; // BoneOffSet
 			fin >> boneOffset._11 >> boneOffset._12 >> boneOffset._13 >> boneOffset._14;
 			fin >> boneOffset._21 >> boneOffset._22 >> boneOffset._23 >> boneOffset._24;
 			fin >> boneOffset._31 >> boneOffset._32 >> boneOffset._33 >> boneOffset._34;
@@ -279,28 +256,29 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 		for (int clip = 0; clip < animationClips; ++clip) {
 			fin >> buf; // AnimationClip 
 			fin >> animaitionData.m_strAnimationName;
-			fin >> buf;	// {
+//			fin >> buf;	// {
 			
 			for (int bone = 0; bone < boneCount; ++bone) {
-				fin >> buf; // Bone			Bone 0 : 351
-				fin >> buf >> animaitionData.m_nAnimaitionKeys;
-				fin >> buf;	// {
+				fin >> buf; // Bone			Bone0 : 351
+				fin >> boneData.m_nAnimaitionKeys;
+//				fin >> buf;	// {
 		
-				boneData.m_keyframeDataVector.reserve(animaitionData.m_nAnimaitionKeys);
-				for (int frame = 0; frame < animaitionData.m_nAnimaitionKeys; ++frame) {
-					fin >> buf >> keyframeData.m_fAnimationTime;
-					fin >> buf >> keyframeData.m_xmf3Translate.x >> keyframeData.m_xmf3Translate.y >> keyframeData.m_xmf3Translate.z;
-					fin >> buf >> keyframeData.m_xmf3Scale.x >> keyframeData.m_xmf3Scale.y >> keyframeData.m_xmf3Scale.z;
-					fin >> buf >> keyframeData.m_xmf4Quaternion.x >> keyframeData.m_xmf4Quaternion.y >> keyframeData.m_xmf4Quaternion.z >> keyframeData.m_xmf4Quaternion.w;
+				boneData.m_keyframeDataVector.reserve(boneData.m_nAnimaitionKeys);
+				for (int frame = 0; frame < boneData.m_nAnimaitionKeys; ++frame) {
+					fin >> keyframeData.m_fAnimationTime;
+					fin >> keyframeData.m_xmf3Translate.x >> keyframeData.m_xmf3Translate.y >> keyframeData.m_xmf3Translate.z;
+					fin >> keyframeData.m_xmf3Scale.x >> keyframeData.m_xmf3Scale.y >> keyframeData.m_xmf3Scale.z;
+					fin >> keyframeData.m_xmf4Quaternion.x >> keyframeData.m_xmf4Quaternion.y >> keyframeData.m_xmf4Quaternion.z >> keyframeData.m_xmf4Quaternion.w;
 					
 					boneData.m_keyframeDataVector.push_back(keyframeData);
 				}
 
 				animaitionData.m_boneDataVector.push_back(boneData);
 				boneData.m_keyframeDataVector.clear();
-				fin >> buf; // }
+//				fin >> buf; // }
 			}
 			m_animationMap.insert(make_pair(animaitionData.m_strAnimationName, animaitionData));
+			animaitionData.m_boneDataVector.clear();
 		}
 
 		// End
@@ -349,6 +327,20 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 	return true;
 }
 
+float CSkinnedMesh::GetClipStartTime(const string& clipName) const
+{
+	auto clip = m_animationMap.find(clipName);
+	return clip->second.m_boneDataVector
+}
+/*
+
+float CSkinnedMesh::GetClipEndTime(const string& clipName) const
+{
+	auto clip = m_animationMap.find(clipName);
+	return clip->second.g();
+}
+*/
+
 void CSkinnedMesh::CreateConstantBuffer(ID3D11Device *pd3dDevice)
 {
 	D3D11_BUFFER_DESC bufferDesc;
@@ -362,24 +354,38 @@ void CSkinnedMesh::CreateConstantBuffer(ID3D11Device *pd3dDevice)
 	DXUT_SetDebugName(m_pd3dcbBones, "BoneTransform");
 }
 
+void CSkinnedMesh::UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext)
+{
+	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+	pd3dDeviceContext->Map(m_pd3dcbBones, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	VS_CB_SKINNED *pcbBones = (VS_CB_SKINNED*)d3dMappedResource.pData;
+	for (int i = 0; i < m_nBoneCount; i++)
+	{
+		XMStoreFloat4x4(&pcbBones->m_mtxBoneTransform[i], XMMatrixTranspose(finalBoneVector[i]));
+	}
+	pd3dDeviceContext->Unmap(m_pd3dcbBones, 0);
+
+	pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_BONETRANSFORM, 1, &m_pd3dcbBones);
+}
+
 void CSkinnedMesh::ReleaseConstantBuffer()
 {
 	ReleaseCOM(m_pd3dcbBones);
 }
 
-void CSkinnedMesh::MakeBoneMatrix(int nNowframe, int nAnimationNum, int nBoneNum)
+void CSkinnedMesh::MakeBoneMatrix(int nNowframe, int nBoneNum, vector<XMMATRIX> &SQTTransformVector) const
 {
 	XMMATRIX mtxBone;
 	// 임의로 일단 고정시켜놓음
-	auto anim = m_animationMap.find("Take_001");
+	auto anim = m_animationMap.find(m_strClipName);
+//	auto anim = m_animationMap.find("Take_001");
 	
-	if (anim->second.m_nAnimaitionKeys != 0){
+	if (anim->second.m_boneDataVector[nBoneNum].m_nAnimaitionKeys > 0){
 		XMVECTOR vScale = XMLoadFloat3(&anim->second.m_boneDataVector[nBoneNum].m_keyframeDataVector[nNowframe].m_xmf3Scale);
 		XMVECTOR vTranslate = XMLoadFloat3(&anim->second.m_boneDataVector[nBoneNum].m_keyframeDataVector[nNowframe].m_xmf3Translate);
 		XMVECTOR vQuaternion = XMLoadFloat4(&anim->second.m_boneDataVector[nBoneNum].m_keyframeDataVector[nNowframe].m_xmf4Quaternion);
-		XMVECTOR vZero = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
-		mtxBone = XMMatrixAffineTransformation(vScale, vZero, vQuaternion, vTranslate);
+		mtxBone = XMMatrixAffineTransformation(vScale, XMVectorZero(), vQuaternion, vTranslate);
 	}
 	else
 		mtxBone = XMMatrixIdentity();
@@ -387,40 +393,40 @@ void CSkinnedMesh::MakeBoneMatrix(int nNowframe, int nAnimationNum, int nBoneNum
 	SQTTransformVector.push_back(mtxBone);
 }
 
-void CSkinnedMesh::UpdateBoneTransform(ID3D11DeviceContext *pd3dDeviceContext, int nAnimationNum, int nNowFrame)
+void CSkinnedMesh::GetFinalTransforms(const string& clipName, float fTimePos)
 {
+	vector<XMFLOAT4X4> toRootTransforms(m_nBoneCount);
+
+	auto clip = m_animationMap.find(clipName);
+	clip->second.Interpolate(fTimePos, toRootTransforms);
+
+	finalBoneVector.resize(m_nBoneCount);
+
+	for (UINT i = 0; i < m_nBoneCount; ++i)
+	{
+		XMMATRIX mtxOffset = XMLoadFloat4x4(&boneOffsetsVector[i]);
+		XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
+
+		finalBoneVector[i] = mtxOffset * mtxToRoot;
+	}
+}
+
+void CSkinnedMesh::UpdateBoneTransform(ID3D11DeviceContext *pd3dDeviceContext)
+{
+	vector<XMMATRIX> SQTTransformVector;
+
+	for (int i = 0; i < m_nBoneCount; i++)
+		MakeBoneMatrix(m_nNowFrameNum, i, SQTTransformVector);
+
+	finalBoneVector.resize(m_nBoneCount);
+
 	for (int i = 0; i < m_nBoneCount; i++)
 	{
-		MakeBoneMatrix(nNowFrame, nAnimationNum, i);
+		XMMATRIX mtxOffset = XMLoadFloat4x4(&boneOffsetsVector[i]);
+		XMMATRIX mtxToRoot = SQTTransformVector[i];
+
+		finalBoneVector[i] = mtxOffset * mtxToRoot;
 	}
-	
-	XMMATRIX mtxFinal;
-	XMMATRIX mtxOffset, mtxToRoot;
-	// 마지막으로 본의 기본 오프셋행렬을 곱해주어 최종 행렬을 만들어준다.
-	for (int i = 0; i < m_nBoneCount; i++)
-	{
-		mtxOffset = XMLoadFloat4x4(&boneOffsetsVector[i]);
-		mtxToRoot = SQTTransformVector[i];
-
-		mtxFinal = XMMatrixMultiply(mtxOffset, mtxToRoot);
-		finalBoneVector.push_back(mtxFinal);
-	}
-
-	// 상수버퍼로 최종 행렬값을 넘겨주자.
-	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	pd3dDeviceContext->Map(m_pd3dcbBones, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-	VS_CB_SKINNED *pcbBones = (VS_CB_SKINNED*)d3dMappedResource.pData;
-	for (int i = 0; i < m_nBoneCount; i++)
-	{
-		XMStoreFloat4x4(&pcbBones->m_xmMtxBoneTransform[i], XMMatrixTranspose(finalBoneVector[i]));
-	}
-
-	//World행렬과 본행렬사이의 <캐릭터 위치세팅용 행렬> 전달, 나중에 좀 더 최적화 방법을 찾아보겠다.
-//	D3DXMatrixTranspose(&pcbBones->m_d3dxmtxBone[27], &m_d3dxmtxLocalTransform);
-
-	pd3dDeviceContext->Unmap(m_pd3dcbBones, 0);
-	//상수 버퍼를 슬롯(VS_SLOT_SKINNEDBONE)에 설정한다.
-	pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_BONETRANSFORM, 1, &m_pd3dcbBones);
 }
 
 void CSkinnedMesh::Update(float fTimeElapsed)

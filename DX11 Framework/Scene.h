@@ -9,6 +9,7 @@
 
 // Shader
 #include "TerrainShader.h"
+#include "CharacterShader.h"
 
 // Object
 #include "SkyBox.h"
@@ -17,6 +18,7 @@
 #include "RotatingObject.h"
 #include "NormalMapObject.h"
 #include "AxisObjects.h"
+#include "SkinnedObject.h"
 
 // System
 #include "ParticleSystem.h"

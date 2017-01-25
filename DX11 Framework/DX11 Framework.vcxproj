@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="AirplanePlayer.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CharacterShader.cpp" />
     <ClCompile Include="NormalDisplaceMapShader.cpp" />
     <ClCompile Include="ScreenShader.cpp" />
     <ClCompile Include="ModelSkinnedMesh.cpp">
@@ -204,6 +205,7 @@
   <ItemGroup>
     <ClInclude Include="AirplanePlayer.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CharacterShader.h" />
     <ClInclude Include="ConstantBuffer_Slot.h" />
     <ClInclude Include="NormalDisplaceMapShader.h" />
     <ClInclude Include="NormalMapCubeMesh.h" />

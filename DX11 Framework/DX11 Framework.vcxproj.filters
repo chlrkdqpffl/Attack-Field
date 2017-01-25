@@ -210,6 +210,9 @@
     <ClCompile Include="SkinnedObject.cpp">
       <Filter>소스 파일\Object</Filter>
     </ClCompile>
+    <ClCompile Include="CharacterShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -358,6 +361,9 @@
     </ClInclude>
     <ClInclude Include="SkinnedObject.h">
       <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterShader.h">
+      <Filter>헤더 파일\Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,10 +12,24 @@ CSkinnedObject::~CSkinnedObject()
 
 void CSkinnedObject::Update(float fTimeElapsed)
 {
-	m_pSkinnedMesh->Update(fTimeElapsed);
+	fTimePos += fTimeElapsed;
+
+	// Loop animation
+//	if (fTimePos > m_pSkinnedMesh->SkinnedData.GetClipEndTime("idle"))
+//		fTimePos = 0.0f;
+
+	if (fTimePos > 3.6f)
+		fTimePos = 0.0f;
+
+	m_pSkinnedMesh->GetFinalTransforms(m_pSkinnedMesh->GetClipName(), fTimePos);
+//	m_pSkinnedMesh->Update(fTimeElapsed);
+
 }
 
 void CSkinnedObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	m_pSkinnedMesh->UpdateBoneTransform(pd3dDeviceContext, )
+//	m_pSkinnedMesh->UpdateBoneTransform(pd3dDeviceContext);
+	m_pSkinnedMesh->UpdateConstantBuffer(pd3dDeviceContext);
+
+	CGameObject::Render(pd3dDeviceContext, pCamera);
 }

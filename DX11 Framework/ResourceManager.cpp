@@ -16,7 +16,8 @@ void CResourceManager::InitializeManager()
 
 	// Model
 	AddResourece(eTexture_DarkFighterColor,		"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_color.png");
-
+	AddResourece(eTexture_DrayerDiffuse,		"../Assets/FBX Model/Drayer_diffuse.png");
+	
 	// UI
 	AddResourece(eTexture_Title,				"../Assets/Image/UI/BackGround2.jpg");
 
@@ -47,7 +48,8 @@ void CResourceManager::InitializeManager()
 	
 	// ------------------------ Mesh ---------------------------- //
 	AddResourece(eMesh_DarkFighter,				"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.data");
-	AddResourece(eMesh_Siegetank,				"../Assets/FBX Model/siegetank.data");
+//	AddResourece(eMesh_Siegetank,				"../Assets/FBX Model/siegetank.data");
+	AddResourece(eMesh_Siegetank,				"../Assets/FBX Model/drayer_animation.data");
 	
 }
 
