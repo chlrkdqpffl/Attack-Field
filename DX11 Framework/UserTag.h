@@ -26,7 +26,7 @@ enum Resource_TextrueTag {
 	eTexture_TerrainDiffuse, eTexture_TerrainDetail, eTexture_TerrainNormal, eTexture_TerrainHeightMap, eTexture_TerrainHeightMapRaw,
 
 	// Model
-	eTexture_DarkFighterColor, eTexture_DrayerDiffuse,
+	eTexture_DarkFighterColor,
 
 	// UI
 	eTexture_Title,

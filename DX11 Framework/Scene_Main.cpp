@@ -224,30 +224,8 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	NPCMaterial->SetTexture(pNPCTexture);
 
 */
-	//CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_Siegetank), 0.013f);
-	CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_Siegetank));
-	pCharacterMesh->Initialize(pd3dDevice);
-
-	CCharacterShader* pCharacterShader = new CCharacterShader();
-	pCharacterShader->CreateShader(pd3dDevice);
-
-	CTexture *pCharacterTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	CMaterial* pCharacterMaterial = new CMaterial();
-
-	pCharacterTexture->SetTexture(0, eTexture_DrayerDiffuse);
-	pCharacterTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
-
-	pCharacterMaterial->SetTexture(pCharacterTexture);
-
-
-	CSkinnedObject* pSkinnedObj = new CSkinnedObject();
-	pSkinnedObj->SetMesh(pCharacterMesh);
-	pSkinnedObj->SetShader(pCharacterShader);
-	pSkinnedObj->SetPosition(100, 230, 120);
-	pSkinnedObj->Rotate(-90, 0.0f, 0.0f);
-	pSkinnedObj->SetMaterial(pCharacterMaterial);
-
-	m_vObjectsVector.push_back(pSkinnedObj);
+	CSkinnedMesh* pNPCMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_Siegetank));
+	pNPCMesh->Initialize(pd3dDevice);
 #pragma endregion 
 
 	
@@ -268,7 +246,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pPlayerTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pPlayerMaterial->SetTexture(pPlayerTexture);
 	
-	CModelMesh_FBX* pPlayerMesh = new CModelMesh_FBX(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_DarkFighter), 5.0f);
+	CModelMesh_FBX* pPlayerMesh = new CModelMesh_FBX(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_DarkFighter));
 	pPlayerMesh->Initialize(pd3dDevice);
 
 	CObjectsShader* pModelShader = new CObjectsShader(10);
