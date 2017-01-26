@@ -65,6 +65,29 @@ void AnimationData::Interpolate(float fTimePos, vector<XMFLOAT4X4>& boneTransfor
 	}
 }
 
+float AnimationData::GetClipStartTime() const
+{
+	float t = FLT_MAX;
+
+	for (UINT i = 0; i < m_boneDataVector.size(); ++i) {
+		if (m_boneDataVector[i].m_keyframeDataVector.size() == 0) continue;
+		t = fmin(t, m_boneDataVector[i].GetStartTime());
+	}
+	return t;
+}
+
+float AnimationData::GetClipEndTime() const
+{
+	float t = 0.0f;
+
+	for (UINT i = 0; i < m_boneDataVector.size(); ++i) {
+		if (m_boneDataVector[i].m_keyframeDataVector.size() == 0) continue;
+		t = fmax(t, m_boneDataVector[i].GetEndTime());
+	}
+
+	return t;
+}
+
 CSkinnedMesh::CSkinnedMesh(ID3D11Device *pd3dDevice, const string& fileName, float size) : CModelMesh_FBX(pd3dDevice, fileName, size)
 {
 }
@@ -330,16 +353,14 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 float CSkinnedMesh::GetClipStartTime(const string& clipName) const
 {
 	auto clip = m_animationMap.find(clipName);
-	return clip->second.m_boneDataVector
+	return clip->second.GetClipStartTime();
 }
-/*
 
 float CSkinnedMesh::GetClipEndTime(const string& clipName) const
 {
 	auto clip = m_animationMap.find(clipName);
-	return clip->second.g();
+	return clip->second.GetClipEndTime();
 }
-*/
 
 void CSkinnedMesh::CreateConstantBuffer(ID3D11Device *pd3dDevice)
 {

@@ -15,10 +15,7 @@ void CSkinnedObject::Update(float fTimeElapsed)
 	fTimePos += fTimeElapsed;
 
 	// Loop animation
-//	if (fTimePos > m_pSkinnedMesh->SkinnedData.GetClipEndTime("idle"))
-//		fTimePos = 0.0f;
-
-	if (fTimePos > 3.6f)
+	if (fTimePos > m_pSkinnedMesh->GetClipEndTime(m_pSkinnedMesh->GetClipName()))
 		fTimePos = 0.0f;
 
 	m_pSkinnedMesh->GetFinalTransforms(m_pSkinnedMesh->GetClipName(), fTimePos);
