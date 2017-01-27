@@ -25,4 +25,6 @@ public:
 
 	virtual void Initialize(ID3D11Device *pd3dDevice);
 	virtual bool LoadFBXfromFile(const string& fileName);
+
+	float GetModelSize() const { return m_fModelSize; }
 };

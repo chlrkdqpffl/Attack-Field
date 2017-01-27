@@ -45,13 +45,15 @@ bool CScene_Main::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 	switch (nMessageID) {
 		case WM_KEYDOWN:
 			switch (wParam) {
-				case '1':
-					
+				case VK_Z:
+					m_pPlayerCharacter->SetAnimation(Animation::eIdle);
 				break;
-
-				case '2':
-				
+				case VK_X:
+					m_pPlayerCharacter->SetAnimation(Animation::eAttack);
 				break;
+				case VK_C:
+					m_pPlayerCharacter->SetAnimation(Animation::eRun);
+					break;
 			}
 			break;
 		case WM_KEYUP:
@@ -209,23 +211,30 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma endregion
 
 #pragma region [Create Character]
-	/*
-	// Character
-	ID3D11ShaderResourceView *pd3dsrvNPCTexture;
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Character/SimpleMilitary_GasMask_White.png"), nullptr, nullptr, &pd3dsrvNPCTexture, nullptr);
-	CTexture *pNPCTexture = new CTexture(1, 1, PS_SLOT_TEXTURE, PS_SLOT_SAMPLER);
-	pNPCTexture->SetSampler(0, pd3dSamplerState);
-	pNPCTexture->SetTexture(0, pd3dsrvNPCTexture);
-	pd3dsrvNPCTexture->Release();
 
-	CMaterialColors* pNPCColors = new CMaterialColors();
-	pNPCColors->m_d3dxcDiffuse = D3DXCOLOR(0, 1.0f, 0.0f, 1.0f);
-	CMaterial* NPCMaterial = new CMaterial(pNPCColors);
-	NPCMaterial->SetTexture(pNPCTexture);
+//CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_Siegetank), 0.013f);
+	CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_Drayer));
+	pCharacterMesh->Initialize(pd3dDevice);
 
-*/
-	CSkinnedMesh* pNPCMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_Siegetank));
-	pNPCMesh->Initialize(pd3dDevice);
+	CCharacterShader* pCharacterShader = new CCharacterShader();
+	pCharacterShader->CreateShader(pd3dDevice);
+
+	CTexture *pCharacterTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
+	CMaterial* pCharacterMaterial = new CMaterial();
+
+	pCharacterTexture->SetTexture(0, eTexture_DrayerDiffuse);
+	pCharacterTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+
+	pCharacterMaterial->SetTexture(pCharacterTexture);
+
+	m_pPlayerCharacter = new CDrayer();
+	m_pPlayerCharacter->SetMesh(pCharacterMesh);
+	m_pPlayerCharacter->SetShader(pCharacterShader);
+	m_pPlayerCharacter->SetPosition(100, 230, 120);
+	m_pPlayerCharacter->Rotate(-90, 0.0f, 0.0f);
+	m_pPlayerCharacter->SetMaterial(pCharacterMaterial);
+
+	m_vObjectsVector.push_back(m_pPlayerCharacter);
 #pragma endregion 
 
 	
@@ -238,7 +247,6 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_vObjectsVector.push_back(normalMapObject);
 	
 #pragma region [Create Shader Object]
-	
 	CMaterial *pPlayerMaterial = new CMaterial();
 
 	CTexture *pPlayerTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);

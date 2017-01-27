@@ -208,6 +208,7 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 	AnimationData animaitionData;
 	KeyframeData keyframeData;
 	BoneData boneData;
+	string animationName;
 
 	string buf;
 
@@ -278,7 +279,7 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 		fin >> buf; // [ANIMATION_CLIPS]
 		for (int clip = 0; clip < animationClips; ++clip) {
 			fin >> buf; // AnimationClip 
-			fin >> animaitionData.m_strAnimationName;
+			fin >> animationName;
 //			fin >> buf;	// {
 			
 			for (int bone = 0; bone < boneCount; ++bone) {
@@ -300,7 +301,7 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 				boneData.m_keyframeDataVector.clear();
 //				fin >> buf; // }
 			}
-			m_animationMap.insert(make_pair(animaitionData.m_strAnimationName, animaitionData));
+			m_animationMap.insert(make_pair(animationName, animaitionData));
 			animaitionData.m_boneDataVector.clear();
 		}
 
@@ -397,9 +398,7 @@ void CSkinnedMesh::ReleaseConstantBuffer()
 void CSkinnedMesh::MakeBoneMatrix(int nNowframe, int nBoneNum, vector<XMMATRIX> &SQTTransformVector) const
 {
 	XMMATRIX mtxBone;
-	// 임의로 일단 고정시켜놓음
 	auto anim = m_animationMap.find(m_strClipName);
-//	auto anim = m_animationMap.find("Take_001");
 	
 	if (anim->second.m_boneDataVector[nBoneNum].m_nAnimaitionKeys > 0){
 		XMVECTOR vScale = XMLoadFloat3(&anim->second.m_boneDataVector[nBoneNum].m_keyframeDataVector[nNowframe].m_xmf3Scale);

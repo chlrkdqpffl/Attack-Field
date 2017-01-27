@@ -9,6 +9,7 @@
 
 // Shader
 #include "TerrainShader.h"
+#include "CharacterShader.h"
 
 // Object
 #include "SkyBox.h"
@@ -17,6 +18,8 @@
 #include "RotatingObject.h"
 #include "NormalMapObject.h"
 #include "AxisObjects.h"
+//#include "SkinnedObject.h"
+#include "Drayer.h"
 
 // System
 #include "ParticleSystem.h"
@@ -117,4 +120,6 @@ protected:
 
 	// Constant Buffer
 	ID3D11Buffer					*m_pd3dcbRenderOption;
+
+	CSkinnedObject*					m_pPlayerCharacter = nullptr;
 };

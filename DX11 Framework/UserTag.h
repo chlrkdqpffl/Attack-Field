@@ -9,11 +9,11 @@ enum eShaderTag {
 	eShader_NormalMap
 };
 
-namespace AnimationType
+namespace Animation
 {
 	enum Character
 	{
-		eAnim_Idle,	eAnim_Attack, eAnim_Death
+		eIdle, eRun, eAttack, eDeath
 	};
 }
 
@@ -26,7 +26,7 @@ enum Resource_TextrueTag {
 	eTexture_TerrainDiffuse, eTexture_TerrainDetail, eTexture_TerrainNormal, eTexture_TerrainHeightMap, eTexture_TerrainHeightMapRaw,
 
 	// Model
-	eTexture_DarkFighterColor,
+	eTexture_DarkFighterColor, eTexture_DrayerDiffuse,
 
 	// UI
 	eTexture_Title,
@@ -39,5 +39,5 @@ enum Resource_TextrueTag {
 
 // eMesh
 enum Resource_MeshTag {
-	eMesh_DarkFighter, eMesh_Siegetank
+	eMesh_DarkFighter, eMesh_Siegetank, eMesh_Drayer
 };
