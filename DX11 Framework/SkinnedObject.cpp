@@ -10,19 +10,19 @@ CSkinnedObject::~CSkinnedObject()
 {
 }
 
+void CSkinnedObject::SetMesh(CSkinnedMesh* mesh) 
+{
+	CGameObject::SetMesh(mesh);
+	m_pSkinnedMesh = mesh;
+}
+
 void CSkinnedObject::SetAnimation(Animation::Character anim)
 {
-	/*
-	for (auto list : m_animaitionListVector)
-		if (list.first == anim) {
-			m_pSkinnedMesh->SetClipName(list.second);
-			return;
-		}
-		*/
-	for (auto list : m_animaitionTupleListVector)
+	for (auto list : m_animaitionTupleVector)
 		if (get<0>(list) == anim) {
 			m_pSkinnedMesh->SetClipName(get<1>(list));
 			m_animType = get<2>(list);
+			fTimePos = 0.0f;
 			return;
 		}
 }
@@ -69,6 +69,7 @@ void CSkinnedObject::Update(float fTimeElapsed)
 		break;
 	}
 
+	cout << fTimePos << endl;
 }
 
 void CSkinnedObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
