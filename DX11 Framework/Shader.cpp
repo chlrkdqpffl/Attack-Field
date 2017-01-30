@@ -20,10 +20,13 @@ CShader::CShader()
 
 CShader::~CShader()
 {
-	if (m_pd3dVertexShader) m_pd3dVertexShader->Release();
-	if (m_pd3dVertexLayout) m_pd3dVertexLayout->Release();
-	if (m_pd3dPixelShader) m_pd3dPixelShader->Release();
-	if (m_pd3dGeometryShader) m_pd3dGeometryShader->Release();
+	ReleaseCOM(m_pd3dVertexLayout);
+	ReleaseCOM(m_pd3dVertexShader);
+	ReleaseCOM(m_pd3dPixelShader);
+	ReleaseCOM(m_pd3dGeometryShader);
+	ReleaseCOM(m_pd3dComputeShader);
+	ReleaseCOM(m_pd3dHullShader);
+	ReleaseCOM(m_pd3dDomainShader);
 
 	if (m_pd3dInputElementDescs) delete[] m_pd3dInputElementDescs;
 }

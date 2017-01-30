@@ -43,7 +43,6 @@ protected:
 
 	ID3D11VertexShader				*m_pd3dVertexShader		= nullptr;
 	ID3D11InputLayout				*m_pd3dVertexLayout		= nullptr;
-
 	ID3D11PixelShader				*m_pd3dPixelShader		= nullptr;
 	ID3D11ComputeShader				*m_pd3dComputeShader	= nullptr;
 	ID3D11GeometryShader			*m_pd3dGeometryShader	= nullptr;

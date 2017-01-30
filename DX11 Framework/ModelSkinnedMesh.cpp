@@ -183,7 +183,7 @@ void CSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 
 	CreateConstantBuffer(pd3dDevice);
 
-	m_strClipName = m_animationMap.begin()->first;
+	m_strClipName = (--m_animationMap.end())->first;	// 제일 처음 들어간 애니메이션이 초기 애니메이션
 
 //	m_nMaxFrameNum = 108; // idle
 //	m_nMaxFrameNum = 37; // CrossPunch
