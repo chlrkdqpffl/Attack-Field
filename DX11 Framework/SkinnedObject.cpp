@@ -39,6 +39,7 @@ void CSkinnedObject::UpdateTime(float& fTimeElapsed)
 			if (fTimePos > endTime)
 				fTimePos = 0.0f;
 			break;
+
 		case AnimationType::Once:
 			fTimePos += fTimeElapsed;
 
@@ -46,6 +47,7 @@ void CSkinnedObject::UpdateTime(float& fTimeElapsed)
 				fTimePos = 0.0f;
 				SetAnimation(Animation::eIdle);
 			}
+
 		case AnimationType::PingPong:
 			static bool isReverse = false;
 

@@ -12,7 +12,7 @@ void BoneData::Interpolate(float fTimePos, XMFLOAT4X4& boneTransforms) const
 		XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 		XMStoreFloat4x4(&boneTransforms, XMMatrixAffineTransformation(S, zero, Q, P));
 	}
-	else if (fTimePos >= m_keyframeDataVector.back().m_fAnimationTime)
+	else if (m_keyframeDataVector.back().m_fAnimationTime <= fTimePos)
 	{
 		XMVECTOR S = XMLoadFloat3(&m_keyframeDataVector.back().m_xmf3Scale);
 		XMVECTOR P = XMLoadFloat3(&m_keyframeDataVector.back().m_xmf3Translate);
@@ -25,7 +25,7 @@ void BoneData::Interpolate(float fTimePos, XMFLOAT4X4& boneTransforms) const
 	{
 		for (UINT i = 0; i < m_keyframeDataVector.size() - 1; ++i)
 		{
-			if (fTimePos >= m_keyframeDataVector[i].m_fAnimationTime && fTimePos <= m_keyframeDataVector[i + 1].m_fAnimationTime)
+			if (m_keyframeDataVector[i].m_fAnimationTime <= fTimePos && fTimePos <= m_keyframeDataVector[i + 1].m_fAnimationTime)
 			{
 				float lerpPercent = (fTimePos - m_keyframeDataVector[i].m_fAnimationTime) / (m_keyframeDataVector[i + 1].m_fAnimationTime - m_keyframeDataVector[i].m_fAnimationTime);
 
@@ -55,7 +55,7 @@ void AnimationData::Interpolate(float fTimePos, vector<XMFLOAT4X4>& boneTransfor
 {
 	for (UINT i = 0; i < m_boneDataVector.size(); ++i)
 	{
-		if (m_boneDataVector[i].m_nAnimaitionKeys > 0)
+		if (0 < m_boneDataVector[i].m_nAnimaitionKeys)
 			m_boneDataVector[i].Interpolate(fTimePos, boneTransforms[i]);
 		else
 		{

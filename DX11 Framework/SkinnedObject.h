@@ -2,6 +2,14 @@
 #include "Object.h"
 #include "ModelSkinnedMesh.h"
 
+struct AnimationTrack
+{
+	bool m_bEnable;
+	float m_fSpeed;
+	float m_fPosition;
+	float m_fWeight;
+};
+
 class CAnimationController
 {
 	float m_fTime;
