@@ -23,12 +23,8 @@ CMaterialColors::~CMaterialColors()
 
 CMaterial::CMaterial(CMaterialColors *pColors)
 {
-	m_nReferences = 0;
-
 	m_pColors = pColors;
 	if (pColors) pColors->AddRef();
-
-	m_pTexture = NULL;
 }
 
 CMaterial::~CMaterial()
@@ -56,8 +52,6 @@ ID3D11Buffer *CTexture::m_pd3dcbTextureMatrix = NULL;
 
 CTexture::CTexture(int nTextures, int nSamplers, int nTextureStartSlot, int nSamplerStartSlot)
 {
-	m_nReferences = 0;
-
 	m_nTextures = nTextures;
 	m_ppd3dsrvTextures = new ID3D11ShaderResourceView*[m_nTextures];
 	for (int i = 0; i < m_nTextures; i++) m_ppd3dsrvTextures[i] = NULL;
@@ -83,6 +77,7 @@ CTexture::~CTexture()
 		delete[] m_ppd3dsrvTextures;
 	if (m_ppd3dSamplerStates) 
 		delete[] m_ppd3dSamplerStates;
+
 }
 
 void CTexture::SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture)
@@ -240,28 +235,14 @@ CGameObject::CGameObject(int nMeshes)
 	XMStoreFloat4x4(&m_d3dxmtxLocal, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_d3dxmtxWorld, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_d3dxmtxShadow, XMMatrixIdentity());
-	
-	m_pShader = NULL;
-	m_pMaterial = NULL;
 
 	m_nMeshes = nMeshes;
-	m_ppMeshes = NULL;
 	if (m_nMeshes > 0) m_ppMeshes = new CMesh*[m_nMeshes];
 	for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
 
 	m_bcMeshBoundingCube.Center = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_bcMeshBoundingCube.Extents = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_bcBoundingCube = BoundingBox();
-
-	m_bActive = true;
-	m_bIsVisible = true;
-
-	m_nReferences = 0;
-
-	m_pChild = m_pSibling = m_pParent = NULL;
-
-	m_pd3dDepthStencilState = NULL;
-	m_pd3dBlendState = NULL;
 }
 
 CGameObject::~CGameObject()
@@ -270,7 +251,6 @@ CGameObject::~CGameObject()
 	if (m_pd3dBlendState) m_pd3dBlendState->Release();
 
 	if (m_pShader) m_pShader->Release();
-
 	if (m_pMaterial) m_pMaterial->Release();
 
 	if (m_ppMeshes)

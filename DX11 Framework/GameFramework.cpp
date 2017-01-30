@@ -47,6 +47,12 @@ CGameFramework::~CGameFramework()
 
 bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
+#if defined(DEBUG) || defined(_DEBUG)
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+//	_CrtSetBreakAlloc(208);
+#endif
+
 	m_hInstance = hInstance;
 	m_hWnd = hMainWnd;
 
@@ -330,6 +336,10 @@ void CGameFramework::OnDestroy()
 
 	// Relesed AntTweakBar
 	TwTerminate();
+
+#if defined(DEBUG) || defined(_DEBUG)
+	_CrtDumpMemoryLeaks();
+#endif
 }
 
 void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -589,7 +599,7 @@ void CGameFramework::CreateComputeShader(ID3D11Device* pd3dDevice)
 	pComputeShader->CreateComputeShaderFromFile(pd3dDevice, L"Shader HLSL File/Blurring.hlsli", "HorzBlurCS", "cs_5_0", &m_pHorizontalBlurShader);
 	pComputeShader->CreateComputeShaderFromFile(pd3dDevice, L"Shader HLSL File/Blurring.hlsli", "VertBlurCS", "cs_5_0", &m_pVerticalBlurShader);
 
-	delete pComputeShader;
+	SafeDelete(pComputeShader);
 }
 
 void CGameFramework::DrawBlurredSceneToScreen(ID3D11DeviceContext* pd3dDeviceContext)
@@ -649,7 +659,8 @@ void CGameFramework::ReleaseObjects()
 	SCENE_MGR->m_nowScene->ReleaseObjects();
 	delete SCENE_MGR->m_nowScene;
 
-	if (m_pPlayer) delete m_pPlayer;
+	SafeDelete(m_pScreenShader);
+	SafeDelete(m_pPlayer);
 }
 
 void CGameFramework::CreateConstantBuffers()
@@ -833,7 +844,7 @@ void CGameFramework::FrameAdvance()
 			exit(0);
 		}	
 	}
-
+	
 	m_pDXGISwapChain->Present(0, 0);
 
 	m_GameTimer.GetFrameRate(m_pszBuffer + 16, 34);

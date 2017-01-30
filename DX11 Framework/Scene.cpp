@@ -117,7 +117,9 @@ void CScene::CreateTweakBars()
 
 void CScene::ReleaseObjects()
 {
-	// 메모리 누수 확인
+	m_pSkyBox->Release();
+	m_pTerrain->Release();
+
 	m_pAxisObjects->Release();
 	m_pAxisObjects = nullptr;
 

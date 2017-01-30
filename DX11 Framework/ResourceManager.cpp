@@ -50,6 +50,7 @@ void CResourceManager::InitializeManager()
 	AddResourece(eMesh_DarkFighter,				"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.data");
 	AddResourece(eMesh_Siegetank,				"../Assets/FBX Model/siegetank.data");
 	AddResourece(eMesh_Drayer,					"../Assets/FBX Model/drayer_animation.data");
+//	AddResourece(eMesh_Drayer,					"../Assets/FBX Model/Dreyar_by_M.data");
 }
 
 void CResourceManager::ReleseManager()

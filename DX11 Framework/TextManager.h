@@ -24,12 +24,11 @@ enum TEXT
 class CTextManager : public CSingletonManager<CTextManager>
 {
 private:
-	IFW1FontWrapper*		 m_pFW1Font;
-	IFW1TextRenderer*		 m_pFWTextRender;
-	IFW1Factory*			 m_pFW1FontFactory;
-	IFW1GlyphProvider*		 m_pFW1Glyphrovider;
-
-private:
+	IFW1FontWrapper*		m_pFW1Font;
+	IFW1TextRenderer*		m_pFWTextRender;
+	IFW1Factory*			m_pFW1FontFactory;
+	IFW1GlyphProvider*		m_pFW1Glyphrovider;
+	TCHAR*					m_tChar;
 
 public:
 	CTextManager();

@@ -140,6 +140,10 @@ CNormalMapCubeMesh::CNormalMapCubeMesh(ID3D11Device *pd3dDevice, float fWidth, f
 
 	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
 	m_bcBoundingCube.Extents = { fx, fy, fz };
+
+	delete[] m_pTexCoords;
+	delete[] m_pNormals;
+	delete[] m_pTangents;
 }
 
 CNormalMapCubeMesh::~CNormalMapCubeMesh()

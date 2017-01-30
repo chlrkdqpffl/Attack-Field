@@ -30,16 +30,16 @@ public:
 	virtual ~CShader();
 
 private:
-	int								m_nReferences;
+	int								m_nReferences = 0;
 
 public:
 	void AddRef() { m_nReferences++; }
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 protected:
-	UINT							m_nType;
-	int								m_nInputElements;
-	D3D11_INPUT_ELEMENT_DESC		*m_pd3dInputElementDescs;
+	UINT							m_nType = 0;
+	int								m_nInputElements = 0;
+	D3D11_INPUT_ELEMENT_DESC		*m_pd3dInputElementDescs = nullptr;
 
 	ID3D11VertexShader				*m_pd3dVertexShader		= nullptr;
 	ID3D11InputLayout				*m_pd3dVertexLayout		= nullptr;
@@ -108,9 +108,9 @@ public:
 protected:
 	vector<CGameObject*>			m_vObjectsVector;
 
-	CMaterial						*m_pMaterial;
+	CMaterial						*m_pMaterial = nullptr;
 
-	void							*m_pContext;
+	void							*m_pContext = nullptr;
 
 public:
 	virtual void BuildObjects(ID3D11Device *pd3dDevice, void *pContext = NULL);
@@ -141,10 +141,10 @@ public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 
 protected:
-	CMesh							*m_pMesh;
+	CMesh							*m_pMesh = nullptr;
 
-	UINT							m_nInstanceBufferStride;
-	UINT							m_nInstanceBufferOffset;
+	UINT							m_nInstanceBufferStride = 0;
+	UINT							m_nInstanceBufferOffset = 0;
 
-	ID3D11Buffer					*m_pd3dInstanceBuffer;
+	ID3D11Buffer					*m_pd3dInstanceBuffer = nullptr;
 };

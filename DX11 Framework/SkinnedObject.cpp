@@ -68,8 +68,6 @@ void CSkinnedObject::Update(float fTimeElapsed)
 
 		break;
 	}
-
-	cout << fTimePos << endl;
 }
 
 void CSkinnedObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)

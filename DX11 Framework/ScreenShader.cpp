@@ -7,6 +7,8 @@ CScreenShader::CScreenShader()
 
 CScreenShader::~CScreenShader()
 {
+	SafeDelete(m_pScreenMesh);
+	SafeDelete(m_pTexture);
 }
 
 void CScreenShader::CreateShader(ID3D11Device *pd3dDevice)

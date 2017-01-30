@@ -183,10 +183,9 @@ void CSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 
 	CreateConstantBuffer(pd3dDevice);
 
+	m_strClipName = m_animationMap.begin()->first;
 
-	m_strClipName = "idle";
-	// idle 임의로 일단 고정
-	m_nMaxFrameNum = 108; // idle
+//	m_nMaxFrameNum = 108; // idle
 //	m_nMaxFrameNum = 37; // CrossPunch
 }
 

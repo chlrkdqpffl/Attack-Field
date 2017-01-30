@@ -43,15 +43,15 @@ public:
 	virtual ~CTexture();
 
 private:
-	int								m_nReferences;
+	int								m_nReferences = 0;
 
-	int								m_nTextures;
-	ID3D11ShaderResourceView		**m_ppd3dsrvTextures;
-	int								m_nTextureStartSlot;
+	int								m_nTextures = 0;
+	ID3D11ShaderResourceView		**m_ppd3dsrvTextures = nullptr;
+	int								m_nTextureStartSlot = 0;
 
-	int								m_nSamplers;
-	ID3D11SamplerState				**m_ppd3dSamplerStates;
-	int								m_nSamplerStartSlot;
+	int								m_nSamplers = 0;
+	ID3D11SamplerState				**m_ppd3dSamplerStates = nullptr;
+	int								m_nSamplerStartSlot = 0;
 
 	Resource_TextrueTag				m_Tag;
 public:
@@ -77,11 +77,11 @@ public:
 class CMaterial
 {
 public:
-	CMaterial(CMaterialColors *pColors = NULL);
+	CMaterial(CMaterialColors *pColors = nullptr);
 	virtual ~CMaterial();
 
 private:
-	int								m_nReferences;
+	int								m_nReferences = 0;
 
 public:
 	void AddRef() { m_nReferences++; }
@@ -90,8 +90,8 @@ public:
 	void SetTexture(CTexture *pTexture);
 	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext);
 
-	CMaterialColors					*m_pColors;
-	CTexture						*m_pTexture;
+	CMaterialColors					*m_pColors = nullptr;
+	CTexture						*m_pTexture = nullptr;
 };
 
 class CShader;
@@ -103,10 +103,10 @@ public:
 	virtual ~CGameObject();
 
 private:
-	int								m_nReferences;
+	int								m_nReferences = 0;
 
-	bool							m_bActive;
-	bool							m_bIsVisible;
+	bool							m_bActive = true;
+	bool							m_bIsVisible = true;
 
 public:
 	void AddRef() { m_nReferences++; }
@@ -118,23 +118,23 @@ public:
 	XMFLOAT4X4						m_d3dxmtxShadow;
 
 protected:
-	CMesh							**m_ppMeshes;
-	int								m_nMeshes;
+	CMesh							**m_ppMeshes = nullptr;
+	int								m_nMeshes = 0;
 	
 
-	CMaterial						*m_pMaterial;
-	CShader							*m_pShader;
+	CMaterial						*m_pMaterial = nullptr;
+	CShader							*m_pShader = nullptr;
 
-	CGameObject 					*m_pChild;
-	CGameObject 					*m_pSibling;
-	CGameObject 					*m_pParent;
+	CGameObject 					*m_pChild = nullptr;
+	CGameObject 					*m_pSibling = nullptr;
+	CGameObject 					*m_pParent = nullptr;
 
 	BoundingBox						m_bcBoundingCube;			// 사용자가 정하는 바운딩 박스
 	BoundingBox						m_bcMeshBoundingCube;		// 실제 메쉬 바운딩 박스
 
 public:
-	ID3D11DepthStencilState			*m_pd3dDepthStencilState;
-	ID3D11BlendState				*m_pd3dBlendState;
+	ID3D11DepthStencilState			*m_pd3dDepthStencilState = nullptr;
+	ID3D11BlendState				*m_pd3dBlendState = nullptr;
 
 public:
 	void SetMesh(CMesh *pMesh, int nIndex = 0);

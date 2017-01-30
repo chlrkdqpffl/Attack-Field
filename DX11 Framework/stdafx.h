@@ -55,12 +55,18 @@
 #include <wrl\client.h>
 using namespace Microsoft::WRL;
 //
+
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 using namespace std;
 
-#pragma comment(lib, "legacy_stdio_definitions.lib")		// DXTrace
+#if defined(DEBUG) || defined(_DEBUG)
+// Memory Leak Check
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+#endif
 
+#pragma comment(lib, "legacy_stdio_definitions.lib")		// DXTrace
 
 
 #include "ConstantBuffer_Slot.h"

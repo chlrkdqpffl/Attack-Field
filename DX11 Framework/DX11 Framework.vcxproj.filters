@@ -362,13 +362,13 @@
     <ClInclude Include="ModelSkinnedMesh.h">
       <Filter>헤더 파일\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="SkinnedObject.h">
-      <Filter>헤더 파일\Object</Filter>
-    </ClInclude>
     <ClInclude Include="CharacterShader.h">
       <Filter>헤더 파일\Shader</Filter>
     </ClInclude>
     <ClInclude Include="Drayer.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedObject.h">
       <Filter>헤더 파일\Object</Filter>
     </ClInclude>
   </ItemGroup>
