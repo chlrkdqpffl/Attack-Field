@@ -395,7 +395,7 @@ void CScene_Main::CreateTweakBars()
 	TwDefine(" TweakBar size = '300 300'"); 
 	TwDefine(" TweakBar alpha = 230");   // transparent bar
 	TwDefine(" TweakBar position = '30 100'");
-
+	
 	TwAddVarRW(bar, "Light direction", TW_TYPE_DIR3F, &m_pLights->m_pLights[0].m_d3dxvDirection, "group = Light opened = true axisz = -z");
 	TwAddVarRW(bar, "Global Ambient", TW_TYPE_FLOAT, &m_fGlobalAmbient, "group = Light min = 0 max = 1 step = 0.05");
 	

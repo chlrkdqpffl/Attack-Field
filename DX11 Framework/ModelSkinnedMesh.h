@@ -97,6 +97,13 @@ public:
 	float GetClipStartTime(const string& clipName) const;
 	float GetClipEndTime(const string& clipName) const;
 	const string& GetClipName() const { return m_strClipName; }
-
+	map<string, AnimationData> GetAnimMap() const {	return m_animationMap; }
+	
 	void SetClipName(string name) { m_strClipName = name; }
+
+
+
+	// Test
+	void GetFinalTransforms_BlendingTest(float fTimePos);
+	void Interpolate_BlendingTest(AnimationData& dataA, AnimationData& dataB, float timePos, vector<XMFLOAT4X4>& boneTransforms) const;
 };

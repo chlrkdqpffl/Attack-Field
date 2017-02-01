@@ -216,6 +216,9 @@
     <ClCompile Include="Drayer.cpp">
       <Filter>소스 파일\Object</Filter>
     </ClCompile>
+    <ClCompile Include="AnimationController.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -369,6 +372,9 @@
       <Filter>헤더 파일\Object</Filter>
     </ClInclude>
     <ClInclude Include="SkinnedObject.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationController.h">
       <Filter>헤더 파일\Object</Filter>
     </ClInclude>
   </ItemGroup>

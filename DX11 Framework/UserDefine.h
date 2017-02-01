@@ -112,10 +112,18 @@ void print(const T& firstArg, const Types& ...argv)
 
 inline void ShowXMMatrix(XMMATRIX mtx)
 {
-	XMFLOAT4X4 finalBoneMtx;
-	XMStoreFloat4x4(&finalBoneMtx, mtx);
-	cout << finalBoneMtx._11 << ", " << finalBoneMtx._12 << ", " << finalBoneMtx._13 << ", " << finalBoneMtx._14 << endl;
-	cout << finalBoneMtx._21 << ", " << finalBoneMtx._22 << ", " << finalBoneMtx._23 << ", " << finalBoneMtx._24 << endl;
-	cout << finalBoneMtx._31 << ", " << finalBoneMtx._32 << ", " << finalBoneMtx._33 << ", " << finalBoneMtx._34 << endl;
-	cout << finalBoneMtx._41 << ", " << finalBoneMtx._42 << ", " << finalBoneMtx._43 << ", " << finalBoneMtx._44 << endl << endl;
+	XMFLOAT4X4 mtxOut;
+	XMStoreFloat4x4(&mtxOut, mtx);
+	cout << mtxOut._11 << ", " << mtxOut._12 << ", " << mtxOut._13 << ", " << mtxOut._14 << endl;
+	cout << mtxOut._21 << ", " << mtxOut._22 << ", " << mtxOut._23 << ", " << mtxOut._24 << endl;
+	cout << mtxOut._31 << ", " << mtxOut._32 << ", " << mtxOut._33 << ", " << mtxOut._34 << endl;
+	cout << mtxOut._41 << ", " << mtxOut._42 << ", " << mtxOut._43 << ", " << mtxOut._44 << endl << endl;
+}
+
+inline void ShowXMFloat4x4(XMFLOAT4X4 mtx)
+{
+	cout << mtx._11 << ", " << mtx._12 << ", " << mtx._13 << ", " << mtx._14 << endl;
+	cout << mtx._21 << ", " << mtx._22 << ", " << mtx._23 << ", " << mtx._24 << endl;
+	cout << mtx._31 << ", " << mtx._32 << ", " << mtx._33 << ", " << mtx._34 << endl;
+	cout << mtx._41 << ", " << mtx._42 << ", " << mtx._43 << ", " << mtx._44 << endl << endl;
 }

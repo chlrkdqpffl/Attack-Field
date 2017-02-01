@@ -183,8 +183,7 @@ void CSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 
 	CreateConstantBuffer(pd3dDevice);
 
-	m_strClipName = (--m_animationMap.end())->first;	// 제일 처음 들어간 애니메이션이 초기 애니메이션
-
+	m_strClipName = m_animationMap.rbegin()->first; // 제일 처음 들어간 애니메이션이 초기 애니메이션
 //	m_nMaxFrameNum = 108; // idle
 //	m_nMaxFrameNum = 37; // CrossPunch
 }
@@ -301,6 +300,7 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 //				fin >> buf; // }
 			}
 			m_animationMap.insert(make_pair(animationName, animaitionData));
+		
 			animaitionData.m_boneDataVector.clear();
 		}
 
@@ -429,6 +429,109 @@ void CSkinnedMesh::GetFinalTransforms(const string& clipName, float fTimePos)
 		finalBoneVector[i] = mtxOffset * mtxToRoot;
 	}
 }
+
+void CSkinnedMesh::Interpolate_BlendingTest(AnimationData& basicData, AnimationData& targetData, float fTimePos, vector<XMFLOAT4X4>& boneTransforms) const
+{
+	XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	XMVECTOR S1 = zero, S2 = zero;
+	XMVECTOR P1 = zero, P2 = zero;
+	XMVECTOR Q1 = zero, Q2 = zero;
+
+	static float addTime = 0.0f;
+	float blendFactor = addTime / 2.0f;
+	// -- Test -- //
+	addTime += 0.0033; // 30 frame
+	// -- ---- -- //
+	cout << blendFactor << endl;
+
+	for (UINT i = 0; i < basicData.m_boneDataVector.size(); ++i)
+	{
+		if (0 < basicData.m_boneDataVector[i].m_nAnimaitionKeys) {
+			vector<KeyframeData> keyframeDataVector = basicData.m_boneDataVector[i].m_keyframeDataVector;
+
+			if (fTimePos <= keyframeDataVector.front().m_fAnimationTime)
+			{
+				S1 = XMLoadFloat3(&keyframeDataVector.front().m_xmf3Scale);
+				P1 = XMLoadFloat3(&keyframeDataVector.front().m_xmf3Translate);
+				Q1 = XMLoadFloat4(&keyframeDataVector.front().m_xmf4Quaternion);
+			}
+			else if (keyframeDataVector.back().m_fAnimationTime <= fTimePos)
+			{
+				S1 = XMLoadFloat3(&keyframeDataVector.back().m_xmf3Scale);
+				P1 = XMLoadFloat3(&keyframeDataVector.back().m_xmf3Translate);
+				Q1 = XMLoadFloat4(&keyframeDataVector.back().m_xmf4Quaternion);
+			}
+			else
+			{
+				for (UINT i = 0; i < keyframeDataVector.size() - 1; ++i)
+				{
+					if (keyframeDataVector[i].m_fAnimationTime <= fTimePos && fTimePos <= keyframeDataVector[i + 1].m_fAnimationTime)
+					{
+						float lerpPercent = (fTimePos - keyframeDataVector[i].m_fAnimationTime) / (keyframeDataVector[i + 1].m_fAnimationTime - keyframeDataVector[i].m_fAnimationTime);
+
+						XMVECTOR s0 = XMLoadFloat3(&keyframeDataVector[i].m_xmf3Scale);
+						XMVECTOR s1 = XMLoadFloat3(&keyframeDataVector[i + 1].m_xmf3Scale);
+
+						XMVECTOR p0 = XMLoadFloat3(&keyframeDataVector[i].m_xmf3Translate);
+						XMVECTOR p1 = XMLoadFloat3(&keyframeDataVector[i + 1].m_xmf3Translate);
+
+						XMVECTOR q0 = XMLoadFloat4(&keyframeDataVector[i].m_xmf4Quaternion);
+						XMVECTOR q1 = XMLoadFloat4(&keyframeDataVector[i + 1].m_xmf4Quaternion);
+
+						S1 = XMVectorLerp(s0, s1, lerpPercent);
+						P1 = XMVectorLerp(p0, p1, lerpPercent);
+						Q1 = XMQuaternionSlerp(q0, q1, lerpPercent);
+
+						break;
+					}
+				}
+			}
+		}
+
+
+		if (0 < targetData.m_boneDataVector[i].m_nAnimaitionKeys)
+		{
+			vector<KeyframeData> keyframeDataVector = targetData.m_boneDataVector[i].m_keyframeDataVector;
+
+			S2 = XMLoadFloat3(&keyframeDataVector.front().m_xmf3Scale);
+			P2 = XMLoadFloat3(&keyframeDataVector.front().m_xmf3Translate);
+			Q2 = XMLoadFloat4(&keyframeDataVector.front().m_xmf4Quaternion);
+		}
+		else if (XMVector3Equal(S1, zero))
+		{
+			XMMATRIX identityMtx = XMMatrixIdentity();
+			XMStoreFloat4x4(&boneTransforms[i], identityMtx);
+			return;
+		}
+
+		XMVECTOR S = XMVectorLerp(S1, S2, blendFactor);
+		XMVECTOR P = XMVectorLerp(P1, P2, blendFactor);
+		XMVECTOR Q = XMQuaternionSlerp(Q1, Q2, blendFactor);
+
+		XMStoreFloat4x4(&boneTransforms[i], XMMatrixAffineTransformation(S, zero, Q, P));
+	}
+}
+
+void CSkinnedMesh::GetFinalTransforms_BlendingTest(float fTimePos)
+{
+	vector<XMFLOAT4X4> toRootTransforms(m_nBoneCount);
+		
+	auto idleClip = m_animationMap.find("idle");
+	auto runClip = m_animationMap.find("Run");
+	
+	Interpolate_BlendingTest(idleClip->second, runClip->second, fTimePos, toRootTransforms);
+
+	finalBoneVector.resize(m_nBoneCount);
+
+	for (UINT i = 0; i < m_nBoneCount; ++i)
+	{
+		XMMATRIX mtxOffset = XMLoadFloat4x4(&boneOffsetsVector[i]);
+		XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
+
+		finalBoneVector[i] = mtxOffset * mtxToRoot;
+	}
+}
+
 
 void CSkinnedMesh::UpdateBoneTransform(ID3D11DeviceContext *pd3dDeviceContext)
 {
