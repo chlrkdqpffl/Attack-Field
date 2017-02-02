@@ -8,7 +8,7 @@ public:
 	CScene				*m_nowScene		= nullptr;
 	CPlayer				*m_pPlayer		= nullptr;
 	CCamera				*m_pCamera		= nullptr;
-	float				fFrameRate		= 0.0f;
+	ULONG				fFrameRate		= 0;
 	float				fTimeElapsed	= 0.0f;
 
 	CSceneManager();

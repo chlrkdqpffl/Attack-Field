@@ -3,11 +3,43 @@
 
 CDrayer::CDrayer()
 {
-	m_pAnimController->AddAnimation(make_tuple(Animation::eIdle,	"idle", AnimationType::Loop));
-	m_pAnimController->AddAnimation(make_tuple(Animation::eRun,		"Run", AnimationType::Loop));
-	m_pAnimController->AddAnimation(make_tuple(Animation::eAttack,	"CrossPunch", AnimationType::PingPong));
 }
 
 CDrayer::~CDrayer()
 {
+}
+
+void CDrayer::CreateMesh(ID3D11Device *pd3dDevice)
+{
+	//CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_Siegetank), 0.013f);
+	CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_Drayer));
+	pCharacterMesh->Initialize(pd3dDevice);
+
+	SetMesh(pCharacterMesh);
+}
+
+void CDrayer::CreateShader(ID3D11Device *pd3dDevice)
+{
+	m_pShader = new CCharacterShader();
+	m_pShader->CreateShader(pd3dDevice);
+}
+
+void CDrayer::CreateMaterial(ID3D11Device *pd3dDevice)
+{
+	CTexture *pCharacterTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
+	m_pMaterial = new CMaterial();
+
+	pCharacterTexture->SetTexture(0, eTexture_DrayerDiffuse);
+	pCharacterTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+
+	m_pMaterial->SetTexture(pCharacterTexture);
+}
+
+void CDrayer::CreateAnimation()
+{
+	m_pAnimController->AddAnimation(make_tuple(Animation::eIdle,	AnimationTrack("idle"), AnimationType::Loop));
+	m_pAnimController->AddAnimation(make_tuple(Animation::eRun,		AnimationTrack("Run"), AnimationType::Loop));
+	m_pAnimController->AddAnimation(make_tuple(Animation::eAttack,	AnimationTrack("CrossPunch"), AnimationType::Once));
+
+	m_pAnimController->SetAnimation(Animation::eIdle);
 }

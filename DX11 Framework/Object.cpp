@@ -267,6 +267,13 @@ CGameObject::~CGameObject()
 	if (m_pChild) delete m_pChild;
 }
 
+void CGameObject::CreateObjectData(ID3D11Device *pd3dDevice)
+{
+	CreateMesh(pd3dDevice);
+	CreateShader(pd3dDevice);
+	CreateMaterial(pd3dDevice);
+}
+
 void CGameObject::SetMesh(CMesh *pMesh, int nIndex)
 {
 	if (nIndex >= m_nMeshes)

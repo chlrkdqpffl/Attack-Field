@@ -13,36 +13,37 @@ CAnimationController::~CAnimationController()
 void CAnimationController::SetMesh(CSkinnedMesh* mesh)
 {
 	m_pSkinnedMesh = mesh; 
-
-	AnimationTrack track;
-	for (auto anim : m_pSkinnedMesh->GetAnimMap()) {
-		track.m_strClipName = anim.first;
-		m_animTrackVector.push_back(track);
-	}
 }
 
 void CAnimationController::SetAnimation(Animation::Character anim)
 {
-	for (auto list : m_animaitionTupleVector)
-		if (get<0>(list) == anim) {
-			m_animState = get<0>(list);
-			m_pSkinnedMesh->SetClipName(get<1>(list));
-			m_animType = get<2>(list);
+	for (auto& animState : m_animaitionTupleVector)
+		if (get<0>(animState) == anim) {
+			m_prevAnimState = m_currAnimState;
+			m_currAnimState = animState;
 			m_fTimePos = 0.0f;
+
+			m_pSkinnedMesh->SetClipName(get<1>(animState).m_strClipName);
 			return;
 		}
 }
 
-void CAnimationController::AddAnimation(tuple<Animation::Character, string, AnimationType::Type> anim)
+void CAnimationController::AddAnimation(tuple<Animation::Character, AnimationTrack, AnimationType::Type> anim)
 {
 	m_animaitionTupleVector.push_back(anim);
+	
+	auto animMap = m_pSkinnedMesh->GetAnimMap();
+	auto iter = animMap.find(get<1>(anim).m_strClipName);
+
+	if (iter == animMap.end())
+		ShowTaskFail("Animation Mapping Error!! < " + get<1>(anim).m_strClipName + " > \t 애니메이션 이름 확인이 필요!");
 }
 
-void  CAnimationController::UpdateTime(float fTimeElapsed)
+void CAnimationController::UpdateTime(float fTimeElapsed)
 {
 	float endTime = m_pSkinnedMesh->GetClipEndTime(m_pSkinnedMesh->GetClipName());
 
-	switch (m_animType) {
+	switch (GetAnimType()) {
 	case AnimationType::Loop:
 		m_fTimePos += fTimeElapsed;
 
@@ -84,8 +85,8 @@ void  CAnimationController::UpdateTime(float fTimeElapsed)
 void CAnimationController::Update(float fTimeElapsed)
 {
 	UpdateTime(fTimeElapsed);
-	//m_pSkinnedMesh->GetFinalTransforms_BlendingTest(fTimePos);
-	m_pSkinnedMesh->GetFinalTransforms(m_pSkinnedMesh->GetClipName(), m_fTimePos);
+//	m_pSkinnedMesh->GetFinalTransforms(m_pSkinnedMesh->GetClipName(), m_fTimePos); 
+	m_pSkinnedMesh->GetFinalTransformsBlending(get<1>(m_prevAnimState).m_strClipName, get<1>(m_currAnimState).m_strClipName, m_fTimePos);
 }
 
 void CAnimationController::UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext)

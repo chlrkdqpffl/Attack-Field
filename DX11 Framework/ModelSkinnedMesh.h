@@ -25,7 +25,7 @@ struct KeyframeData
 
 struct BoneData
 {
-	int m_nAnimaitionKeys;
+	UINT m_nAnimaitionKeys;
 	vector<KeyframeData> m_keyframeDataVector;
 
 	void Interpolate(float timePos, XMFLOAT4X4& boneTransforms) const;
@@ -60,14 +60,14 @@ protected:
 	XMFLOAT4					*m_pboneIndices = nullptr;
 	XMFLOAT4					*m_pboneWeights = nullptr;
 
-	int							m_nBoneCount = 0;
-	int							m_nAnimationClip = 0;
+	UINT						m_nBoneCount = 0;
+	UINT						m_nAnimationClip = 0;
 	string						m_strClipName;
 	map<string, AnimationData>	m_animationMap;
 
-	ID3D11Buffer				 *m_pd3dBoneWeightBuffer = nullptr;
-	ID3D11Buffer				 *m_pd3dBoneIndiceBuffer = nullptr;
-	ID3D11Buffer				 *m_pd3dcbBones = nullptr;
+	ID3D11Buffer				*m_pd3dBoneWeightBuffer = nullptr;
+	ID3D11Buffer				*m_pd3dBoneIndiceBuffer = nullptr;
+	ID3D11Buffer				*m_pd3dcbBones = nullptr;
 
 	float						m_fAnimationTime = 0.0f;
 	int							m_nAnimationNum = 0;
@@ -94,16 +94,14 @@ public:
 
 	// ----- Get, Setter ----- //
 	void GetFinalTransforms(const string& clipName, float fTimePos);
+	void GetFinalTransformsBlending(const string& prevAnimName, const string& currAnimName, float fTimePos);
 	float GetClipStartTime(const string& clipName) const;
 	float GetClipEndTime(const string& clipName) const;
 	const string& GetClipName() const { return m_strClipName; }
 	map<string, AnimationData> GetAnimMap() const {	return m_animationMap; }
-	
+
 	void SetClipName(string name) { m_strClipName = name; }
 
-
-
 	// Test
-	void GetFinalTransforms_BlendingTest(float fTimePos);
 	void Interpolate_BlendingTest(AnimationData& dataA, AnimationData& dataB, float timePos, vector<XMFLOAT4X4>& boneTransforms) const;
 };

@@ -206,37 +206,18 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma endregion
 
 #pragma region [Create Character]
-
-//CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_Siegetank), 0.013f);
-	CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_Drayer));
-	pCharacterMesh->Initialize(pd3dDevice);
-
-	CCharacterShader* pCharacterShader = new CCharacterShader();
-	pCharacterShader->CreateShader(pd3dDevice);
-
-	CTexture *pCharacterTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	CMaterial* pCharacterMaterial = new CMaterial();
-
-	pCharacterTexture->SetTexture(0, eTexture_DrayerDiffuse);
-	pCharacterTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
-
-	pCharacterMaterial->SetTexture(pCharacterTexture);
-
 	m_pPlayerCharacter = new CDrayer();
-	m_pPlayerCharacter->SetMesh(pCharacterMesh);
-	m_pPlayerCharacter->SetShader(pCharacterShader);
+	m_pPlayerCharacter->CreateObjectData(pd3dDevice);
+
 	m_pPlayerCharacter->SetPosition(100, 230, 120);
 	m_pPlayerCharacter->Rotate(-90, 0.0f, 0.0f);
-	m_pPlayerCharacter->SetMaterial(pCharacterMaterial);
 
 	m_vObjectsVector.push_back(m_pPlayerCharacter);
 #pragma endregion 
 
 	
 	CNormalMapObject* normalMapObject = new CNormalMapObject();
-	normalMapObject->CreateMaterial(pd3dDevice);
-	normalMapObject->CreateMesh(pd3dDevice);
-	normalMapObject->CreateShader(pd3dDevice);
+	normalMapObject->CreateObjectData(pd3dDevice);
 
 	normalMapObject->SetPosition(1000, 700, 1000);
 	m_vObjectsVector.push_back(normalMapObject);

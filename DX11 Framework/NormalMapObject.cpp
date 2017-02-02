@@ -11,7 +11,6 @@ CNormalMapObject::~CNormalMapObject()
 {
 }
 
-
 void CNormalMapObject::CreateMaterial(ID3D11Device *pd3dDevice)
 {
 	CMaterialColors *pColors = new CMaterialColors();
@@ -39,8 +38,6 @@ void CNormalMapObject::CreateMesh(ID3D11Device *pd3dDevice)
 
 void CNormalMapObject::CreateShader(ID3D11Device *pd3dDevice)
 {
-	// 배치 처리 고려해보기
-	
 	m_pShader = new CNormalDisplaceMapShader();
 //	m_pShader = new CNormalMapShader();
 	m_pShader->CreateShader(pd3dDevice);

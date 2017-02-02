@@ -109,9 +109,9 @@ void CSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 	bool isLoad = LoadFBXfromFile(m_fileName);
 #if defined(DEBUG) || defined(_DEBUG)
 	if (isLoad)
-		cout << "File Load Success!! <" << m_fileName.c_str() << ">" << endl;
+		ShowTaskSuccess("File Load Success!! <" + m_fileName + ">");
 	else {
-		cout << "File Load Error!! <" << m_fileName.c_str() << "> \t 파일 또는 경로를 확인하세요." << endl;
+		ShowTaskFail("File Load Error!! <" + m_fileName + "> \t 파일 또는 경로를 확인하세요.");
 		return;
 	}
 #endif
@@ -156,7 +156,7 @@ void CSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 	UINT pnBufferOffsets[5] = { 0, 0, 0, 0, 0 };
 	AssembleToVertexBuffer(5, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-	for (int i = 0, j = 0; i < m_nIndices / 3; ++i, j += 3) {
+	for (UINT i = 0, j = 0; i < m_nIndices / 3; ++i, j += 3) {
 		m_pnIndices[j] = (UINT)indexVector[i].x;
 		m_pnIndices[j + 1] = (UINT)indexVector[i].y;
 		m_pnIndices[j + 2] = (UINT)indexVector[i].z;
@@ -184,8 +184,6 @@ void CSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 	CreateConstantBuffer(pd3dDevice);
 
 	m_strClipName = m_animationMap.rbegin()->first; // 제일 처음 들어간 애니메이션이 초기 애니메이션
-//	m_nMaxFrameNum = 108; // idle
-//	m_nMaxFrameNum = 37; // CrossPunch
 }
 
 bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
@@ -229,7 +227,7 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 		fin >> animationClips;
 
 		fin >> buf; // [VERTEX_DATA]
-		for (int i = 0; i < vertexCount; ++i) {
+		for (UINT i = 0; i < vertexCount; ++i) {
 //			fin >> buf;	// Position
 			fin >> pos.x >> pos.y >> pos.z;
 //			fin >> buf;	// Normal
@@ -249,21 +247,21 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 		}
 
 		fin >> buf; // [INDEX_DATA]
-		for (int i = 0; i < indexCount / 3; ++i) {
+		for (UINT i = 0; i < indexCount / 3; ++i) {
 			fin >> index.x >> index.y >> index.z;
 
 			indexVector.push_back(index);
 		}
 
 		fin >> buf; // [BONE_HIERARCHY]
-		for (int i = 0; i < boneCount; ++i) {
+		for (UINT i = 0; i < boneCount; ++i) {
 			fin >> boneHierarchy;
 
 			boneHierarchyVector.push_back(boneHierarchy);
 		}
 
 		fin >> buf; // [OFFSET_MATRIX]
-		for (int i = 0; i < boneCount; ++i) {
+		for (UINT i = 0; i < boneCount; ++i) {
 //			fin >> buf; // BoneOffSet
 			fin >> boneOffset._11 >> boneOffset._12 >> boneOffset._13 >> boneOffset._14;
 			fin >> boneOffset._21 >> boneOffset._22 >> boneOffset._23 >> boneOffset._24;
@@ -275,18 +273,18 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 
 		animaitionData.m_boneDataVector.reserve(boneCount);
 		fin >> buf; // [ANIMATION_CLIPS]
-		for (int clip = 0; clip < animationClips; ++clip) {
+		for (UINT clip = 0; clip < animationClips; ++clip) {
 			fin >> buf; // AnimationClip 
 			fin >> animationName;
 //			fin >> buf;	// {
 			
-			for (int bone = 0; bone < boneCount; ++bone) {
+			for (UINT bone = 0; bone < boneCount; ++bone) {
 				fin >> buf; // Bone			Bone0 : 351
 				fin >> boneData.m_nAnimaitionKeys;
 //				fin >> buf;	// {
 		
 				boneData.m_keyframeDataVector.reserve(boneData.m_nAnimaitionKeys);
-				for (int frame = 0; frame < boneData.m_nAnimaitionKeys; ++frame) {
+				for (UINT frame = 0; frame < boneData.m_nAnimaitionKeys; ++frame) {
 					fin >> keyframeData.m_fAnimationTime;
 					fin >> keyframeData.m_xmf3Translate.x >> keyframeData.m_xmf3Translate.y >> keyframeData.m_xmf3Translate.z;
 					fin >> keyframeData.m_xmf3Scale.x >> keyframeData.m_xmf3Scale.y >> keyframeData.m_xmf3Scale.z;
@@ -380,7 +378,7 @@ void CSkinnedMesh::UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext)
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	pd3dDeviceContext->Map(m_pd3dcbBones, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	VS_CB_SKINNED *pcbBones = (VS_CB_SKINNED*)d3dMappedResource.pData;
-	for (int i = 0; i < m_nBoneCount; i++)
+	for (UINT i = 0; i < m_nBoneCount; i++)
 	{
 		XMStoreFloat4x4(&pcbBones->m_mtxBoneTransform[i], XMMatrixTranspose(finalBoneVector[i]));
 	}
@@ -412,24 +410,6 @@ void CSkinnedMesh::MakeBoneMatrix(int nNowframe, int nBoneNum, vector<XMMATRIX> 
 	SQTTransformVector.push_back(mtxBone);
 }
 
-void CSkinnedMesh::GetFinalTransforms(const string& clipName, float fTimePos)
-{
-	vector<XMFLOAT4X4> toRootTransforms(m_nBoneCount);
-
-	auto clip = m_animationMap.find(clipName);
-	clip->second.Interpolate(fTimePos, toRootTransforms);
-
-	finalBoneVector.resize(m_nBoneCount);
-
-	for (UINT i = 0; i < m_nBoneCount; ++i)
-	{
-		XMMATRIX mtxOffset = XMLoadFloat4x4(&boneOffsetsVector[i]);
-		XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
-
-		finalBoneVector[i] = mtxOffset * mtxToRoot;
-	}
-}
-
 void CSkinnedMesh::Interpolate_BlendingTest(AnimationData& basicData, AnimationData& targetData, float fTimePos, vector<XMFLOAT4X4>& boneTransforms) const
 {
 	XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
@@ -438,9 +418,9 @@ void CSkinnedMesh::Interpolate_BlendingTest(AnimationData& basicData, AnimationD
 	XMVECTOR Q1 = zero, Q2 = zero;
 
 	static float addTime = 0.0f;
-	float blendFactor = addTime / 2.0f;
+	float blendFactor = addTime / 5.0f;
 	// -- Test -- //
-	addTime += 0.0033; // 30 frame
+	addTime += 0.0033f; // 30 frame
 	// -- ---- -- //
 	cout << blendFactor << endl;
 
@@ -488,7 +468,6 @@ void CSkinnedMesh::Interpolate_BlendingTest(AnimationData& basicData, AnimationD
 			}
 		}
 
-
 		if (0 < targetData.m_boneDataVector[i].m_nAnimaitionKeys)
 		{
 			vector<KeyframeData> keyframeDataVector = targetData.m_boneDataVector[i].m_keyframeDataVector;
@@ -504,22 +483,23 @@ void CSkinnedMesh::Interpolate_BlendingTest(AnimationData& basicData, AnimationD
 			return;
 		}
 
-		XMVECTOR S = XMVectorLerp(S1, S2, blendFactor);
-		XMVECTOR P = XMVectorLerp(P1, P2, blendFactor);
-		XMVECTOR Q = XMQuaternionSlerp(Q1, Q2, blendFactor);
+//		XMVECTOR S = XMVectorLerp(S1, S2, blendFactor);
+//		XMVECTOR P = XMVectorLerp(P1, P2, blendFactor);
+//		XMVECTOR Q = XMQuaternionSlerp(Q1, Q2, blendFactor);
+		XMVECTOR S = XMVectorLerp(S1, S2, 1);
+		XMVECTOR P = XMVectorLerp(P1, P2, 1);
+		XMVECTOR Q = XMQuaternionSlerp(Q1, Q2, 1);
 
 		XMStoreFloat4x4(&boneTransforms[i], XMMatrixAffineTransformation(S, zero, Q, P));
 	}
 }
 
-void CSkinnedMesh::GetFinalTransforms_BlendingTest(float fTimePos)
+void CSkinnedMesh::GetFinalTransforms(const string& clipName, float fTimePos)
 {
 	vector<XMFLOAT4X4> toRootTransforms(m_nBoneCount);
-		
-	auto idleClip = m_animationMap.find("idle");
-	auto runClip = m_animationMap.find("Run");
-	
-	Interpolate_BlendingTest(idleClip->second, runClip->second, fTimePos, toRootTransforms);
+
+	auto clip = m_animationMap.find(clipName);
+	clip->second.Interpolate(fTimePos, toRootTransforms);
 
 	finalBoneVector.resize(m_nBoneCount);
 
@@ -532,17 +512,40 @@ void CSkinnedMesh::GetFinalTransforms_BlendingTest(float fTimePos)
 	}
 }
 
+void CSkinnedMesh::GetFinalTransformsBlending(const string& prevAnimName, const string& currAnimName, float fTimePos)
+{
+	vector<XMFLOAT4X4> toRootTransforms(m_nBoneCount);
+	
+	if (prevAnimName == "") {
+		GetFinalTransforms(currAnimName, fTimePos);
+		return;
+	}
+	auto pervClip = m_animationMap.find(prevAnimName);
+	auto currClip = m_animationMap.find(currAnimName);
+	
+	Interpolate_BlendingTest(pervClip->second, currClip->second, fTimePos, toRootTransforms);
+
+	finalBoneVector.resize(m_nBoneCount);
+
+	for (UINT i = 0; i < m_nBoneCount; ++i)
+	{
+		XMMATRIX mtxOffset = XMLoadFloat4x4(&boneOffsetsVector[i]);
+		XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
+
+		finalBoneVector[i] = mtxOffset * mtxToRoot;
+	}
+}
 
 void CSkinnedMesh::UpdateBoneTransform(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	vector<XMMATRIX> SQTTransformVector;
 
-	for (int i = 0; i < m_nBoneCount; i++)
+	for (UINT i = 0; i < m_nBoneCount; i++)
 		MakeBoneMatrix(m_nNowFrameNum, i, SQTTransformVector);
 
 	finalBoneVector.resize(m_nBoneCount);
 
-	for (int i = 0; i < m_nBoneCount; i++)
+	for (UINT i = 0; i < m_nBoneCount; i++)
 	{
 		XMMATRIX mtxOffset = XMLoadFloat4x4(&boneOffsetsVector[i]);
 		XMMATRIX mtxToRoot = SQTTransformVector[i];
@@ -569,85 +572,3 @@ void CSkinnedMesh::Update(float fTimeElapsed)
 		}
 	}
 }
-
-
-/*
-// 다음 애니메이션을 위한 프레임으로 넘긴다.
-// 추가적인 애니메이션 관리를 위해 마지막 프레임일 경우 true를 리턴한다.
-bool CSkinnedMesh::FBXFrameAdvance(float fTimeElapsed)//2016.5.14 수정된 부분
-{
-	m_fFBXAnimationTime += fTimeElapsed;
-
-	if (m_fFBXAnimationTime > 0.033333f)	// 0.0333333f초가 지나면 1프레임 올리자.
-	{
-		if (m_nFBXNowFrameNum < m_nFBXMaxFrameNum - 1)
-		{
-			m_nFBXNowFrameNum++;
-			m_fFBXAnimationTime = 0.0f;//
-			return false;//애니메이션이 끝났는가?
-		}
-		else
-		{
-			m_nFBXNowFrameNum = m_nFBXStartFrameNum;//수정됨
-			m_fFBXAnimationTime = 0.0f;
-			return true;//애니메이션이 끝났는가?
-		}
-	}
-	else
-		return false;//애니메이션이 끝났는가?
-}
-
-void CSkinnedMesh::SetAnimation(int nFBXAnimation) // 의미없는 코드부다. 조만간 삭제할 예정임
-{
-	m_nFBXAnimationNum = nFBXAnimation;
-	m_nFBXNowFrameNum = 0;
-	m_nFBXMaxFrameNum = s_ppBoneAnimationData[nFBXAnimation][1].m_nFrameCount;//2016.5.13 박종혁 0은 원래 1이었다.
-																			  //m_nFBXMaxFrameNum = 81;
-	m_fFBXAnimationTime = 0.0f;
-}
-
-void CSkinnedMesh::IdleSet()
-{
-	m_nFBXAnimationNum = 0;// ANIM_STATIC;
-	m_fFBXAnimationTime = 0.0f;
-
-	m_nFBXStartFrameNum = 0;
-	m_nFBXMaxFrameNum = 50;
-	m_nFBXNowFrameNum = m_nFBXStartFrameNum;
-}
-
-void CSkinnedMesh::WalkAnimationSet()
-{
-	m_nFBXAnimationNum = 0;// ANIM_STATIC;
-	m_fFBXAnimationTime = 0.0f;
-
-	m_nFBXStartFrameNum = 51;
-	m_nFBXMaxFrameNum = 80;
-	m_nFBXNowFrameNum = m_nFBXStartFrameNum;
-}
-
-
-void CSkinnedMesh::AnimationDestroy()
-{
-	if (s_pd3dxmtxBoneOffsets)
-		delete[]s_pd3dxmtxBoneOffsets;
-	if (s_ppBoneAnimationData)
-	{
-		for (int i = 0; i < s_nAnimationClip; i++)
-		{
-			for (int j = 0; j < s_nBoneCount; j++)
-			{
-				if (s_ppBoneAnimationData[i][j].m_nFrameCount != 0)
-				{
-					delete[] s_ppBoneAnimationData[i][j].m_pd3dxvTranslate;
-					delete[] s_ppBoneAnimationData[i][j].m_pd3dxvScale;
-					delete[] s_ppBoneAnimationData[i][j].m_pd3dxvQuaternion;
-					delete[] s_ppBoneAnimationData[i][j].m_pfAniTime;
-				}
-			}
-			delete[] s_ppBoneAnimationData[i];
-		}
-		delete[] s_ppBoneAnimationData;
-	}
-}
-*/

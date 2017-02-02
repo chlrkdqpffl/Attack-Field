@@ -8,10 +8,8 @@ CModelMesh_FBX::CModelMesh_FBX(ID3D11Device *pd3dDevice, const string& fileName,
 
 CModelMesh_FBX::~CModelMesh_FBX()
 {
-	//if (m_pPositions) delete[] m_pPositions;
 	if (m_pNormals) delete[] m_pNormals;
 	if (m_pTexCoords) delete[] m_pTexCoords;
-//	if (m_pnIndices) delete[] m_pnIndices;
 	ReleaseCOM(m_pd3dTangentBuffer);
 }
 
@@ -20,9 +18,9 @@ void CModelMesh_FBX::Initialize(ID3D11Device *pd3dDevice)
 	bool isLoad = LoadFBXfromFile(m_fileName);
 #if defined(DEBUG) || defined(_DEBUG)
 	if (isLoad)
-		cout << "File Load Success!! <" << m_fileName.c_str() << ">" << endl;
+		ShowTaskSuccess("File Load Success!! <" + m_fileName + ">");
 	else {
-		cout << "File Load Error!! <" << m_fileName.c_str() << "> \t 파일 또는 경로를 확인하세요." << endl;
+		ShowTaskFail("File Load Error!! <" + m_fileName + "> \t 파일 또는 경로를 확인하세요.");
 		return;
 	}
 #endif
@@ -56,7 +54,7 @@ void CModelMesh_FBX::Initialize(ID3D11Device *pd3dDevice)
 	UINT pnBufferOffsets[3] = { 0, 0, 0 };
 	AssembleToVertexBuffer(3, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-	for (int i = 0, j = 0; i < m_nIndices / 3; ++i, j += 3) {
+	for (UINT i = 0, j = 0; i < m_nIndices / 3; ++i, j += 3) {
 		m_pnIndices[j] = (UINT)indexVector[i].x;
 		m_pnIndices[j + 1] = (UINT)indexVector[i].y;
 		m_pnIndices[j + 2] = (UINT)indexVector[i].z;
@@ -121,7 +119,7 @@ bool CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
 		fin >> buf >> animationCount;
 
 		fin >> buf; // [VERTEX_DATA]
-		for (int i = 0; i < vertexCount; ++i) {
+		for (UINT i = 0; i < vertexCount; ++i) {
 			fin >> buf;	// Position
 			fin >> pos.x >> pos.y >> pos.z;
 			fin >> buf;	// Normal
@@ -135,7 +133,7 @@ bool CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
 		}
 
 		fin >> buf; // [INDEX_DATA]
-		for (int i = 0; i < indexCount / 3; ++i) {
+		for (UINT i = 0; i < indexCount / 3; ++i) {
 			fin >> index.x >> index.y >> index.z;
 
 			indexVector.push_back(index);

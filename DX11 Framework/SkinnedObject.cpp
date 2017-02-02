@@ -12,6 +12,12 @@ CSkinnedObject::~CSkinnedObject()
 	SafeDelete(m_pAnimController);
 }
 
+void CSkinnedObject::CreateObjectData(ID3D11Device *pd3dDevice)
+{
+	CGameObject::CreateObjectData(pd3dDevice);
+	CreateAnimation();
+}
+
 void CSkinnedObject::SetMesh(CSkinnedMesh* mesh) 
 {
 	CGameObject::SetMesh(mesh);

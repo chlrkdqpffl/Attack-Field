@@ -127,3 +127,18 @@ inline void ShowXMFloat4x4(XMFLOAT4X4 mtx)
 	cout << mtx._31 << ", " << mtx._32 << ", " << mtx._33 << ", " << mtx._34 << endl;
 	cout << mtx._41 << ", " << mtx._42 << ", " << mtx._43 << ", " << mtx._44 << endl << endl;
 }
+
+inline void ShowTaskSuccess(string message)
+{
+#if defined(DEBUG) || defined(_DEBUG)
+	cout << message << endl;
+#endif
+}
+
+inline void ShowTaskFail(string message)
+{
+#if defined(DEBUG) || defined(_DEBUG)
+	cout << message << endl;
+	system("pause");
+#endif
+}

@@ -101,6 +101,10 @@ class CGameObject
 public:
 	CGameObject(int nMeshes = 0);
 	virtual ~CGameObject();
+	virtual void CreateObjectData(ID3D11Device *pd3dDevice);
+	virtual void CreateMesh(ID3D11Device *pd3dDevice) { print("No have Mesh"); };
+	virtual void CreateShader(ID3D11Device *pd3dDevice) { print("No have Shader"); };
+	virtual void CreateMaterial(ID3D11Device *pd3dDevice) { print("No have Material"); };
 
 private:
 	int								m_nReferences = 0;
