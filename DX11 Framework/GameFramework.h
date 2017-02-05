@@ -81,7 +81,7 @@ private:
 	CCamera							*m_pCamera;
 
 	POINT							m_ptOldCursorPos;
-	_TCHAR							m_pszBuffer[50];
+	wstring							m_strTitleName;
 
 
 	// Graphic Card Info

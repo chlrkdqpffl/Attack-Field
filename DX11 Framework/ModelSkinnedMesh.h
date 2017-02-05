@@ -9,6 +9,8 @@ namespace AnimationType
 	};
 }
 
+struct AnimationTrack;
+
 struct VS_CB_SKINNED
 {
 	XMFLOAT4X4	m_mtxBoneTransform[MAXBONECOUNT];
@@ -87,6 +89,7 @@ public:
 	void UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext);
 	void ReleaseConstantBuffer();
 
+	void Interpolate_Blending(const AnimationData& dataA, bool& enable, const AnimationData& dataB, float timePos, vector<XMFLOAT4X4>& boneTransforms) const;
 	void MakeBoneMatrix(int nNowframe, int nBoneNum, vector<XMMATRIX>&) const;
 
 	void UpdateBoneTransform(ID3D11DeviceContext *pd3dDeviceContext);
@@ -94,14 +97,12 @@ public:
 
 	// ----- Get, Setter ----- //
 	void GetFinalTransforms(const string& clipName, float fTimePos);
-	void GetFinalTransformsBlending(const string& prevAnimName, const string& currAnimName, float fTimePos);
+	void GetFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, float fTimePos);
+	
 	float GetClipStartTime(const string& clipName) const;
 	float GetClipEndTime(const string& clipName) const;
 	const string& GetClipName() const { return m_strClipName; }
 	map<string, AnimationData> GetAnimMap() const {	return m_animationMap; }
 
 	void SetClipName(string name) { m_strClipName = name; }
-
-	// Test
-	void Interpolate_BlendingTest(AnimationData& dataA, AnimationData& dataB, float timePos, vector<XMFLOAT4X4>& boneTransforms) const;
 };

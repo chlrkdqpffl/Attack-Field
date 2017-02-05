@@ -5,7 +5,7 @@ struct AnimationTrack
 	string m_strClipName;
 	bool m_bEnable = false;
 	float m_fSpeed = 0.0f;
-	float m_fPosition = 0.0f;
+	float m_fTimePos = 0.0f;
 	float m_fWeight = 0.0f;
 
 	AnimationTrack() {}

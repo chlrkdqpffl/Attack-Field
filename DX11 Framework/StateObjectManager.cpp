@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "StateObjectManager.h"
 
+ID3D11Device*			CStateObjectManager::g_pd3dDevice					= 0;
+ID3D11DeviceContext*	CStateObjectManager::g_pd3dImmediateDeviceContext	= 0;
 
 ID3D11RasterizerState*	CStateObjectManager::g_pDefaultRS			= 0;
 ID3D11RasterizerState*	CStateObjectManager::g_pWireframeRS			= 0;
@@ -15,11 +17,8 @@ ID3D11SamplerState*		CStateObjectManager::g_pLinearWarpSS		= 0;
 ID3D11SamplerState*		CStateObjectManager::g_pPointWarpSS			= 0;
 
 
-
 CStateObjectManager::CStateObjectManager()
 {
-	g_pd3dDevice = nullptr;
-	g_pd3dImmediateDeviceContext = nullptr;
 }
 
 CStateObjectManager::~CStateObjectManager()

@@ -4,6 +4,8 @@
 //#define FRAME_BUFFER_WIDTH				1280
 //#define FRAME_BUFFER_HEIGHT				768
 
+#define PROJECT_NAME					L"DX11_Framework ("
+
 #define FRAME_BUFFER_WIDTH				1600
 #define FRAME_BUFFER_HEIGHT				900
 
@@ -31,6 +33,12 @@
 #define RESOURCE_MGR CResourceManager::GetInstance()
 #define SCENE_MGR CSceneManager::GetInstance()
 #define TEXT_MGR CTextManager::GetInstance()
+#define TWBAR_MGR CAntTweakBarManager::GetInstance()
+
+// Check Timer
+#define STARTTIMER(msg)			{ cout << msg; STATEOBJ_MGR->g_startTime = chrono::system_clock::now();}
+#define ENDTIMER				{STATEOBJ_MGR->g_timeGap = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now() - STATEOBJ_MGR->g_startTime); \
+								 cout << STATEOBJ_MGR->g_timeGap.count() << " milliseconds" << endl;}
 
 // Returns random float in [a, b).
 #define RAND_FLOAT(a, b) float(a + ((float)(rand()) / (float)RAND_MAX) * (b - a))

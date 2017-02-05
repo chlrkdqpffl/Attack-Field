@@ -50,7 +50,7 @@ void CResourceManager::InitializeManager()
 	AddResourece(eMesh_DarkFighter,				"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.data");
 	AddResourece(eMesh_Siegetank,				"../Assets/FBX Model/siegetank.data");
 	AddResourece(eMesh_Drayer,					"../Assets/FBX Model/drayer_animation.data");
-//	AddResourece(eMesh_Drayer,					"../Assets/FBX Model/Dreyar_by_M.data");
+	AddResourece(eMesh_Test,					"../Assets/FBX Model/testt.data");
 }
 
 void CResourceManager::ReleseManager()
@@ -112,7 +112,7 @@ ID3D11ShaderResourceView* CResourceManager::FindResourceAndCreateSRV(Resource_Te
 	
 	HRESULT hResult;
 	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
-	D3DX11CreateShaderResourceViewFromFile(STATEOBJ_MGR->g_pd3dDevice.Get(), wstr.c_str(), NULL, NULL, &pd3dsrvTexture, &hResult);
+	D3DX11CreateShaderResourceViewFromFile(STATEOBJ_MGR->g_pd3dDevice, wstr.c_str(), NULL, NULL, &pd3dsrvTexture, &hResult);
 
 	str = "TextureTag : " + to_string(resourceTag);
 	DXUT_SetDebugName(pd3dsrvTexture, str.c_str());

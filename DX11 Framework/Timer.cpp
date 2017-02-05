@@ -22,7 +22,7 @@ CGameTimer::CGameTimer()
 
     m_nSampleCount = 0;
 	m_nCurrentFrameRate = 0;
-	m_FramePerSecond = 0;
+	m_nFramePerSecond = 0;
 	m_fFPSTimeElapsed = 0.0f;
 }
 
@@ -32,18 +32,21 @@ CGameTimer::~CGameTimer()
 
 void CGameTimer::Tick(float fLockFPS)
 {
-    float fTimeElapsed;
+    float fTimeElapsed, fRealTimeElapsed;
 
 	if (m_bHardwareHasPerformanceCounter) 
     {
 		QueryPerformanceCounter((LARGE_INTEGER *)&m_nCurrentTime);
+		m_nRealCurrentTime = m_nCurrentTime;
 	} 
     else 
     {
 		m_nCurrentTime = ::timeGetTime();
+		m_nRealCurrentTime = m_nCurrentTime;
 	} 
 
 	fTimeElapsed = (m_nCurrentTime - m_nLastTime) * m_fTimeScale;
+	fRealTimeElapsed = (m_nRealCurrentTime - m_nLastTime) *m_fTimeScale;
 
     if (fLockFPS > 0.0f)
     {
@@ -73,36 +76,47 @@ void CGameTimer::Tick(float fLockFPS)
     }
 
 	// Calculate Frame Rate
-	m_FramePerSecond++;
+	m_nFramePerSecond++;
+	m_nRealFramePerSecond++;
+
 	m_fFPSTimeElapsed += fTimeElapsed;
+	m_fRealFPSTimeElapsed += fRealTimeElapsed;
+
 	if (m_fFPSTimeElapsed > 1.0f) 
     {
-		m_nCurrentFrameRate	= m_FramePerSecond;
-		m_FramePerSecond = 0;
+		m_nCurrentFrameRate	= m_nFramePerSecond;
+		m_nFramePerSecond = 0;
 		m_fFPSTimeElapsed = 0.0f;
 	} 
+
+	if (m_fRealFPSTimeElapsed > 1.0f)
+	{
+		m_nRealFrameRate = m_nRealFramePerSecond;
+		m_nRealFramePerSecond = 0;
+		m_fRealFPSTimeElapsed = 0.0f;
+	}
 
     // Count up the new average elapsed time
     m_fTimeElapsed = 0.0f;
     for (ULONG i = 0; i < m_nSampleCount; i++) m_fTimeElapsed += m_fFrameTime[i];
     if (m_nSampleCount > 0) m_fTimeElapsed /= m_nSampleCount;
 
+
 	SCENE_MGR->fTimeElapsed = fTimeElapsed;
 	SCENE_MGR->fFrameRate = GetFrameRate();
 }
 
-unsigned long CGameTimer::GetFrameRate(LPTSTR lpszString, int nCharacters) const
+void CGameTimer::SetTitleName(wstring& wStr)
 {
-    if (lpszString)
-    {
-        _itow_s(m_nCurrentFrameRate, lpszString, nCharacters, 10);
-        wcscat_s(lpszString, nCharacters, _T(" FPS)"));
-    } 
+	wStr = PROJECT_NAME;
 
-    return(m_nCurrentFrameRate);
-}
+	WCHAR str[50];
+	_itow(m_nCurrentFrameRate, str, 10);
 
-float CGameTimer::GetTimeElapsed() const
-{
-    return(m_fTimeElapsed);
+	wStr += str;
+	wStr += L" FPS, ";
+
+	_itow(m_nRealFrameRate, str, 10);
+	wStr += str;
+	wStr += L" FPS)";
 }

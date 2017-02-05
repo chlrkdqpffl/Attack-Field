@@ -9,9 +9,9 @@ public:
 
 	virtual void InitializeManager() override;
 	virtual void ReleseManager() override;
-	
-	ComPtr<ID3D11Device>			g_pd3dDevice;
-	ComPtr<ID3D11DeviceContext>		g_pd3dImmediateDeviceContext;
+
+	static ID3D11Device*			g_pd3dDevice;
+	static ID3D11DeviceContext*		g_pd3dImmediateDeviceContext;
 
 	static ID3D11RasterizerState*	g_pDefaultRS;
 	static ID3D11RasterizerState*	g_pWireframeRS;
@@ -24,6 +24,8 @@ public:
 	static ID3D11SamplerState*		g_pPointClampSS;
 	static ID3D11SamplerState*		g_pPointWarpSS;
 	static ID3D11SamplerState*		g_pLinearWarpSS;
-	
-};
 
+	// Timer
+	chrono::system_clock::time_point		g_startTime;
+	chrono::milliseconds  					g_timeGap;
+};

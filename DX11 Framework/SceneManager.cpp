@@ -25,5 +25,5 @@ void CSceneManager::ChangeScene(CScene* newScene)
 	}
 	m_nowScene = newScene;
 
-	m_nowScene->BuildObjects(STATEOBJ_MGR->g_pd3dDevice.Get());
+	m_nowScene->BuildObjects(STATEOBJ_MGR->g_pd3dDevice);
 }

@@ -9,8 +9,10 @@ public:
 	virtual ~CGameTimer();
 
 	void Tick(float fLockFPS = 0.0f);
-    unsigned long GetFrameRate(LPTSTR lpszString = NULL, int nCharacters=0) const;
-    float GetTimeElapsed() const;
+
+	unsigned long GetFrameRate() const { return m_nCurrentFrameRate; }
+	float GetTimeElapsed() const { return m_fTimeElapsed; }
+	void SetTitleName(wstring& wStr);
 
 private:
     bool							m_bHardwareHasPerformanceCounter;   // Has Performance Counter
@@ -24,6 +26,11 @@ private:
     ULONG							m_nSampleCount;
 
     unsigned long					m_nCurrentFrameRate;				// Stores current framerate
-	unsigned long					m_FramePerSecond;					// Elapsed frames in any given second
+	unsigned long					m_nFramePerSecond;					// Elapsed frames in any given second
 	float							m_fFPSTimeElapsed;					// How much time has passed during FPS sample
+	
+	__int64							m_nRealCurrentTime;
+	unsigned long					m_nRealFrameRate = 0;
+	unsigned long					m_nRealFramePerSecond;
+	float							m_fRealFPSTimeElapsed = 0.0f;
 };

@@ -17,13 +17,17 @@ void CAnimationController::SetMesh(CSkinnedMesh* mesh)
 
 void CAnimationController::SetAnimation(Animation::Character anim)
 {
+	if (get<0>(m_currAnimState) == anim)
+		return;
+
 	for (auto& animState : m_animaitionTupleVector)
 		if (get<0>(animState) == anim) {
 			m_prevAnimState = m_currAnimState;
 			m_currAnimState = animState;
-			m_fTimePos = 0.0f;
 
-			m_pSkinnedMesh->SetClipName(get<1>(animState).m_strClipName);
+			m_fTimePos = 0.0f;
+			get<1>(m_currAnimState).m_bEnable = true;
+			m_pSkinnedMesh->SetClipName(get<1>(m_currAnimState).m_strClipName);
 			return;
 		}
 }
@@ -49,16 +53,17 @@ void CAnimationController::UpdateTime(float fTimeElapsed)
 
 		if (m_fTimePos > endTime)
 			m_fTimePos = 0.0f;
-		break;
 
+		break;
 	case AnimationType::Once:
 		m_fTimePos += fTimeElapsed;
 
 		if (m_fTimePos  > endTime) {
-			m_fTimePos = 0.0f;
 			SetAnimation(Animation::eIdle);
+			m_fTimePos = 0.0f;
 		}
 
+		break;
 	case AnimationType::PingPong:
 		static bool isReverse = false;
 
@@ -85,8 +90,7 @@ void CAnimationController::UpdateTime(float fTimeElapsed)
 void CAnimationController::Update(float fTimeElapsed)
 {
 	UpdateTime(fTimeElapsed);
-//	m_pSkinnedMesh->GetFinalTransforms(m_pSkinnedMesh->GetClipName(), m_fTimePos); 
-	m_pSkinnedMesh->GetFinalTransformsBlending(get<1>(m_prevAnimState).m_strClipName, get<1>(m_currAnimState).m_strClipName, m_fTimePos);
+	m_pSkinnedMesh->GetFinalTransformsBlending(get<1>(m_prevAnimState), get<1>(m_currAnimState), m_fTimePos);
 }
 
 void CAnimationController::UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext)

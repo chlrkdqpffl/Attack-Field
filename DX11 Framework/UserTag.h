@@ -13,7 +13,7 @@ namespace Animation
 {
 	enum Character
 	{
-		eIdle, eRun, eAttack, eDeath
+		eNone, eIdle, eRun, eAttack, eDeath
 	};
 }
 
@@ -39,5 +39,5 @@ enum Resource_TextrueTag {
 
 // eMesh
 enum Resource_MeshTag {
-	eMesh_DarkFighter, eMesh_Siegetank, eMesh_Drayer
+	eMesh_DarkFighter, eMesh_Siegetank, eMesh_Drayer, eMesh_Test
 };

@@ -16,10 +16,11 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-
-//#include <D3D9Types.h>
 #include <Mmsystem.h>
+//#include <D3D9Types.h>
+
 #include <iostream>
+#include <chrono>
 
 // DirectX 11
 #include <d3d11.h>
@@ -50,12 +51,6 @@
 // AntTweakBar
 #include <AntTweakBar.h>
 
-// Comptr
-#include <wrl.h>
-#include <wrl\client.h>
-using namespace Microsoft::WRL;
-//
-
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 using namespace std;
@@ -78,6 +73,7 @@ using namespace std;
 #include "ResourceManager.h"
 #include "SceneManager.h"
 #include "TextManager.h"
+#include "AntTweakBarManager.h"
 // ------------------------------- //
 
 inline char* ConvertWCtoC(const WCHAR* str)

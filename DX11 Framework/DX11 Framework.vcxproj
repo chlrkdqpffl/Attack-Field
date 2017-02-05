@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="AirplanePlayer.cpp" />
     <ClCompile Include="AnimationController.cpp" />
+    <ClCompile Include="AntTweakBarManager.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CharacterShader.cpp" />
     <ClCompile Include="Drayer.cpp" />
@@ -207,6 +208,7 @@
   <ItemGroup>
     <ClInclude Include="AirplanePlayer.h" />
     <ClInclude Include="AnimationController.h" />
+    <ClInclude Include="AntTweakBarManager.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CharacterShader.h" />
     <ClInclude Include="ConstantBuffer_Slot.h" />

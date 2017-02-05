@@ -209,7 +209,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_pPlayerCharacter = new CDrayer();
 	m_pPlayerCharacter->CreateObjectData(pd3dDevice);
 
-	m_pPlayerCharacter->SetPosition(100, 230, 120);
+	m_pPlayerCharacter->SetPosition(-500, -500, 1000);
 	m_pPlayerCharacter->Rotate(-90, 0.0f, 0.0f);
 
 	m_vObjectsVector.push_back(m_pPlayerCharacter);
@@ -370,28 +370,23 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 void CScene_Main::CreateTweakBars()
 {
-	TwBar *bar = TwNewBar("TweakBar");
+	TwBar *tweakBar = TWBAR_MGR->g_tweakBar;
 
-	TwDefine(" GLOBAL help='This example shows how to integrate AntTweakBar into a DirectX11 application.' "); // Message added to the help bar.
-	TwDefine(" TweakBar size = '300 300'"); 
-	TwDefine(" TweakBar alpha = 230");   // transparent bar
-	TwDefine(" TweakBar position = '30 100'");
-	
-	TwAddVarRW(bar, "Light direction", TW_TYPE_DIR3F, &m_pLights->m_pLights[0].m_d3dxvDirection, "group = Light opened = true axisz = -z");
-	TwAddVarRW(bar, "Global Ambient", TW_TYPE_FLOAT, &m_fGlobalAmbient, "group = Light min = 0 max = 1 step = 0.05");
+	TwAddVarRW(tweakBar, "Light direction", TW_TYPE_DIR3F, &m_pLights->m_pLights[0].m_d3dxvDirection, "group = Light opened = true axisz = -z");
+	TwAddVarRW(tweakBar, "Global Ambient", TW_TYPE_FLOAT, &m_fGlobalAmbient, "group = Light min = 0 max = 1 step = 0.05");
 	
 	// Option
-	TwAddVarRW(bar, "RGB Axis Option", TW_TYPE_BOOLCPP, &m_bShowRGBAxis, "group = Option key=o");
+	TwAddVarRW(tweakBar, "RGB Axis Option", TW_TYPE_BOOLCPP, &m_bShowRGBAxis, "group = Option");
 	
 	/*
 	// Add variables to the tweak bar
-	TwAddVarCB(bar, "Level", TW_TYPE_INT32, SetSpongeLevelCB, GetSpongeLevelCB, NULL, "min=0 max=3 group=Sponge keyincr=l keydecr=L");
-	TwAddVarCB(bar, "Ambient Occlusion", TW_TYPE_BOOLCPP, SetSpongeAOCB, GetSpongeAOCB, NULL, "group=Sponge key=o");
-	TwAddVarRW(bar, "Rotation", TW_TYPE_QUAT4F, &g_SpongeRotation, "opened=true axisz=-z group=Sponge");
+	TwAddVarCB(tweakBar, "Level", TW_TYPE_INT32, SetSpongeLevelCB, GetSpongeLevelCB, NULL, "min=0 max=3 group=Sponge keyincr=l keydecr=L");
+	TwAddVarCB(tweakBar, "Ambient Occlusion", TW_TYPE_BOOLCPP, SetSpongeAOCB, GetSpongeAOCB, NULL, "group=Sponge key=o");
+	TwAddVarRW(tweakBar, "Rotation", TW_TYPE_QUAT4F, &g_SpongeRotation, "opened=true axisz=-z group=Sponge");
 	
 	
-	TwAddVarRW(bar, "Camera distance", TW_TYPE_FLOAT, &g_CamDistance, "min=0 max=4 step=0.01 keyincr=PGUP keydecr=PGDOWN");
-	TwAddVarRW(bar, "Background", TW_TYPE_COLOR4F, &g_BackgroundColor, "colormode=hls");
+	TwAddVarRW(tweakBar, "Camera distance", TW_TYPE_FLOAT, &g_CamDistance, "min=0 max=4 step=0.01 keyincr=PGUP keydecr=PGDOWN");
+	TwAddVarRW(tweakBar, "Background", TW_TYPE_COLOR4F, &g_BackgroundColor, "colormode=hls");
 	*/
 }
 
@@ -527,7 +522,7 @@ void CScene_Main::UpdateObjects(float fTimeElapsed)
 	}
 
 	// Light Shader Update
-	if (m_pLights && m_pd3dcbLights) UpdateConstantBuffers(STATEOBJ_MGR->g_pd3dImmediateDeviceContext.Get(), m_pLights);
+	if (m_pLights && m_pd3dcbLights) UpdateConstantBuffers(STATEOBJ_MGR->g_pd3dImmediateDeviceContext, m_pLights);
 
 	// Particle
 	m_fGametime += fTimeElapsed;

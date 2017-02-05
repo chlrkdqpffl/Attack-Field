@@ -257,7 +257,7 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 
 void CScene::UpdateObjects(float fTimeElapsed)
 {
-	CScene::UpdateConstantBuffers(STATEOBJ_MGR->g_pd3dImmediateDeviceContext.Get());
+	CScene::UpdateConstantBuffers(STATEOBJ_MGR->g_pd3dImmediateDeviceContext);
 	
 	if(m_pSkyBox) m_pSkyBox->Update(fTimeElapsed, NULL);
 	if(m_pTerrain) m_pTerrain->Update(fTimeElapsed, NULL);

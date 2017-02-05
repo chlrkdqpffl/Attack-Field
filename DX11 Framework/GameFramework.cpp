@@ -19,8 +19,6 @@ CGameFramework::CGameFramework()
 	m_nWndClientWidth = FRAME_BUFFER_WIDTH;
 	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
 
-	_tcscpy_s(m_pszBuffer, _T("DX11_Framework ("));
-
 	srand(timeGetTime());
 	
 	// 마우스 정보
@@ -30,12 +28,12 @@ CGameFramework::CGameFramework()
 	SetCursorPos(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2);	// 정중앙
 
 
-#if defined(DEBUG) || defined(_DEBUG)
+//#if defined(DEBUG) || defined(_DEBUG)
 	#ifdef USE_CONSOLE
 		AllocConsole();
 		freopen("CONOUT$", "wt", stdout);
 	#endif
-#endif
+//#endif
 }
 
 CGameFramework::~CGameFramework()
@@ -64,9 +62,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 //	TEXT_MGR->InitializeManager(m_pd3dDevice, L"a반달곰");			// 폰트 여러개 만들 수 있음
 	SCENE_MGR->InitializeManager();
 	RESOURCE_MGR->InitializeManager();
-
-	// Initialize AntTweakBar
-	TwInit(TW_DIRECT3D11, m_pd3dDevice);
+	TWBAR_MGR->InitializeManager();
 
 	BuildObjects();
 
@@ -333,9 +329,7 @@ void CGameFramework::OnDestroy()
 	TEXT_MGR->ReleseInstance();
 	SCENE_MGR->ReleseInstance();
 	RESOURCE_MGR->ReleseInstance();
-
-	// Relesed AntTweakBar
-	TwTerminate();
+	TWBAR_MGR->ReleseInstance();
 
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtDumpMemoryLeaks();
@@ -698,7 +692,7 @@ void CGameFramework::ProcessInput()
 {
 	static UCHAR pKeysBuffer[256];
 	bool bProcessedByScene = false;
-	float fPlayerSpeed = 150;
+	float fPlayerSpeed = 300;
 
 	if (GetKeyboardState(pKeysBuffer) && SCENE_MGR->m_nowScene) bProcessedByScene = SCENE_MGR->m_nowScene->ProcessInput(pKeysBuffer);
 	if (!bProcessedByScene)
@@ -719,7 +713,10 @@ void CGameFramework::ProcessInput()
 		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
 		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
 
-		if (pKeysBuffer[VK_SHIFT] & 0xF0) { fPlayerSpeed *= 10; }
+		if (pKeysBuffer[VK_SHIFT] & 0xF0) 
+		{
+			fPlayerSpeed *= 100; 
+		}
 
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 		POINT ptCursorPos;
@@ -766,7 +763,7 @@ void CGameFramework::UpdateObjects()
 
 void CGameFramework::FrameAdvance()
 {
-	m_GameTimer.Tick();
+	m_GameTimer.Tick(60);
 
 	ProcessInput();
 	UpdateObjects();
@@ -847,6 +844,6 @@ void CGameFramework::FrameAdvance()
 	
 	m_pDXGISwapChain->Present(0, 0);
 
-	m_GameTimer.GetFrameRate(m_pszBuffer + 16, 34);
-	::SetWindowText(m_hWnd, m_pszBuffer);
+	m_GameTimer.SetTitleName(m_strTitleName);
+	::SetWindowText(m_hWnd, m_strTitleName.c_str());
 }
