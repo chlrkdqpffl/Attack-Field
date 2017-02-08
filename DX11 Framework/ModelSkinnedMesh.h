@@ -42,10 +42,6 @@ struct AnimationData
 	void Interpolate(float timePos, vector<XMFLOAT4X4>& boneTransforms) const;
 	float GetClipStartTime() const;
 	float GetClipEndTime() const;
-
-	// 키프레임에 모든 애니메이션을 담고 있을 경우 사용하는 것으로 추정
-	// float m_nStartFrameKey;
-	// float m_nEndFrameKey;
 };
 
 
