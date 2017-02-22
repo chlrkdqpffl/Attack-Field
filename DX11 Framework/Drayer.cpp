@@ -11,8 +11,8 @@ CDrayer::~CDrayer()
 
 void CDrayer::CreateMesh(ID3D11Device *pd3dDevice)
 {
-	//CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_Siegetank), 0.013f);
-	CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_Drayer));
+	//CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(MeshData::eMesh_Siegetank), 0.013f);
+	CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(MeshData::eMesh_Drayer));
 	pCharacterMesh->Initialize(pd3dDevice);
 
 	SetMesh(pCharacterMesh);
@@ -39,7 +39,7 @@ void CDrayer::CreateAnimation()
 {
 	m_pAnimController->AddAnimation(make_tuple(Animation::eIdle,	AnimationTrack("idle"), AnimationType::Loop));
 	m_pAnimController->AddAnimation(make_tuple(Animation::eRun,		AnimationTrack("Run"), AnimationType::Loop));
-	m_pAnimController->AddAnimation(make_tuple(Animation::eAttack,	AnimationTrack("CrossPunch"), AnimationType::Once));
+//	m_pAnimController->AddAnimation(make_tuple(Animation::eAttack,	AnimationTrack("CrossPunch"), AnimationType::Once));
 
 	m_pAnimController->SetAnimation(Animation::eIdle);
 }

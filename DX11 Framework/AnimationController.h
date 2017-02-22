@@ -4,9 +4,9 @@ struct AnimationTrack
 {
 	string m_strClipName;
 	bool m_bEnable = false;
-	float m_fSpeed = 0.0f;
+	float m_fSpeed = 1.0f;
 	float m_fTimePos = 0.0f;
-	float m_fWeight = 0.0f;
+//	float m_fWeight = 0.0f;
 
 	AnimationTrack() {}
 	AnimationTrack(string name) : m_strClipName(name) {}
@@ -36,6 +36,6 @@ public:
 	AnimationType::Type GetAnimType() const { return get<2>(m_currAnimState); }
 
 	void SetMesh(CSkinnedMesh* mesh);
-	void SetAnimation(Animation::Character anim);
+	void SetAnimation(Animation::Character anim, float speed = 1.0f);
 };
 

@@ -1,9 +1,10 @@
 #pragma once
-
+//#include "SkinnedObject.h"
 #include "Object.h"
 #include "Camera.h"
 
 class CPlayer : public CGameObject
+//class CPlayer : public CSkinnedObject
 {
 protected:
 	XMFLOAT3					m_d3dxvPosition;
@@ -27,7 +28,7 @@ protected:
 	CCamera						*m_pCamera;
 
 public:
-	CPlayer(int nMeshes = 1);
+	CPlayer(int nMesh = 1.0f);
 	virtual ~CPlayer();
 
 	XMVECTOR GetvPosition() const { return(XMLoadFloat3(&m_d3dxvPosition)); }

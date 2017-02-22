@@ -162,6 +162,7 @@
     <ClCompile Include="CharacterShader.cpp" />
     <ClCompile Include="Drayer.cpp" />
     <ClCompile Include="NormalDisplaceMapShader.cpp" />
+    <ClCompile Include="PoliceCharacterObject.cpp" />
     <ClCompile Include="ScreenShader.cpp" />
     <ClCompile Include="ModelSkinnedMesh.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -230,6 +231,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PoliceCharacterObject.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="AxisObjects.h" />

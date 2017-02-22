@@ -6,7 +6,7 @@
 class CResourceManager : public CSingletonManager<CResourceManager>
 {
 	multimap<Resource_TextrueTag, string> textureMap;
-	multimap<Resource_MeshTag, string> meshMap;
+	multimap<MeshData::Resource_MeshTag, string> meshMap;
 
 public:
 	CResourceManager();
@@ -16,10 +16,10 @@ public:
 	virtual void ReleseManager() override;
 
 	void AddResourece(Resource_TextrueTag resourceTag, string source);
-	void AddResourece(Resource_MeshTag resourceTag, string source);
+	void AddResourece(MeshData::Resource_MeshTag resourceTag, string source);
 
 	wstring FindResourcePath(Resource_TextrueTag resourceTag);
-	string FindResourcePath(Resource_MeshTag resourceTag);
+	string FindResourcePath(MeshData::Resource_MeshTag resourceTag);
 
 	ID3D11ShaderResourceView* FindResourceAndCreateSRV(Resource_TextrueTag);
 

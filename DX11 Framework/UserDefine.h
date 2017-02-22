@@ -136,6 +136,23 @@ inline void ShowXMFloat4x4(XMFLOAT4X4 mtx)
 	cout << mtx._41 << ", " << mtx._42 << ", " << mtx._43 << ", " << mtx._44 << endl << endl;
 }
 
+inline void ShowXMFloat4(XMFLOAT4 xmf4)
+{
+	cout << xmf4.x << ", " << xmf4.y << ", " << xmf4.z << ", " << xmf4.w << endl << endl;
+}
+
+inline void ShowXMFloat3(XMFLOAT3 xmf3)
+{
+	cout << xmf3.x << ", " << xmf3.y << ", " << xmf3.z << endl << endl;
+}
+
+inline void ShowXMVector(XMVECTOR xmVector)
+{
+	XMFLOAT4 out;
+	XMStoreFloat4(&out, xmVector);
+	cout << out.x << ", " << out.y << ", " << out.z << ", " << out.w << endl << endl;
+}
+
 inline void ShowTaskSuccess(string message)
 {
 #if defined(DEBUG) || defined(_DEBUG)

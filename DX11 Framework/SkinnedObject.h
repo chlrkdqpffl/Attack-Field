@@ -13,14 +13,17 @@ public:
 	CSkinnedObject();
 	virtual ~CSkinnedObject();
 
-	virtual void CreateObjectData(ID3D11Device *pd3dDevice);
+protected:
 	virtual void CreateAnimation() {};
+
+public:
+	virtual void CreateObjectData(ID3D11Device *pd3dDevice);
 
 	virtual void Update(float fTimeElapsed) override;
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 
 	// ------ Get, Setter ------ //
 	void SetMesh(CSkinnedMesh* mesh);
-	void SetAnimation(Animation::Character anim);
+	void SetAnimation(Animation::Character anim, float speed = 1.0f);
 };
 

@@ -2,28 +2,30 @@
 #include "ModelMesh_FBX.h"
 
 
-CModelMesh_FBX::CModelMesh_FBX(ID3D11Device *pd3dDevice, const string& fileName, float size) : CMeshTexturedIlluminated(pd3dDevice), m_fileName(fileName), m_fModelSize(size)
+CModelMesh_FBX::CModelMesh_FBX(ID3D11Device *pd3dDevice, const string& fileName, bool isTangent, float size) 
+	: CMeshTexturedIlluminated(pd3dDevice), m_bTangent(isTangent), m_fileName(fileName), m_fModelSize(size)
 {
 }
 
 CModelMesh_FBX::~CModelMesh_FBX()
 {
 	if (m_pNormals) delete[] m_pNormals;
+	if (m_pTangents) delete[] m_pTangents;
 	if (m_pTexCoords) delete[] m_pTexCoords;
 	ReleaseCOM(m_pd3dTangentBuffer);
 }
 
 void CModelMesh_FBX::Initialize(ID3D11Device *pd3dDevice)
 {
+	cout << "File Loading < " + m_fileName + " > ";
 	bool isLoad = LoadFBXfromFile(m_fileName);
-#if defined(DEBUG) || defined(_DEBUG)
+
 	if (isLoad)
-		ShowTaskSuccess("File Load Success!! <" + m_fileName + ">");
+		ShowTaskSuccess("\t Success!!");
 	else {
-		ShowTaskFail("File Load Error!! <" + m_fileName + "> \t 파일 또는 경로를 확인하세요.");
+		ShowTaskFail("\t Error!! \t 파일 또는 경로를 확인하세요.");
 		return;
 	}
-#endif
 
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
@@ -88,15 +90,17 @@ void CModelMesh_FBX::Initialize(ID3D11Device *pd3dDevice)
 
 bool CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
 {
-	ifstream fin(fileName);
+	//ifstream fin(fileName);
+	ifstream fin(fileName, ios::binary);
 
 	if (!fin.is_open())
 		return false;
 
 	UINT meshCount = 0;
 	UINT vertexCount = 0, indexCount = 0, boneCount = 0, animationCount = 0;
-	XMFLOAT3 pos, normal, index;
+	XMFLOAT3 pos, normal, tangent, index;
 	XMFLOAT2 uv;
+	XMFLOAT3 bBoxCenter, bBoxExtents, bBoxMax;
 
 	string buf;
 
@@ -105,31 +109,61 @@ bool CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
 		fin >> buf >> meshCount;
 		
 		fin >> buf; // [MESH_DATA]
-		fin >> buf >> vertexCount;
+		fin >> vertexCount;
 		{
 			posVector.reserve(vertexCount);
 			normalVector.reserve(vertexCount);
+			if (m_bTangent)
+				tangentVector.reserve(vertexCount);
 			uvVector.reserve(vertexCount);
 		}
-		fin >> buf >> indexCount;
+		fin >> indexCount;
 		{
 			indexVector.reserve(indexCount / 3);
 		}
-		fin >> buf >> boneCount;
-		fin >> buf >> animationCount;
+		fin >> boneCount;
+		fin >> animationCount;
+
+		fin >> buf; // [BBox_DATA]
+		fin >> buf; // Center
+		fin >> bBoxCenter.x >> bBoxCenter.y >> bBoxCenter.z;
+		fin >> buf; // Min
+		fin >> buf >> buf >> buf;
+		fin >> buf; // Max
+		fin >> bBoxMax.x >> bBoxMax.y >> bBoxMax.z;
 
 		fin >> buf; // [VERTEX_DATA]
-		for (UINT i = 0; i < vertexCount; ++i) {
-			fin >> buf;	// Position
-			fin >> pos.x >> pos.y >> pos.z;
-			fin >> buf;	// Normal
-			fin >> normal.x >> normal.y >> normal.z;
-			fin >> buf;	// UV
-			fin >> uv.x >> uv.y;
+		if (m_bTangent) {
+			for (UINT i = 0; i < vertexCount; ++i) {
+//				fin >> buf;	// Position
+				fin >> pos.x >> pos.y >> pos.z;
+//				fin >> buf;	// Normal
+				fin >> normal.x >> normal.y >> normal.z;
+//				fin >> buf; // Tangent
+				fin >> tangent.x >> tangent.y >> tangent.z;
+//				fin >> buf;	// UV
+				fin >> uv.x >> uv.y;
 
-			posVector.push_back(pos);
-			normalVector.push_back(normal);
-			uvVector.push_back(uv);
+				posVector.push_back(pos);
+				normalVector.push_back(normal);
+				tangentVector.push_back(tangent);
+				uvVector.push_back(uv);
+			}
+		}
+		else
+		{
+			for (UINT i = 0; i < vertexCount; ++i) {
+//				fin >> buf;	// Position
+				fin >> pos.x >> pos.y >> pos.z;
+//				fin >> buf;	// Normal
+				fin >> normal.x >> normal.y >> normal.z;
+//				fin >> buf;	// UV
+				fin >> uv.x >> uv.y;
+
+				posVector.push_back(pos);
+				normalVector.push_back(normal);
+				uvVector.push_back(uv);
+			}
 		}
 
 		fin >> buf; // [INDEX_DATA]
@@ -173,6 +207,8 @@ bool CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
 
 	m_pPositions = new XMFLOAT3[m_nVertices];
 	m_pNormals = new XMFLOAT3[m_nVertices];
+	if (m_bTangent)
+		m_pTangents = new XMFLOAT3[m_nVertices];
 	m_pTexCoords = new XMFLOAT2[m_nVertices];
 	m_pnIndices = new UINT[m_nIndices];
 

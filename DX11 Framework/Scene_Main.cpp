@@ -49,10 +49,13 @@ bool CScene_Main::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 					m_pPlayerCharacter->SetAnimation(Animation::eIdle);
 				break;
 				case VK_X:
-					m_pPlayerCharacter->SetAnimation(Animation::eAttack);
+					m_pPlayerCharacter->SetAnimation(Animation::eWalk, 3.0f);
 				break;
 				case VK_C:
-					m_pPlayerCharacter->SetAnimation(Animation::eRun);
+					m_pPlayerCharacter->SetAnimation(Animation::eRun, 0.5f);
+					break;
+				case VK_V:
+					m_pPlayerCharacter->SetAnimation(Animation::eStanding_Fire);
 					break;
 			}
 			break;
@@ -181,7 +184,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 	m_pTerrain = move(pTerrain);
 #pragma endregion
-
+	/*
 #pragma region [Create Water]
 	CTexture *pTerrainWaterTexture = new CTexture(2, 2, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
 	pTerrainWaterTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_Water));
@@ -204,8 +207,9 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	
 	m_vObjectsVector.push_back(move(pTerrainWater));
 #pragma endregion
-
+*/
 #pragma region [Create Character]
+	/*
 	m_pPlayerCharacter = new CDrayer();
 	m_pPlayerCharacter->CreateObjectData(pd3dDevice);
 
@@ -213,15 +217,25 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_pPlayerCharacter->Rotate(-90, 0.0f, 0.0f);
 
 	m_vObjectsVector.push_back(m_pPlayerCharacter);
+	*/
+
+	m_pPlayerCharacter = new CPoliceCharacterObject();
+	m_pPlayerCharacter->CreateObjectData(pd3dDevice);
+	
+	m_pPlayerCharacter->SetPosition(100, 250, 100);
+	m_pPlayerCharacter->Rotate(0, 180.0f, 0.0f);
+	m_vObjectsVector.push_back(m_pPlayerCharacter);
+	
 #pragma endregion 
 
-	
+#pragma region [Create Test - NomalMapping]	
 	CNormalMapObject* normalMapObject = new CNormalMapObject();
 	normalMapObject->CreateObjectData(pd3dDevice);
 
 	normalMapObject->SetPosition(1000, 700, 1000);
 	m_vObjectsVector.push_back(normalMapObject);
-	
+#pragma endregion 
+
 #pragma region [Create Shader Object]
 	CMaterial *pPlayerMaterial = new CMaterial();
 
@@ -230,7 +244,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pPlayerTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pPlayerMaterial->SetTexture(pPlayerTexture);
 	
-	CModelMesh_FBX* pPlayerMesh = new CModelMesh_FBX(pd3dDevice, RESOURCE_MGR->FindResourcePath(eMesh_DarkFighter));
+	CModelMesh_FBX* pPlayerMesh = new CModelMesh_FBX(pd3dDevice, RESOURCE_MGR->FindResourcePath(MeshData::eMesh_DarkFighter));
 	pPlayerMesh->Initialize(pd3dDevice);
 
 	CObjectsShader* pModelShader = new CObjectsShader(10);
@@ -242,10 +256,10 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pPlayer->SetMesh(pPlayerMesh);
 	pModelShader->AddObject(pPlayer);
 	m_vObjectsShaderVector.push_back(pModelShader);
-	
 #pragma endregion
 
 #pragma region [Create Instancing Object]
+	/*
 	CMaterial *pInstancingMaterials[3];
 
 	CMaterialColors *pRedColor = new CMaterialColors();
@@ -356,13 +370,16 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 			}
 		}
 	}
+	*/
 #pragma endregion
+
 
 #pragma region [Particle System]
 	m_pParticleSystem = new CParticleSystem();
 	m_pParticleSystem->Initialize(pd3dDevice, NULL, m_pParticleSystem->CreateRandomTexture1DSRV(pd3dDevice), 200);
 	m_pParticleSystem->CreateShader(pd3dDevice);
 #pragma endregion
+
 	CreateLights();
 	CreateConstantBuffers(pd3dDevice);
 	CreateTweakBars();

@@ -824,7 +824,6 @@ void CGameFramework::FrameAdvance()
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
 	
-	
 	if (m_pPlayer) 
 		m_pPlayer->Render(m_pd3dDeviceContext, m_pCamera);
 

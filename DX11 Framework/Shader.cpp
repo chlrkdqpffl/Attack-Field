@@ -420,17 +420,17 @@ void CObjectsShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
 
 void CObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	CShader::OnPrepareRender(pd3dDeviceContext);
-
-	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
-
 	for (auto object : m_vObjectsVector) {
-		if (object->IsVisible(pCamera)){
+		if (object->IsVisible(pCamera)) {
+			CShader::OnPrepareRender(pd3dDeviceContext);
+
+			if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
+
 			object->Render(pd3dDeviceContext, pCamera);
+
+			CShader::OnPostRender(pd3dDeviceContext);
 		}
 	}
-
-	CShader::OnPostRender(pd3dDeviceContext);
 }
 
 CGameObject *CObjectsShader::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, MESHINTERSECTINFO *pd3dxIntersectInfo)
@@ -508,26 +508,26 @@ void CInstancedObjectsShader::ReleaseObjects()
 
 void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	OnPrepareRender(pd3dDeviceContext);
-
-	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
-
-	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-
-	int nInstances = 0;
-	pd3dDeviceContext->Map(m_pd3dInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-	XMMATRIX *pd3dxmtxInstances = (XMMATRIX *)d3dMappedResource.pData;
-
 	for (auto object : m_vObjectsVector) {
-		if (object->IsVisible(pCamera))	{
+		if (object->IsVisible(pCamera)) {
+			OnPrepareRender(pd3dDeviceContext);
+
+			if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
+
+			D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+
+			int nInstances = 0;
+			pd3dDeviceContext->Map(m_pd3dInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+			XMMATRIX *pd3dxmtxInstances = (XMMATRIX *)d3dMappedResource.pData;
+
 			pd3dxmtxInstances[nInstances++] = XMMatrixTranspose(XMLoadFloat4x4(&object->m_d3dxmtxWorld));
+
+			pd3dDeviceContext->Unmap(m_pd3dInstanceBuffer, 0);
+
+			m_pMesh->RenderInstanced(pd3dDeviceContext, nInstances, 0);
+
+			CShader::OnPostRender(pd3dDeviceContext);
 		}
 	}
-	
-	pd3dDeviceContext->Unmap(m_pd3dInstanceBuffer, 0);
-
-	m_pMesh->RenderInstanced(pd3dDeviceContext, nInstances, 0);
-
-	CShader::OnPostRender(pd3dDeviceContext);
 }
 

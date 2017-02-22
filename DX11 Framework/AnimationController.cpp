@@ -15,7 +15,7 @@ void CAnimationController::SetMesh(CSkinnedMesh* mesh)
 	m_pSkinnedMesh = mesh; 
 }
 
-void CAnimationController::SetAnimation(Animation::Character anim)
+void CAnimationController::SetAnimation(Animation::Character anim, float speed)
 {
 	if (get<0>(m_currAnimState) == anim)
 		return;
@@ -27,6 +27,7 @@ void CAnimationController::SetAnimation(Animation::Character anim)
 
 			m_fTimePos = 0.0f;
 			get<1>(m_currAnimState).m_bEnable = true;
+			get<1>(m_currAnimState).m_fSpeed = speed;
 			m_pSkinnedMesh->SetClipName(get<1>(m_currAnimState).m_strClipName);
 			return;
 		}
@@ -46,17 +47,18 @@ void CAnimationController::AddAnimation(tuple<Animation::Character, AnimationTra
 void CAnimationController::UpdateTime(float fTimeElapsed)
 {
 	float endTime = m_pSkinnedMesh->GetClipEndTime(m_pSkinnedMesh->GetClipName());
+	float timeElapse = get<1>(m_currAnimState).m_fSpeed * fTimeElapsed;
 
 	switch (GetAnimType()) {
 	case AnimationType::Loop:
-		m_fTimePos += fTimeElapsed;
+		m_fTimePos += timeElapse;
 
 		if (m_fTimePos > endTime)
 			m_fTimePos = 0.0f;
 
 		break;
 	case AnimationType::Once:
-		m_fTimePos += fTimeElapsed;
+		m_fTimePos += timeElapse;
 
 		if (m_fTimePos  > endTime) {
 			SetAnimation(Animation::eIdle);
@@ -68,14 +70,14 @@ void CAnimationController::UpdateTime(float fTimeElapsed)
 		static bool isReverse = false;
 
 		if (isReverse == false) {
-			m_fTimePos += fTimeElapsed;
+			m_fTimePos += timeElapse;
 
 			if (endTime < m_fTimePos) {
 				isReverse = true;
 			}
 		}
 		else if (isReverse == true) {
-			m_fTimePos -= fTimeElapsed;
+			m_fTimePos -= timeElapse;
 
 			if (m_fTimePos  < 0.0f) {
 				isReverse = false;

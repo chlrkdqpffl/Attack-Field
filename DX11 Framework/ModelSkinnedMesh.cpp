@@ -88,7 +88,7 @@ float AnimationData::GetClipEndTime() const
 	return t;
 }
 
-CSkinnedMesh::CSkinnedMesh(ID3D11Device *pd3dDevice, const string& fileName, float size) : CModelMesh_FBX(pd3dDevice, fileName, size)
+CSkinnedMesh::CSkinnedMesh(ID3D11Device *pd3dDevice, const string& fileName, float size) : CModelMesh_FBX(pd3dDevice, fileName, true, size)
 {
 }
 
@@ -106,15 +106,15 @@ CSkinnedMesh::~CSkinnedMesh()
 
 void CSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 {
+	cout << "File Loading < " + m_fileName + " > ";
 	bool isLoad = LoadFBXfromFile(m_fileName);
-#if defined(DEBUG) || defined(_DEBUG)
+
 	if (isLoad)
-		ShowTaskSuccess("File Load Success!! <" + m_fileName + ">");
+		ShowTaskSuccess("\t Success!!");
 	else {
-		ShowTaskFail("File Load Error!! <" + m_fileName + "> \t 파일 또는 경로를 확인하세요.");
+		ShowTaskFail("\t Error!! \t 파일 또는 경로를 확인하세요.");
 		return;
 	}
-#endif
 
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
@@ -165,22 +165,6 @@ void CSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 
-	float max_x = m_pPositions[0].x, max_y = m_pPositions[0].y, max_z = m_pPositions[0].z;
-	for (int i = 0; i < m_nVertices; i++) {
-		if (max_x < m_pPositions[i].x) max_x = m_pPositions[i].x;
-		if (max_y < m_pPositions[i].y) max_y = m_pPositions[i].y;
-		if (max_z < m_pPositions[i].z) max_z = m_pPositions[i].z;
-	}
-	float min_x = m_pPositions[0].x, min_y = m_pPositions[0].y, min_z = m_pPositions[0].z;
-	for (int i = 0; i < m_nVertices; i++) {
-		if (min_x > m_pPositions[i].x) min_x = m_pPositions[i].x;
-		if (min_y > m_pPositions[i].y) min_y = m_pPositions[i].y;
-		if (min_z > m_pPositions[i].z) min_z = m_pPositions[i].z;
-	}
-
-	m_bcBoundingCube.Center = XMFLOAT3(0, 0, 0);
-	m_bcBoundingCube.Extents = XMFLOAT3(max_x, max_y, max_z);
-
 	CreateConstantBuffer(pd3dDevice);
 
 	m_strClipName = m_animationMap.rbegin()->first; // 제일 처음 들어간 애니메이션이 초기 애니메이션
@@ -195,9 +179,10 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 
 	UINT meshCount = 0;
 	UINT vertexCount = 0, indexCount = 0, boneCount = 0, animationClips = 0;
-	XMFLOAT3 pos, normal, index;
+	XMFLOAT3 pos, normal, tangent, index;
 	XMFLOAT2 uv;
 	XMFLOAT4 boneIndex, boneWeight;
+	XMFLOAT3 bBoxCenter, bBoxExtents, bBoxMax;
 	int boneHierarchy;
 	XMFLOAT4X4 boneOffset, SQTTransform, finalBone;
 
@@ -212,11 +197,15 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 		fin >> buf; // [FBX_META_DATA]
 		fin >> buf >> meshCount;
 
+		// 다중 메쉬의 경우 애니메이션에 문제가 발생
+		assert(meshCount == 1);
+
 		fin >> buf; // [MESH_DATA]
 		fin >> vertexCount;
 		{
 			posVector.reserve(vertexCount);
 			normalVector.reserve(vertexCount);
+			tangentVector.reserve(vertexCount);
 			uvVector.reserve(vertexCount);
 		}
 		fin >> indexCount;
@@ -226,12 +215,28 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 		fin >> boneCount;
 		fin >> animationClips;
 
+		fin >> buf; // [BBox_DATA]
+		fin >> buf; // Center
+		fin >> bBoxCenter.x >> bBoxCenter.y >> bBoxCenter.z;
+		fin >> buf; // Min
+		fin >> buf >> buf >> buf;
+		fin >> buf; // Max
+		fin >> bBoxMax.x >> bBoxMax.y >> bBoxMax.z;
+
+		m_bcBoundingCube.Center = bBoxCenter;
+		bBoxExtents.x = bBoxMax.x - bBoxCenter.x;
+		bBoxExtents.y = bBoxMax.y - bBoxCenter.y;
+		bBoxExtents.z = bBoxMax.z - bBoxCenter.z;
+		m_bcBoundingCube.Extents = bBoxExtents;
+
 		fin >> buf; // [VERTEX_DATA]
 		for (UINT i = 0; i < vertexCount; ++i) {
 //			fin >> buf;	// Position
 			fin >> pos.x >> pos.y >> pos.z;
 //			fin >> buf;	// Normal
 			fin >> normal.x >> normal.y >> normal.z;
+//			fin >> buf; // Tangent
+			fin >> tangent.x >> tangent.y >> tangent.z;
 //			fin >> buf;	// UV
 			fin >> uv.x >> uv.y;
 //			fin >> buf;	// BoneIndices 
@@ -241,6 +246,7 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 
 			posVector.push_back(pos);
 			normalVector.push_back(normal);
+			tangentVector.push_back(tangent);
 			uvVector.push_back(uv);
 			boneIndicesVector.push_back(boneIndex);
 			boneWeightsVector.push_back(boneWeight);
@@ -253,6 +259,7 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 			indexVector.push_back(index);
 		}
 
+
 		fin >> buf; // [BONE_HIERARCHY]
 		for (UINT i = 0; i < boneCount; ++i) {
 			fin >> boneHierarchy;
@@ -262,7 +269,7 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 
 		fin >> buf; // [OFFSET_MATRIX]
 		for (UINT i = 0; i < boneCount; ++i) {
-//			fin >> buf; // BoneOffSet
+			//			fin >> buf; // BoneOffSet
 			fin >> boneOffset._11 >> boneOffset._12 >> boneOffset._13 >> boneOffset._14;
 			fin >> boneOffset._21 >> boneOffset._22 >> boneOffset._23 >> boneOffset._24;
 			fin >> boneOffset._31 >> boneOffset._32 >> boneOffset._33 >> boneOffset._34;
@@ -276,29 +283,29 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 		for (UINT clip = 0; clip < animationClips; ++clip) {
 			fin >> buf; // AnimationClip 
 			fin >> animationName;
-//			fin >> buf;	// {
-			
+			//			fin >> buf;	// {
+
 			for (UINT bone = 0; bone < boneCount; ++bone) {
 				fin >> buf; // Bone			Bone0 : 351
 				fin >> boneData.m_nAnimaitionKeys;
-//				fin >> buf;	// {
-		
+				//				fin >> buf;	// {
+
 				boneData.m_keyframeDataVector.reserve(boneData.m_nAnimaitionKeys);
 				for (UINT frame = 0; frame < boneData.m_nAnimaitionKeys; ++frame) {
 					fin >> keyframeData.m_fAnimationTime;
 					fin >> keyframeData.m_xmf3Translate.x >> keyframeData.m_xmf3Translate.y >> keyframeData.m_xmf3Translate.z;
 					fin >> keyframeData.m_xmf3Scale.x >> keyframeData.m_xmf3Scale.y >> keyframeData.m_xmf3Scale.z;
 					fin >> keyframeData.m_xmf4Quaternion.x >> keyframeData.m_xmf4Quaternion.y >> keyframeData.m_xmf4Quaternion.z >> keyframeData.m_xmf4Quaternion.w;
-					
+
 					boneData.m_keyframeDataVector.push_back(keyframeData);
 				}
 
 				animaitionData.m_boneDataVector.push_back(boneData);
 				boneData.m_keyframeDataVector.clear();
-//				fin >> buf; // }
+				//				fin >> buf; // }
 			}
 			m_animationMap.insert(make_pair(animationName, animaitionData));
-		
+
 			animaitionData.m_boneDataVector.clear();
 		}
 
@@ -340,6 +347,7 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 
 	m_pPositions = new XMFLOAT3[m_nVertices];
 	m_pNormals = new XMFLOAT3[m_nVertices];
+	m_pTangents = new XMFLOAT3[m_nVertices];
 	m_pTexCoords = new XMFLOAT2[m_nVertices];
 	m_pnIndices = new UINT[m_nIndices];
 	m_pboneIndices = new XMFLOAT4[m_nVertices];

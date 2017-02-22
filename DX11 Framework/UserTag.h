@@ -13,13 +13,15 @@ namespace Animation
 {
 	enum Character
 	{
-		eNone, eIdle, eRun, eAttack, eDeath
+		eNone, eIdle, eWalk, eRun, eStanding_Fire, eWalking_Fire, eDeath
 	};
 }
 
 // eTexture
 // RESOURCE_MGR->FindResourceAndCreateSRV(     )
 
+// ============================================================================================================================ //
+// ======================================================= Texture Data ======================================================= //
 enum Resource_TextrueTag {
 	// Environment
 	eTexture_Water, eTexture_WaterDetail, eTexture_SkyBox, 
@@ -31,13 +33,23 @@ enum Resource_TextrueTag {
 	// UI
 	eTexture_Title,
 
-	// etc
+	// Etc
 	eTexture_Stone, eTexture_StoneNormal, eTexture_Stone02, eTexture_Stone02Normal, eTexture_Bricks, eTexture_BricksNormal, eTexture_Wood,
 	eTexture_WallDiffuse, eTexture_WallNormalHeight
 };
 
+// ========================================================================================================================= //
+// ======================================================= Mesh Data ======================================================= //
+namespace MeshData
+{
+	enum Resource_MeshTag {
+		// Character
+		eMesh_DarkFighter, eMesh_Siegetank, eMesh_Drayer, eMesh_Police,
 
-// eMesh
-enum Resource_MeshTag {
-	eMesh_DarkFighter, eMesh_Siegetank, eMesh_Drayer, eMesh_Test
-};
+		// Object
+		eMesh_Road,
+
+		// Etc
+		eMesh_Test
+	};
+}

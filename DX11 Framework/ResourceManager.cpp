@@ -35,7 +35,7 @@ void CResourceManager::InitializeManager()
 	AddResourece(eTexture_Water,				"../Assets/Image/Terrain/water.jpg");
 	AddResourece(eTexture_WaterDetail,			"../Assets/Image/Terrain/Water_Detail_Texture_0.dds");
 
-	//  etc
+	// Etc
 	AddResourece(eTexture_Stone,				"../Assets/Image/Miscellaneous/stones.dds");
 	AddResourece(eTexture_StoneNormal,			"../Assets/Image/Miscellaneous/stones_nmap.dds");
 	AddResourece(eTexture_Stone02,				"../Assets/Image/Miscellaneous/Stone02_Diffuse.jpg");
@@ -47,10 +47,20 @@ void CResourceManager::InitializeManager()
 	AddResourece(eTexture_WallNormalHeight,		"../Assets/Image/Miscellaneous/wall_NM_height.dds");
 	
 	// ------------------------ Mesh ---------------------------- //
-	AddResourece(eMesh_DarkFighter,				"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.data");
-	AddResourece(eMesh_Siegetank,				"../Assets/FBX Model/siegetank.data");
-	AddResourece(eMesh_Drayer,					"../Assets/FBX Model/drayer_animation.data");
-	AddResourece(eMesh_Test,					"../Assets/FBX Model/testt.data");
+	// Character
+	AddResourece(MeshData::eMesh_DarkFighter,				"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.model");
+//	AddResourece(MeshData::eMesh_DarkFighter,				"../Assets/FBX Model/test(500).model");
+	
+	AddResourece(MeshData::eMesh_Siegetank,					"../Assets/FBX Model/siegetank.data");
+	AddResourece(MeshData::eMesh_Drayer,					"../Assets/FBX Model/drayer_animation.data");
+	AddResourece(MeshData::eMesh_Police,					"../Assets/FBX Model/Character/Police/Police.model");
+
+
+	// Object
+	AddResourece(MeshData::eMesh_Road,						"../Assets/FBX Model/Road.model");
+	
+	// Etc
+	AddResourece(MeshData::eMesh_Test,						"../Assets/FBX Model/testt.data");
 }
 
 void CResourceManager::ReleseManager()
@@ -66,7 +76,7 @@ void CResourceManager::AddResourece(Resource_TextrueTag resourceTag, string sour
 	}
 }
 
-void CResourceManager::AddResourece(Resource_MeshTag resourceTag, string source)
+void CResourceManager::AddResourece(MeshData::Resource_MeshTag resourceTag, string source)
 {
 	meshMap.insert(make_pair(resourceTag, source));
 
@@ -89,7 +99,7 @@ wstring CResourceManager::FindResourcePath(Resource_TextrueTag resourceTag)
 	return wstr;
 }
 
-string CResourceManager::FindResourcePath(Resource_MeshTag resourceTag)
+string CResourceManager::FindResourcePath(MeshData::Resource_MeshTag resourceTag)
 {
 	auto find = meshMap.find(resourceTag);
 	if (find == meshMap.end()) {
@@ -119,9 +129,9 @@ ID3D11ShaderResourceView* CResourceManager::FindResourceAndCreateSRV(Resource_Te
 
 #if defined(DEBUG) || defined(_DEBUG)
 	if ((HRESULT)hResult >= 0)
-		cout << "File Load Success!! <" << (*findResource).second << ">" << endl;
-	else 
-		cout << "File Load Error!! <" << (*findResource).second << "> \t\t 파일 또는 경로를 확인하세요." << endl;
+		ShowTaskSuccess("File Loading < " + (*findResource).second + " > \t Success!!");
+	else
+		ShowTaskFail("File Loading < " + (*findResource).second + " > \t Error!! \t\t 파일 또는 경로를 확인하세요.");
 #endif
 
 	return pd3dsrvTexture;
@@ -155,6 +165,6 @@ void CResourceManager::ShowImageInfo(Resource_TextrueTag resourceTag)
 		cout << " ===============================" << endl << endl;
 	}
 	else
-		cout << "File Load Error!! <" << (*findResource).second << "> \t\t 파일 또는 경로를 확인하세요." << endl;
+		ShowTaskFail("File Loading < " + (*findResource).second + " > \t Error!! \t\t 파일 또는 경로를 확인하세요.");
 }
 #endif

@@ -28,9 +28,9 @@ void CAxisObjects::CreateAxisObjects(ID3D11Device *pd3dDevice)
 
 	/*
 	// Local Axis
-	CMesh* pLocalXAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(10, 0, 0), XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
-	CMesh* pLocalYAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 10, 0), XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
-	CMesh* pLocalZAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 10), XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f));
+	CMesh* pLocalXAxisMesh = new CLinMeshData::eMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(10, 0, 0), XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
+	CMesh* pLocalYAxisMesh = new CLinMeshData::eMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 10, 0), XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
+	CMesh* pLocalZAxisMesh = new CLinMeshData::eMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 10), XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f));
 
 	m_pPlayerLocalAxis = new CGameObject;
 	m_pPlayerLocalAxis->SetMesh(pLocalXAxisMesh, 0);

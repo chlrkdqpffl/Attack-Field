@@ -3,26 +3,29 @@
 #include "Camera.h"
 #include "Shader.h"
 
-// Mesh
+// ========== Mesh ========== 
 #include "ModelMesh_FBX.h"
 #include "ModelSkinnedMesh.h"
 
-// Shader
+// ========== Shader ========== 
 #include "TerrainShader.h"
 #include "CharacterShader.h"
 
-// Object
+// ========== Object ========== 
 #include "SkyBox.h"
 #include "HeightMapTerrain.h"
 #include "TerrainWater.h"
 #include "RotatingObject.h"
 #include "NormalMapObject.h"
 #include "AxisObjects.h"
-//#include "SkinnedObject.h"
-#include "Drayer.h"
 
-// System
+// ----- Character -----
+#include "Drayer.h"
+#include "PoliceCharacterObject.h"
+
+// ========== System ========== 
 #include "ParticleSystem.h"
+
 
 #define MAX_LIGHTS			4 //Multiple of 4
 #define POINT_LIGHT			1.0f
