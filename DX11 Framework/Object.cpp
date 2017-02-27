@@ -13,8 +13,8 @@ CMaterialColors::CMaterialColors()
 	m_nReferences = 0;
 	m_d3dxcAmbient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_d3dxcDiffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_d3dxcSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 5.0f);
-	m_d3dxcEmissive = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_d3dxcSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 32.0f);
+	m_d3dxcEmissive = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 CMaterialColors::~CMaterialColors()

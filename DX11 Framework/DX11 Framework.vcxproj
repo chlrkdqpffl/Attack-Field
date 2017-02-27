@@ -159,6 +159,7 @@
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="AntTweakBarManager.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CharacterNormalShader.cpp" />
     <ClCompile Include="CharacterShader.cpp" />
     <ClCompile Include="Drayer.cpp" />
     <ClCompile Include="NormalDisplaceMapShader.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="AntTweakBarManager.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CharacterNormalShader.h" />
     <ClInclude Include="CharacterShader.h" />
     <ClInclude Include="ConstantBuffer_Slot.h" />
     <ClInclude Include="Drayer.h" />

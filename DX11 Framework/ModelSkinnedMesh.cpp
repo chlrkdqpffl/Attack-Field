@@ -142,22 +142,31 @@ void CSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 	// Create Buffer
 	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-//	m_pd3dTangentBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pTangents, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dTangentBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pTangents, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, m_pTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dBoneWeightBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT4), m_nVertices, m_pboneWeights, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dBoneIndiceBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT4), m_nVertices, m_pboneIndices, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
-//	DXUT_SetDebugName(m_pd3dTangentBuffer, "Tangent");
+	DXUT_SetDebugName(m_pd3dTangentBuffer, "Tangent");
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
 	DXUT_SetDebugName(m_pd3dBoneWeightBuffer, "BoneWeight");
 	DXUT_SetDebugName(m_pd3dBoneIndiceBuffer, "BoneIndice");
 
+
+/*
 	ID3D11Buffer *pd3dBuffers[5] = { m_pd3dPositionBuffer, m_pd3dNormalBuffer, m_pd3dTexCoordBuffer, m_pd3dBoneWeightBuffer, m_pd3dBoneIndiceBuffer };
 	UINT pnBufferStrides[5] = { sizeof(XMFLOAT3), sizeof(XMFLOAT3), sizeof(XMFLOAT2), sizeof(XMFLOAT4), sizeof(XMFLOAT4) };
 	UINT pnBufferOffsets[5] = { 0, 0, 0, 0, 0 };
 	AssembleToVertexBuffer(5, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
+	*/
 
+	// Normalmap
+	ID3D11Buffer *pd3dBuffers[6] = { m_pd3dPositionBuffer, m_pd3dNormalBuffer, m_pd3dTangentBuffer, m_pd3dTexCoordBuffer, m_pd3dBoneWeightBuffer, m_pd3dBoneIndiceBuffer };
+	UINT pnBufferStrides[6] = { sizeof(XMFLOAT3), sizeof(XMFLOAT3), sizeof(XMFLOAT3), sizeof(XMFLOAT2), sizeof(XMFLOAT4), sizeof(XMFLOAT4) };
+	UINT pnBufferOffsets[6] = { 0, 0, 0, 0, 0, 0 };
+	AssembleToVertexBuffer(6, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
+	
 	for (UINT i = 0, j = 0; i < m_nIndices / 3; ++i, j += 3) {
 		m_pnIndices[j] = (UINT)indexVector[i].x;
 		m_pnIndices[j + 1] = (UINT)indexVector[i].y;

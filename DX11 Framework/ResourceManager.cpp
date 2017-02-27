@@ -15,39 +15,40 @@ void CResourceManager::InitializeManager()
 	// ------------------------ Texture ---------------------------- //
 
 	// Model
-	AddResourece(eTexture_DarkFighterColor,		"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_color.png");
-	AddResourece(eTexture_DrayerDiffuse,		"../Assets/FBX Model/Drayer_diffuse.png");
-	AddResourece(eTexture_TerroristDiffuse,		"../Assets/FBX Model/Character/Terrorist/TerrorristD.jpg");
-	//AddResourece(eTexture_PoliceDiffuse,		"../Assets/FBX Model/Character/Police/");
+	AddResourece(eTexture_DarkFighterColor,					"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_color.png");
+	AddResourece(eTexture_DrayerDiffuse,					"../Assets/FBX Model/Drayer_diffuse.png");
+	AddResourece(eTexture_TerroristDiffuse,					"../Assets/FBX Model/Character/Terrorist/TerrorristD.dds");
+	AddResourece(eTexture_TerroristNormalDisplace,			"../Assets/FBX Model/Character/Terrorist/TerrorristNM_D.dds.dds");
+	//AddResourece(eTexture_PoliceDiffuse,					"../Assets/FBX Model/Character/Police/");
 	
 
 	// UI
-	AddResourece(eTexture_Title,				"../Assets/Image/UI/BackGround2.jpg");
+	AddResourece(eTexture_Title,							"../Assets/Image/UI/BackGround2.jpg");
 
 	// Environment
-	AddResourece(eTexture_TerrainDiffuse,		"../Assets/Image/Terrain/Base_Texture.jpg");
-	AddResourece(eTexture_TerrainDetail,		"../Assets/Image/Terrain/Detail_Texture_7.jpg");
-	AddResourece(eTexture_TerrainHeightMapRaw,	"../Assets/Image/Terrain/HeightMap.raw");
+	AddResourece(eTexture_TerrainDiffuse,					"../Assets/Image/Terrain/Base_Texture.jpg");
+	AddResourece(eTexture_TerrainDetail,					"../Assets/Image/Terrain/Detail_Texture_7.jpg");
+	AddResourece(eTexture_TerrainHeightMapRaw,				"../Assets/Image/Terrain/HeightMap.raw");
 
-	//	AddResourece(eTexture_Terrain,				"../Assets/Image/Terrain/TerrainDiffuse2.jpg");
-	//	AddResourece(eTexture_TerrainDetail,		"../Assets/Image/Terrain/Detail_Texture_7.jpg");
-	//	AddResourece(eTexture_HeightMap,			"../Assets/Image/Terrain/TerrainHeightMap2.raw");
-	AddResourece(eTexture_TerrainNormal,		"../Assets/Image/Terrain/TerrainNormal2.jpg");
+	//	AddResourece(eTexture_Terrain,							"../Assets/Image/Terrain/TerrainDiffuse2.jpg");
+	//	AddResourece(eTexture_TerrainDetail,					"../Assets/Image/Terrain/Detail_Texture_7.jpg");
+	//	AddResourece(eTexture_HeightMap,						"../Assets/Image/Terrain/TerrainHeightMap2.raw");
+	AddResourece(eTexture_TerrainNormal,					"../Assets/Image/Terrain/TerrainNormal2.jpg");
 	
 
-	AddResourece(eTexture_Water,				"../Assets/Image/Terrain/water.jpg");
-	AddResourece(eTexture_WaterDetail,			"../Assets/Image/Terrain/Water_Detail_Texture_0.dds");
+	AddResourece(eTexture_Water,							"../Assets/Image/Terrain/water.jpg");
+	AddResourece(eTexture_WaterDetail,						"../Assets/Image/Terrain/Water_Detail_Texture_0.dds");
 
 	// Etc
-	AddResourece(eTexture_Stone,				"../Assets/Image/Miscellaneous/stones.dds");
-	AddResourece(eTexture_StoneNormal,			"../Assets/Image/Miscellaneous/stones_nmap.dds");
-	AddResourece(eTexture_Stone02,				"../Assets/Image/Miscellaneous/Stone02_Diffuse.jpg");
-	AddResourece(eTexture_Stone02Normal,		"../Assets/Image/Miscellaneous/Stone02_nmap.dds");
-	AddResourece(eTexture_Bricks,				"../Assets/Image/Miscellaneous/bricks.dds");
-	AddResourece(eTexture_BricksNormal,			"../Assets/Image/Miscellaneous/bricks_nmap.dds");
-	AddResourece(eTexture_Wood,					"../Assets/Image/Miscellaneous/Wood01.jpg");
-	AddResourece(eTexture_WallDiffuse,			"../Assets/Image/Miscellaneous/wall.jpg");
-	AddResourece(eTexture_WallNormalHeight,		"../Assets/Image/Miscellaneous/wall_NM_height.dds");
+	AddResourece(eTexture_Stone,							"../Assets/Image/Miscellaneous/stones.dds");
+	AddResourece(eTexture_StoneNormal,						"../Assets/Image/Miscellaneous/stones_nmap.dds");
+	AddResourece(eTexture_Stone02,							"../Assets/Image/Miscellaneous/Stone02_Diffuse.jpg");
+	AddResourece(eTexture_Stone02Normal,					"../Assets/Image/Miscellaneous/Stone02_nmap.dds");
+	AddResourece(eTexture_Bricks,							"../Assets/Image/Miscellaneous/bricks.dds");
+	AddResourece(eTexture_BricksNormal,						"../Assets/Image/Miscellaneous/bricks_nmap.dds");
+	AddResourece(eTexture_Wood,								"../Assets/Image/Miscellaneous/Wood01.jpg");
+	AddResourece(eTexture_WallDiffuse,						"../Assets/Image/Miscellaneous/wall.jpg");
+	AddResourece(eTexture_WallNormalHeight,					"../Assets/Image/Miscellaneous/wall_NM_height.dds");
 	
 	// ------------------------ Mesh ---------------------------- //
 	// Character

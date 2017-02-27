@@ -16,7 +16,7 @@ cbuffer cbSkinned : register(b7)
     matrix gBoneTransform[80];
 };
 
-Texture2D gtxtTexture : register(t0);
+Texture2D gtxtTexture : register(t18);
 SamplerState gSamplerState : register(s0);
 
 struct VS_SKINNED_INPUT

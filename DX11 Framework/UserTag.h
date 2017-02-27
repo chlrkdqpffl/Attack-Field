@@ -29,7 +29,7 @@ enum Resource_TextrueTag {
 
 	// Model
 	eTexture_DarkFighterColor, eTexture_DrayerDiffuse, 
-	eTexture_TerroristDiffuse, 
+	eTexture_TerroristDiffuse, eTexture_TerroristNormalDisplace,
 	eTexture_PoliceDiffuse,
 
 	// UI

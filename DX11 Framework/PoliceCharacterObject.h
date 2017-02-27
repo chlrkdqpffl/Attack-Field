@@ -1,5 +1,6 @@
 #pragma once
 #include "SkinnedObject.h"
+#include "CharacterNormalShader.h"
 
 class CPoliceCharacterObject : public CSkinnedObject
 {

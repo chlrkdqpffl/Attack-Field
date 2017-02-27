@@ -228,6 +228,9 @@
     <ClCompile Include="PoliceCharacterObject.cpp">
       <Filter>Objects\Character</Filter>
     </ClCompile>
+    <ClCompile Include="CharacterNormalShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -391,6 +394,9 @@
     </ClInclude>
     <ClInclude Include="PoliceCharacterObject.h">
       <Filter>Objects\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterNormalShader.h">
+      <Filter>헤더 파일\Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
