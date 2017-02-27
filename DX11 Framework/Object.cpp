@@ -23,8 +23,14 @@ CMaterialColors::~CMaterialColors()
 
 CMaterial::CMaterial(CMaterialColors *pColors)
 {
-	m_pColors = pColors;
-	if (pColors) pColors->AddRef();
+	if (pColors == nullptr) {
+		m_pColors = new CMaterialColors();
+		m_pColors->AddRef();
+	}
+	else {
+		m_pColors = pColors;
+		pColors->AddRef();
+	}
 }
 
 CMaterial::~CMaterial()

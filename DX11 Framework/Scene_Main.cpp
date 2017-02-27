@@ -49,10 +49,10 @@ bool CScene_Main::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 					m_pPlayerCharacter->SetAnimation(Animation::eIdle);
 				break;
 				case VK_X:
-					m_pPlayerCharacter->SetAnimation(Animation::eWalk, 3.0f);
+					m_pPlayerCharacter->SetAnimation(Animation::eWalk);
 				break;
 				case VK_C:
-					m_pPlayerCharacter->SetAnimation(Animation::eRun, 0.5f);
+					m_pPlayerCharacter->SetAnimation(Animation::eRun);
 					break;
 				case VK_V:
 					m_pPlayerCharacter->SetAnimation(Animation::eStanding_Fire);
@@ -252,7 +252,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pModelShader->SetMaterial(pPlayerMaterial);
 	
 	CGameObject* pPlayer = new CGameObject();
-	pPlayer->SetPosition(200, 250, 200);
+	pPlayer->SetPosition(200, 230, 200);
 	pPlayer->SetMesh(pPlayerMesh);
 	pModelShader->AddObject(pPlayer);
 	m_vObjectsShaderVector.push_back(pModelShader);

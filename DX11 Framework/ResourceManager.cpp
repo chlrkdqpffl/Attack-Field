@@ -17,6 +17,9 @@ void CResourceManager::InitializeManager()
 	// Model
 	AddResourece(eTexture_DarkFighterColor,		"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_color.png");
 	AddResourece(eTexture_DrayerDiffuse,		"../Assets/FBX Model/Drayer_diffuse.png");
+	AddResourece(eTexture_TerroristDiffuse,		"../Assets/FBX Model/Character/Terrorist/TerrorristD.jpg");
+	//AddResourece(eTexture_PoliceDiffuse,		"../Assets/FBX Model/Character/Police/");
+	
 
 	// UI
 	AddResourece(eTexture_Title,				"../Assets/Image/UI/BackGround2.jpg");
@@ -49,11 +52,11 @@ void CResourceManager::InitializeManager()
 	// ------------------------ Mesh ---------------------------- //
 	// Character
 	AddResourece(MeshData::eMesh_DarkFighter,				"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.model");
-//	AddResourece(MeshData::eMesh_DarkFighter,				"../Assets/FBX Model/test(500).model");
+//	AddResourece(MeshData::eMesh_DarkFighter,				"../Assets/FBX Model/Character/terrorist.model");
 	
-	AddResourece(MeshData::eMesh_Siegetank,					"../Assets/FBX Model/siegetank.data");
 	AddResourece(MeshData::eMesh_Drayer,					"../Assets/FBX Model/drayer_animation.data");
-	AddResourece(MeshData::eMesh_Police,					"../Assets/FBX Model/Character/Police/Police.model");
+//	AddResourece(MeshData::eMesh_Police,					"../Assets/FBX Model/Character/Police/Police.model");
+	AddResourece(MeshData::eMesh_Terrorist,					"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
 
 
 	// Object

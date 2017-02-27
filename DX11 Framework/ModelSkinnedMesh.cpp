@@ -142,11 +142,13 @@ void CSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 	// Create Buffer
 	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+//	m_pd3dTangentBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pTangents, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, m_pTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dBoneWeightBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT4), m_nVertices, m_pboneWeights, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dBoneIndiceBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT4), m_nVertices, m_pboneIndices, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
+//	DXUT_SetDebugName(m_pd3dTangentBuffer, "Tangent");
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
 	DXUT_SetDebugName(m_pd3dBoneWeightBuffer, "BoneWeight");
 	DXUT_SetDebugName(m_pd3dBoneIndiceBuffer, "BoneIndice");
@@ -315,30 +317,6 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 
 	}
 	fin.close();
-
-	/*
-	cout << "Mesh Count : " << meshCount << endl;
-	cout << "Vertex Count : " << vertexCount << endl;
-	cout << "Index Count : " << indexCount << endl;
-
-	cout << "PosVector Size : " << posVector.size() << " Capacity : " << posVector.capacity() << endl;
-	cout << "NormalVector Size : " << normalVector.size() << " Capacity : " << normalVector.capacity() << endl;
-	cout << "UvVector Size : " << uvVector.size() << " Capacity : " << uvVector.capacity() << endl;
-	cout << "IndexVector Size : " << indexVector.size() << " Capacity : " << indexVector.capacity() << endl;
-
-	for (auto i : posVector)
-	cout << "Position : " << i.x << ", " << i.y << ", " << i.z << endl;
-
-	for (auto i : normalVector)
-	cout << "Normal : " << i.x << ", " << i.y << ", " << i.z << endl;
-
-	for (auto i : uvVector)
-	cout << "UV : " << i.x << ", " << i.y << endl;
-
-	for (auto i : indexVector) {
-	cout << "Index : " << i.x << ", " << i.y << ", " << i.z << endl;
-	}
-	*/
 
 	m_nVertices = vertexCount;
 	m_nIndices = indexCount;

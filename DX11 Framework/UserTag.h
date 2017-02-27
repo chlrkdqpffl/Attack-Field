@@ -28,7 +28,9 @@ enum Resource_TextrueTag {
 	eTexture_TerrainDiffuse, eTexture_TerrainDetail, eTexture_TerrainNormal, eTexture_TerrainHeightMap, eTexture_TerrainHeightMapRaw,
 
 	// Model
-	eTexture_DarkFighterColor, eTexture_DrayerDiffuse,
+	eTexture_DarkFighterColor, eTexture_DrayerDiffuse, 
+	eTexture_TerroristDiffuse, 
+	eTexture_PoliceDiffuse,
 
 	// UI
 	eTexture_Title,
@@ -44,7 +46,7 @@ namespace MeshData
 {
 	enum Resource_MeshTag {
 		// Character
-		eMesh_DarkFighter, eMesh_Siegetank, eMesh_Drayer, eMesh_Police,
+		eMesh_DarkFighter, eMesh_Drayer, eMesh_Police, eMesh_Terrorist,
 
 		// Object
 		eMesh_Road,

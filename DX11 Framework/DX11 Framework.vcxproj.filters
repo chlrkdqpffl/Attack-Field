@@ -445,5 +445,8 @@
     <None Include="Shader HLSL File\CharacterSkinned.hlsli">
       <Filter>HLSL</Filter>
     </None>
+    <None Include="Shader HLSL File\CharacterSkinnedNormal.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>

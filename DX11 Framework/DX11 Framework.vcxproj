@@ -291,6 +291,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader HLSL File\Blurring.hlsli" />
+    <None Include="Shader HLSL File\CharacterSkinnedNormal.hlsli" />
     <None Include="Shader HLSL File\DisplacementMap.hlsli" />
     <None Include="Shader HLSL File\CharacterSkinned.hlsli" />
     <None Include="Shader HLSL File\Fog.hlsli" />

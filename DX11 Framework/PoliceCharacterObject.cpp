@@ -13,8 +13,7 @@ CPoliceCharacterObject::~CPoliceCharacterObject()
 
 void CPoliceCharacterObject::CreateMesh(ID3D11Device *pd3dDevice)
 {
-	//CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(MeshData::eMesh_Siegetank), 0.013f);
-	CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(MeshData::eMesh_Police));
+	CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(MeshData::eMesh_Terrorist));
 	pCharacterMesh->Initialize(pd3dDevice);
 
 	SetMesh(pCharacterMesh);
@@ -29,9 +28,9 @@ void CPoliceCharacterObject::CreateShader(ID3D11Device *pd3dDevice)
 void CPoliceCharacterObject::CreateMaterial(ID3D11Device *pd3dDevice)
 {
 	CTexture *pCharacterTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	m_pMaterial = new CMaterial();
 
-	pCharacterTexture->SetTexture(0, eTexture_DrayerDiffuse);
+	m_pMaterial = new CMaterial();
+	pCharacterTexture->SetTexture(0, eTexture_TerroristDiffuse);
 	pCharacterTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
 
 	m_pMaterial->SetTexture(pCharacterTexture);
