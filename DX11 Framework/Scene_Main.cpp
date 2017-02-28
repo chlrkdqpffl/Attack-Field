@@ -224,7 +224,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_pPlayerCharacter->SetPosition(100, 250, 100);
 	m_pPlayerCharacter->Rotate(0, 180.0f, 0.0f);
 	m_vObjectsVector.push_back(m_pPlayerCharacter);
-	// Testing
+
 #pragma endregion 
 
 #pragma region [Create Test - NomalMapping]	
