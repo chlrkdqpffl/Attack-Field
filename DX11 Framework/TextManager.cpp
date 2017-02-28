@@ -41,12 +41,8 @@ void CTextManager::RenderText(ID3D11DeviceContext* pd3dDeviceContext, std::strin
 {
 	if (!m_pFW1Font) return;
 
-	int nLen = (int)strlen(text.c_str()) + 1;
-	mbstowcs(m_tChar, text.c_str(), nLen);
-
 	/// <param name="Color">The color of the text, as 0xAaBbGgRr.</param>
-	m_pFW1Font->DrawString(pd3dDeviceContext, m_tChar, fontSize, posX, posY, color, pivot);
-
+	m_pFW1Font->DrawString(pd3dDeviceContext, s_to_ws(text).c_str(), fontSize, posX, posY, color, pivot);
 }
 
 void CTextManager::RenderText(ID3D11DeviceContext* pd3dDeviceContext, std::wstring text, float fontSize, float posX, float posY, UINT32 color, UINT pivot)

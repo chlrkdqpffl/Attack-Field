@@ -218,7 +218,6 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 	m_vObjectsVector.push_back(m_pPlayerCharacter);
 	*/
-
 	m_pPlayerCharacter = new CPoliceCharacterObject();
 	m_pPlayerCharacter->CreateObjectData(pd3dDevice);
 	
@@ -562,13 +561,11 @@ void CScene_Main::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	CScene::RenderAllText(pd3dDeviceContext);
 
 	string str;
-	wstring wstr;
 	
 	// Draw Position
 	XMFLOAT3 playerPos = m_pPlayer->GetPosition();
 	str = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")";
-	wstr.assign(str.begin(), str.end());
-	TEXT_MGR->RenderText(pd3dDeviceContext, wstr, 30, 20, 50, 0xFFFFFFFF, FW1_LEFT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 50, 0xFFFFFFFF, FW1_LEFT);
 
 	/*
 	// Draw Time Gap

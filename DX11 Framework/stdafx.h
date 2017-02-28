@@ -18,7 +18,7 @@
 #include <tchar.h>
 #include <Mmsystem.h>
 //#include <D3D9Types.h>
-
+#include <codecvt>
 #include <iostream>
 #include <chrono>
 
@@ -94,6 +94,18 @@ inline WCHAR* ConverCtoWC(const char* str)
 
 	MultiByteToWideChar(CP_ACP, 0, str, strlen(str) + 1, pStr, strSize);
 	return pStr;
+}
+
+inline std::wstring s_to_ws(const std::string& str, std::locale Loc = std::locale("ko"))
+{
+	using conv_Ty = std::codecvt_utf8_utf16<wchar_t>;
+	return std::wstring_convert<conv_Ty, wchar_t> {&std::use_facet<conv_Ty>(Loc) }.from_bytes(str);
+}
+
+inline std::string ws_to_s(const std::wstring& wstr, std::locale Loc = std::locale("ko"))
+{
+	using conv_Ty = std::codecvt_utf8_utf16<wchar_t>;
+	return std::wstring_convert<conv_Ty, wchar_t> {&std::use_facet<conv_Ty>(Loc) }.to_bytes(wstr);
 }
 
 #if defined(_DEBUG) || defined(DEBUG)

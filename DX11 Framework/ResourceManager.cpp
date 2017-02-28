@@ -96,11 +96,8 @@ wstring CResourceManager::FindResourcePath(Resource_TextrueTag resourceTag)
 		cout << "Resource Texture Tag " << resourceTag << " is not exist." << endl;
 		return nullptr;
 	}
-	string str = (*find).second.c_str();
-	wstring wstr;
-	wstr.assign(str.begin(), str.end());
 
-	return wstr;
+	return s_to_ws((*find).second.c_str());
 }
 
 string CResourceManager::FindResourcePath(MeshData::Resource_MeshTag resourceTag)
@@ -121,12 +118,10 @@ ID3D11ShaderResourceView* CResourceManager::FindResourceAndCreateSRV(Resource_Te
 		return nullptr;
 	}
 	string str = (*findResource).second.c_str();
-	wstring wstr;
-	wstr.assign(str.begin(), str.end());
-	
+
 	HRESULT hResult;
 	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
-	D3DX11CreateShaderResourceViewFromFile(STATEOBJ_MGR->g_pd3dDevice, wstr.c_str(), NULL, NULL, &pd3dsrvTexture, &hResult);
+	D3DX11CreateShaderResourceViewFromFile(STATEOBJ_MGR->g_pd3dDevice, s_to_ws(str).c_str(), NULL, NULL, &pd3dsrvTexture, &hResult);
 
 	str = "TextureTag : " + to_string(resourceTag);
 	DXUT_SetDebugName(pd3dsrvTexture, str.c_str());
@@ -150,12 +145,11 @@ void CResourceManager::ShowImageInfo(Resource_TextrueTag resourceTag)
 		return;
 	}
 	string str = (*findResource).second.c_str();
-	wstring wstr;
-	wstr.assign(str.begin(), str.end());
+
 	HRESULT hResult;
 
 	D3DX11_IMAGE_INFO info;
-	D3DX11GetImageInfoFromFile(wstr.c_str(), nullptr, &info, &hResult);
+	D3DX11GetImageInfoFromFile(s_to_ws(str).c_str(), nullptr, &info, &hResult);
 
 	if ((HRESULT)hResult >= 0) {
 		cout << endl << " ===== < Image File Info > =====" << endl;
