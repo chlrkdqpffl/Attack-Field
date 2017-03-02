@@ -17,25 +17,25 @@ class CAnimationController
 	float						m_fTimePos = 0.0f;
 	CSkinnedMesh*				m_pSkinnedMesh = nullptr;
 
-	tuple<Animation::Character, AnimationTrack, AnimationType::Type> m_prevAnimState;
-	tuple<Animation::Character, AnimationTrack, AnimationType::Type> m_currAnimState;
-	vector<tuple<Animation::Character, AnimationTrack, AnimationType::Type>> m_animaitionTupleVector;
+	tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> m_prevAnimState;
+	tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> m_currAnimState;
+	vector<tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type>> m_animaitionTupleVector;
 
 public:
 	CAnimationController();
 	virtual ~CAnimationController();
 
-	void AddAnimation(tuple<Animation::Character, AnimationTrack, AnimationType::Type> anim);
+	void AddAnimation(tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> anim);
 
 	void Update(float fTimeElapsed);
 	void UpdateTime(float fTimeElapsed);
 	void UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext);
 
 	// ------ Get, Setter ------ //
-	Animation::Character GetAnimEnum() const {return get<0>(m_currAnimState); }
-	AnimationType::Type GetAnimType() const { return get<2>(m_currAnimState); }
+	AnimationData::CharacterAnim GetAnimEnum() const {return get<0>(m_currAnimState); }
+	AnimationData::Type GetAnimType() const { return get<2>(m_currAnimState); }
 
 	void SetMesh(CSkinnedMesh* mesh);
-	void SetAnimation(Animation::Character anim, float speed = 1.0f);
+	void SetAnimation(AnimationData::CharacterAnim anim, float speed = 1.0f);
 };
 

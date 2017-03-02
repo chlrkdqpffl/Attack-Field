@@ -24,6 +24,6 @@ public:
 
 	// ------ Get, Setter ------ //
 	void SetMesh(CSkinnedMesh* mesh);
-	void SetAnimation(Animation::Character anim, float speed = 1.0f);
+	void SetAnimation(AnimationData::CharacterAnim anim, float speed = 1.0f);
 };
 

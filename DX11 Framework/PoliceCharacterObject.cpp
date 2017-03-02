@@ -39,8 +39,16 @@ void CPoliceCharacterObject::CreateMaterial(ID3D11Device *pd3dDevice)
 
 void CPoliceCharacterObject::CreateAnimation()
 {
-	m_pAnimController->AddAnimation(make_tuple(Animation::eIdle, AnimationTrack("Idle"), AnimationType::Loop));
-	m_pAnimController->AddAnimation(make_tuple(Animation::eWalk, AnimationTrack("Walk"), AnimationType::Loop));
-	m_pAnimController->AddAnimation(make_tuple(Animation::eRun, AnimationTrack("Run"), AnimationType::Loop));
-	m_pAnimController->AddAnimation(make_tuple(Animation::eStanding_Fire, AnimationTrack("StandingFire"), AnimationType::Once));
+	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,			AnimationTrack("Idle"), AnimationData::Type::eLoop));
+	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk,			AnimationTrack("Walk"), AnimationData::Type::eLoop));
+	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eRun,			AnimationTrack("Run"), AnimationData::Type::eLoop));
+	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eStanding_Fire, AnimationTrack("StandingFire"), AnimationData::Type::eOnce));
 }
+
+void CPoliceCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)
+{
+	m_pWeapon = new CRifleGunWeapon();
+	
+	m_pWeapon->CreateObjectData(pd3dDevice);
+}
+

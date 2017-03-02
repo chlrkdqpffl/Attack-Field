@@ -160,10 +160,12 @@
     <ClCompile Include="AntTweakBarManager.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CharacterNormalShader.cpp" />
+    <ClCompile Include="CharacterObject.cpp" />
     <ClCompile Include="CharacterShader.cpp" />
     <ClCompile Include="Drayer.cpp" />
     <ClCompile Include="NormalDisplaceMapShader.cpp" />
     <ClCompile Include="PoliceCharacterObject.cpp" />
+    <ClCompile Include="RifleGunWeapon.cpp" />
     <ClCompile Include="ScreenShader.cpp" />
     <ClCompile Include="ModelSkinnedMesh.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -206,6 +208,7 @@
     <ClCompile Include="ThirdPersonCamera.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WaterGridMesh.cpp" />
+    <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AirplanePlayer.h" />
@@ -213,6 +216,7 @@
     <ClInclude Include="AntTweakBarManager.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CharacterNormalShader.h" />
+    <ClInclude Include="CharacterObject.h" />
     <ClInclude Include="CharacterShader.h" />
     <ClInclude Include="ConstantBuffer_Slot.h" />
     <ClInclude Include="Drayer.h" />
@@ -237,6 +241,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="AxisObjects.h" />
+    <ClInclude Include="RifleGunWeapon.h" />
     <ClInclude Include="RotatingObject.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
@@ -265,6 +270,7 @@
     <ClInclude Include="UserDefine.h" />
     <ClInclude Include="UserTag.h" />
     <ClInclude Include="WaterGridMesh.h" />
+    <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="DirectX11_Project.ico" />

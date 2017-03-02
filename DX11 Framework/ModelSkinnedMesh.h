@@ -2,13 +2,6 @@
 //#include "Mesh.h"
 #include "ModelMesh_FBX.h"
 
-namespace AnimationType
-{
-	enum Type {
-		Loop, Once, PingPong
-	};
-}
-
 struct AnimationTrack;
 
 struct VS_CB_SKINNED
@@ -35,7 +28,7 @@ struct BoneData
 	float GetEndTime() const { return m_keyframeDataVector.back().m_fAnimationTime; };
 };
 
-struct AnimationData
+struct AnimationClip
 {
 	vector<BoneData> m_boneDataVector;
 
@@ -61,7 +54,7 @@ protected:
 	UINT						m_nBoneCount = 0;
 	UINT						m_nAnimationClip = 0;
 	string						m_strClipName;
-	map<string, AnimationData>	m_animationMap;
+	map<string, AnimationClip>	m_animationMap;
 
 	ID3D11Buffer				*m_pd3dBoneWeightBuffer = nullptr;
 	ID3D11Buffer				*m_pd3dBoneIndiceBuffer = nullptr;
@@ -85,7 +78,7 @@ public:
 	void UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext);
 	void ReleaseConstantBuffer();
 
-	void Interpolate_Blending(const AnimationData& dataA, bool& enable, const AnimationData& dataB, float timePos, vector<XMFLOAT4X4>& boneTransforms) const;
+	void Interpolate_Blending(const AnimationClip& dataA, bool& enable, const AnimationClip& dataB, float timePos, vector<XMFLOAT4X4>& boneTransforms) const;
 	void MakeBoneMatrix(int nNowframe, int nBoneNum, vector<XMMATRIX>&) const;
 
 	void UpdateBoneTransform(ID3D11DeviceContext *pd3dDeviceContext);
@@ -98,7 +91,7 @@ public:
 	float GetClipStartTime(const string& clipName) const;
 	float GetClipEndTime(const string& clipName) const;
 	const string& GetClipName() const { return m_strClipName; }
-	map<string, AnimationData> GetAnimMap() const {	return m_animationMap; }
+	map<string, AnimationClip> GetAnimMap() const {	return m_animationMap; }
 
 	void SetClipName(string name) { m_strClipName = name; }
 };

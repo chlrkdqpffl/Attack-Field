@@ -249,6 +249,8 @@ CGameObject::CGameObject(int nMeshes)
 	m_bcMeshBoundingCube.Center = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_bcMeshBoundingCube.Extents = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_bcBoundingCube = BoundingBox();
+
+	m_iObjectId++;
 }
 
 CGameObject::~CGameObject()

@@ -18,7 +18,7 @@ void CSkinnedObject::CreateObjectData(ID3D11Device *pd3dDevice)
 	CreateAnimation();
 
 	// 기본 애니메이션 세팅
-	m_pAnimController->SetAnimation(Animation::eIdle);
+	m_pAnimController->SetAnimation(AnimationData::CharacterAnim::eIdle);
 }
 
 void CSkinnedObject::SetMesh(CSkinnedMesh* mesh) 
@@ -28,7 +28,7 @@ void CSkinnedObject::SetMesh(CSkinnedMesh* mesh)
 	m_pSkinnedMesh = mesh;
 }
 
-void CSkinnedObject::SetAnimation(Animation::Character anim, float speed)
+void CSkinnedObject::SetAnimation(AnimationData::CharacterAnim anim, float speed)
 {
 	m_pAnimController->SetAnimation(anim, speed);
 }

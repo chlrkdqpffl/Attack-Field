@@ -15,7 +15,7 @@ void CAnimationController::SetMesh(CSkinnedMesh* mesh)
 	m_pSkinnedMesh = mesh; 
 }
 
-void CAnimationController::SetAnimation(Animation::Character anim, float speed)
+void CAnimationController::SetAnimation(AnimationData::CharacterAnim anim, float speed)
 {
 	if (get<0>(m_currAnimState) == anim)
 		return;
@@ -33,7 +33,7 @@ void CAnimationController::SetAnimation(Animation::Character anim, float speed)
 		}
 }
 
-void CAnimationController::AddAnimation(tuple<Animation::Character, AnimationTrack, AnimationType::Type> anim)
+void CAnimationController::AddAnimation(tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> anim)
 {
 	m_animaitionTupleVector.push_back(anim);
 	
@@ -50,23 +50,23 @@ void CAnimationController::UpdateTime(float fTimeElapsed)
 	float timeElapse = get<1>(m_currAnimState).m_fSpeed * fTimeElapsed;
 
 	switch (GetAnimType()) {
-	case AnimationType::Loop:
+	case AnimationData::Type::eLoop:
 		m_fTimePos += timeElapse;
 
 		if (m_fTimePos > endTime)
 			m_fTimePos = 0.0f;
 
 		break;
-	case AnimationType::Once:
+	case AnimationData::Type::eOnce:
 		m_fTimePos += timeElapse;
 
 		if (m_fTimePos  > endTime) {
-			SetAnimation(Animation::eIdle);
+			SetAnimation(AnimationData::CharacterAnim::eIdle);
 			m_fTimePos = 0.0f;
 		}
 
 		break;
-	case AnimationType::PingPong:
+	case AnimationData::Type::ePingPong:
 		static bool isReverse = false;
 
 		if (isReverse == false) {
@@ -82,7 +82,7 @@ void CAnimationController::UpdateTime(float fTimeElapsed)
 			if (m_fTimePos  < 0.0f) {
 				isReverse = false;
 				m_fTimePos = 0.0f;
-				SetAnimation(Animation::eIdle);
+				SetAnimation(AnimationData::CharacterAnim::eIdle);
 			}
 		}
 		break;

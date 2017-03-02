@@ -46,16 +46,16 @@ bool CScene_Main::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		case WM_KEYDOWN:
 			switch (wParam) {
 				case VK_Z:
-					m_pPlayerCharacter->SetAnimation(Animation::eIdle);
+					m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eIdle);
 				break;
 				case VK_X:
-					m_pPlayerCharacter->SetAnimation(Animation::eWalk);
+					m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 				break;
 				case VK_C:
-					m_pPlayerCharacter->SetAnimation(Animation::eRun);
+					m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
 					break;
 				case VK_V:
-					m_pPlayerCharacter->SetAnimation(Animation::eStanding_Fire);
+					m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eStanding_Fire);
 					break;
 			}
 			break;
@@ -222,7 +222,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_pPlayerCharacter->CreateObjectData(pd3dDevice);
 	
 	m_pPlayerCharacter->SetPosition(100, 250, 100);
-	m_pPlayerCharacter->Rotate(0, 180.0f, 0.0f);
+//	m_pPlayerCharacter->Rotate(0, 180.0f, 0.0f);
 	m_vObjectsVector.push_back(m_pPlayerCharacter);
 
 #pragma endregion 

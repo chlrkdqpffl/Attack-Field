@@ -51,7 +51,7 @@ void BoneData::Interpolate(float fTimePos, XMFLOAT4X4& boneTransforms) const
 	}
 }
 
-void AnimationData::Interpolate(float fTimePos, vector<XMFLOAT4X4>& boneTransforms) const
+void AnimationClip::Interpolate(float fTimePos, vector<XMFLOAT4X4>& boneTransforms) const
 {
 	for (UINT i = 0; i < m_boneDataVector.size(); ++i)
 	{
@@ -65,7 +65,7 @@ void AnimationData::Interpolate(float fTimePos, vector<XMFLOAT4X4>& boneTransfor
 	}
 }
 
-float AnimationData::GetClipStartTime() const
+float AnimationClip::GetClipStartTime() const
 {
 	float t = FLT_MAX;
 
@@ -76,7 +76,7 @@ float AnimationData::GetClipStartTime() const
 	return t;
 }
 
-float AnimationData::GetClipEndTime() const
+float AnimationClip::GetClipEndTime() const
 {
 	float t = 0.0f;
 
@@ -197,7 +197,7 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 	int boneHierarchy;
 	XMFLOAT4X4 boneOffset, SQTTransform, finalBone;
 
-	AnimationData animaitionData;
+	AnimationClip animaitionData;
 	KeyframeData keyframeData;
 	BoneData boneData;
 	string animationName;
@@ -405,7 +405,7 @@ void CSkinnedMesh::MakeBoneMatrix(int nNowframe, int nBoneNum, vector<XMMATRIX> 
 	SQTTransformVector.push_back(mtxBone);
 }
 
-void CSkinnedMesh::Interpolate_Blending(const AnimationData& basicData, bool& enable, const AnimationData& targetData, float fTimePos, vector<XMFLOAT4X4>& boneTransforms) const
+void CSkinnedMesh::Interpolate_Blending(const AnimationClip& basicData, bool& enable, const AnimationClip& targetData, float fTimePos, vector<XMFLOAT4X4>& boneTransforms) const
 {
 	// 각 애니메이션 본의 갯수가 틀림
 	assert(targetData.m_boneDataVector.size() == basicData.m_boneDataVector.size());

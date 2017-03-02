@@ -37,9 +37,7 @@ void CDrayer::CreateMaterial(ID3D11Device *pd3dDevice)
 
 void CDrayer::CreateAnimation()
 {
-	m_pAnimController->AddAnimation(make_tuple(Animation::eIdle,	AnimationTrack("idle"), AnimationType::Loop));
-	m_pAnimController->AddAnimation(make_tuple(Animation::eRun,		AnimationTrack("Run"), AnimationType::Loop));
-//	m_pAnimController->AddAnimation(make_tuple(Animation::eAttack,	AnimationTrack("CrossPunch"), AnimationType::Once));
-
-	m_pAnimController->SetAnimation(Animation::eIdle);
+	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,	AnimationTrack("idle"), AnimationData::Type::eLoop));
+	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eRun,		AnimationTrack("Run"), AnimationData::Type::eLoop));
+//	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eAttack,	AnimationTrack("CrossPunch"), AnimationData::Type::eOnce));
 }

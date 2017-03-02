@@ -104,9 +104,9 @@ public:
 	virtual void CreateObjectData(ID3D11Device *pd3dDevice);
 
 protected:
-	virtual void CreateMesh(ID3D11Device *pd3dDevice) { print("No have Mesh"); };
-	virtual void CreateShader(ID3D11Device *pd3dDevice) { print("No have Shader"); };
-	virtual void CreateMaterial(ID3D11Device *pd3dDevice) { print("No have Material"); };
+	virtual void CreateMesh(ID3D11Device *pd3dDevice)		{ print("No have Mesh"); };
+	virtual void CreateShader(ID3D11Device *pd3dDevice)		{ print("No have Shader"); };
+	virtual void CreateMaterial(ID3D11Device *pd3dDevice)	{ print("No have Material"); };
 
 private:
 	int								m_nReferences = 0;
@@ -124,9 +124,10 @@ public:
 	XMFLOAT4X4						m_d3dxmtxShadow;
 
 protected:
+	static UINT						m_iObjectId;
+
 	CMesh							**m_ppMeshes = nullptr;
 	int								m_nMeshes = 0;
-	
 
 	CMaterial						*m_pMaterial = nullptr;
 	CShader							*m_pShader = nullptr;

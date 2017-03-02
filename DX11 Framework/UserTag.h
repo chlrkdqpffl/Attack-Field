@@ -9,9 +9,29 @@ enum eShaderTag {
 	eShader_NormalMap
 };
 
-namespace Animation
+// ============================================================================================================================== //
+// ======================================================= Animation Data ======================================================= //
+
+namespace WeaponData
 {
-	enum Character
+	enum class Type
+	{
+		eRifle, eSniperRifle
+	};
+}
+
+
+// ============================================================================================================================== //
+// ======================================================= Animation Data ======================================================= //
+
+namespace AnimationData
+{
+	enum class Type
+	{
+		eLoop, eOnce, ePingPong
+	};
+
+	enum class CharacterAnim
 	{
 		eNone, eIdle, eWalk, eRun, eStanding_Fire, eWalking_Fire, eDeath
 	};
