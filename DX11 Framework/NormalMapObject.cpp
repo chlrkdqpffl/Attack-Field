@@ -20,13 +20,13 @@ void CNormalMapObject::CreateMaterial(ID3D11Device *pd3dDevice)
 	pColors->m_d3dxcEmissive = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	m_pMaterial = new CMaterial(pColors);
 
-	CTexture *pNormalTexture = new CTexture(2, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
+	CTexture *pTexture = new CTexture(2, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
 
-	pNormalTexture->SetTexture(0, eTexture_WallDiffuse);
-	pNormalTexture->SetTexture(1, eTexture_WallNormalHeight);
-	pNormalTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	pTexture ->SetTexture(0, eTexture_WallDiffuse);
+	pTexture ->SetTexture(1, eTexture_WallNormalHeight);
+	pTexture ->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
 
-	m_pMaterial->SetTexture(pNormalTexture);
+	m_pMaterial->SetTexture(pTexture);
 }
 
 void CNormalMapObject::CreateMesh(ID3D11Device *pd3dDevice)

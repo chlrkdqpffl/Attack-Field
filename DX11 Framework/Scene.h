@@ -8,6 +8,8 @@
 #include "ModelSkinnedMesh.h"
 
 // ========== Shader ========== 
+#include "SkyBoxShader.h"
+#include "WaterShader.h"
 #include "TerrainShader.h"
 #include "CharacterShader.h"
 
@@ -124,5 +126,5 @@ protected:
 	// Constant Buffer
 	ID3D11Buffer					*m_pd3dcbRenderOption;
 
-	CSkinnedObject*					m_pPlayerCharacter = nullptr;
+	CCharacterObject				*m_pPlayerCharacter = nullptr;
 };

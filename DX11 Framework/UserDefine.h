@@ -49,8 +49,6 @@
 #define SafeDelete(x) { delete x; x = nullptr; }
 //---------------------------------------------------------------------------------------
 
-#define ANIMFRAMETIME			0.0333333f
-
 // 사진 저장 매크로 D3DX11SaveTextureToFile(STATEOBJ_MGR->g_pd3dImmediateDeviceContext.Get(), &texture2d, D3DX11_IFF_JPG, L"save.jpg");
 
 #define VK_A 0x41 

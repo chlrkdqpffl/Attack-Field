@@ -237,11 +237,17 @@
     <ClCompile Include="RifleGunWeapon.cpp">
       <Filter>Objects\Weopon</Filter>
     </ClCompile>
-    <ClCompile Include="CharacterObject.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Weapon.cpp">
       <Filter>Objects\Weopon</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterObject.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="WaterShader.cpp">
+      <Filter>Objects\Water</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxShader.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -417,6 +423,12 @@
       <Filter>Objects\Weopon</Filter>
     </ClInclude>
     <ClInclude Include="CharacterObject.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="WaterShader.h">
+      <Filter>Objects\Water</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxShader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

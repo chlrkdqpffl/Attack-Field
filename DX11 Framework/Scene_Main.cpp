@@ -209,19 +209,10 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma endregion
 */
 #pragma region [Create Character]
-	/*
-	m_pPlayerCharacter = new CDrayer();
-	m_pPlayerCharacter->CreateObjectData(pd3dDevice);
-
-	m_pPlayerCharacter->SetPosition(-500, -500, 1000);
-	m_pPlayerCharacter->Rotate(-90, 0.0f, 0.0f);
-
-	m_vObjectsVector.push_back(m_pPlayerCharacter);
-	*/
 	m_pPlayerCharacter = new CPoliceCharacterObject();
 	m_pPlayerCharacter->CreateObjectData(pd3dDevice);
 	
-	m_pPlayerCharacter->SetPosition(100, 250, 100);
+//	m_pPlayerCharacter->SetPosition(100, 250, 100);
 //	m_pPlayerCharacter->Rotate(0, 180.0f, 0.0f);
 	m_vObjectsVector.push_back(m_pPlayerCharacter);
 

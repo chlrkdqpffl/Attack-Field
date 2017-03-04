@@ -100,8 +100,6 @@ CSkinnedMesh::~CSkinnedMesh()
 
 	if (m_pboneWeights) delete[] m_pboneWeights;
 	if (m_pboneIndices) delete[] m_pboneIndices;
-//	if (m_pd3dxmtxFinalBone) delete[] m_pd3dxmtxFinalBone;
-//	if (m_pd3dxmtxSQTTransform) delete[] m_pd3dxmtxSQTTransform;
 }
 
 void CSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
@@ -387,24 +385,6 @@ void CSkinnedMesh::ReleaseConstantBuffer()
 	ReleaseCOM(m_pd3dcbBones);
 }
 
-void CSkinnedMesh::MakeBoneMatrix(int nNowframe, int nBoneNum, vector<XMMATRIX> &SQTTransformVector) const
-{
-	XMMATRIX mtxBone;
-	auto anim = m_animationMap.find(m_strClipName);
-	
-	if (anim->second.m_boneDataVector[nBoneNum].m_nAnimaitionKeys > 0){
-		XMVECTOR vScale = XMLoadFloat3(&anim->second.m_boneDataVector[nBoneNum].m_keyframeDataVector[nNowframe].m_xmf3Scale);
-		XMVECTOR vTranslate = XMLoadFloat3(&anim->second.m_boneDataVector[nBoneNum].m_keyframeDataVector[nNowframe].m_xmf3Translate);
-		XMVECTOR vQuaternion = XMLoadFloat4(&anim->second.m_boneDataVector[nBoneNum].m_keyframeDataVector[nNowframe].m_xmf4Quaternion);
-
-		mtxBone = XMMatrixAffineTransformation(vScale, XMVectorZero(), vQuaternion, vTranslate);
-	}
-	else
-		mtxBone = XMMatrixIdentity();
-	
-	SQTTransformVector.push_back(mtxBone);
-}
-
 void CSkinnedMesh::Interpolate_Blending(const AnimationClip& basicData, bool& enable, const AnimationClip& targetData, float fTimePos, vector<XMFLOAT4X4>& boneTransforms) const
 {
 	// 각 애니메이션 본의 갯수가 틀림
@@ -555,42 +535,5 @@ void CSkinnedMesh::GetFinalTransformsBlending(AnimationTrack& prevAnim, const An
 		XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
 
 		finalBoneVector[i] = mtxOffset * mtxToRoot;
-	}
-}
-
-void CSkinnedMesh::UpdateBoneTransform(ID3D11DeviceContext *pd3dDeviceContext)
-{
-	vector<XMMATRIX> SQTTransformVector;
-
-	for (UINT i = 0; i < m_nBoneCount; i++)
-		MakeBoneMatrix(m_nNowFrameNum, i, SQTTransformVector);
-
-	finalBoneVector.resize(m_nBoneCount);
-
-	for (UINT i = 0; i < m_nBoneCount; i++)
-	{
-		XMMATRIX mtxOffset = XMLoadFloat4x4(&boneOffsetsVector[i]);
-		XMMATRIX mtxToRoot = SQTTransformVector[i];
-
-		finalBoneVector[i] = mtxOffset * mtxToRoot;
-	}
-}
-
-void CSkinnedMesh::Update(float fTimeElapsed)
-{
-	m_fAnimationTime += fTimeElapsed;
-
-	if (m_fAnimationTime > ANIMFRAMETIME)
-	{
-		if (m_nNowFrameNum < m_nMaxFrameNum - 1)
-		{
-			m_nNowFrameNum++;
-			m_fAnimationTime = 0.0f;
-		}
-		else
-		{
-			m_nNowFrameNum = 0;
-			m_fAnimationTime = 0.0f;
-		}
 	}
 }

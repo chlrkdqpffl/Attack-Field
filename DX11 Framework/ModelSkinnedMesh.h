@@ -79,10 +79,6 @@ public:
 	void ReleaseConstantBuffer();
 
 	void Interpolate_Blending(const AnimationClip& dataA, bool& enable, const AnimationClip& dataB, float timePos, vector<XMFLOAT4X4>& boneTransforms) const;
-	void MakeBoneMatrix(int nNowframe, int nBoneNum, vector<XMMATRIX>&) const;
-
-	void UpdateBoneTransform(ID3D11DeviceContext *pd3dDeviceContext);
-	void Update(float fTimeElapsed);
 
 	// ----- Get, Setter ----- //
 	void GetFinalTransforms(const string& clipName, float fTimePos);
@@ -92,6 +88,7 @@ public:
 	float GetClipEndTime(const string& clipName) const;
 	const string& GetClipName() const { return m_strClipName; }
 	map<string, AnimationClip> GetAnimMap() const {	return m_animationMap; }
+	XMFLOAT4X4 GetOffsetMtx(UINT index) const { return boneOffsetsVector[index]; }
 
 	void SetClipName(string name) { m_strClipName = name; }
 };

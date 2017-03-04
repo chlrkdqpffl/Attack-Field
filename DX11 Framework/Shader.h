@@ -76,27 +76,6 @@ public:
 	static ID3D11Buffer *CreateBuffer(ID3D11Device *pd3dDevice, UINT nStride, int nElements, void *pBufferData, UINT nBindFlags, D3D11_USAGE d3dUsage, UINT nCPUAccessFlags);
 };
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-class CSkyBoxShader : public CShader
-{
-public:
-	CSkyBoxShader();
-	virtual ~CSkyBoxShader();
-
-	virtual void CreateShader(ID3D11Device *pd3dDevice) override;
-};
-
-class CWaterShader : public CShader
-{
-public:
-	CWaterShader();
-	virtual ~CWaterShader();
-
-	virtual void CreateShader(ID3D11Device *pd3dDevice) override;
-};
-
 ////////////////////////////////////////////////////////////////////////////////
 class CObjectsShader : public CShader
 {

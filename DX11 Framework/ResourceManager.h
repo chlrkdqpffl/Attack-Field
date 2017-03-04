@@ -1,6 +1,6 @@
 #pragma once
 #include "SingletonManager.h"
-//#include <map>
+#include "ModelSkinnedMesh.h"
 #include "UserTag.h"
 
 class CResourceManager : public CSingletonManager<CResourceManager>
@@ -23,8 +23,7 @@ public:
 
 	ID3D11ShaderResourceView* FindResourceAndCreateSRV(Resource_TextrueTag);
 
-#if defined(DEBUG) || defined(_DEBUG)
+	CSkinnedMesh* CloneSkinnedMesh();
 	void ShowImageInfo(Resource_TextrueTag resourceTag);
-#endif
 
 };

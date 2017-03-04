@@ -21,7 +21,9 @@ void CResourceManager::InitializeManager()
 	AddResourece(eTexture_TerroristNormalDisplace,			"../Assets/FBX Model/Character/Terrorist/TerrorristNM_D.dds.dds");
 	//AddResourece(eTexture_PoliceDiffuse,					"../Assets/FBX Model/Character/Police/");
 	
-
+	AddResourece(eTexture_Rifle,							"../Assets/FBX Model/Weapon/Rifle/rifle.bmp");
+	AddResourece(eTexture_RifleNormal,						"../Assets/FBX Model/Weapon/Rifle/RifleNM.png");
+	
 	// UI
 	AddResourece(eTexture_Title,							"../Assets/Image/UI/BackGround2.jpg");
 
@@ -58,7 +60,7 @@ void CResourceManager::InitializeManager()
 	AddResourece(MeshData::eMesh_Drayer,					"../Assets/FBX Model/drayer_animation.data");
 //	AddResourece(MeshData::eMesh_Police,					"../Assets/FBX Model/Character/Police/Police.model");
 	AddResourece(MeshData::eMesh_Terrorist,					"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
-
+	AddResourece(MeshData::eMesh_Rifle,						"../Assets/FBX Model/Weapon/Rifle/rifle(70).model");
 
 	// Object
 	AddResourece(MeshData::eMesh_Road,						"../Assets/FBX Model/Road.model");
@@ -136,7 +138,6 @@ ID3D11ShaderResourceView* CResourceManager::FindResourceAndCreateSRV(Resource_Te
 	return pd3dsrvTexture;
 }
 
-#if defined(DEBUG) || defined(_DEBUG)
 void CResourceManager::ShowImageInfo(Resource_TextrueTag resourceTag)
 {
 	auto findResource = textureMap.find(resourceTag);
@@ -165,4 +166,3 @@ void CResourceManager::ShowImageInfo(Resource_TextrueTag resourceTag)
 	else
 		ShowTaskFail("File Loading < " + (*findResource).second + " > \t Error!! \t\t 파일 또는 경로를 확인하세요.");
 }
-#endif

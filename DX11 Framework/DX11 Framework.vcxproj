@@ -171,6 +171,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="SkinnedObject.cpp" />
+    <ClCompile Include="SkyBoxShader.cpp" />
     <ClCompile Include="TerrainShader.cpp" />
     <ClCompile Include="TextureToScreenRectMesh.cpp" />
     <ClCompile Include="NormalMapCubeMesh.cpp" />
@@ -208,6 +209,7 @@
     <ClCompile Include="ThirdPersonCamera.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WaterGridMesh.cpp" />
+    <ClCompile Include="WaterShader.cpp" />
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -255,6 +257,7 @@
     <ClInclude Include="SkinnedObject.h" />
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="SkyBoxMesh.h" />
+    <ClInclude Include="SkyBoxShader.h" />
     <ClInclude Include="SpaceShipCamera.h" />
     <ClInclude Include="StateObjectManager.h" />
     <ClInclude Include="stdafx.h" />
@@ -270,6 +273,7 @@
     <ClInclude Include="UserDefine.h" />
     <ClInclude Include="UserTag.h" />
     <ClInclude Include="WaterGridMesh.h" />
+    <ClInclude Include="WaterShader.h" />
     <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <ItemGroup>

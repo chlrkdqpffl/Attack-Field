@@ -160,9 +160,9 @@ public:
 	void SetChild(CGameObject *pChild);
 	CGameObject *GetParent() { return(m_pParent); }
 
-	void SetPosition(float x, float y, float z);
-	void SetPosition(XMVECTOR d3dxvPosition);
-	void SetPosition(XMFLOAT3 d3dxvPosition);
+	virtual void SetPosition(float x, float y, float z);
+	virtual void SetPosition(XMVECTOR d3dxvPosition);
+	virtual void SetPosition(XMFLOAT3 d3dxvPosition);
 
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);

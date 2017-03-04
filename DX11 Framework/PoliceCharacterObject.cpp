@@ -50,5 +50,9 @@ void CPoliceCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)
 	m_pWeapon = new CRifleGunWeapon();
 	
 	m_pWeapon->CreateObjectData(pd3dDevice);
-}
 
+	XMFLOAT4X4 rightHandOffsetMtx = m_pSkinnedMesh->GetOffsetMtx(10);
+
+	m_pWeapon->SetPosition(rightHandOffsetMtx._41, rightHandOffsetMtx._42, rightHandOffsetMtx._43);
+	m_pWeapon->Rotate(0, -90, 0);
+}

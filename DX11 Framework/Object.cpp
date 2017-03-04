@@ -233,8 +233,9 @@ ID3D11ShaderResourceView *CTexture::CreateTexture2DArraySRV(ID3D11Device *pd3dDe
 
 ///////////////////////////////////////////////////////////////////////////
 
-ID3D11Buffer *CGameObject::m_pd3dcbWorldMatrix = NULL;
-ID3D11Buffer *CGameObject::m_pd3dcbMaterialColors = NULL;
+ID3D11Buffer*	CGameObject::m_pd3dcbWorldMatrix = NULL;
+ID3D11Buffer*	CGameObject::m_pd3dcbMaterialColors = NULL;
+UINT			CGameObject::m_iObjectId = 0;
 
 CGameObject::CGameObject(int nMeshes)
 {

@@ -14,7 +14,7 @@ public:
 	virtual ~CSkinnedObject();
 
 protected:
-	virtual void CreateAnimation() {};
+	virtual void CreateAnimation() = 0;
 
 public:
 	virtual void CreateObjectData(ID3D11Device *pd3dDevice);
