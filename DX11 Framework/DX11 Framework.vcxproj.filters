@@ -174,9 +174,6 @@
     <ClCompile Include="HeightMapGridMesh.cpp">
       <Filter>Objects\Terrain</Filter>
     </ClCompile>
-    <ClCompile Include="ModelMesh_FBX.cpp">
-      <Filter>소스 파일\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="NormalMapObject.cpp">
       <Filter>소스 파일\Object</Filter>
     </ClCompile>
@@ -209,9 +206,6 @@
     </ClCompile>
     <ClCompile Include="ScreenShader.cpp">
       <Filter>소스 파일\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelSkinnedMesh.cpp">
-      <Filter>소스 파일\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="SkinnedObject.cpp">
       <Filter>소스 파일\Object</Filter>
@@ -247,7 +241,13 @@
       <Filter>Objects\Water</Filter>
     </ClCompile>
     <ClCompile Include="SkyBoxShader.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxModelMesh.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxModelSkinnedMesh.cpp">
+      <Filter>소스 파일\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -356,9 +356,6 @@
     <ClInclude Include="HeightMapGridMesh.h">
       <Filter>Objects\Terrain</Filter>
     </ClInclude>
-    <ClInclude Include="ModelMesh_FBX.h">
-      <Filter>헤더 파일\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="NormalMapObject.h">
       <Filter>헤더 파일\Object</Filter>
     </ClInclude>
@@ -391,9 +388,6 @@
     </ClInclude>
     <ClInclude Include="ScreenShader.h">
       <Filter>헤더 파일\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelSkinnedMesh.h">
-      <Filter>헤더 파일\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="CharacterShader.h">
       <Filter>헤더 파일\Shader</Filter>
@@ -429,7 +423,13 @@
       <Filter>Objects\Water</Filter>
     </ClInclude>
     <ClInclude Include="SkyBoxShader.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxModelMesh.h">
+      <Filter>헤더 파일\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxModelSkinnedMesh.h">
+      <Filter>헤더 파일\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

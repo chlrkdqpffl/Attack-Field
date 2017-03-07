@@ -2,7 +2,7 @@
 #include "MeshNormalMap.h"
 
 
-CMeshNormalMap::CMeshNormalMap(ID3D11Device *pd3dDevice) : CMeshTexturedIlluminated(pd3dDevice)
+CMeshNormalMap::CMeshNormalMap(ID3D11Device *pd3dDevice) 
 {
 }
 

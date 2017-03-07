@@ -2,7 +2,7 @@
 #include "TextureToScreenRectMesh.h"
 
 
-CTextureToScreenRectMesh::CTextureToScreenRectMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight) : CMeshTextured(pd3dDevice)
+CTextureToScreenRectMesh::CTextureToScreenRectMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight)
 {
 	m_nVertices = 4;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
@@ -32,8 +32,8 @@ CTextureToScreenRectMesh::CTextureToScreenRectMesh(ID3D11Device *pd3dDevice, flo
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-	m_bcBoundingCube.Extents = { fx, fy, 0.0f };
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fx, fy, 0.0f };
 
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");

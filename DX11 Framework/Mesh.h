@@ -42,7 +42,7 @@ extern bool RayIntersectTriangle(XMVECTOR *pd3dxvOrigin, XMVECTOR *pd3dxvDirecti
 class CMesh
 {
 public:
-	CMesh(ID3D11Device *pd3dDevice);
+	CMesh();
 	virtual ~CMesh();
 
 private:
@@ -54,7 +54,7 @@ public:
 
 protected:
 	
-	BoundingBox						m_bcBoundingCube;
+	BoundingBox						m_bcBoundingBox;
 	D3D11_PRIMITIVE_TOPOLOGY		m_d3dPrimitiveTopology;
 	UINT							m_nType;
 	ID3D11Buffer					*m_pd3dPositionBuffer;
@@ -110,7 +110,7 @@ protected:
 
 public:
 	UINT GetType() { return(m_nType); }
-	BoundingBox GetBoundingCube() { return(m_bcBoundingCube); }
+	BoundingBox GetBoundingCube() { return(m_bcBoundingBox); }
 	
 	void CalculateBoundingCube();
 
@@ -128,7 +128,7 @@ public:
 class CMeshDiffused : public CMesh
 {
 public:
-	CMeshDiffused(ID3D11Device *pd3dDevice);
+	CMeshDiffused();
 	virtual ~CMeshDiffused();
 
 protected:
@@ -139,7 +139,7 @@ protected:
 class CMeshIlluminated : public CMesh
 {
 public:
-	CMeshIlluminated(ID3D11Device *pd3dDevice);
+	CMeshIlluminated();
 	virtual ~CMeshIlluminated();
 
 protected:
@@ -155,7 +155,7 @@ public:
 class CMeshTextured : public CMesh
 {
 public:
-	CMeshTextured(ID3D11Device *pd3dDevice);
+	CMeshTextured();
 	virtual ~CMeshTextured();
 
 protected:
@@ -166,7 +166,7 @@ protected:
 class CMeshDetailTextured : public CMeshTextured
 {
 public:
-	CMeshDetailTextured(ID3D11Device *pd3dDevice);
+	CMeshDetailTextured();
 	virtual ~CMeshDetailTextured();
 
 protected:
@@ -177,7 +177,7 @@ protected:
 class CMeshTexturedIlluminated : public CMeshIlluminated
 {
 public:
-	CMeshTexturedIlluminated(ID3D11Device *pd3dDevice);
+	CMeshTexturedIlluminated();
 	virtual ~CMeshTexturedIlluminated();
 
 protected:
@@ -188,7 +188,7 @@ protected:
 class CMeshDetailTexturedIlluminated : public CMeshIlluminated
 {
 public:
-	CMeshDetailTexturedIlluminated(ID3D11Device *pd3dDevice);
+	CMeshDetailTexturedIlluminated();
 	virtual ~CMeshDetailTexturedIlluminated();
 
 protected:

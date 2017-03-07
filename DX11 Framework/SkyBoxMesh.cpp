@@ -2,7 +2,7 @@
 #include "SkyBoxMesh.h"
 
 
-CSkyBoxMesh::CSkyBoxMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth) : CMeshTextured(pd3dDevice)
+CSkyBoxMesh::CSkyBoxMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth)
 {
 	m_nVertices = 24;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
@@ -63,8 +63,8 @@ CSkyBoxMesh::CSkyBoxMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, 
 
 	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
-	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-	m_bcBoundingCube.Extents = { fx, fy, fz };
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fx, fy, fz };
 
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");

@@ -7,13 +7,6 @@
 #include "Mesh.h"
 #include "Camera.h"
 
-#define DIR_FORWARD				0x01
-#define DIR_BACKWARD			0x02
-#define DIR_LEFT				0x04
-#define DIR_RIGHT				0x08
-#define DIR_UP					0x10
-#define DIR_DOWN				0x20
-
 class CMaterialColors
 {
 public:
@@ -136,9 +129,10 @@ protected:
 	CGameObject 					*m_pSibling = nullptr;
 	CGameObject 					*m_pParent = nullptr;
 
-	BoundingBox						m_bcBoundingCube;			// 사용자가 정하는 바운딩 박스
-	BoundingBox						m_bcMeshBoundingCube;		// 실제 메쉬 바운딩 박스
-
+	BoundingBox						m_bcBoundingBox;			// 사용자가 정하는 바운딩 박스
+	BoundingBox						m_bcMeshBoundingBox;		// 실제 메쉬 바운딩 박스
+	CMesh							*m_pBoundingBoxMesh	= nullptr;
+	
 public:
 	ID3D11DepthStencilState			*m_pd3dDepthStencilState = nullptr;
 	ID3D11BlendState				*m_pd3dBlendState = nullptr;

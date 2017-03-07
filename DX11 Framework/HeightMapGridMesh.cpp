@@ -2,7 +2,7 @@
 #include "HeightMapGridMesh.h"
 
 
-CHeightMapGridMesh::CHeightMapGridMesh(ID3D11Device *pd3dDevice, int xStart, int zStart, int nWidth, int nLength, XMVECTOR d3dxvScale, void *pContext, D3D11_USAGE d3dUsage) : CMeshDetailTexturedIlluminated(pd3dDevice)
+CHeightMapGridMesh::CHeightMapGridMesh(ID3D11Device *pd3dDevice, int xStart, int zStart, int nWidth, int nLength, XMVECTOR d3dxvScale, void *pContext, D3D11_USAGE d3dUsage) 
 {
 	m_nVertices = nWidth * nLength;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
@@ -80,12 +80,12 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D11Device *pd3dDevice, int xStart, int
 	XMFLOAT3 d3dxvMinimum = XMFLOAT3(xStart*m_d3dxvScale.x, fMinHeight, zStart*m_d3dxvScale.z);
 	XMFLOAT3 d3dxvMaximum = XMFLOAT3((xStart + nWidth)*m_d3dxvScale.x, fMaxHeight, (zStart + nLength)*m_d3dxvScale.z);
 
-	m_bcBoundingCube.Center = {
+	m_bcBoundingBox.Center = {
 		(d3dxvMinimum.x + d3dxvMaximum.x) * 0.5f,
 		(d3dxvMinimum.y + d3dxvMaximum.y) * 0.5f,
 		(d3dxvMinimum.z + d3dxvMaximum.z) * 0.5f
 	};
-	m_bcBoundingCube.Extents = {
+	m_bcBoundingBox.Extents = {
 		fabs(d3dxvMinimum.x - d3dxvMaximum.x) * 0.5f,
 		fabs(d3dxvMinimum.y - d3dxvMaximum.y) * 0.5f,
 		fabs(d3dxvMinimum.z - d3dxvMaximum.z) * 0.5f

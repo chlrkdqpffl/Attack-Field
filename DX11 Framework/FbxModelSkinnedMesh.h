@@ -1,6 +1,6 @@
 #pragma once
 //#include "Mesh.h"
-#include "ModelMesh_FBX.h"
+#include "FbxModelMesh.h"
 
 struct AnimationTrack;
 
@@ -38,7 +38,7 @@ struct AnimationClip
 };
 
 
-class CSkinnedMesh : public CModelMesh_FBX
+class CSkinnedMesh : public CFbxModelMesh
 {
 protected:
 	vector<XMFLOAT4>			boneIndicesVector;

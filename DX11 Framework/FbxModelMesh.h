@@ -2,7 +2,7 @@
 #include "Mesh.h"
 
 
-class CModelMesh_FBX : public CMeshTexturedIlluminated
+class CFbxModelMesh : public CMeshTexturedIlluminated
 {
 protected:
 	vector<XMFLOAT3>	posVector;
@@ -21,8 +21,8 @@ protected:
 	ID3D11Buffer		*m_pd3dTangentBuffer = nullptr;
 	bool				m_bTangent = false;
 public:
-	CModelMesh_FBX(ID3D11Device *pd3dDevice, const string&, bool isTangent = false, float size = 1.0f);
-	virtual ~CModelMesh_FBX();
+	CFbxModelMesh(ID3D11Device *pd3dDevice, const string&, bool isTangent = false, float size = 1.0f);
+	virtual ~CFbxModelMesh();
 
 	virtual void Initialize(ID3D11Device *pd3dDevice);
 	virtual bool LoadFBXfromFile(const string& fileName);

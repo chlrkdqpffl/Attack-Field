@@ -138,8 +138,8 @@ CNormalMapCubeMesh::CNormalMapCubeMesh(ID3D11Device *pd3dDevice, float fWidth, f
 	UINT pnBufferOffsets[] = { 0, 0, 0, 0 };
 	AssembleToVertexBuffer(4, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-	m_bcBoundingCube.Extents = { fx, fy, fz };
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fx, fy, fz };
 
 	delete[] m_pTexCoords;
 	delete[] m_pNormals;

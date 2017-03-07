@@ -6,7 +6,7 @@
 #include "Mesh.h"
 #include "Object.h"
 
-CMesh::CMesh(ID3D11Device *pd3dDevice)
+CMesh::CMesh()
 {
 	m_nType = VERTEX_POSITION_ELEMENT;
 
@@ -28,8 +28,8 @@ CMesh::CMesh(ID3D11Device *pd3dDevice)
 	m_pPositions = nullptr;
 	m_pnIndices = nullptr;
 
-	m_bcBoundingCube.Center = { 0.0f, 0.0f, 0.0f };
-	m_bcBoundingCube.Extents = { 0.0f, 0.0f, 0.0f};
+	m_bcBoundingBox.Center = { 0.0f, 0.0f, 0.0f };
+	m_bcBoundingBox.Extents = { 0.0f, 0.0f, 0.0f};
 
 	m_nReferences = 0;
 }
@@ -185,8 +185,8 @@ int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRay
 
 void CMesh::CalculateBoundingCube()
 {
-	XMFLOAT3 xmf3Cen = m_bcBoundingCube.Center;
-	XMFLOAT3 xmf3Ext = m_bcBoundingCube.Extents;
+	XMFLOAT3 xmf3Cen = m_bcBoundingBox.Center;
+	XMFLOAT3 xmf3Ext = m_bcBoundingBox.Extents;
 
 	XMFLOAT3 xmf3max = {xmf3Cen.x + xmf3Ext.x,	xmf3Cen.y + xmf3Ext.y,	xmf3Cen.z + xmf3Ext.z,	};
 	XMFLOAT3 xmf3min = {xmf3Cen.x - xmf3Ext.x,	xmf3Cen.y - xmf3Ext.y,	xmf3Cen.z - xmf3Ext.z,
@@ -205,12 +205,12 @@ void CMesh::CalculateBoundingCube()
 	{ (xmf3min.x + xmf3max.x) * 0.5f,	(xmf3min.y + xmf3max.y) * 0.5f,	(xmf3min.z + xmf3max.z) * 0.5f,};
 	xmf3Ext = 
 	{ fabs(xmf3min.x - xmf3max.x) * 0.5f, fabs(xmf3min.y - xmf3max.y) * 0.5f, fabs(xmf3min.z - xmf3max.z) * 0.5f, };
-	m_bcBoundingCube.Center = xmf3Cen;
-	m_bcBoundingCube.Extents = xmf3Ext;
+	m_bcBoundingBox.Center = xmf3Cen;
+	m_bcBoundingBox.Extents = xmf3Ext;
 }
 
 //------------------------------------------------------------------------------------------------
-CMeshDiffused::CMeshDiffused(ID3D11Device *pd3dDevice) : CMesh(pd3dDevice)
+CMeshDiffused::CMeshDiffused()
 {
 	m_nType |= VERTEX_COLOR_ELEMENT;
 	m_pd3dColorBuffer = NULL;
@@ -223,7 +223,7 @@ CMeshDiffused::~CMeshDiffused()
 
 
 //------------------------------------------------------------------------------------------------
-CMeshIlluminated::CMeshIlluminated(ID3D11Device *pd3dDevice) : CMesh(pd3dDevice)
+CMeshIlluminated::CMeshIlluminated()
 {
 	m_nType |= VERTEX_NORMAL_ELEMENT;
 	m_pd3dNormalBuffer = NULL;
@@ -309,7 +309,7 @@ void CMeshIlluminated::CalculateVertexNormal(XMVECTOR *pd3dxvNormals)
 }
 
 //------------------------------------------------------------------------------------------------
-CMeshTextured::CMeshTextured(ID3D11Device *pd3dDevice) : CMesh(pd3dDevice)
+CMeshTextured::CMeshTextured()
 {
 	m_nType |= VERTEX_TEXTURE_ELEMENT_0;
 	m_pd3dTexCoordBuffer = NULL;
@@ -321,7 +321,7 @@ CMeshTextured::~CMeshTextured()
 }
 
 //------------------------------------------------------------------------------------------------
-CMeshDetailTextured::CMeshDetailTextured(ID3D11Device *pd3dDevice) : CMeshTextured(pd3dDevice)
+CMeshDetailTextured::CMeshDetailTextured()
 {
 	m_nType |= VERTEX_TEXTURE_ELEMENT_1;
 	m_pd3dDetailTexCoordBuffer = NULL;
@@ -333,7 +333,7 @@ CMeshDetailTextured::~CMeshDetailTextured()
 }
 
 //------------------------------------------------------------------------------------------------
-CMeshTexturedIlluminated::CMeshTexturedIlluminated(ID3D11Device *pd3dDevice) : CMeshIlluminated(pd3dDevice)
+CMeshTexturedIlluminated::CMeshTexturedIlluminated()
 {
 	m_nType |= VERTEX_TEXTURE_ELEMENT_0;
 	m_pd3dTexCoordBuffer = NULL;
@@ -345,7 +345,7 @@ CMeshTexturedIlluminated::~CMeshTexturedIlluminated()
 }
 
 //------------------------------------------------------------------------------------------------
-CMeshDetailTexturedIlluminated::CMeshDetailTexturedIlluminated(ID3D11Device *pd3dDevice) : CMeshIlluminated(pd3dDevice)
+CMeshDetailTexturedIlluminated::CMeshDetailTexturedIlluminated()
 {
 	m_nType |= (VERTEX_TEXTURE_ELEMENT_0 | VERTEX_TEXTURE_ELEMENT_1);
 	m_pd3dTexCoordBuffer = NULL;
@@ -359,7 +359,7 @@ CMeshDetailTexturedIlluminated::~CMeshDetailTexturedIlluminated()
 }
 
 //------------------------------------------------------------------------------------------------
-CCubeMeshDiffused::CCubeMeshDiffused(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth, XMVECTOR d3dxColor) : CMeshDiffused(pd3dDevice)
+CCubeMeshDiffused::CCubeMeshDiffused(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth, XMVECTOR d3dxColor)
 {
 	m_nVertices = 8;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
@@ -440,8 +440,8 @@ CCubeMeshDiffused::CCubeMeshDiffused(ID3D11Device *pd3dDevice, float fWidth, flo
 	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 
-	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-	m_bcBoundingCube.Extents = { fx, fy, fz };
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fx, fy, fz };
 }
 
 CCubeMeshDiffused::~CCubeMeshDiffused()
@@ -449,7 +449,7 @@ CCubeMeshDiffused::~CCubeMeshDiffused()
 }
 
 //------------------------------------------------------------------------------------------------
-CSphereMeshDiffused::CSphereMeshDiffused(ID3D11Device *pd3dDevice, float fRadius, int nSlices, int nStacks, XMVECTOR d3dxColor) : CMeshDiffused(pd3dDevice)
+CSphereMeshDiffused::CSphereMeshDiffused(ID3D11Device *pd3dDevice, float fRadius, int nSlices, int nStacks, XMVECTOR d3dxColor)
 {
 	m_nVertices = (nSlices * nStacks) * 3 * 2;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -494,8 +494,8 @@ CSphereMeshDiffused::CSphereMeshDiffused(ID3D11Device *pd3dDevice, float fRadius
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-	m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fRadius, fRadius, fRadius };
 }
 
 CSphereMeshDiffused::~CSphereMeshDiffused()
@@ -503,7 +503,7 @@ CSphereMeshDiffused::~CSphereMeshDiffused()
 }
 
 //------------------------------------------------------------------------------------------------
-CCubeMeshIlluminated::CCubeMeshIlluminated(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth) : CMeshIlluminated(pd3dDevice)
+CCubeMeshIlluminated::CCubeMeshIlluminated(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth)
 {
 	m_nVertices = 8;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -556,8 +556,8 @@ CCubeMeshIlluminated::CCubeMeshIlluminated(ID3D11Device *pd3dDevice, float fWidt
 	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 
 
-	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-	m_bcBoundingCube.Extents = { fx, fy, fz };
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fx, fy, fz };
 }
 
 CCubeMeshIlluminated::~CCubeMeshIlluminated()
@@ -567,7 +567,7 @@ CCubeMeshIlluminated::~CCubeMeshIlluminated()
 #define _WITH_INDEX_BUFFER
 
 //------------------------------------------------------------------------------------------------
-CSphereMeshIlluminated::CSphereMeshIlluminated(ID3D11Device *pd3dDevice, float fRadius, int nSlices, int nStacks) : CMeshIlluminated(pd3dDevice)
+CSphereMeshIlluminated::CSphereMeshIlluminated(ID3D11Device *pd3dDevice, float fRadius, int nSlices, int nStacks)
 {
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
@@ -702,8 +702,8 @@ CSphereMeshIlluminated::CSphereMeshIlluminated(ID3D11Device *pd3dDevice, float f
 	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
 	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 
-	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-	m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fRadius, fRadius, fRadius };
 }
 
 CSphereMeshIlluminated::~CSphereMeshIlluminated()
@@ -711,7 +711,7 @@ CSphereMeshIlluminated::~CSphereMeshIlluminated()
 }
 
 //------------------------------------------------------------------------------------------------
-CCubeMeshTextured::CCubeMeshTextured(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth) : CMeshTextured(pd3dDevice)
+CCubeMeshTextured::CCubeMeshTextured(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth)
 {
 	m_nVertices = 36;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -826,8 +826,8 @@ CCubeMeshTextured::CCubeMeshTextured(ID3D11Device *pd3dDevice, float fWidth, flo
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-	m_bcBoundingCube.Extents = { fx, fy, fz };
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fx, fy, fz };
 	
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
@@ -839,7 +839,7 @@ CCubeMeshTextured::~CCubeMeshTextured()
 }
 
 //------------------------------------------------------------------------------------------------
-CSphereMeshTextured::CSphereMeshTextured(ID3D11Device *pd3dDevice, float fRadius, int nSlices, int nStacks) : CMeshTextured(pd3dDevice)
+CSphereMeshTextured::CSphereMeshTextured(ID3D11Device *pd3dDevice, float fRadius, int nSlices, int nStacks)
 {
 	m_nVertices = (nSlices * nStacks) * 3 * 2;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -885,8 +885,8 @@ CSphereMeshTextured::CSphereMeshTextured(ID3D11Device *pd3dDevice, float fRadius
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-	m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fRadius, fRadius, fRadius };
 	
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
@@ -898,7 +898,7 @@ CSphereMeshTextured::~CSphereMeshTextured()
 }
 
 //------------------------------------------------------------------------------------------------
-CCubeMeshTexturedIlluminated::CCubeMeshTexturedIlluminated(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth) : CMeshTexturedIlluminated(pd3dDevice)
+CCubeMeshTexturedIlluminated::CCubeMeshTexturedIlluminated(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth)
 {
 	m_nVertices = 36;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -1021,8 +1021,8 @@ CCubeMeshTexturedIlluminated::CCubeMeshTexturedIlluminated(ID3D11Device *pd3dDev
 	UINT pnBufferOffsets[3] = { 0, 0, 0 };
 	AssembleToVertexBuffer(3, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-	m_bcBoundingCube.Extents = { fx, fy, fz };
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fx, fy, fz };
 
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
@@ -1035,7 +1035,7 @@ CCubeMeshTexturedIlluminated::~CCubeMeshTexturedIlluminated()
 }
 
 //------------------------------------------------------------------------------------------------
-CSphereMeshTexturedIlluminated::CSphereMeshTexturedIlluminated(ID3D11Device *pd3dDevice, float fRadius, int nSlices, int nStacks) : CMeshTexturedIlluminated(pd3dDevice)
+CSphereMeshTexturedIlluminated::CSphereMeshTexturedIlluminated(ID3D11Device *pd3dDevice, float fRadius, int nSlices, int nStacks)
 {
 	m_nVertices = (nSlices * nStacks) * 3 * 2;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -1090,8 +1090,8 @@ CSphereMeshTexturedIlluminated::CSphereMeshTexturedIlluminated(ID3D11Device *pd3
 	UINT pnBufferOffsets[3] = { 0, 0, 0 };
 	AssembleToVertexBuffer(3, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 	
-	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-	m_bcBoundingCube.Extents = { fRadius, fRadius, fRadius };
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fRadius, fRadius, fRadius };
 
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");

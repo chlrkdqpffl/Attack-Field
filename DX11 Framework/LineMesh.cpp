@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "LineMesh.h"
 
-CLineMesh::CLineMesh(ID3D11Device *pd3dDevice, XMFLOAT3 start, XMFLOAT3 end, XMVECTOR color) : CMeshDiffused(pd3dDevice)
+CLineMesh::CLineMesh(ID3D11Device *pd3dDevice, XMFLOAT3 start, XMFLOAT3 end, XMVECTOR color)
 {
 	m_nVertices = 2;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;

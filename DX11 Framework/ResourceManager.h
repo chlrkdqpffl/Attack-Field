@@ -1,12 +1,23 @@
 #pragma once
 #include "SingletonManager.h"
-#include "ModelSkinnedMesh.h"
+#include "FbxModelSkinnedMesh.h"
 #include "UserTag.h"
+
+class CFbxMeshData
+{
+	vector<XMFLOAT3>	posVector;
+	vector<XMFLOAT3>	normalVector;
+	vector<XMFLOAT3>	tangentVector;
+	vector<XMFLOAT3>	indexVector;
+	vector<XMFLOAT2>	uvVector;
+};
 
 class CResourceManager : public CSingletonManager<CResourceManager>
 {
 	multimap<Resource_TextrueTag, string> textureMap;
 	multimap<MeshData::Resource_MeshTag, string> meshMap;
+
+	multimap<MeshData::Resource_MeshTag, string> m_mapMeshPool;
 
 public:
 	CResourceManager();

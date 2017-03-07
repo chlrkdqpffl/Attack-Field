@@ -167,7 +167,7 @@
     <ClCompile Include="PoliceCharacterObject.cpp" />
     <ClCompile Include="RifleGunWeapon.cpp" />
     <ClCompile Include="ScreenShader.cpp" />
-    <ClCompile Include="ModelSkinnedMesh.cpp">
+    <ClCompile Include="FbxModelSkinnedMesh.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="SkinnedObject.cpp" />
@@ -184,7 +184,7 @@
     <ClCompile Include="LineMesh.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshNormalMap.cpp" />
-    <ClCompile Include="ModelMesh_FBX.cpp" />
+    <ClCompile Include="FbxModelMesh.cpp" />
     <ClCompile Include="NormalMapObject.cpp" />
     <ClCompile Include="NormalMapShader.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -233,7 +233,7 @@
     <ClInclude Include="LineMesh.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshNormalMap.h" />
-    <ClInclude Include="ModelMesh_FBX.h" />
+    <ClInclude Include="FbxModelMesh.h" />
     <ClInclude Include="NormalMapObject.h" />
     <ClInclude Include="NormalMapShader.h" />
     <ClInclude Include="Object.h" />
@@ -251,7 +251,7 @@
     <ClInclude Include="ScreenShader.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SingletonManager.h" />
-    <ClInclude Include="ModelSkinnedMesh.h">
+    <ClInclude Include="FbxModelSkinnedMesh.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="SkinnedObject.h" />

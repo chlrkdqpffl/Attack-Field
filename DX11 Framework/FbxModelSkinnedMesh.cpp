@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ModelSkinnedMesh.h"
+#include "FbxModelSkinnedMesh.h"
 
 void BoneData::Interpolate(float fTimePos, XMFLOAT4X4& boneTransforms) const
 {
@@ -88,7 +88,7 @@ float AnimationClip::GetClipEndTime() const
 	return t;
 }
 
-CSkinnedMesh::CSkinnedMesh(ID3D11Device *pd3dDevice, const string& fileName, float size) : CModelMesh_FBX(pd3dDevice, fileName, true, size)
+CSkinnedMesh::CSkinnedMesh(ID3D11Device *pd3dDevice, const string& fileName, float size) : CFbxModelMesh(pd3dDevice, fileName, true, size)
 {
 }
 
@@ -232,11 +232,11 @@ bool CSkinnedMesh::LoadFBXfromFile(const string& fileName)
 		fin >> buf; // Max
 		fin >> bBoxMax.x >> bBoxMax.y >> bBoxMax.z;
 
-		m_bcBoundingCube.Center = bBoxCenter;
+		m_bcBoundingBox.Center = bBoxCenter;
 		bBoxExtents.x = bBoxMax.x - bBoxCenter.x;
 		bBoxExtents.y = bBoxMax.y - bBoxCenter.y;
 		bBoxExtents.z = bBoxMax.z - bBoxCenter.z;
-		m_bcBoundingCube.Extents = bBoxExtents;
+		m_bcBoundingBox.Extents = bBoxExtents;
 
 		fin >> buf; // [VERTEX_DATA]
 		for (UINT i = 0; i < vertexCount; ++i) {

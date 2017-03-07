@@ -1,13 +1,13 @@
 #include "stdafx.h"
-#include "ModelMesh_FBX.h"
+#include "FbxModelMesh.h"
 
 
-CModelMesh_FBX::CModelMesh_FBX(ID3D11Device *pd3dDevice, const string& fileName, bool isTangent, float size) 
-	: CMeshTexturedIlluminated(pd3dDevice), m_bTangent(isTangent), m_fileName(fileName), m_fModelSize(size)
+CFbxModelMesh::CFbxModelMesh(ID3D11Device *pd3dDevice, const string& fileName, bool isTangent, float size) 
+	: m_bTangent(isTangent), m_fileName(fileName), m_fModelSize(size)
 {
 }
 
-CModelMesh_FBX::~CModelMesh_FBX()
+CFbxModelMesh::~CFbxModelMesh()
 {
 	if (m_pNormals) delete[] m_pNormals;
 	if (m_pTangents) delete[] m_pTangents;
@@ -15,7 +15,7 @@ CModelMesh_FBX::~CModelMesh_FBX()
 	ReleaseCOM(m_pd3dTangentBuffer);
 }
 
-void CModelMesh_FBX::Initialize(ID3D11Device *pd3dDevice)
+void CFbxModelMesh::Initialize(ID3D11Device *pd3dDevice)
 {
 	cout << "File Loading < " + m_fileName + " > ";
 	bool isLoad = LoadFBXfromFile(m_fileName);
@@ -77,8 +77,8 @@ void CModelMesh_FBX::Initialize(ID3D11Device *pd3dDevice)
 		if (min_z > m_pPositions[i].z) min_z = m_pPositions[i].z;
 	}
 
-	m_bcBoundingCube.Center = XMFLOAT3(0, 0, 0);
-	m_bcBoundingCube.Extents = XMFLOAT3(max_x, max_y, max_z);
+	m_bcBoundingBox.Center = XMFLOAT3(0, 0, 0);
+	m_bcBoundingBox.Extents = XMFLOAT3(max_x, max_y, max_z);
 
 
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
@@ -88,7 +88,7 @@ void CModelMesh_FBX::Initialize(ID3D11Device *pd3dDevice)
 	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 }
 
-bool CModelMesh_FBX::LoadFBXfromFile(const string& fileName)
+bool CFbxModelMesh::LoadFBXfromFile(const string& fileName)
 {
 	//ifstream fin(fileName);
 	ifstream fin(fileName, ios::binary);

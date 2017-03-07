@@ -28,7 +28,7 @@ public:
 	float GetWidth() { return(m_nWidth * m_d3dxvScale.x); }
 	float GetLength() { return(m_nLength * m_d3dxvScale.z); }
 
-	float GetPeakHeight() { return(m_bcMeshBoundingCube.Center.y + m_bcMeshBoundingCube.Extents.y); }
+	float GetPeakHeight() { return(m_bcMeshBoundingBox.Center.y + m_bcMeshBoundingBox.Extents.y); }
 
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 

@@ -4,8 +4,8 @@
 #include "Shader.h"
 
 // ========== Mesh ========== 
-#include "ModelMesh_FBX.h"
-#include "ModelSkinnedMesh.h"
+#include "FbxModelMesh.h"
+#include "FbxModelSkinnedMesh.h"
 
 // ========== Shader ========== 
 #include "SkyBoxShader.h"
@@ -121,7 +121,7 @@ protected:
 	// RenderOption
 	CAxisObjects					*m_pAxisObjects		= nullptr;
 	bool							m_bShowRGBAxis		= false;
-	XMFLOAT4						m_vRenderOption;		// (x : Fog )
+	XMFLOAT4						m_vRenderOption;		// (x : Fog, y : BoundingBox )
 
 	// Constant Buffer
 	ID3D11Buffer					*m_pd3dcbRenderOption;

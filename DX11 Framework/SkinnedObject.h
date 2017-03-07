@@ -1,7 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "AnimationController.h"
-#include "ModelSkinnedMesh.h"
+#include "FbxModelSkinnedMesh.h"
 
 class CSkinnedObject : public CGameObject
 {

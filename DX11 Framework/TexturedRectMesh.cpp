@@ -2,7 +2,7 @@
 #include "TexturedRectMesh.h"
 
 
-CTexturedRectMesh::CTexturedRectMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fLength) : CMeshTextured(pd3dDevice)
+CTexturedRectMesh::CTexturedRectMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fLength)
 {
 	m_nVertices = 6;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -50,8 +50,8 @@ CTexturedRectMesh::CTexturedRectMesh(ID3D11Device *pd3dDevice, float fWidth, flo
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-	m_bcBoundingCube.Center = { 0.f, 0.f, 0.f };
-	m_bcBoundingCube.Extents = { fx, fy, 0.0f };
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fx, fy, 0.0f };
 
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
