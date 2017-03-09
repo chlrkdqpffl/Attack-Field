@@ -10,7 +10,7 @@ CAnimationController::~CAnimationController()
 {
 }
 
-void CAnimationController::SetMesh(CSkinnedMesh* mesh)
+void CAnimationController::SetMesh(CFbxModelSkinnedMesh* mesh)
 {
 	m_pSkinnedMesh = mesh; 
 }

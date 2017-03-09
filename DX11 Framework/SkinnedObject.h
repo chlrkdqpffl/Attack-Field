@@ -6,7 +6,7 @@
 class CSkinnedObject : public CGameObject
 {
 protected:
-	CSkinnedMesh*			m_pSkinnedMesh = nullptr;
+	CFbxModelSkinnedMesh*	m_pSkinnedMesh = nullptr;
 	CAnimationController*	m_pAnimController = nullptr;
 
 public:
@@ -23,7 +23,7 @@ public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 
 	// ------ Get, Setter ------ //
-	void SetMesh(CSkinnedMesh* mesh);
+	void SetMesh(CFbxModelSkinnedMesh* mesh);
 	void SetAnimation(AnimationData::CharacterAnim anim, float speed = 1.0f);
 };
 

@@ -85,6 +85,12 @@
     <Filter Include="Objects\Weopon">
       <UniqueIdentifier>{4b5c47f8-e720-4ebf-9baa-857837285bda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Mesh\FbxFile">
+      <UniqueIdentifier>{8dff3e21-7700-4215-bdb2-ed37db3ec827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Mesh\FbxFile">
+      <UniqueIdentifier>{2640aa36-1ca3-41df-ab5d-1b29a419ebb0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -213,9 +219,6 @@
     <ClCompile Include="CharacterShader.cpp">
       <Filter>소스 파일\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="Drayer.cpp">
-      <Filter>소스 파일\Object</Filter>
-    </ClCompile>
     <ClCompile Include="AnimationController.cpp">
       <Filter>소스 파일\Object</Filter>
     </ClCompile>
@@ -243,11 +246,14 @@
     <ClCompile Include="SkyBoxShader.cpp">
       <Filter>소스 파일\Shader</Filter>
     </ClCompile>
+    <ClCompile Include="FbxMeshData.cpp">
+      <Filter>소스 파일\Mesh\FbxFile</Filter>
+    </ClCompile>
     <ClCompile Include="FbxModelMesh.cpp">
-      <Filter>소스 파일\Mesh</Filter>
+      <Filter>소스 파일\Mesh\FbxFile</Filter>
     </ClCompile>
     <ClCompile Include="FbxModelSkinnedMesh.cpp">
-      <Filter>소스 파일\Mesh</Filter>
+      <Filter>소스 파일\Mesh\FbxFile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -392,9 +398,6 @@
     <ClInclude Include="CharacterShader.h">
       <Filter>헤더 파일\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="Drayer.h">
-      <Filter>헤더 파일\Object</Filter>
-    </ClInclude>
     <ClInclude Include="SkinnedObject.h">
       <Filter>헤더 파일\Object</Filter>
     </ClInclude>
@@ -425,11 +428,14 @@
     <ClInclude Include="SkyBoxShader.h">
       <Filter>헤더 파일\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="FbxModelMesh.h">
-      <Filter>헤더 파일\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="FbxModelSkinnedMesh.h">
-      <Filter>헤더 파일\Mesh</Filter>
+      <Filter>헤더 파일\Mesh\FbxFile</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxModelMesh.h">
+      <Filter>헤더 파일\Mesh\FbxFile</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxMeshData.h">
+      <Filter>헤더 파일\Mesh\FbxFile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

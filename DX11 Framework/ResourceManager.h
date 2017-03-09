@@ -1,23 +1,13 @@
 #pragma once
 #include "SingletonManager.h"
-#include "FbxModelSkinnedMesh.h"
+#include "FbxMeshData.h"
 #include "UserTag.h"
-
-class CFbxMeshData
-{
-	vector<XMFLOAT3>	posVector;
-	vector<XMFLOAT3>	normalVector;
-	vector<XMFLOAT3>	tangentVector;
-	vector<XMFLOAT3>	indexVector;
-	vector<XMFLOAT2>	uvVector;
-};
 
 class CResourceManager : public CSingletonManager<CResourceManager>
 {
-	multimap<Resource_TextrueTag, string> textureMap;
-	multimap<MeshData::Resource_MeshTag, string> meshMap;
+	multimap<Resource_TextrueTag, string>			textureMap;
 
-	multimap<MeshData::Resource_MeshTag, string> m_mapMeshPool;
+	multimap<MeshTag, CFbxMeshData>					m_mapMeshPool;
 
 public:
 	CResourceManager();
@@ -27,14 +17,12 @@ public:
 	virtual void ReleseManager() override;
 
 	void AddResourece(Resource_TextrueTag resourceTag, string source);
-	void AddResourece(MeshData::Resource_MeshTag resourceTag, string source);
+	void AddResourece(MeshTag meshTag, string source);
 
 	wstring FindResourcePath(Resource_TextrueTag resourceTag);
-	string FindResourcePath(MeshData::Resource_MeshTag resourceTag);
 
 	ID3D11ShaderResourceView* FindResourceAndCreateSRV(Resource_TextrueTag);
+	CFbxMeshData CloneFbxMeshData(MeshTag meshTag);
 
-	CSkinnedMesh* CloneSkinnedMesh();
 	void ShowImageInfo(Resource_TextrueTag resourceTag);
-
 };

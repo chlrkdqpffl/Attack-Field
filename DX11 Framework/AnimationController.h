@@ -15,7 +15,7 @@ struct AnimationTrack
 class CAnimationController
 {
 	float						m_fTimePos = 0.0f;
-	CSkinnedMesh*				m_pSkinnedMesh = nullptr;
+	CFbxModelSkinnedMesh*				m_pSkinnedMesh = nullptr;
 
 	tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> m_prevAnimState;
 	tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> m_currAnimState;
@@ -35,7 +35,7 @@ public:
 	AnimationData::CharacterAnim GetAnimEnum() const {return get<0>(m_currAnimState); }
 	AnimationData::Type GetAnimType() const { return get<2>(m_currAnimState); }
 
-	void SetMesh(CSkinnedMesh* mesh);
+	void SetMesh(CFbxModelSkinnedMesh* mesh);
 	void SetAnimation(AnimationData::CharacterAnim anim, float speed = 1.0f);
 };
 

@@ -54,19 +54,17 @@ void CResourceManager::InitializeManager()
 	
 	// ------------------------ Mesh ---------------------------- //
 	// Character
-	AddResourece(MeshData::eMesh_DarkFighter,				"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.model");
-//	AddResourece(MeshData::eMesh_DarkFighter,				"../Assets/FBX Model/Character/terrorist.model");
-	
-	AddResourece(MeshData::eMesh_Drayer,					"../Assets/FBX Model/drayer_animation.data");
-//	AddResourece(MeshData::eMesh_Police,					"../Assets/FBX Model/Character/Police/Police.model");
-	AddResourece(MeshData::eMesh_Terrorist,					"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
-	AddResourece(MeshData::eMesh_Rifle,						"../Assets/FBX Model/Weapon/Rifle/rifle(70).model");
+	AddResourece(MeshTag::eDarkFighter,						"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.model");
+
+//	AddResourece(MeshTag::ePolice,							"../Assets/FBX Model/Character/Police/Police.model");
+	AddResourece(MeshTag::eTerrorist,						"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
+	AddResourece(MeshTag::eRifle,							"../Assets/FBX Model/Weapon/Rifle/rifle(70).model");
 
 	// Object
-	AddResourece(MeshData::eMesh_Road,						"../Assets/FBX Model/Road.model");
+//	AddResourece(MeshTag::eRoad,							"../Assets/FBX Model/Road.model");
 	
 	// Etc
-	AddResourece(MeshData::eMesh_Test,						"../Assets/FBX Model/testt.data");
+
 }
 
 void CResourceManager::ReleseManager()
@@ -81,14 +79,34 @@ void CResourceManager::AddResourece(Resource_TextrueTag resourceTag, string sour
 		cout << "TextureTag No." << resourceTag << " : 다중 텍스쳐" << endl;
 	}
 }
-
-void CResourceManager::AddResourece(MeshData::Resource_MeshTag resourceTag, string source)
+void CResourceManager::AddResourece(MeshTag meshTag, string source)
 {
-	meshMap.insert(make_pair(resourceTag, source));
+	CFbxMeshData meshData;
 
-	if (1 < meshMap.count(resourceTag)) {
-		cout << "MeshTag No." << resourceTag << " : 다중 메쉬" << endl;
+	cout << "File Loading < " + source + " > ";
+
+	if (MeshTag::MaxSkinnedMesh < meshTag) {
+		if (meshData.LoadFbxModelDatafromFile(source))
+			ShowTaskSuccess("\t Success!!");
+		else {
+			ShowTaskFail("\t Error!! \t 파일 또는 경로를 확인하세요.");
+			return;
+		}
 	}
+	else
+	{
+		if (meshData.LoadFbxModelSkinnedDatafromFile(source))
+			ShowTaskSuccess("\t Success!!");
+		else {
+			ShowTaskFail("\t Error!! \t 파일 또는 경로를 확인하세요.");
+			return;
+		}
+	}
+
+	m_mapMeshPool.insert(make_pair(meshTag, meshData));
+
+	// 한 태그에 여러개의 메쉬 등록됨
+	assert(m_mapMeshPool.count(meshTag) <= 1);
 }
 
 wstring CResourceManager::FindResourcePath(Resource_TextrueTag resourceTag)
@@ -98,18 +116,8 @@ wstring CResourceManager::FindResourcePath(Resource_TextrueTag resourceTag)
 		cout << "Resource Texture Tag " << resourceTag << " is not exist." << endl;
 		return nullptr;
 	}
-
+	
 	return s_to_ws((*find).second.c_str());
-}
-
-string CResourceManager::FindResourcePath(MeshData::Resource_MeshTag resourceTag)
-{
-	auto find = meshMap.find(resourceTag);
-	if (find == meshMap.end()) {
-		cout << "Resource Mesh Tag " << resourceTag << " is not exist." << endl;
-		return nullptr;
-	}
-	return (*find).second;
 }
 
 ID3D11ShaderResourceView* CResourceManager::FindResourceAndCreateSRV(Resource_TextrueTag resourceTag)
@@ -136,6 +144,16 @@ ID3D11ShaderResourceView* CResourceManager::FindResourceAndCreateSRV(Resource_Te
 #endif
 
 	return pd3dsrvTexture;
+}
+
+CFbxMeshData CResourceManager::CloneFbxMeshData(MeshTag resourceTag)
+{
+	auto findResource = m_mapMeshPool.find(resourceTag);
+
+	// MeshPool에 존재하지 않는다.
+	assert(findResource != m_mapMeshPool.end());
+
+	return (*findResource).second;
 }
 
 void CResourceManager::ShowImageInfo(Resource_TextrueTag resourceTag)

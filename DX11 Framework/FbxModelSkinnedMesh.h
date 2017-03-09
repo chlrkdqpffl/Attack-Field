@@ -1,5 +1,4 @@
 #pragma once
-//#include "Mesh.h"
 #include "FbxModelMesh.h"
 
 struct AnimationTrack;
@@ -9,52 +8,16 @@ struct VS_CB_SKINNED
 	XMFLOAT4X4	m_mtxBoneTransform[MAXBONECOUNT];
 };
 
-struct KeyframeData
-{
-	float	m_fAnimationTime;
-
-	XMFLOAT3 m_xmf3Scale;
-	XMFLOAT3 m_xmf3Translate;
-	XMFLOAT4 m_xmf4Quaternion;
-};
-
-struct BoneData
-{
-	UINT m_nAnimaitionKeys;
-	vector<KeyframeData> m_keyframeDataVector;
-
-	void Interpolate(float timePos, XMFLOAT4X4& boneTransforms) const;
-	float GetStartTime() const { return m_keyframeDataVector.front().m_fAnimationTime; };
-	float GetEndTime() const { return m_keyframeDataVector.back().m_fAnimationTime; };
-};
-
-struct AnimationClip
-{
-	vector<BoneData> m_boneDataVector;
-
-	void Interpolate(float timePos, vector<XMFLOAT4X4>& boneTransforms) const;
-	float GetClipStartTime() const;
-	float GetClipEndTime() const;
-};
-
-
-class CSkinnedMesh : public CFbxModelMesh
+class CFbxModelSkinnedMesh : public CFbxModelMesh
 {
 protected:
-	vector<XMFLOAT4>			boneIndicesVector;
-	vector<XMFLOAT4>			boneWeightsVector;
-
-	vector<int>					boneHierarchyVector;
-	vector<XMFLOAT4X4>			boneOffsetsVector;
 	vector<XMMATRIX>			finalBoneVector;
 
 	XMFLOAT4					*m_pboneIndices = nullptr;
 	XMFLOAT4					*m_pboneWeights = nullptr;
 
-	UINT						m_nBoneCount = 0;
-	UINT						m_nAnimationClip = 0;
+//	UINT						m_nBoneCount = 0;
 	string						m_strClipName;
-	map<string, AnimationClip>	m_animationMap;
 
 	ID3D11Buffer				*m_pd3dBoneWeightBuffer = nullptr;
 	ID3D11Buffer				*m_pd3dBoneIndiceBuffer = nullptr;
@@ -68,27 +31,26 @@ protected:
 
 public:
 
-	CSkinnedMesh(ID3D11Device *pd3dDevice, const string&, float size = 1.0f);
-	virtual ~CSkinnedMesh();
+	CFbxModelSkinnedMesh(ID3D11Device *pd3dDevice, const MeshTag meshTag, const float size = 1.0f);
+	virtual ~CFbxModelSkinnedMesh();
 
 	virtual void Initialize(ID3D11Device *pd3dDevice);
-	virtual bool LoadFBXfromFile(const string& fileName);
-
+	
 	void CreateConstantBuffer(ID3D11Device *pd3dDevice);
 	void UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext);
 	void ReleaseConstantBuffer();
 
-	void Interpolate_Blending(const AnimationClip& dataA, bool& enable, const AnimationClip& dataB, float timePos, vector<XMFLOAT4X4>& boneTransforms) const;
+	void Interpolate_Blending(const CAnimationClip& dataA, bool& enable, const CAnimationClip& dataB, float timePos, vector<XMFLOAT4X4>& boneTransforms) const;
 
 	// ----- Get, Setter ----- //
-	void GetFinalTransforms(const string& clipName, float fTimePos);
-	void GetFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, float fTimePos);
+	void GetFinalTransforms(const string& clipName, const float& fTimePos);
+	void GetFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, const float& fTimePos);
 	
 	float GetClipStartTime(const string& clipName) const;
 	float GetClipEndTime(const string& clipName) const;
 	const string& GetClipName() const { return m_strClipName; }
-	map<string, AnimationClip> GetAnimMap() const {	return m_animationMap; }
-	XMFLOAT4X4 GetOffsetMtx(UINT index) const { return boneOffsetsVector[index]; }
+	const map<string, CAnimationClip>& GetAnimMap() const { return m_meshData.m_mapAnimationClip; }
+	XMFLOAT4X4 GetOffsetMtx(UINT index) const { return m_meshData.m_vecBoneOffsets[index]; }
 
 	void SetClipName(string name) { m_strClipName = name; }
 };

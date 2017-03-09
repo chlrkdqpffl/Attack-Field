@@ -234,7 +234,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pPlayerTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pPlayerMaterial->SetTexture(pPlayerTexture);
 	
-	CFbxModelMesh* pPlayerMesh = new CFbxModelMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(MeshData::eMesh_DarkFighter));
+	CFbxModelMesh* pPlayerMesh = new CFbxModelMesh(pd3dDevice, MeshTag::eDarkFighter);
 	pPlayerMesh->Initialize(pd3dDevice);
 
 	CObjectsShader* pModelShader = new CObjectsShader(10);

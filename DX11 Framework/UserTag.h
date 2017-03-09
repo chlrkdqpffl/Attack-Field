@@ -16,7 +16,7 @@ namespace WeaponData
 {
 	enum class Type
 	{
-		eRifle, eSniperRifle
+		eNone, eRifle, eSniperRifle
 	};
 }
 
@@ -40,6 +40,8 @@ namespace AnimationData
 // =========================================================================================================================== //
 // ===================================================== Texture Data ======================================================== //
 enum Resource_TextrueTag {
+	eTextureNone,
+
 	// Environment
 	eTexture_Water, eTexture_WaterDetail, eTexture_SkyBox, 
 	eTexture_TerrainDiffuse, eTexture_TerrainDetail, eTexture_TerrainNormal, eTexture_TerrainHeightMap, eTexture_TerrainHeightMapRaw,
@@ -59,18 +61,35 @@ enum Resource_TextrueTag {
 	eTexture_WallDiffuse, eTexture_WallNormalHeight
 };
 
+
 // ========================================================================================================================= //
 // ======================================================= Mesh Data ======================================================= //
-namespace MeshData
+
+enum class MeshTag
 {
-	enum Resource_MeshTag {
-		// Character
-		eMesh_DarkFighter, eMesh_Drayer, eMesh_Police, eMesh_Terrorist, eMesh_Rifle,
+	eNone,
 
-		// Object
-		eMesh_Road,
+	// Skinned
+	ePolice, eTerrorist,
 
-		// Etc
-		eMesh_Test
-	};
+	// --------------------------------------------------------- // 
+	MaxSkinnedMesh = 100,
+	// --------------------------------------------------------- // 
+
+	// Character
+	eDarkFighter, eRifle,
+
+	// Environment
+	eRoad
+
+	// Building
+
+	// Etc
+
+};
+
+// 충돌 처리시 사용할 Layer
+namespace Layer 
+{
+
 }

@@ -22,7 +22,6 @@
 #include "AxisObjects.h"
 
 // ----- Character -----
-#include "Drayer.h"
 #include "PoliceCharacterObject.h"
 
 // ========== System ========== 

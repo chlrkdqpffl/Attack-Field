@@ -12,7 +12,7 @@ CPoliceCharacterObject::~CPoliceCharacterObject()
 
 void CPoliceCharacterObject::CreateMesh(ID3D11Device *pd3dDevice)
 {
-	CSkinnedMesh* pCharacterMesh = new CSkinnedMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(MeshData::eMesh_Terrorist));
+	CFbxModelSkinnedMesh* pCharacterMesh = new CFbxModelSkinnedMesh(pd3dDevice, MeshTag::eTerrorist);
 	pCharacterMesh->Initialize(pd3dDevice);
 
 	SetMesh(pCharacterMesh);

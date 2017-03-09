@@ -12,7 +12,7 @@ CRifleGunWeapon::~CRifleGunWeapon()
 
 void CRifleGunWeapon::CreateMesh(ID3D11Device *pd3dDevice)
 {
-	CFbxModelMesh* pMesh = new CFbxModelMesh(pd3dDevice, RESOURCE_MGR->FindResourcePath(MeshData::eMesh_Rifle));
+	CFbxModelMesh* pMesh = new CFbxModelMesh(pd3dDevice, MeshTag::eRifle);
 	pMesh->Initialize(pd3dDevice);
 //	CMesh* pMesh = new CCubeMeshTexturedIlluminated(pd3dDevice, 200, 200, 500);
 	SetMesh(pMesh);
