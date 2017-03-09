@@ -22,8 +22,8 @@ void CNormalMapObject::CreateMaterial(ID3D11Device *pd3dDevice)
 
 	CTexture *pTexture = new CTexture(2, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
 
-	pTexture ->SetTexture(0, eTexture_WallDiffuse);
-	pTexture ->SetTexture(1, eTexture_WallNormalHeight);
+	pTexture ->SetTexture(0, TextureTag::eWallD);
+	pTexture ->SetTexture(1, TextureTag::eWallND);
 	pTexture ->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
 
 	m_pMaterial->SetTexture(pTexture);

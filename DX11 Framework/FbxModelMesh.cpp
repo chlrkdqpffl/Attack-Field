@@ -3,8 +3,9 @@
 
 
 CFbxModelMesh::CFbxModelMesh(ID3D11Device *pd3dDevice, const MeshTag meshTag, const float size)
-	: m_meshTag(meshTag), m_fModelSize(size)
+	: m_fModelSize(size)
 {
+	m_meshTag = meshTag;
 }
 
 CFbxModelMesh::~CFbxModelMesh()

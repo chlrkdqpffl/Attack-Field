@@ -12,78 +12,107 @@ CResourceManager::~CResourceManager()
 
 void CResourceManager::InitializeManager()
 {
-	// ------------------------ Texture ---------------------------- //
-
+	cout << "=============================================================================================" << endl;
+	cout << "====================================== Texture Loading ======================================" << endl;
 	// Model
-	AddResourece(eTexture_DarkFighterColor,					"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_color.png");
-	AddResourece(eTexture_DrayerDiffuse,					"../Assets/FBX Model/Drayer_diffuse.png");
-	AddResourece(eTexture_TerroristDiffuse,					"../Assets/FBX Model/Character/Terrorist/TerrorristD.dds");
-	AddResourece(eTexture_TerroristNormalDisplace,			"../Assets/FBX Model/Character/Terrorist/TerrorristNM_D.dds.dds");
-	//AddResourece(eTexture_PoliceDiffuse,					"../Assets/FBX Model/Character/Police/");
+	AddResourece(TextureTag::eDarkFighterD,			"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_color.png");
+	AddResourece(TextureTag::eTerroristD,			"../Assets/FBX Model/Character/Terrorist/TerrorristD.dds");
+	AddResourece(TextureTag::eTerroristND,			"../Assets/FBX Model/Character/Terrorist/TerrorristNM_D.dds.dds");
+	//AddResourece(ePoliceDiffuse,					"../Assets/FBX Model/Character/Police/");
 	
-	AddResourece(eTexture_Rifle,							"../Assets/FBX Model/Weapon/Rifle/rifle.bmp");
-	AddResourece(eTexture_RifleNormal,						"../Assets/FBX Model/Weapon/Rifle/RifleNM.png");
+	AddResourece(TextureTag::eRifleD,				"../Assets/FBX Model/Weapon/Rifle/rifle.bmp");
+	AddResourece(TextureTag::eRifleN,				"../Assets/FBX Model/Weapon/Rifle/RifleNM.png");
 	
 	// UI
-	AddResourece(eTexture_Title,							"../Assets/Image/UI/BackGround2.jpg");
+	AddResourece(TextureTag::eTitleD,				"../Assets/Image/UI/BackGround2.jpg");
 
 	// Environment
-	AddResourece(eTexture_TerrainDiffuse,					"../Assets/Image/Terrain/Base_Texture.jpg");
-	AddResourece(eTexture_TerrainDetail,					"../Assets/Image/Terrain/Detail_Texture_7.jpg");
-	AddResourece(eTexture_TerrainHeightMapRaw,				"../Assets/Image/Terrain/HeightMap.raw");
+	AddResourece(TextureTag::eTerrainD,				"../Assets/Image/Terrain/Base_Texture.jpg");
+	AddResourece(TextureTag::eTerrainDetailD,		"../Assets/Image/Terrain/Detail_Texture_7.jpg");
+	AddResourecePath(TextureTag::eTerrainH,			"../Assets/Image/Terrain/HeightMap.raw");
 
-	//	AddResourece(eTexture_Terrain,							"../Assets/Image/Terrain/TerrainDiffuse2.jpg");
-	//	AddResourece(eTexture_TerrainDetail,					"../Assets/Image/Terrain/Detail_Texture_7.jpg");
-	//	AddResourece(eTexture_HeightMap,						"../Assets/Image/Terrain/TerrainHeightMap2.raw");
-	AddResourece(eTexture_TerrainNormal,					"../Assets/Image/Terrain/TerrainNormal2.jpg");
+	//	AddResourece(eTerrain,							"../Assets/Image/Terrain/TerrainDiffuse2.jpg");
+	//	AddResourece(eTerrainDetail,					"../Assets/Image/Terrain/Detail_Texture_7.jpg");
+	//	AddResourece(eHeightMap,						"../Assets/Image/Terrain/TerrainHeightMap2.raw");
+	AddResourece(TextureTag::eTerrainN,				"../Assets/Image/Terrain/TerrainNormal2.jpg");
 	
 
-	AddResourece(eTexture_Water,							"../Assets/Image/Terrain/water.jpg");
-	AddResourece(eTexture_WaterDetail,						"../Assets/Image/Terrain/Water_Detail_Texture_0.dds");
+	AddResourece(TextureTag::eWaterD,				"../Assets/Image/Terrain/water.jpg");
+	AddResourece(TextureTag::eWaterDetailD,			"../Assets/Image/Terrain/Water_Detail_Texture_0.dds");
 
 	// Etc
-	AddResourece(eTexture_Stone,							"../Assets/Image/Miscellaneous/stones.dds");
-	AddResourece(eTexture_StoneNormal,						"../Assets/Image/Miscellaneous/stones_nmap.dds");
-	AddResourece(eTexture_Stone02,							"../Assets/Image/Miscellaneous/Stone02_Diffuse.jpg");
-	AddResourece(eTexture_Stone02Normal,					"../Assets/Image/Miscellaneous/Stone02_nmap.dds");
-	AddResourece(eTexture_Bricks,							"../Assets/Image/Miscellaneous/bricks.dds");
-	AddResourece(eTexture_BricksNormal,						"../Assets/Image/Miscellaneous/bricks_nmap.dds");
-	AddResourece(eTexture_Wood,								"../Assets/Image/Miscellaneous/Wood01.jpg");
-	AddResourece(eTexture_WallDiffuse,						"../Assets/Image/Miscellaneous/wall.jpg");
-	AddResourece(eTexture_WallNormalHeight,					"../Assets/Image/Miscellaneous/wall_NM_height.dds");
+	AddResourece(TextureTag::eStoneD,				"../Assets/Image/Miscellaneous/stones.dds");
+	AddResourece(TextureTag::eStoneN,				"../Assets/Image/Miscellaneous/stones_nmap.dds");
+	AddResourece(TextureTag::eStone02D,				"../Assets/Image/Miscellaneous/Stone02_Diffuse.jpg");
+	AddResourece(TextureTag::eStone02N,				"../Assets/Image/Miscellaneous/Stone02_nmap.dds");
+	AddResourece(TextureTag::eBricksD,				"../Assets/Image/Miscellaneous/bricks.dds");
+	AddResourece(TextureTag::eBricksN,				"../Assets/Image/Miscellaneous/bricks_nmap.dds");
+	AddResourece(TextureTag::eWallD,				"../Assets/Image/Miscellaneous/wall.jpg");
+	AddResourece(TextureTag::eWallND,				"../Assets/Image/Miscellaneous/wall_NM_height.dds");
 	
-	// ------------------------ Mesh ---------------------------- //
-	// Character
-	AddResourece(MeshTag::eDarkFighter,						"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.model");
 
-//	AddResourece(MeshTag::ePolice,							"../Assets/FBX Model/Character/Police/Police.model");
-	AddResourece(MeshTag::eTerrorist,						"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
-	AddResourece(MeshTag::eRifle,							"../Assets/FBX Model/Weapon/Rifle/rifle(70).model");
+	cout << endl;
+	cout << "==========================================================================================" << endl;
+	cout << "====================================== Mesh Loading ======================================" << endl;
+
+	// Character
+	AddResourece(MeshTag::eDarkFighter,				"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.model");
+
+//	AddResourece(MeshTag::ePolice,					"../Assets/FBX Model/Character/Police/Police.model");
+	AddResourece(MeshTag::eTerrorist,				"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
+	AddResourece(MeshTag::eRifle,					"../Assets/FBX Model/Weapon/Rifle/rifle(70).model");
 
 	// Object
-//	AddResourece(MeshTag::eRoad,							"../Assets/FBX Model/Road.model");
+//	AddResourece(MeshTag::eRoad,					"../Assets/FBX Model/Road.model");
 	
 	// Etc
 
+	cout << endl;
+	cout << "================================== Resource Loading End ====================================" << endl;
+	cout << "============================================================================================" << endl;
 }
 
 void CResourceManager::ReleseManager()
 {
 }
 
-void CResourceManager::AddResourece(Resource_TextrueTag resourceTag, string source)
+void CResourceManager::AddResourece(const TextureTag& textureTag, const string& source)
 {
-	textureMap.insert(make_pair(resourceTag, source));
+	cout << "  File Loading < " + source + " > ";
+	
+	HRESULT hResult;
+	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
+	D3DX11CreateShaderResourceViewFromFile(STATEOBJ_MGR->g_pd3dDevice, s_to_ws(source).c_str(), NULL, NULL, &pd3dsrvTexture, &hResult);
 
-	if (1 < textureMap.count(resourceTag)) {
-		cout << "TextureTag No." << resourceTag << " : 다중 텍스쳐" << endl;
-	}
+#if defined(DEBUG) || defined(_DEBUG)
+	if ((HRESULT)hResult >= 0)
+		ShowTaskSuccess("\t Success!!");
+	else
+		ShowTaskFail("\t Error!! \t\t 파일 또는 경로를 확인하세요.");
+#endif
+
+	string str = "TextureTag : " + to_string(static_cast<int>(textureTag));
+	DXUT_SetDebugName(pd3dsrvTexture, str.c_str());
+
+	m_mapTexturePool.insert(make_pair(textureTag, pd3dsrvTexture));
+
+	// 한 태그에 여러개 등록되었음
+	assert(m_mapTexturePool.count(textureTag) <= 1);
 }
-void CResourceManager::AddResourece(MeshTag meshTag, string source)
+
+void CResourceManager::AddResourecePath(const TextureTag& textureTag, const string& source)
+{
+	m_mapPathPool.insert(make_pair(textureTag, source));
+
+	// 한 태그에 여러개 등록되었음
+	assert(m_mapPathPool.count(textureTag) <= 1);
+}
+
+void CResourceManager::AddResourece(const MeshTag& meshTag, const string& source)
 {
 	CFbxMeshData meshData;
 
-	cout << "File Loading < " + source + " > ";
+	cout << "  File Loading < " + source + " > ";
 
 	if (MeshTag::MaxSkinnedMesh < meshTag) {
 		if (meshData.LoadFbxModelDatafromFile(source))
@@ -105,74 +134,51 @@ void CResourceManager::AddResourece(MeshTag meshTag, string source)
 
 	m_mapMeshPool.insert(make_pair(meshTag, meshData));
 
-	// 한 태그에 여러개의 메쉬 등록됨
+	// 한 태그에 여러개 등록되었음
 	assert(m_mapMeshPool.count(meshTag) <= 1);
 }
 
-wstring CResourceManager::FindResourcePath(Resource_TextrueTag resourceTag)
+wstring CResourceManager::FindResourcePath(const TextureTag& textureTag)
 {
-	auto find = textureMap.find(resourceTag);
-	if (find == textureMap.end()) {
-		cout << "Resource Texture Tag " << resourceTag << " is not exist." << endl;
-		return nullptr;
-	}
-	
-	return s_to_ws((*find).second.c_str());
+	auto findResource = m_mapPathPool.find(textureTag);
+
+	// Pool에 해당 데이터가 존재하지 않는다.
+	assert(findResource != m_mapPathPool.end());
+
+	return s_to_ws((*findResource).second.c_str());
 }
 
-ID3D11ShaderResourceView* CResourceManager::FindResourceAndCreateSRV(Resource_TextrueTag resourceTag)
+
+ID3D11ShaderResourceView* CResourceManager::CloneShaderResourceView(const TextureTag& textureTag)
 {
-	auto findResource = textureMap.find(resourceTag);
-	if (findResource == textureMap.end()) {
-		cout << "Resource Texture Tag " << resourceTag << " is not exist." << endl;
-		return nullptr;
-	}
-	string str = (*findResource).second.c_str();
+	auto findResource = m_mapTexturePool.find(textureTag);
 
-	HRESULT hResult;
-	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
-	D3DX11CreateShaderResourceViewFromFile(STATEOBJ_MGR->g_pd3dDevice, s_to_ws(str).c_str(), NULL, NULL, &pd3dsrvTexture, &hResult);
+	// Pool에 해당 데이터가 존재하지 않는다.
+	assert(findResource != m_mapTexturePool.end());
 
-	str = "TextureTag : " + to_string(resourceTag);
-	DXUT_SetDebugName(pd3dsrvTexture, str.c_str());
-
-#if defined(DEBUG) || defined(_DEBUG)
-	if ((HRESULT)hResult >= 0)
-		ShowTaskSuccess("File Loading < " + (*findResource).second + " > \t Success!!");
-	else
-		ShowTaskFail("File Loading < " + (*findResource).second + " > \t Error!! \t\t 파일 또는 경로를 확인하세요.");
-#endif
-
-	return pd3dsrvTexture;
+	return (*findResource).second;
 }
 
-CFbxMeshData CResourceManager::CloneFbxMeshData(MeshTag resourceTag)
+CFbxMeshData CResourceManager::CloneFbxMeshData(const MeshTag& meshTag) 
 {
-	auto findResource = m_mapMeshPool.find(resourceTag);
+	auto findResource = m_mapMeshPool.find(meshTag);
 
-	// MeshPool에 존재하지 않는다.
+	// Pool에 해당 데이터가 존재하지 않는다.
 	assert(findResource != m_mapMeshPool.end());
 
 	return (*findResource).second;
 }
 
-void CResourceManager::ShowImageInfo(Resource_TextrueTag resourceTag)
+void CResourceManager::ShowImageInfo(const string& source)
 {
-	auto findResource = textureMap.find(resourceTag);
-	if (findResource == textureMap.end()) {
-		cout << "Resource Texture Tag " << resourceTag << " is not exist." << endl;
-		return;
-	}
-	string str = (*findResource).second.c_str();
-
 	HRESULT hResult;
-
 	D3DX11_IMAGE_INFO info;
-	D3DX11GetImageInfoFromFile(s_to_ws(str).c_str(), nullptr, &info, &hResult);
+
+	D3DX11GetImageInfoFromFile(s_to_ws(source).c_str(), nullptr, &info, &hResult);
 
 	if ((HRESULT)hResult >= 0) {
 		cout << endl << " ===== < Image File Info > =====" << endl;
-		cout << " Image Name	: " << str << endl;
+		cout << " Image Name	: " << source << endl;
 		cout << " Array Size	: " << info.ArraySize << endl;
 		cout << " Depth		: " << info.Depth << endl;
 		cout << " Width		: " << info.Width << endl;
@@ -182,5 +188,5 @@ void CResourceManager::ShowImageInfo(Resource_TextrueTag resourceTag)
 		cout << " ===============================" << endl << endl;
 	}
 	else
-		ShowTaskFail("File Loading < " + (*findResource).second + " > \t Error!! \t\t 파일 또는 경로를 확인하세요.");
+		ShowTaskFail("File Loading < " + source + " > \t Error!! \t\t 파일 또는 경로를 확인하세요.");
 }

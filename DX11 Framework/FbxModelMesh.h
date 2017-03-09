@@ -6,7 +6,6 @@ class CFbxModelMesh : public CMeshTexturedIlluminated
 {
 protected:
 	CFbxMeshData			m_meshData;
-	MeshTag					m_meshTag;
 
 	float					m_fModelSize	= 1.0f;
 

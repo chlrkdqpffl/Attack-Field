@@ -93,11 +93,11 @@ void CTexture::SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture)
 	if (pd3dsrvTexture) pd3dsrvTexture->AddRef();
 }
 
-void CTexture::SetTexture(int nIndex, Resource_TextrueTag eTag)
+void CTexture::SetTexture(int nIndex, TextureTag textuerTag)
 {
 	if (m_ppd3dsrvTextures[nIndex]) m_ppd3dsrvTextures[nIndex]->Release();
-	m_ppd3dsrvTextures[nIndex] = RESOURCE_MGR->FindResourceAndCreateSRV(eTag);
-	m_Tag = eTag;
+	m_ppd3dsrvTextures[nIndex] = RESOURCE_MGR->CloneShaderResourceView(textuerTag);
+	m_textureTag = textuerTag;
 	if (m_ppd3dsrvTextures[nIndex]) m_ppd3dsrvTextures[nIndex]->AddRef();
 }
 

@@ -23,12 +23,6 @@ protected:
 	ID3D11Buffer				*m_pd3dBoneIndiceBuffer = nullptr;
 	ID3D11Buffer				*m_pd3dcbBones = nullptr;
 
-	float						m_fAnimationTime = 0.0f;
-	int							m_nAnimationNum = 0;
-	int							m_nStartFrameNum = 0;
-	int							m_nMaxFrameNum = 0;
-	int							m_nNowFrameNum = 0;	
-
 public:
 
 	CFbxModelSkinnedMesh(ID3D11Device *pd3dDevice, const MeshTag meshTag, const float size = 1.0f);

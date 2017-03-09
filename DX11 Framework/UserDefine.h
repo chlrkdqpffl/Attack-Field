@@ -110,19 +110,6 @@ namespace Colors
 	#endif
 #endif
 
-template <typename T >
-void print(const T& firstArg)
-{
-	cout << firstArg << ", ";
-}
-
-template <typename T, typename ...Types >
-void print(const T& firstArg, const Types& ...argv)
-{
-	cout << firstArg << ", ";
-	print(argv...);
-}
-
 inline void ShowXMMatrix(XMMATRIX mtx)
 {
 	XMFLOAT4X4 mtxOut;

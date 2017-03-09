@@ -39,26 +39,35 @@ namespace AnimationData
 
 // =========================================================================================================================== //
 // ===================================================== Texture Data ======================================================== //
-enum Resource_TextrueTag {
-	eTextureNone,
+
+// D - Diffuse Map
+// N - Normal Map
+// DP - Displacement Map
+// ND - Normal + Displacement Map
+// S - Specular
+// H - Height Map
+
+enum class TextureTag 
+{
+	eNone,
 
 	// Environment
-	eTexture_Water, eTexture_WaterDetail, eTexture_SkyBox, 
-	eTexture_TerrainDiffuse, eTexture_TerrainDetail, eTexture_TerrainNormal, eTexture_TerrainHeightMap, eTexture_TerrainHeightMapRaw,
+	eWaterD, eWaterDetailD, eSkyBoxD,
+	eTerrainD, eTerrainDetailD, eTerrainN, eTerrainH,
 
 	// Model
-	eTexture_DarkFighterColor, eTexture_DrayerDiffuse, 
+	eDarkFighterD,
 
-	eTexture_TerroristDiffuse, eTexture_TerroristNormalDisplace,
-	eTexture_PoliceDiffuse,
-	eTexture_Rifle, eTexture_RifleNormal,
+	eTerroristD, eTerroristND,
+	ePoliceD,
+	eRifleD, eRifleN,
 
 	// UI
-	eTexture_Title,
+	eTitleD,
 
 	// Etc
-	eTexture_Stone, eTexture_StoneNormal, eTexture_Stone02, eTexture_Stone02Normal, eTexture_Bricks, eTexture_BricksNormal, eTexture_Wood,
-	eTexture_WallDiffuse, eTexture_WallNormalHeight
+	eStoneD, eStoneN, eStone02D, eStone02N, eBricksD, eBricksN,
+	eWallD, eWallND
 };
 
 

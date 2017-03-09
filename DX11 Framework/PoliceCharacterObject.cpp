@@ -30,8 +30,8 @@ void CPoliceCharacterObject::CreateMaterial(ID3D11Device *pd3dDevice)
 	CTexture *pCharacterTexture = new CTexture(2, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
 
 	m_pMaterial = new CMaterial();
-	pCharacterTexture->SetTexture(0, eTexture_TerroristDiffuse);
-	pCharacterTexture->SetTexture(1, eTexture_TerroristNormalDisplace);
+	pCharacterTexture->SetTexture(0, TextureTag::eTerroristD);
+	pCharacterTexture->SetTexture(1, TextureTag::eTerroristND);
 	pCharacterTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
 
 	m_pMaterial->SetTexture(pCharacterTexture);

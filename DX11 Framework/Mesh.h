@@ -53,7 +53,8 @@ public:
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 protected:
-	
+	MeshTag							m_meshTag;
+
 	BoundingBox						m_bcBoundingBox;
 	D3D11_PRIMITIVE_TOPOLOGY		m_d3dPrimitiveTopology;
 	UINT							m_nType;

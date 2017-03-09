@@ -36,6 +36,7 @@ public:
 	virtual ~CTexture();
 
 private:
+	TextureTag						m_textureTag;
 	int								m_nReferences = 0;
 
 	int								m_nTextures = 0;
@@ -46,13 +47,12 @@ private:
 	ID3D11SamplerState				**m_ppd3dSamplerStates = nullptr;
 	int								m_nSamplerStartSlot = 0;
 
-	Resource_TextrueTag				m_Tag;
 public:
 	void AddRef() { m_nReferences++; }
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 	void SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture);
-	void SetTexture(int nIndex, Resource_TextrueTag);
+	void SetTexture(int nIndex, TextureTag);
 
 	void SetSampler(int nIndex, ID3D11SamplerState *pd3dSamplerState);
 	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext);
@@ -97,9 +97,9 @@ public:
 	virtual void CreateObjectData(ID3D11Device *pd3dDevice);
 
 protected:
-	virtual void CreateMesh(ID3D11Device *pd3dDevice)		{ print("No have Mesh"); };
-	virtual void CreateShader(ID3D11Device *pd3dDevice)		{ print("No have Shader"); };
-	virtual void CreateMaterial(ID3D11Device *pd3dDevice)	{ print("No have Material"); };
+	virtual void CreateMesh(ID3D11Device *pd3dDevice)		{ cout << "No have Mesh" << endl; };
+	virtual void CreateShader(ID3D11Device *pd3dDevice)		{ cout << "No have Shader" << endl; };
+	virtual void CreateMaterial(ID3D11Device *pd3dDevice)	{ cout << "No have Material" << endl; };
 
 private:
 	int								m_nReferences = 0;

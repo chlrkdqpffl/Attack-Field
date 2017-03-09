@@ -152,10 +152,10 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma region [Create Terrain]
 	CTexture *pTerrainTexture = new CTexture(2, 2, PS_TEXTURE_SLOT_TERRAIN_DIFUSE, PS_SAMPLER_SLOT_TERRAIN);
 
-	pTerrainTexture->SetTexture(0, eTexture_TerrainDiffuse);
+	pTerrainTexture->SetTexture(0, TextureTag::eTerrainD);
 	pTerrainTexture->SetSampler(0, STATEOBJ_MGR->g_pPointClampSS);
 	
-	pTerrainTexture->SetTexture(1, eTexture_TerrainDetail);
+	pTerrainTexture->SetTexture(1, TextureTag::eTerrainDetailD);
 	pTerrainTexture->SetSampler(1, STATEOBJ_MGR->g_pPointWarpSS);
 	
 	CMaterialColors *pTerrainColors = new CMaterialColors();
@@ -172,9 +172,9 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 //	XMVECTOR d3dxvScale = XMVectorSet(8.0f, 1.0f, 8.0f, 0.0f);
 #ifdef _WITH_TERRAIN_PARTITION
-	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, RESOURCE_MGR->FindResourcePath(eTexture_TerrainHeightMapRaw).c_str(), 257, 257, 17, 17, d3dxvScale);
+	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, RESOURCE_MGR->FindResourcePath(TextureTag::eTerrainH).c_str(), 257, 257, 17, 17, d3dxvScale);
 #else
-	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, RESOURCE_MGR->FindResourcePath(eTexture_HeightMap).c_str(), 257, 257, 257, 257, d3dxvScale);
+	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(pd3dDevice, RESOURCE_MGR->FindResourcePath(eHeightMap).c_str(), 257, 257, 257, 257, d3dxvScale);
 #endif
 	pTerrain->SetMaterial(pTerrainMaterial);
 
@@ -187,10 +187,10 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	/*
 #pragma region [Create Water]
 	CTexture *pTerrainWaterTexture = new CTexture(2, 2, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	pTerrainWaterTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_Water));
+	pTerrainWaterTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eWater));
 	pTerrainWaterTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 
-	pTerrainWaterTexture->SetTexture(1, RESOURCE_MGR->FindResourceAndCreateSRV(eTexture_WaterDetail));
+	pTerrainWaterTexture->SetTexture(1, RESOURCE_MGR->FindResourceAndCreateSRV(eWaterDetail));
 	pTerrainWaterTexture->SetSampler(1, STATEOBJ_MGR->g_pPointWarpSS);
 
 	CMaterialColors *pWaterColors = new CMaterialColors();
@@ -209,13 +209,16 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma endregion
 */
 #pragma region [Create Character]
-	m_pPlayerCharacter = new CPoliceCharacterObject();
-	m_pPlayerCharacter->CreateObjectData(pd3dDevice);
-	
-//	m_pPlayerCharacter->SetPosition(100, 250, 100);
-//	m_pPlayerCharacter->Rotate(0, 180.0f, 0.0f);
-	m_vObjectsVector.push_back(m_pPlayerCharacter);
 
+	for (int i = 0; i < 1; ++i) {
+		m_pPlayerCharacter = new CPoliceCharacterObject();
+		m_pPlayerCharacter->CreateObjectData(pd3dDevice);
+
+		//m_pPlayerCharacter->SetPosition(rand() & 300, 250, 100);
+		m_pPlayerCharacter->SetPosition(100, 250, 100);
+		m_pPlayerCharacter->Rotate(0, 180.0f, 0.0f);
+		m_vObjectsVector.push_back(m_pPlayerCharacter);
+	}
 #pragma endregion 
 
 #pragma region [Create Test - NomalMapping]	
@@ -230,7 +233,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CMaterial *pPlayerMaterial = new CMaterial();
 
 	CTexture *pPlayerTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	pPlayerTexture->SetTexture(0, eTexture_DarkFighterColor);
+	pPlayerTexture->SetTexture(0, TextureTag::eDarkFighterD);
 	pPlayerTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pPlayerMaterial->SetTexture(pPlayerTexture);
 	
@@ -274,17 +277,17 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pInstancingMaterials[2] = new CMaterial(pBlueColor);
 
 	CTexture *pStoneTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	pStoneTexture->SetTexture(0, eTexture_Stone);
+	pStoneTexture->SetTexture(0, eStone);
 	pStoneTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pInstancingMaterials[0]->SetTexture(pStoneTexture);
 	
 	CTexture *pBrickTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	pBrickTexture->SetTexture(0, eTexture_Bricks);
+	pBrickTexture->SetTexture(0, eBricks);
 	pBrickTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pInstancingMaterials[1]->SetTexture(pBrickTexture);
 
 	CTexture *pWoodTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	pWoodTexture->SetTexture(0, eTexture_Wood);
+	pWoodTexture->SetTexture(0, eWood);
 	pWoodTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pInstancingMaterials[2]->SetTexture(pWoodTexture);
 

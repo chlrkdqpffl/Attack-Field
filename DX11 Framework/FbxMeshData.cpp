@@ -101,8 +101,9 @@ CFbxMeshData::~CFbxMeshData()
 
 bool CFbxMeshData::LoadFbxModelDatafromFile(const string& fileName)
 {
-	//ifstream fin(fileName);
-	ifstream fin(fileName, ios::binary);
+	m_fileName = fileName;
+	ifstream fin(fileName);
+	//ifstream fin(fileName, ios::binary);
 
 	if (!fin.is_open())
 		return false;
@@ -137,6 +138,7 @@ bool CFbxMeshData::LoadFbxModelDatafromFile(const string& fileName)
 
 bool CFbxMeshData::LoadFbxModelSkinnedDatafromFile(const string& fileName)
 {
+	m_fileName = fileName;
 	ifstream fin(fileName);
 
 	if (!fin.is_open())

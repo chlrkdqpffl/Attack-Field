@@ -30,7 +30,7 @@ void CRifleGunWeapon::CreateMaterial(ID3D11Device *pd3dDevice)
 	m_pMaterial = new CMaterial();
 
 	CTexture *pTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	pTexture->SetTexture(0, eTexture_Rifle);
+	pTexture->SetTexture(0, TextureTag::eRifleD);
 	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
 	
 	m_pMaterial->SetTexture(pTexture);
