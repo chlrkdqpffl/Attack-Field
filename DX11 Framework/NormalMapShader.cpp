@@ -2,7 +2,7 @@
 #include "NormalMapShader.h"
 
 
-CNormalMapShader::CNormalMapShader() : CShader()
+CNormalMapShader::CNormalMapShader()
 {
 }
 

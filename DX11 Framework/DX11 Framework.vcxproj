@@ -158,11 +158,14 @@
     <ClCompile Include="AirplanePlayer.cpp" />
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="AntTweakBarManager.cpp" />
+    <ClCompile Include="BoundingBoxMesh.cpp" />
+    <ClCompile Include="BoundingBoxShader.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CharacterNormalShader.cpp" />
     <ClCompile Include="CharacterObject.cpp" />
     <ClCompile Include="CharacterShader.cpp" />
     <ClCompile Include="FbxMeshData.cpp" />
+    <ClCompile Include="GlobalVariableManager.cpp" />
     <ClCompile Include="NormalDisplaceMapShader.cpp" />
     <ClCompile Include="PoliceCharacterObject.cpp" />
     <ClCompile Include="RifleGunWeapon.cpp" />
@@ -216,12 +219,15 @@
     <ClInclude Include="AirplanePlayer.h" />
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="AntTweakBarManager.h" />
+    <ClInclude Include="BoundingBoxMesh.h" />
+    <ClInclude Include="BoundingBoxShader.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CharacterNormalShader.h" />
     <ClInclude Include="CharacterObject.h" />
     <ClInclude Include="CharacterShader.h" />
     <ClInclude Include="ConstantBuffer_Slot.h" />
     <ClInclude Include="FbxMeshData.h" />
+    <ClInclude Include="GlobalVariableManager.h" />
     <ClInclude Include="NormalDisplaceMapShader.h" />
     <ClInclude Include="NormalMapCubeMesh.h" />
     <ClInclude Include="DirectX11_Project.h" />
@@ -303,6 +309,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader HLSL File\Blurring.hlsli" />
+    <None Include="Shader HLSL File\BoundingBox.hlsli" />
     <None Include="Shader HLSL File\CharacterSkinnedNormal.hlsli" />
     <None Include="Shader HLSL File\DisplacementMap.hlsli" />
     <None Include="Shader HLSL File\CharacterSkinned.hlsli" />

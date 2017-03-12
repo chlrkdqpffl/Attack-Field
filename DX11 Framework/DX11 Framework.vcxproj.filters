@@ -91,6 +91,9 @@
     <Filter Include="소스 파일\Mesh\FbxFile">
       <UniqueIdentifier>{2640aa36-1ca3-41df-ab5d-1b29a419ebb0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\BoundingBox">
+      <UniqueIdentifier>{a2c00bf9-129c-4536-b6f6-5c01e117e062}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -254,6 +257,15 @@
     </ClCompile>
     <ClCompile Include="FbxModelSkinnedMesh.cpp">
       <Filter>소스 파일\Mesh\FbxFile</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundingBoxMesh.cpp">
+      <Filter>Objects\BoundingBox</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundingBoxShader.cpp">
+      <Filter>Objects\BoundingBox</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalVariableManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -437,6 +449,15 @@
     <ClInclude Include="FbxMeshData.h">
       <Filter>헤더 파일\Mesh\FbxFile</Filter>
     </ClInclude>
+    <ClInclude Include="BoundingBoxShader.h">
+      <Filter>Objects\BoundingBox</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBoxMesh.h">
+      <Filter>Objects\BoundingBox</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalVariableManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -491,6 +512,9 @@
       <Filter>HLSL</Filter>
     </None>
     <None Include="Shader HLSL File\CharacterSkinnedNormal.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\BoundingBox.hlsli">
       <Filter>HLSL</Filter>
     </None>
   </ItemGroup>

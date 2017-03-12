@@ -6,7 +6,7 @@
 class CAirplanePlayer : public CPlayer
 {
 public:
-	CAirplanePlayer(int nMeshes = 1);
+	CAirplanePlayer();
 	virtual ~CAirplanePlayer();
 
 	virtual void OnPrepareRender();

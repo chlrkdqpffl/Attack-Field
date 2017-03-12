@@ -39,6 +39,7 @@ void CCharacterObject::CreateObjectData(ID3D11Device *pd3dDevice)
 {
 	CSkinnedObject::CreateObjectData(pd3dDevice);
 	CreateWeapon(pd3dDevice);
+	CreateBoundingBox(pd3dDevice);
 }
 
 void CCharacterObject::Update(float fTimeElapsed)

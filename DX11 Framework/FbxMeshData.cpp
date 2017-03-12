@@ -214,20 +214,15 @@ void CFbxMeshData::LoadMeshData(ifstream& fin)
 void CFbxMeshData::LoadBBoxData(ifstream& fin)
 {
 	string buf;
-	XMFLOAT3 bBoxCenter, bBoxExtents, bBoxMax;
+	XMFLOAT3 bBoxCenter, bBoxExtents;
 
 	fin >> buf; // [BBox_DATA]
 	fin >> buf; // Center
 	fin >> bBoxCenter.x >> bBoxCenter.y >> bBoxCenter.z;
-	fin >> buf; // Min
-	fin >> buf >> buf >> buf;
-	fin >> buf; // Max
-	fin >> bBoxMax.x >> bBoxMax.y >> bBoxMax.z;
-
+	fin >> buf; // Extents
+	fin >> bBoxExtents.x >> bBoxExtents.y >> bBoxExtents.z;
+	
 	m_boundingBox.Center = bBoxCenter;
-	bBoxExtents.x = bBoxMax.x - bBoxCenter.x;
-	bBoxExtents.y = bBoxMax.y - bBoxCenter.y;
-	bBoxExtents.z = bBoxMax.z - bBoxCenter.z;
 	m_boundingBox.Extents = bBoxExtents;
 }
 

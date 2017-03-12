@@ -40,6 +40,10 @@ void CResourceManager::InitializeManager()
 	AddResourece(TextureTag::eWaterD,				"../Assets/Image/Terrain/water.jpg");
 	AddResourece(TextureTag::eWaterDetailD,			"../Assets/Image/Terrain/Water_Detail_Texture_0.dds");
 
+	// Building
+	AddResourece(TextureTag::eBuilding18,			"../Assets/FBX Model/novotel.jpg");
+
+
 	// Etc
 	AddResourece(TextureTag::eStoneD,				"../Assets/Image/Miscellaneous/stones.dds");
 	AddResourece(TextureTag::eStoneN,				"../Assets/Image/Miscellaneous/stones_nmap.dds");
@@ -65,10 +69,13 @@ void CResourceManager::InitializeManager()
 	// Object
 //	AddResourece(MeshTag::eRoad,					"../Assets/FBX Model/Road.model");
 	
+	// Building
+	AddResourece(MeshTag::eBuilding18,				 "../Assets/FBX Model/test.model");
+
 	// Etc
 
 	cout << endl;
-	cout << "================================== Resource Loading End ====================================" << endl;
+	cout << "=============================== Resource Loading Complete ==================================" << endl;
 	cout << "============================================================================================" << endl;
 }
 
@@ -100,14 +107,6 @@ void CResourceManager::AddResourece(const TextureTag& textureTag, const string& 
 	assert(m_mapTexturePool.count(textureTag) <= 1);
 }
 
-void CResourceManager::AddResourecePath(const TextureTag& textureTag, const string& source)
-{
-	m_mapPathPool.insert(make_pair(textureTag, source));
-
-	// 한 태그에 여러개 등록되었음
-	assert(m_mapPathPool.count(textureTag) <= 1);
-}
-
 void CResourceManager::AddResourece(const MeshTag& meshTag, const string& source)
 {
 	CFbxMeshData meshData;
@@ -136,6 +135,14 @@ void CResourceManager::AddResourece(const MeshTag& meshTag, const string& source
 
 	// 한 태그에 여러개 등록되었음
 	assert(m_mapMeshPool.count(meshTag) <= 1);
+}
+
+void CResourceManager::AddResourecePath(const TextureTag& textureTag, const string& source)
+{
+	m_mapPathPool.insert(make_pair(textureTag, source));
+
+	// 한 태그에 여러개 등록되었음
+	assert(m_mapPathPool.count(textureTag) <= 1);
 }
 
 wstring CResourceManager::FindResourcePath(const TextureTag& textureTag)

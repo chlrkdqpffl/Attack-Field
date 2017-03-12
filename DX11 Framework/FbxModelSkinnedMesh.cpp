@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ #include "stdafx.h"
 #include "FbxModelSkinnedMesh.h"
 
 CFbxModelSkinnedMesh::CFbxModelSkinnedMesh(ID3D11Device *pd3dDevice, const MeshTag meshTag, const float size)
@@ -27,11 +27,13 @@ void CFbxModelSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 	
 	m_pPositions = new XMFLOAT3[m_nVertices];
 	m_pNormals = new XMFLOAT3[m_nVertices];
-	m_pTangents = new XMFLOAT3[m_nVertices];
+	if (m_meshData.m_bTangent)
+		m_pTangents = new XMFLOAT3[m_nVertices];
 	m_pTexCoords = new XMFLOAT2[m_nVertices];
 	m_pnIndices = new UINT[m_nIndices];
 	m_pboneIndices = new XMFLOAT4[m_nVertices];
 	m_pboneWeights = new XMFLOAT4[m_nVertices];
+	m_bcBoundingBox = m_meshData.m_boundingBox;
 
 	if (m_fModelSize == 1.0f) {
 		for (int i = 0; i < m_nVertices; ++i) {

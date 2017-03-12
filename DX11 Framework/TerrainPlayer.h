@@ -6,7 +6,7 @@
 class CTerrainPlayer : public CPlayer
 {
 public:
-	CTerrainPlayer(int nMeshes = 1);
+	CTerrainPlayer();
 	virtual ~CTerrainPlayer();
 
 	virtual void ChangeCamera(ID3D11Device *pd3dDevice, DWORD nNewCameraMode, float fTimeElapsed);

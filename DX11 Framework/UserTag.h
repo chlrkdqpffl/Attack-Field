@@ -47,7 +47,7 @@ namespace AnimationData
 // S - Specular
 // H - Height Map
 
-enum class TextureTag 
+enum class TextureTag
 {
 	eNone,
 
@@ -61,6 +61,9 @@ enum class TextureTag
 	eTerroristD, eTerroristND,
 	ePoliceD,
 	eRifleD, eRifleN,
+
+	// Building
+	eBuilding18,
 
 	// UI
 	eTitleD,
@@ -89,9 +92,10 @@ enum class MeshTag
 	eDarkFighter, eRifle,
 
 	// Environment
-	eRoad
+	eRoad,
 
 	// Building
+	eBuilding18
 
 	// Etc
 

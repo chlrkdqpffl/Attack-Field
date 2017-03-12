@@ -1,5 +1,7 @@
 #pragma once
 
+class CFbxModelSkinnedMesh;
+
 struct AnimationTrack
 {
 	string m_strClipName;
@@ -15,7 +17,7 @@ struct AnimationTrack
 class CAnimationController
 {
 	float						m_fTimePos = 0.0f;
-	CFbxModelSkinnedMesh*				m_pSkinnedMesh = nullptr;
+	CFbxModelSkinnedMesh*		m_pSkinnedMesh = nullptr;
 
 	tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> m_prevAnimState;
 	tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> m_currAnimState;

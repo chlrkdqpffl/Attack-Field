@@ -157,6 +157,25 @@ struct VS_TEXTURED_LIGHTING_OUTPUT
 	float3 normalW : NORMAL;
 	float2 texCoord : TEXCOORD0;
 };
+//-------------------------------------------------------------------------------------------------------------------------------
+
+struct VS_TEXTURED_LIGHTING_TANGENT_INPUT
+{
+    float3 position : POSITION;
+    float3 normal : NORMAL;
+    float3 tangent : TANGENT;
+    float2 texCoord : TEXCOORD0;
+};
+
+struct VS_TEXTURED_LIGHTING_TANGENT_OUTPUT
+{
+    float4 position : SV_POSITION;
+    float3 positionW : POSITION;
+    float3 normalW : NORMAL;
+    float3 tangentW : TANGENT;
+    float2 texCoord : TEXCOORD0;
+};
+
 
 //-------------------------------------------------------------------------------------------------------------------------------
 struct VS_DETAIL_TEXTURED_LIGHTING_INPUT
@@ -326,6 +345,30 @@ float4 PSTexturedLightingColor(VS_TEXTURED_LIGHTING_OUTPUT input) : SV_Target
 		float4 cColor = gtxtDefault.Sample(gssDefault, input.texCoord) * cIllumination;
 
 		return(cColor);
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------
+
+VS_TEXTURED_LIGHTING_TANGENT_OUTPUT VSTexturedLightingTangent(VS_TEXTURED_LIGHTING_TANGENT_INPUT input)
+{
+    VS_TEXTURED_LIGHTING_TANGENT_OUTPUT output = (VS_TEXTURED_LIGHTING_TANGENT_OUTPUT) 0;
+    output.positionW = mul(float4(input.position, 1.0f), gmtxWorld).xyz;
+    output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
+    output.normalW = mul(input.normal, (float3x3) gmtxWorld);
+    output.tangentW = mul(input.tangent, (float3x3) gmtxWorld);
+    output.texCoord = input.texCoord;
+
+    return (output);
+}
+
+float4 PSTexturedLightingTangent(VS_TEXTURED_LIGHTING_TANGENT_OUTPUT input) : SV_Target
+{
+// Tangent 계산 해야하는데 임시적으로 제작하였기때문에 현재 없음
+    input.normalW = normalize(input.normalW);
+    float4 cIllumination = Lighting(input.positionW, input.normalW);
+    float4 cColor = gtxtDefault.Sample(gssDefault, input.texCoord) * cIllumination;
+
+    return (cColor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------

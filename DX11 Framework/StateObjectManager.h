@@ -24,8 +24,4 @@ public:
 	static ID3D11SamplerState*		g_pPointClampSS;
 	static ID3D11SamplerState*		g_pPointWarpSS;
 	static ID3D11SamplerState*		g_pLinearWarpSS;
-
-	// Timer
-	chrono::system_clock::time_point		g_startTime;
-	chrono::milliseconds  					g_timeGap;
 };

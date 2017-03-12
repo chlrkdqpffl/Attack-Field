@@ -69,6 +69,7 @@ using namespace std;
 #include "UserTag.h"
 
 // ------- Manager Header -------- //
+#include "GlobalVariableManager.h"
 #include "StateObjectManager.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
@@ -169,6 +170,58 @@ inline void DXUT_SetDebugName(ID3D11DeviceChild* pObj, const WCHAR* pstrName)
 #else
 	#define DXUT_SetDebugName( pObj, pstrName )
 #endif
+
+
+inline void ShowXMMatrix(XMMATRIX mtx)
+{
+	XMFLOAT4X4 mtxOut;
+	XMStoreFloat4x4(&mtxOut, mtx);
+	cout << mtxOut._11 << ", " << mtxOut._12 << ", " << mtxOut._13 << ", " << mtxOut._14 << endl;
+	cout << mtxOut._21 << ", " << mtxOut._22 << ", " << mtxOut._23 << ", " << mtxOut._24 << endl;
+	cout << mtxOut._31 << ", " << mtxOut._32 << ", " << mtxOut._33 << ", " << mtxOut._34 << endl;
+	cout << mtxOut._41 << ", " << mtxOut._42 << ", " << mtxOut._43 << ", " << mtxOut._44 << endl << endl;
+}
+
+inline void ShowXMFloat4x4(XMFLOAT4X4 mtx)
+{
+	cout << mtx._11 << ", " << mtx._12 << ", " << mtx._13 << ", " << mtx._14 << endl;
+	cout << mtx._21 << ", " << mtx._22 << ", " << mtx._23 << ", " << mtx._24 << endl;
+	cout << mtx._31 << ", " << mtx._32 << ", " << mtx._33 << ", " << mtx._34 << endl;
+	cout << mtx._41 << ", " << mtx._42 << ", " << mtx._43 << ", " << mtx._44 << endl << endl;
+}
+
+inline void ShowXMFloat4(XMFLOAT4 xmf4)
+{
+	cout << xmf4.x << ", " << xmf4.y << ", " << xmf4.z << ", " << xmf4.w << endl << endl;
+}
+
+inline void ShowXMFloat3(XMFLOAT3 xmf3)
+{
+	cout << xmf3.x << ", " << xmf3.y << ", " << xmf3.z << endl << endl;
+}
+
+inline void ShowXMVector(XMVECTOR xmVector)
+{
+	XMFLOAT4 out;
+	XMStoreFloat4(&out, xmVector);
+	cout << out.x << ", " << out.y << ", " << out.z << ", " << out.w << endl << endl;
+}
+
+inline void ShowTaskSuccess(string message)
+{
+#if defined(DEBUG) || defined(_DEBUG)
+	cout << message << endl;
+#endif
+}
+
+inline void ShowTaskFail(string message)
+{
+#if defined(DEBUG) || defined(_DEBUG)
+	cout << message << endl;
+	system("pause");
+#endif
+}
+
 /*
 LPCWSTR WINAPI DXUTDXGIFormatToString(DXGI_FORMAT format, bool bWithPrefix)
 {

@@ -55,4 +55,6 @@ void CPoliceCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)
 
 	m_pWeapon->SetPosition(rightHandOffsetMtx._41, rightHandOffsetMtx._42, rightHandOffsetMtx._43);
 	m_pWeapon->Rotate(0, -90, 0);
+
+	m_pWeapon->CreateBoundingBox(pd3dDevice);
 }

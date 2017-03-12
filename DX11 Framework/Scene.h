@@ -120,10 +120,6 @@ protected:
 	// RenderOption
 	CAxisObjects					*m_pAxisObjects		= nullptr;
 	bool							m_bShowRGBAxis		= false;
-	XMFLOAT4						m_vRenderOption;		// (x : Fog, y : BoundingBox )
-
-	// Constant Buffer
-	ID3D11Buffer					*m_pd3dcbRenderOption;
 
 	CCharacterObject				*m_pPlayerCharacter = nullptr;
 };

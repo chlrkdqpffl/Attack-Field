@@ -31,6 +31,8 @@ void CFbxModelMesh::Initialize(ID3D11Device *pd3dDevice)
 		m_pTangents = new XMFLOAT3[m_nVertices];
 	m_pTexCoords = new XMFLOAT2[m_nVertices];
 	m_pnIndices = new UINT[m_nIndices];
+	m_bcBoundingBox = m_meshData.m_boundingBox;
+
 
 	if (m_fModelSize == 1.0f) {
 		for (int i = 0; i < m_nVertices; ++i) {

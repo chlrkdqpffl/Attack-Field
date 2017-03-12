@@ -21,9 +21,6 @@ CScene::CScene()
 
 	m_pParticleSystem = nullptr;
 	m_fGametime = 0.0f;
-
-	m_vRenderOption = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);		// (x : Fog )
-	m_pd3dcbRenderOption = nullptr;
 }
 
 CScene::~CScene()
@@ -65,13 +62,13 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		case '2':
 		{
 			cout << "Fog Option" << endl;
-			(m_vRenderOption.x == 0.0f) ? (m_vRenderOption.x = 1.0f) : (m_vRenderOption.x = 0.0f);
-
+			GLOBAL_MGR->g_vRenderOption.x = !GLOBAL_MGR->g_vRenderOption.x;
+		
 			D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-			STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Map(m_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+			STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Map(GLOBAL_MGR->g_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 			XMFLOAT4 *pcbRenderOption = (XMFLOAT4 *)d3dMappedResource.pData;
-			*pcbRenderOption = m_vRenderOption;
-			STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(m_pd3dcbRenderOption, 0);
+			*pcbRenderOption = GLOBAL_MGR->g_vRenderOption;
+			STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
 			break;
 		}
 		case '3':
@@ -82,6 +79,14 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		}
 		case '4':
 		{	
+			cout << "BoundingBox Rendering Option" << endl;
+			GLOBAL_MGR->g_vRenderOption.y = !GLOBAL_MGR->g_vRenderOption.y;
+
+			D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+			STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Map(GLOBAL_MGR->g_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+			XMFLOAT4 *pcbRenderOption = (XMFLOAT4 *)d3dMappedResource.pData;
+			*pcbRenderOption = GLOBAL_MGR->g_vRenderOption;
+			STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
 
 			break;
 		}
@@ -104,6 +109,9 @@ void CScene::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMateri
 
 void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 {
+	cout << "========================================================================================" << endl;
+	cout << "==================================== Scene Loading =====================================" << endl;
+
 	CScene::CreateConstantBuffers(pd3dDevice);
 	CScene::CreateTweakBars();
 
@@ -152,14 +160,6 @@ void CScene::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 	d3dBufferDesc.ByteWidth = sizeof(XMFLOAT4);
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-	D3D11_SUBRESOURCE_DATA d3dBufferData;
-	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
-	d3dBufferData.pSysMem = &m_vRenderOption;
-	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbRenderOption);
-
-	STATEOBJ_MGR->g_pd3dImmediateDeviceContext->PSSetConstantBuffers(PS_CB_SLOT_RENDEROPTION, 1, &m_pd3dcbRenderOption);
-	DXUT_SetDebugName(m_pd3dcbRenderOption, "Render Option");
 }
 
 void CScene::UpdateConstantBuffers(ID3D11DeviceContext *pd3dDeviceContext)
@@ -168,7 +168,6 @@ void CScene::UpdateConstantBuffers(ID3D11DeviceContext *pd3dDeviceContext)
 
 void CScene::ReleaseConstantBuffers()
 {
-	ReleaseCOM(m_pd3dcbRenderOption);
 }
 
 bool CScene::ProcessInput(UCHAR *pKeysBuffer)
@@ -298,10 +297,9 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 	for (auto shaderObject : m_vObjectsShaderVector)
 		shaderObject->Render(pd3dDeviceContext, pCamera);
 	
-	/*
 	for (auto instancedShaderObject : m_vInstancedObjectsShaderVector)
-		instancedShaderObject->Render(pd3dDeviceContext, pCamera);
-	*/
+		instancedShaderObject->Render(pd3dDeviceContext, pCamera);	
+		
 }
 
 void CScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)

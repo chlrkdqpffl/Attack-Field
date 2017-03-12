@@ -5,6 +5,8 @@
 #include "stdafx.h"
 #include "Object.h"
 #include "Shader.h"
+#include "BoundingBoxMesh.h"
+#include "BoundingBoxShader.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -249,7 +251,6 @@ CGameObject::CGameObject(int nMeshes)
 
 	m_bcMeshBoundingBox.Center = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_bcMeshBoundingBox.Extents = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_bcBoundingBox = BoundingBox();
 
 	m_iObjectId++;
 }
@@ -274,6 +275,9 @@ CGameObject::~CGameObject()
 
 	if (m_pSibling) delete m_pSibling;
 	if (m_pChild) delete m_pChild;
+
+	SafeDelete(m_pBoundingBoxMesh);
+	SafeDelete(m_pBoundingBoxShader);
 }
 
 void CGameObject::CreateObjectData(ID3D11Device *pd3dDevice)
@@ -281,6 +285,15 @@ void CGameObject::CreateObjectData(ID3D11Device *pd3dDevice)
 	CreateMesh(pd3dDevice);
 	CreateShader(pd3dDevice);
 	CreateMaterial(pd3dDevice);
+//	CreateBoundingBox(pd3dDevice);
+}
+
+void CGameObject::CreateBoundingBox(ID3D11Device *pd3dDevice)
+{
+	m_pBoundingBoxMesh = new CBoundingBoxMesh(pd3dDevice, m_bcMeshBoundingBox);
+
+	m_pBoundingBoxShader = new CBoundingBoxShader();
+	m_pBoundingBoxShader->CreateShader(pd3dDevice);
 }
 
 void CGameObject::SetMesh(CMesh *pMesh, int nIndex)
@@ -308,6 +321,7 @@ void CGameObject::SetMesh(CMesh *pMesh, int nIndex)
 	}
 
 	if (pMesh) {
+		/*
 		XMFLOAT3 xmMin, xmMax; // 기존값
 		XMFLOAT3 input_xmMin, input_xmMax;		//새로 들어온거
 		XMFLOAT3 fCenter, fExtern;
@@ -330,7 +344,9 @@ void CGameObject::SetMesh(CMesh *pMesh, int nIndex)
 		
 		XMStoreFloat3(&m_bcBoundingBox.Center, XMVectorSubtract(XMLoadFloat3(&input_xmMax), XMLoadFloat3(&input_xmMin)) * 0.5f);
 		XMStoreFloat3(&m_bcBoundingBox.Extents, XMVectorAdd(XMLoadFloat3(&input_xmMax), XMLoadFloat3(&input_xmMin)) * 0.5f);
-
+		*/
+		
+		
 		BoundingBox::CreateMerged(m_bcMeshBoundingBox, m_bcMeshBoundingBox, pMesh->GetBoundingCube());
 	}
 }
@@ -640,6 +656,12 @@ void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 	if (m_pSibling) m_pSibling->Render(pd3dDeviceContext, pCamera);
 	if (m_pChild) m_pChild->Render(pd3dDeviceContext, pCamera);
 
+	if (m_pBoundingBoxMesh) {
+		if (GLOBAL_MGR->g_vRenderOption.y) {
+			m_pBoundingBoxShader->Render(pd3dDeviceContext, pCamera);
+			m_pBoundingBoxMesh->Render(pd3dDeviceContext);
+		}
+	}
 
 	if (m_pShader) m_pShader->OnPostRender(pd3dDeviceContext);
 	if (m_pd3dDepthStencilState) pd3dDeviceContext->OMSetDepthStencilState(NULL, 0);

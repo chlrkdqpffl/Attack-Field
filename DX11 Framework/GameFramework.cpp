@@ -48,9 +48,11 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-//	_CrtSetBreakAlloc(205);
-//	_CrtSetBreakAlloc(206);
-//	_CrtSetBreakAlloc(210);
+	
+//	_CrtSetBreakAlloc(255527);	// 70
+//	_CrtSetBreakAlloc(205);		// 16
+//	_CrtSetBreakAlloc(206);		// 16
+//	_CrtSetBreakAlloc(210);		// 64
 #endif
 
 	m_hInstance = hInstance;
@@ -60,6 +62,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 
 	// Initialize Manager
 	STATEOBJ_MGR->InitializeManager();
+	GLOBAL_MGR->InitializeManager();
 	TEXT_MGR->InitializeManager(m_pd3dDevice, L"Koverwatch");
 //	TEXT_MGR->InitializeManager(m_pd3dDevice, L"a반달곰");			// 폰트 여러개 만들 수 있음
 	SCENE_MGR->InitializeManager();
@@ -328,6 +331,7 @@ void CGameFramework::OnDestroy()
 
 	// Relesed Manager
 	STATEOBJ_MGR->ReleseInstance();
+	GLOBAL_MGR->ReleseInstance();
 	TEXT_MGR->ReleseInstance();
 	SCENE_MGR->ReleseInstance();
 	RESOURCE_MGR->ReleseInstance();
@@ -609,7 +613,7 @@ void CGameFramework::BuildObjects()
 	CreateConstantBuffers();
 
 	CCubeMeshDiffused *pCubeMesh = new CCubeMeshDiffused(m_pd3dDevice, 4.0f, 12.0f, 4.0f);
-	m_pPlayer = new CTerrainPlayer(1);
+	m_pPlayer = new CTerrainPlayer();
 	m_pPlayer->AddRef();
 	m_pPlayer->SetMesh(pCubeMesh);
 	m_pPlayer->ChangeCamera(m_pd3dDevice, THIRD_PERSON_CAMERA, 0.0f);

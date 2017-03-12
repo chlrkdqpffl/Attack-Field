@@ -50,8 +50,8 @@ VS_SKINNED_OUTPUT VSSkinned(VS_SKINNED_INPUT input)
     weights[0] = input.boneWeights.x;
     weights[1] = input.boneWeights.y;
     weights[2] = input.boneWeights.z;
-    weights[3] = 1 - weights[0] - weights[1] - weights[2];
-   // weights[3] = input.boneWeights.w;
+    weights[3] = input.boneWeights.w;
+   // weights[3] = 1 - weights[0] - weights[1] - weights[2];
 
     float3 posL = float3(0.0f, 0.0f, 0.0f);
     float3 normalL = float3(0.0f, 0.0f, 0.0f);

@@ -2,7 +2,7 @@
 #include "AirplanePlayer.h"
 
 
-CAirplanePlayer::CAirplanePlayer(int nMeshes) : CPlayer(nMeshes)
+CAirplanePlayer::CAirplanePlayer()
 {
 }
 

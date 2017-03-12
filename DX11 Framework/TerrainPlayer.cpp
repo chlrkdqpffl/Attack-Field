@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TerrainPlayer.h"
 
-CTerrainPlayer::CTerrainPlayer(int nMeshes) : CPlayer(nMeshes)
+CTerrainPlayer::CTerrainPlayer()
 {
 }
 

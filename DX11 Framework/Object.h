@@ -7,6 +7,10 @@
 #include "Mesh.h"
 #include "Camera.h"
 
+class CShader;
+class CBoundingBoxMesh;
+class CBoundingBoxShader;
+
 class CMaterialColors
 {
 public:
@@ -26,8 +30,6 @@ public:
 	XMFLOAT4						m_d3dxcSpecular; //(r,g,b,a=power)
 	XMFLOAT4						m_d3dxcEmissive;
 };
-
-enum Resource_TextrueTag;
 
 class CTexture
 {
@@ -87,8 +89,6 @@ public:
 	CTexture						*m_pTexture = nullptr;
 };
 
-class CShader;
-
 class CGameObject
 {
 public:
@@ -100,7 +100,7 @@ protected:
 	virtual void CreateMesh(ID3D11Device *pd3dDevice)		{ cout << "No have Mesh" << endl; };
 	virtual void CreateShader(ID3D11Device *pd3dDevice)		{ cout << "No have Shader" << endl; };
 	virtual void CreateMaterial(ID3D11Device *pd3dDevice)	{ cout << "No have Material" << endl; };
-
+	
 private:
 	int								m_nReferences = 0;
 
@@ -129,10 +129,11 @@ protected:
 	CGameObject 					*m_pSibling = nullptr;
 	CGameObject 					*m_pParent = nullptr;
 
-	BoundingBox						m_bcBoundingBox;			// 사용자가 정하는 바운딩 박스
+//	BoundingBox						m_bcBoundingBox;			// 사용자가 정하는 바운딩 박스
 	BoundingBox						m_bcMeshBoundingBox;		// 실제 메쉬 바운딩 박스
-	CMesh							*m_pBoundingBoxMesh	= nullptr;
-	
+	CBoundingBoxMesh				*m_pBoundingBoxMesh	= nullptr;
+	CBoundingBoxShader				*m_pBoundingBoxShader = nullptr;
+
 public:
 	ID3D11DepthStencilState			*m_pd3dDepthStencilState = nullptr;
 	ID3D11BlendState				*m_pd3dBlendState = nullptr;
@@ -181,6 +182,7 @@ public:
 	virtual void RenderMesh(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 
+	void CreateBoundingBox(ID3D11Device *pd3dDevice);
 	void SetActive(bool bActive = false) { m_bActive = bActive; }
 	void GenerateRayForPicking(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxWorld, XMMATRIX *pd3dxmtxView, XMVECTOR *pd3dxvPickRayPosition, XMVECTOR *pd3dxvPickRayDirection);
 	int PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, MESHINTERSECTINFO *pd3dxIntersectInfo);

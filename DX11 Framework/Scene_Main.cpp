@@ -119,7 +119,10 @@ void CScene_Main::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pM
 void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 {
 	CScene::BuildObjects(pd3dDevice);
-	
+
+	cout << "=============================================================================================" << endl;
+	cout << "==================================== Scene Main Loading =====================================" << endl;
+
 #pragma region [Create SkyBox]
 #ifdef _WITH_SKYBOX_TEXTURE_ARRAY
 	CTexture *pSkyboxTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_SKYBOX, PS_SAMPLER_SLOT_SKYBOX);
@@ -213,7 +216,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	for (int i = 0; i < 1; ++i) {
 		m_pPlayerCharacter = new CPoliceCharacterObject();
 		m_pPlayerCharacter->CreateObjectData(pd3dDevice);
-
+		
 		//m_pPlayerCharacter->SetPosition(rand() & 300, 250, 100);
 		m_pPlayerCharacter->SetPosition(100, 250, 100);
 		m_pPlayerCharacter->Rotate(0, 180.0f, 0.0f);
@@ -230,6 +233,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma endregion 
 
 #pragma region [Create Shader Object]
+	
 	CMaterial *pPlayerMaterial = new CMaterial();
 
 	CTexture *pPlayerTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
@@ -241,14 +245,16 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pPlayerMesh->Initialize(pd3dDevice);
 
 	CObjectsShader* pModelShader = new CObjectsShader(10);
-	pModelShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0);
+	pModelShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0);
 	pModelShader->SetMaterial(pPlayerMaterial);
 	
 	CGameObject* pPlayer = new CGameObject();
-	pPlayer->SetPosition(200, 230, 200);
+	pPlayer->SetPosition(200, 330, 200);
 	pPlayer->SetMesh(pPlayerMesh);
+	pPlayer->CreateBoundingBox(pd3dDevice);
 	pModelShader->AddObject(pPlayer);
 	m_vObjectsShaderVector.push_back(pModelShader);
+	
 #pragma endregion
 
 #pragma region [Create Instancing Object]
@@ -277,17 +283,17 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	pInstancingMaterials[2] = new CMaterial(pBlueColor);
 
 	CTexture *pStoneTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	pStoneTexture->SetTexture(0, eStone);
+	pStoneTexture->SetTexture(0, TextureTag::eStoneD);
 	pStoneTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pInstancingMaterials[0]->SetTexture(pStoneTexture);
 	
 	CTexture *pBrickTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	pBrickTexture->SetTexture(0, eBricks);
+	pBrickTexture->SetTexture(0, TextureTag::eBricksD);
 	pBrickTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pInstancingMaterials[1]->SetTexture(pBrickTexture);
 
 	CTexture *pWoodTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	pWoodTexture->SetTexture(0, eWood);
+	pWoodTexture->SetTexture(0, TextureTag::eWallD);
 	pWoodTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pInstancingMaterials[2]->SetTexture(pWoodTexture);
 
@@ -350,6 +356,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 					pRotatingObject->Rotate(&d3dxvRotateAxis, XMConvertToDegrees(fAngle));
 				pRotatingObject->SetRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 				pRotatingObject->SetRotationSpeed(0.0f);
+				pRotatingObject->CreateBoundingBox(pd3dDevice);
 
 				m_vInstancedObjectsShaderVector[k * 2]->AddObject(pRotatingObject);
 
@@ -358,6 +365,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 				pRotatingObject->SetPosition(xPosition, fHeight + (fyPitch * 4), zPosition);
 				pRotatingObject->SetRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 				pRotatingObject->SetRotationSpeed(0.0f);
+				pRotatingObject->CreateBoundingBox(pd3dDevice);
 
 				m_vInstancedObjectsShaderVector[k * 2 + 1]->AddObject(pRotatingObject);
 			}
@@ -376,6 +384,9 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CreateLights();
 	CreateConstantBuffers(pd3dDevice);
 	CreateTweakBars();
+
+	cout << "================================== Scene Loading Complete ===================================" << endl;
+	cout << "=============================================================================================" << endl;
 }
 
 void CScene_Main::CreateTweakBars()

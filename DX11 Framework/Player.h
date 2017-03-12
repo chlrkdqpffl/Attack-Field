@@ -28,7 +28,7 @@ protected:
 	CCamera						*m_pCamera;
 
 public:
-	CPlayer(int nMesh = 1.0f);
+	CPlayer();
 	virtual ~CPlayer();
 
 	XMVECTOR GetvPosition() const { return(XMLoadFloat3(&m_d3dxvPosition)); }
