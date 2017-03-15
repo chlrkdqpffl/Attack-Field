@@ -22,6 +22,15 @@ void CAntTweakBarManager::InitializeManager()
 	TwDefine(" TweakBar position = '30 100'");
 
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Animation Blending", TW_TYPE_BOOLCPP, &g_isAnimBlending, "group = Option");
+
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Bone Index", TW_TYPE_UINT32, &g_nBoneIndex, "");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "OffsetX", TW_TYPE_FLOAT, &g_xmf3Offset.x, "step=0.1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "OffsetY", TW_TYPE_FLOAT, &g_xmf3Offset.y, "step=0.1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "OffsetZ", TW_TYPE_FLOAT, &g_xmf3Offset.z, "step=0.1");
+
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "RotateX", TW_TYPE_FLOAT, &g_xmf3Rotate.x, "step=5");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "RotateY", TW_TYPE_FLOAT, &g_xmf3Rotate.y, "step=5");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "RotateZ", TW_TYPE_FLOAT, &g_xmf3Rotate.z, "step=5");
 }
 
 void CAntTweakBarManager::ReleseManager()

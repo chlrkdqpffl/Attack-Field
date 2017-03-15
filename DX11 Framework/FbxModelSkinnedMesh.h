@@ -16,7 +16,6 @@ protected:
 	XMFLOAT4					*m_pboneIndices = nullptr;
 	XMFLOAT4					*m_pboneWeights = nullptr;
 
-//	UINT						m_nBoneCount = 0;
 	string						m_strClipName;
 
 	ID3D11Buffer				*m_pd3dBoneWeightBuffer = nullptr;
@@ -45,6 +44,7 @@ public:
 	const string& GetClipName() const { return m_strClipName; }
 	const map<string, CAnimationClip>& GetAnimMap() const { return m_meshData.m_mapAnimationClip; }
 	XMFLOAT4X4 GetOffsetMtx(UINT index) const { return m_meshData.m_vecBoneOffsets[index]; }
+	XMMATRIX GetFinalBoneMtx(UINT index) const { return finalBoneVector[index]; }
 
 	void SetClipName(string name) { m_strClipName = name; }
 };

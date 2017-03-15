@@ -219,7 +219,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 		
 		//m_pPlayerCharacter->SetPosition(rand() & 300, 250, 100);
 		m_pPlayerCharacter->SetPosition(100, 250, 100);
-		m_pPlayerCharacter->Rotate(0, 180.0f, 0.0f);
+//		m_pPlayerCharacter->Rotate(0, 180.0f, 0.0f);
 		m_vObjectsVector.push_back(m_pPlayerCharacter);
 	}
 #pragma endregion 
@@ -397,7 +397,7 @@ void CScene_Main::CreateTweakBars()
 	TwAddVarRW(tweakBar, "Global Ambient", TW_TYPE_FLOAT, &m_fGlobalAmbient, "group = Light min = 0 max = 1 step = 0.05");
 	
 	// Option
-	TwAddVarRW(tweakBar, "RGB Axis Option", TW_TYPE_BOOLCPP, &m_bShowRGBAxis, "group = Option");
+	TwAddVarRW(tweakBar, "RGB Axis Option", TW_TYPE_BOOLCPP, &GLOBAL_MGR->g_bShowWorldAxis, "group = Option");
 	
 	/*
 	// Add variables to the tweak bar

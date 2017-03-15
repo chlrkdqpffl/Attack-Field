@@ -1,73 +1,54 @@
 #include "stdafx.h"
 #include "AxisObjects.h"
 
-CAxisObjects::CAxisObjects()
+CAxisObjects::CAxisObjects(CGameObject* pOwner) : m_pOwnerObject(pOwner)
 {
-	AddRef();
 }
 
 CAxisObjects::~CAxisObjects()
 {
-	if (m_pPlayerWorldAxis)
-		delete m_pPlayerWorldAxis;
-	if (m_pWorldCenterAxis)
-		delete m_pWorldCenterAxis;
+	SafeDelete(m_pWorldAxisObject);
 }
 
-void CAxisObjects::CreateAxisObjects(ID3D11Device *pd3dDevice)
+void CAxisObjects::CreateAxis(ID3D11Device *pd3dDevice)
 {
-	// World Axis
-	CMesh* pWorldXAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(15, 0, 0), XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
-	CMesh* pWorldYAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 15, 0), XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
-	CMesh* pWorldZAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 15),XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f));
+	if (m_pOwnerObject) {
+		// Owner
+		XMFLOAT3 size = m_pOwnerObject->GetMesh()->GetBoundingCube().Extents;
 
-	m_pPlayerWorldAxis = new CGameObject;
-	m_pPlayerWorldAxis->SetMesh(pWorldXAxisMesh, 0);
-	m_pPlayerWorldAxis->SetMesh(pWorldYAxisMesh, 1);
-	m_pPlayerWorldAxis->SetMesh(pWorldZAxisMesh, 2);
+		CMesh* pOwnerWorldXAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(size.x + 15, 0, 0), XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
+		CMesh* pOwnerWorldYAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, size.y + 15, 0), XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
+		CMesh* pOwnerWorldZAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, size.z + 15), XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f));
 
-	/*
-	// Local Axis
-	CMesh* pLocalXAxisMesh = new CLinMeshData::eMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(10, 0, 0), XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
-	CMesh* pLocalYAxisMesh = new CLinMeshData::eMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 10, 0), XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
-	CMesh* pLocalZAxisMesh = new CLinMeshData::eMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 10), XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f));
+		m_pWorldAxisObject = new CGameObject;
+		m_pWorldAxisObject->SetMesh(pOwnerWorldXAxisMesh, 0);
+		m_pWorldAxisObject->SetMesh(pOwnerWorldYAxisMesh, 1);
+		m_pWorldAxisObject->SetMesh(pOwnerWorldZAxisMesh, 2);
+	}
+	else {
+		// World Center Axis
+		CMesh* pWorldCenterX = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(1000, 0, 0), XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
+		CMesh* pWorldCenterY = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 1000, 0), XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
+		CMesh* pWorldCenterZ = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 1000), XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f));
 
-	m_pPlayerLocalAxis = new CGameObject;
-	m_pPlayerLocalAxis->SetMesh(pLocalXAxisMesh, 0);
-	m_pPlayerLocalAxis->SetMesh(pLocalYAxisMesh, 1);
-	m_pPlayerLocalAxis->SetMesh(pLocalZAxisMesh, 2);
-	*/
-
-	// World Center Axis
-	CMesh* pWorldCenterX = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(1000, 0, 0), XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f));
-	CMesh* pWorldCenterY = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 1000, 0), XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f));
-	CMesh* pWorldCenterZ = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 1000), XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f));
-	m_pWorldCenterAxis = new CGameObject;
-	m_pWorldCenterAxis->SetMesh(pWorldCenterX, 0);
-	m_pWorldCenterAxis->SetMesh(pWorldCenterY, 1);
-	m_pWorldCenterAxis->SetMesh(pWorldCenterZ, 2);
-
-
+		m_pWorldAxisObject = new CGameObject;
+		m_pWorldAxisObject->SetMesh(pWorldCenterX, 0);
+		m_pWorldAxisObject->SetMesh(pWorldCenterY, 1);
+		m_pWorldAxisObject->SetMesh(pWorldCenterZ, 2);
+	}
 	m_pShader = new CShader();
 	m_pShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_COLOR_ELEMENT);
 }
 
 void CAxisObjects::Update(float fTimeElapsed)
 {
-	if (m_pPlayerWorldAxis)	m_pPlayerWorldAxis->SetPosition(SCENE_MGR->m_pPlayer->GetPosition());
+	if (m_pOwnerObject) m_pWorldAxisObject->SetPosition(m_pOwnerObject->GetPosition());
 }
 
 void CAxisObjects::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	if (m_pShader) m_pShader->Render(pd3dDeviceContext, pCamera);
+	m_pShader->Render(pd3dDeviceContext, pCamera);
 
-	if (m_pWorldCenterAxis) {
-		// Position ( 0, 0, 0 ) °íÁ¤
-		m_pWorldCenterAxis->RenderMesh(pd3dDeviceContext, pCamera);
-	}
-
-	if (m_pPlayerWorldAxis) {
-		m_pPlayerWorldAxis->UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&m_pPlayerWorldAxis->m_d3dxmtxWorld));
-		m_pPlayerWorldAxis->RenderMesh(pd3dDeviceContext, pCamera);
-	}
+	m_pWorldAxisObject->UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&m_pWorldAxisObject->m_d3dxmtxWorld));
+	m_pWorldAxisObject->RenderMesh(pd3dDeviceContext, pCamera);
 }

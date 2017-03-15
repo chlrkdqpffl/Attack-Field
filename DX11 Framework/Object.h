@@ -10,6 +10,7 @@
 class CShader;
 class CBoundingBoxMesh;
 class CBoundingBoxShader;
+class CAxisObjects;
 
 class CMaterialColors
 {
@@ -128,6 +129,7 @@ protected:
 	CGameObject 					*m_pChild = nullptr;
 	CGameObject 					*m_pSibling = nullptr;
 	CGameObject 					*m_pParent = nullptr;
+	CAxisObjects					*m_pAxisObject = nullptr;
 
 //	BoundingBox						m_bcBoundingBox;			// 사용자가 정하는 바운딩 박스
 	BoundingBox						m_bcMeshBoundingBox;		// 실제 메쉬 바운딩 박스
@@ -155,19 +157,21 @@ public:
 	void SetChild(CGameObject *pChild);
 	CGameObject *GetParent() { return(m_pParent); }
 
-	virtual void SetPosition(float x, float y, float z);
-	virtual void SetPosition(XMVECTOR d3dxvPosition);
+	virtual void SetPosition(float x, float y, float z, bool isLocal = false);
+	virtual void SetPosition(XMVECTOR d3dxvPosition, bool isLocal = false);
 	virtual void SetPosition(XMFLOAT3 d3dxvPosition);
 
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
 	void MoveForward(float fDistance = 1.0f);
+	void Move(XMFLOAT3 vPos, bool isLocal = false);
 
 	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
+	void Rotate(XMFLOAT3 fAngle);
 	void Rotate(XMVECTOR *pd3dxvAxis, float fAngle);
 
-	XMVECTOR GetvPosition(bool bIsLocal = true) const;
-	XMFLOAT3 GetPosition() const;
+	XMVECTOR GetvPosition(bool bIsLocal = false) const;
+	XMFLOAT3 GetPosition(bool isLocal = false) const;
 	XMVECTOR GetLook(bool bIsLocal = true);
 	XMVECTOR GetUp(bool bIsLocal = true);
 	XMVECTOR GetRight(bool bIsLocal = true);
@@ -182,6 +186,7 @@ public:
 	virtual void RenderMesh(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 
+	void CreateAxisObject(ID3D11Device *pd3dDevice);
 	void CreateBoundingBox(ID3D11Device *pd3dDevice);
 	void SetActive(bool bActive = false) { m_bActive = bActive; }
 	void GenerateRayForPicking(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxWorld, XMMATRIX *pd3dxmtxView, XMVECTOR *pd3dxvPickRayPosition, XMVECTOR *pd3dxvPickRayDirection);

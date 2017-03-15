@@ -20,5 +20,6 @@ public:
 	// ----- Rendering Option ----- //
 	static XMFLOAT4							g_vRenderOption;		// (x : Fog, y : BoundingBox )
 	static ID3D11Buffer						*g_pd3dcbRenderOption;
+	static bool								g_bShowWorldAxis;
 };
 

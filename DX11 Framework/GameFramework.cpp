@@ -620,7 +620,8 @@ void CGameFramework::BuildObjects()
 	CShader *pPlayerShader = new CShader();
 	pPlayerShader->CreateShader(m_pd3dDevice, m_pPlayer->GetMeshType());
 	m_pPlayer->SetShader(pPlayerShader);
-	
+	m_pPlayer->CreateAxisObject(m_pd3dDevice);
+
 	CScene* m_pScene = new CScene_Main();
 
 	SCENE_MGR->m_nowScene = m_pScene;

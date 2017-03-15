@@ -23,6 +23,8 @@ void CPoliceCharacterObject::CreateShader(ID3D11Device *pd3dDevice)
 //	m_pShader = new CCharacterShader();
 	m_pShader = new CCharacterNormalShader();
 	m_pShader->CreateShader(pd3dDevice);
+	//m_pShader = new CObjectsShader();
+	//m_pShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0);
 }
 
 void CPoliceCharacterObject::CreateMaterial(ID3D11Device *pd3dDevice)
@@ -48,13 +50,8 @@ void CPoliceCharacterObject::CreateAnimation()
 void CPoliceCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)
 {
 	m_pWeapon = new CRifleGunWeapon();
-	
+
 	m_pWeapon->CreateObjectData(pd3dDevice);
-
-	XMFLOAT4X4 rightHandOffsetMtx = m_pSkinnedMesh->GetOffsetMtx(10);
-
-	m_pWeapon->SetPosition(rightHandOffsetMtx._41, rightHandOffsetMtx._42, rightHandOffsetMtx._43);
-	m_pWeapon->Rotate(0, -90, 0);
-
-	m_pWeapon->CreateBoundingBox(pd3dDevice);
+	m_pWeapon->SetSkinnedMesh(m_pSkinnedMesh);
+	m_pWeapon->SetCharacterObject(this);
 }

@@ -4,17 +4,15 @@
 
 class CAxisObjects : public CGameObject
 {
-	CGameObject*	m_pPlayerWorldAxis		= nullptr;
-//	CGameObject*	m_pPlayerLocalAxis		= nullptr;
-	CGameObject*	m_pWorldCenterAxis		= nullptr;
+	CGameObject*	m_pOwnerObject			= nullptr;
+	CGameObject*	m_pWorldAxisObject		= nullptr;
 
 public:
-	CAxisObjects();
+	CAxisObjects(CGameObject* pOwner = nullptr);
 	virtual ~CAxisObjects();
 
-	void CreateAxisObjects(ID3D11Device *pd3dDevice);
+	void CreateAxis(ID3D11Device *pd3dDevice);
 
 	virtual void Update(float fTimeElapsed) override;
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 };
-

@@ -56,7 +56,7 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		case '1':
 		{
 			cout << "RGB Axis Option" << endl;
-			m_bShowRGBAxis = !m_bShowRGBAxis;
+			GLOBAL_MGR->g_bShowWorldAxis = !GLOBAL_MGR->g_bShowWorldAxis;
 		}
 		break;
 		case '2':
@@ -115,8 +115,8 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	CScene::CreateConstantBuffers(pd3dDevice);
 	CScene::CreateTweakBars();
 
-	m_pAxisObjects = new CAxisObjects();
-	m_pAxisObjects->CreateAxisObjects(pd3dDevice);
+	m_pWorldCenterAxis = new CAxisObjects();
+	m_pWorldCenterAxis->CreateAxis(pd3dDevice);
 }
 
 void CScene::CreateTweakBars()
@@ -128,8 +128,7 @@ void CScene::ReleaseObjects()
 	m_pSkyBox->Release();
 	m_pTerrain->Release();
 
-	m_pAxisObjects->Release();
-	m_pAxisObjects = nullptr;
+	SafeDelete(m_pWorldCenterAxis);
 
 	for (auto& object : m_vObjectsVector) {
 		object->Release();
@@ -260,7 +259,7 @@ void CScene::UpdateObjects(float fTimeElapsed)
 	
 	if(m_pSkyBox) m_pSkyBox->Update(fTimeElapsed, NULL);
 	if(m_pTerrain) m_pTerrain->Update(fTimeElapsed, NULL);
-	if(m_bShowRGBAxis) m_pAxisObjects->Update(fTimeElapsed);
+	if(GLOBAL_MGR->g_bShowWorldAxis) m_pWorldCenterAxis->Update(fTimeElapsed);
 
 	for (auto object : m_vObjectsVector)
 		object->Update(fTimeElapsed);
@@ -286,8 +285,7 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 	if (m_pTerrain->IsVisible(pCamera)) 
 		m_pTerrain->Render(pd3dDeviceContext, pCamera);
 
-	if (m_bShowRGBAxis) m_pAxisObjects->Render(pd3dDeviceContext, pCamera);
-
+	if (GLOBAL_MGR->g_bShowWorldAxis) m_pWorldCenterAxis->Render(pd3dDeviceContext, pCamera);
 	
 	for (auto object : m_vObjectsVector) {
 	//	if (object->IsVisible(pCamera))

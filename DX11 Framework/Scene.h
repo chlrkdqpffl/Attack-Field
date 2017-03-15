@@ -105,6 +105,7 @@ protected:
 	CPlayer							*m_pPlayer;
 	CCamera							*m_pCamera;
 	CGameObject						*m_pSelectedObject;
+	CAxisObjects					*m_pWorldCenterAxis = nullptr;
 
 	// Light
 	LIGHTS							*m_pLights;
@@ -117,9 +118,6 @@ protected:
 	float							m_fGametime;
 	CParticleSystem					*m_pParticleSystem;
 
-	// RenderOption
-	CAxisObjects					*m_pAxisObjects		= nullptr;
-	bool							m_bShowRGBAxis		= false;
 
 	CCharacterObject				*m_pPlayerCharacter = nullptr;
 };

@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "BoundingBoxMesh.h"
 #include "BoundingBoxShader.h"
+#include "AxisObjects.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -296,6 +297,12 @@ void CGameObject::CreateBoundingBox(ID3D11Device *pd3dDevice)
 	m_pBoundingBoxShader->CreateShader(pd3dDevice);
 }
 
+void CGameObject::CreateAxisObject(ID3D11Device *pd3dDevice)
+{
+	m_pAxisObject = new CAxisObjects(this);
+	m_pAxisObject->CreateAxis(pd3dDevice);
+}
+
 void CGameObject::SetMesh(CMesh *pMesh, int nIndex)
 {
 	if (nIndex >= m_nMeshes)
@@ -420,22 +427,25 @@ int CGameObject::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMAT
 	return(nIntersected);
 }
 
-void CGameObject::SetPosition(float x, float y, float z)
+void CGameObject::SetPosition(float x, float y, float z, bool isLocal)
 {
-//	m_d3dxmtxLocal._41 = x;
-//	m_d3dxmtxLocal._42 = y;
-//	m_d3dxmtxLocal._43 = z;
-//	if (!m_pParent) { m_d3dxmtxWorld._41 = x; m_d3dxmtxWorld._42 = y; m_d3dxmtxWorld._43 = z; }
-	m_d3dxmtxWorld._41 = x;
-	m_d3dxmtxWorld._42 = y; 
-	m_d3dxmtxWorld._43 = z;
+	if (isLocal) {
+		m_d3dxmtxLocal._41 = x;
+		m_d3dxmtxLocal._42 = y;
+		m_d3dxmtxLocal._43 = z;
+	}
+	else {
+		m_d3dxmtxWorld._41 = x;
+		m_d3dxmtxWorld._42 = y;
+		m_d3dxmtxWorld._43 = z;
+	}
 }
 
-void CGameObject::SetPosition(XMVECTOR d3dxvPosition)
+void CGameObject::SetPosition(XMVECTOR d3dxvPosition, bool isLocal)
 {
 	XMFLOAT4 f4vPosition;
 	XMStoreFloat4(&f4vPosition, d3dxvPosition);
-	SetPosition(f4vPosition.x, f4vPosition.y, f4vPosition.z);
+	SetPosition(f4vPosition.x, f4vPosition.y, f4vPosition.z, isLocal);
 }
 
 void CGameObject::SetPosition(XMFLOAT3 pos)
@@ -469,11 +479,31 @@ void CGameObject::MoveForward(float fDistance)
 	CGameObject::SetPosition(d3dxvPosition);
 }
 
+void CGameObject::Move(XMFLOAT3 vPos, bool isLocal)
+{
+	if (isLocal) {
+		XMVECTOR d3dxvPosition = GetvPosition(true) + XMLoadFloat3(&vPos);
+		CGameObject::SetPosition(d3dxvPosition, true);
+	}
+	else {
+		XMVECTOR d3dxvPosition = GetvPosition() + XMLoadFloat3(&vPos);
+		CGameObject::SetPosition(d3dxvPosition);
+	}
+}
+
 void CGameObject::Rotate(float fPitch, float fYaw, float fRoll)
 {
 	XMMATRIX mtxRotate;
 	mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fPitch), 
 		XMConvertToRadians(fYaw), XMConvertToRadians(fRoll));
+	XMStoreFloat4x4(&m_d3dxmtxWorld, mtxRotate * XMLoadFloat4x4(&m_d3dxmtxWorld));
+}
+
+void CGameObject::Rotate(XMFLOAT3 fAngle)
+{
+	XMMATRIX mtxRotate;
+	mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fAngle.x),
+		XMConvertToRadians(fAngle.y), XMConvertToRadians(fAngle.z));
 	XMStoreFloat4x4(&m_d3dxmtxWorld, mtxRotate * XMLoadFloat4x4(&m_d3dxmtxWorld));
 }
 
@@ -488,13 +518,12 @@ XMVECTOR CGameObject::GetvPosition(bool bIsLocal) const
 {
 	return((bIsLocal) ? XMVectorSet(m_d3dxmtxLocal._41, m_d3dxmtxLocal._42, m_d3dxmtxLocal._43, 0.0f) : 
 		XMVectorSet(m_d3dxmtxWorld._41, m_d3dxmtxWorld._42, m_d3dxmtxWorld._43, 0.0f));
-
-	return XMVectorSet(m_d3dxmtxWorld._41, m_d3dxmtxWorld._42, m_d3dxmtxWorld._43, 0.0f);
 }
 
-XMFLOAT3 CGameObject::GetPosition() const
+XMFLOAT3 CGameObject::GetPosition(bool isLocal) const
 {
-	return XMFLOAT3(m_d3dxmtxWorld._41, m_d3dxmtxWorld._42, m_d3dxmtxWorld._43);
+	return (isLocal) ? XMFLOAT3(m_d3dxmtxLocal._41, m_d3dxmtxLocal._42, m_d3dxmtxLocal._43) :
+		XMFLOAT3(m_d3dxmtxWorld._41, m_d3dxmtxWorld._42, m_d3dxmtxWorld._43);
 }
 
 XMVECTOR CGameObject::GetRight(bool bIsLocal)
@@ -589,8 +618,15 @@ bool CGameObject::IsVisible(CCamera *pCamera)
 
 void CGameObject::Update(float fTimeElapsed)
 {
-	if (m_pSibling) m_pSibling->Update(fTimeElapsed);
-	if (m_pChild) m_pChild->Update(fTimeElapsed);
+	if (m_pSibling) 
+		m_pSibling->Update(fTimeElapsed);
+	if (m_pChild) 
+		m_pChild->Update(fTimeElapsed);
+
+	if (m_pAxisObject) {
+		if (GLOBAL_MGR->g_bShowWorldAxis)
+			m_pAxisObject->Update(fTimeElapsed);
+	}
 }
 
 void CGameObject::Update(float fTimeElapsed, XMMATRIX *pd3dxmtxParent)
@@ -602,7 +638,8 @@ void CGameObject::Update(float fTimeElapsed, XMMATRIX *pd3dxmtxParent)
 void CGameObject::Animate(XMMATRIX *pd3dxmtxParent)
 {
 //	m_d3dxmtxWorld = m_d3dxmtxLocal;
-	if (pd3dxmtxParent) XMStoreFloat4x4(&m_d3dxmtxWorld, XMMatrixMultiply(XMLoadFloat4x4(&m_d3dxmtxLocal), *pd3dxmtxParent));
+	if (pd3dxmtxParent)
+		XMStoreFloat4x4(&m_d3dxmtxWorld, XMMatrixMultiply(XMLoadFloat4x4(&m_d3dxmtxLocal), *pd3dxmtxParent));
 
 	if (m_pSibling) m_pSibling->Animate(pd3dxmtxParent);
 	if (m_pChild) m_pChild->Animate(&XMLoadFloat4x4(&m_d3dxmtxWorld));
@@ -639,10 +676,13 @@ void CGameObject::OnPrepareRender()
 
 void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	OnPrepareRender();
-	Update(NULL);
+//	OnPrepareRender();
+//	Update(NULL);
 
 	if (m_pShader) m_pShader->Render(pd3dDeviceContext, pCamera);
+
+	if (!XMMatrixIsIdentity(XMLoadFloat4x4(&m_d3dxmtxLocal)))
+		XMStoreFloat4x4(&m_d3dxmtxWorld, XMLoadFloat4x4(&m_d3dxmtxLocal) * XMLoadFloat4x4(&m_d3dxmtxWorld));
 
 	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&m_d3dxmtxWorld));
 	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
@@ -661,6 +701,10 @@ void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 			m_pBoundingBoxShader->Render(pd3dDeviceContext, pCamera);
 			m_pBoundingBoxMesh->Render(pd3dDeviceContext);
 		}
+	}
+	if (m_pAxisObject) {
+		if (GLOBAL_MGR->g_bShowWorldAxis)
+			m_pAxisObject->Render(pd3dDeviceContext, pCamera);
 	}
 
 	if (m_pShader) m_pShader->OnPostRender(pd3dDeviceContext);

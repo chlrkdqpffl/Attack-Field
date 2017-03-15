@@ -37,8 +37,8 @@ struct VS_SKINNED_OUTPUT
 {
     float4 position : SV_POSITION;
     float3 positionW : POSITION;
-    float3 tangentW : TANGENT;
     float3 normalW : NORMAL;
+    float3 tangentW : TANGENT;
     float2 texCoord : TEXCOORD0;
 };
 
@@ -63,8 +63,9 @@ VS_SKINNED_OUTPUT VSSkinned(VS_SKINNED_INPUT input)
         normalL += weights[i] * mul(input.normal, (float3x3) gBoneTransform[input.boneIndices[i]]);
         tangentL += weights[i] * mul(input.tangent, (float3x3) gBoneTransform[input.boneIndices[i]]);
     }
-	
-    output.positionW = mul(float4(posL, 1.0f), gmtxWorld).xyz;
+
+    output.positionW = mul(float4(input.position, 1.0f), gmtxWorld).xyz;
+//    output.positionW = mul(float4(posL, 1.0f), gmtxWorld).xyz;
     output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
     output.normalW = mul(normalL, (float3x3) gmtxWorld);
     output.tangentW = mul(tangentL, (float3x3) gmtxWorld);
