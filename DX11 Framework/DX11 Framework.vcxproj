@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -28,26 +28,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -110,7 +110,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -160,6 +160,7 @@
     <ClCompile Include="AntTweakBarManager.cpp" />
     <ClCompile Include="BoundingBoxMesh.cpp" />
     <ClCompile Include="BoundingBoxShader.cpp" />
+    <ClCompile Include="BulletObject.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CharacterNormalShader.cpp" />
     <ClCompile Include="CharacterObject.cpp" />
@@ -176,6 +177,7 @@
     <ClCompile Include="SkinnedObject.cpp" />
     <ClCompile Include="SkyBoxShader.cpp" />
     <ClCompile Include="TerrainShader.cpp" />
+    <ClCompile Include="TerroristCharacterObject.cpp" />
     <ClCompile Include="TextureToScreenRectMesh.cpp" />
     <ClCompile Include="NormalMapCubeMesh.cpp" />
     <ClCompile Include="DirectX11_Project.cpp" />
@@ -186,7 +188,6 @@
     <ClCompile Include="HeightMapTerrain.cpp" />
     <ClCompile Include="LineMesh.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="MeshNormalMap.cpp" />
     <ClCompile Include="FbxModelMesh.cpp" />
     <ClCompile Include="NormalMapObject.cpp" />
     <ClCompile Include="NormalMapShader.cpp" />
@@ -204,7 +205,9 @@
     <ClCompile Include="SkyBoxMesh.cpp" />
     <ClCompile Include="SpaceShipCamera.cpp" />
     <ClCompile Include="StateObjectManager.cpp" />
-    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="TerrainPlayer.cpp" />
     <ClCompile Include="TerrainWater.cpp" />
     <ClCompile Include="TextManager.cpp" />
@@ -221,6 +224,7 @@
     <ClInclude Include="AntTweakBarManager.h" />
     <ClInclude Include="BoundingBoxMesh.h" />
     <ClInclude Include="BoundingBoxShader.h" />
+    <ClInclude Include="BulletObject.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CharacterNormalShader.h" />
     <ClInclude Include="CharacterObject.h" />
@@ -238,7 +242,6 @@
     <ClInclude Include="HeightMapTerrain.h" />
     <ClInclude Include="LineMesh.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="MeshNormalMap.h" />
     <ClInclude Include="FbxModelMesh.h" />
     <ClInclude Include="NormalMapObject.h" />
     <ClInclude Include="NormalMapShader.h" />
@@ -271,6 +274,7 @@
     <ClInclude Include="TerrainPlayer.h" />
     <ClInclude Include="TerrainShader.h" />
     <ClInclude Include="TerrainWater.h" />
+    <ClInclude Include="TerroristCharacterObject.h" />
     <ClInclude Include="TextManager.h" />
     <ClInclude Include="TexturedRectMesh.h" />
     <ClInclude Include="TextureToScreenRectMesh.h" />
@@ -308,6 +312,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="Shader HLSL File\Blurring.hlsli" />
     <None Include="Shader HLSL File\BoundingBox.hlsli" />
     <None Include="Shader HLSL File\CharacterSkinnedNormal.hlsli" />

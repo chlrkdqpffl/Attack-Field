@@ -94,6 +94,12 @@
     <Filter Include="Objects\BoundingBox">
       <UniqueIdentifier>{a2c00bf9-129c-4536-b6f6-5c01e117e062}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\Weopon\RifleGun">
+      <UniqueIdentifier>{e58cf0b1-c265-493a-8231-63a41f6b90f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Bullet">
+      <UniqueIdentifier>{dc44146e-c0f2-43e4-9ebf-46f356d401c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -189,9 +195,6 @@
     <ClCompile Include="NormalMapShader.cpp">
       <Filter>소스 파일\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="MeshNormalMap.cpp">
-      <Filter>소스 파일\Mesh\NormalMap</Filter>
-    </ClCompile>
     <ClCompile Include="NormalMapCubeMesh.cpp">
       <Filter>소스 파일\Mesh\NormalMap</Filter>
     </ClCompile>
@@ -234,9 +237,6 @@
     <ClCompile Include="CharacterNormalShader.cpp">
       <Filter>소스 파일\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="RifleGunWeapon.cpp">
-      <Filter>Objects\Weopon</Filter>
-    </ClCompile>
     <ClCompile Include="Weapon.cpp">
       <Filter>Objects\Weopon</Filter>
     </ClCompile>
@@ -266,6 +266,15 @@
     </ClCompile>
     <ClCompile Include="GlobalVariableManager.cpp">
       <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="RifleGunWeapon.cpp">
+      <Filter>Objects\Weopon\RifleGun</Filter>
+    </ClCompile>
+    <ClCompile Include="TerroristCharacterObject.cpp">
+      <Filter>Objects\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletObject.cpp">
+      <Filter>Objects\Bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -380,9 +389,6 @@
     <ClInclude Include="NormalMapShader.h">
       <Filter>헤더 파일\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="MeshNormalMap.h">
-      <Filter>헤더 파일\Mesh\NormalMap</Filter>
-    </ClInclude>
     <ClInclude Include="LineMesh.h">
       <Filter>헤더 파일\Mesh</Filter>
     </ClInclude>
@@ -428,9 +434,6 @@
     <ClInclude Include="Weapon.h">
       <Filter>Objects\Weopon</Filter>
     </ClInclude>
-    <ClInclude Include="RifleGunWeapon.h">
-      <Filter>Objects\Weopon</Filter>
-    </ClInclude>
     <ClInclude Include="CharacterObject.h">
       <Filter>헤더 파일\Object</Filter>
     </ClInclude>
@@ -457,6 +460,15 @@
     </ClInclude>
     <ClInclude Include="GlobalVariableManager.h">
       <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="RifleGunWeapon.h">
+      <Filter>Objects\Weopon\RifleGun</Filter>
+    </ClInclude>
+    <ClInclude Include="TerroristCharacterObject.h">
+      <Filter>Objects\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletObject.h">
+      <Filter>Objects\Bullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -517,5 +529,6 @@
     <None Include="Shader HLSL File\BoundingBox.hlsli">
       <Filter>HLSL</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

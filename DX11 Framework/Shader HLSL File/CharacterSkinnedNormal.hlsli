@@ -42,7 +42,7 @@ struct VS_SKINNED_OUTPUT
     float2 texCoord : TEXCOORD0;
 };
 
-VS_SKINNED_OUTPUT VSSkinned(VS_SKINNED_INPUT input)
+VS_SKINNED_OUTPUT VSSkinnedTexturedBumpedLightingColor(VS_SKINNED_INPUT input)
 {
     VS_SKINNED_OUTPUT output = (VS_SKINNED_OUTPUT) 0;
 
@@ -51,6 +51,7 @@ VS_SKINNED_OUTPUT VSSkinned(VS_SKINNED_INPUT input)
     weights[1] = input.boneWeights.y;
     weights[2] = input.boneWeights.z;
     weights[3] = input.boneWeights.w;
+
    // weights[3] = 1 - weights[0] - weights[1] - weights[2];
 
     float3 posL = float3(0.0f, 0.0f, 0.0f);
@@ -64,8 +65,8 @@ VS_SKINNED_OUTPUT VSSkinned(VS_SKINNED_INPUT input)
         tangentL += weights[i] * mul(input.tangent, (float3x3) gBoneTransform[input.boneIndices[i]]);
     }
 
-    output.positionW = mul(float4(input.position, 1.0f), gmtxWorld).xyz;
-//    output.positionW = mul(float4(posL, 1.0f), gmtxWorld).xyz;
+//    output.positionW = mul(float4(input.position, 1.0f), gmtxWorld).xyz;
+    output.positionW = mul(float4(posL, 1.0f), gmtxWorld).xyz;
     output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
     output.normalW = mul(normalL, (float3x3) gmtxWorld);
     output.tangentW = mul(tangentL, (float3x3) gmtxWorld);
@@ -74,13 +75,14 @@ VS_SKINNED_OUTPUT VSSkinned(VS_SKINNED_INPUT input)
     return output;
 }
 
-float4 PSSkinned(VS_SKINNED_OUTPUT input) : SV_Target
+float4 PSSkinnedTexturedBumpedLightingColor(VS_SKINNED_OUTPUT input) : SV_Target
 {
     float3 normalW = CalcNormal(input.normalW, input.tangentW, input.texCoord);
     float4 cIllumination = Lighting(input.positionW, normalW);
     float4 cColor = gtxtDiffuseMap.Sample(gSamplerState, input.texCoord) * cIllumination;
 
-//    return float4(normalW, 0.0f);
+
+//    return float4(input.tangentW, 1.0f);
 //    if (gbRenderOption.x == 1.0f)
  //       cColor = Fog(cColor, input.positionW);
 

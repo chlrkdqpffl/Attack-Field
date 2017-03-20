@@ -40,15 +40,12 @@ void CAxisObjects::CreateAxis(ID3D11Device *pd3dDevice)
 	m_pShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_COLOR_ELEMENT);
 }
 
-void CAxisObjects::Update(float fTimeElapsed)
-{
-	if (m_pOwnerObject) m_pWorldAxisObject->SetPosition(m_pOwnerObject->GetPosition());
-}
-
 void CAxisObjects::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
 	m_pShader->Render(pd3dDeviceContext, pCamera);
 
-	m_pWorldAxisObject->UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&m_pWorldAxisObject->m_d3dxmtxWorld));
+	if (m_pOwnerObject)
+		m_pWorldAxisObject->UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&m_pOwnerObject->m_d3dxmtxWorld));
+
 	m_pWorldAxisObject->RenderMesh(pd3dDeviceContext, pCamera);
 }

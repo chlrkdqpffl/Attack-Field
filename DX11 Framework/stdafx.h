@@ -18,9 +18,10 @@
 #include <tchar.h>
 #include <Mmsystem.h>
 //#include <D3D9Types.h>
-#include <codecvt>
 #include <iostream>
 #include <chrono>
+// wstring to string
+#include <codecvt>
 
 // DirectX 11
 #include <d3d11.h>
@@ -209,17 +210,13 @@ inline void ShowXMVector(XMVECTOR xmVector)
 
 inline void ShowTaskSuccess(string message)
 {
-#if defined(DEBUG) || defined(_DEBUG)
 	cout << message << endl;
-#endif
 }
 
 inline void ShowTaskFail(string message)
 {
-#if defined(DEBUG) || defined(_DEBUG)
 	cout << message << endl;
 	system("pause");
-#endif
 }
 
 /*

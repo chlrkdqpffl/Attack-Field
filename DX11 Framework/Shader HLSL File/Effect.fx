@@ -45,9 +45,15 @@ cbuffer cbRenderOption : register(b5)                       // PS Set
     float4      gbRenderOption : packoffset(c0);     // (x : Fog)
 };
 
-Texture2D gtxtDefault : register(t0);
-Texture2D gtxtDefaultDetail : register(t1);
-Texture2D gtxtTerrain : register(t2);
+cbuffer cbSkinned : register(b7)							// VS Set
+{
+	matrix gBoneTransform[80];
+};
+
+Texture2D gtxtDefault			: register(t0);
+Texture2D gtxtDefaultDetail		: register(t1);
+Texture2D gtxtTerrain			: register(t2);
+Texture2D gtxtDiffuse           : register(t18);
 
 #ifdef _WITH_TERRAIN_TEXTURE_ARRAY
     Texture2D gtxtTerrainDetails[10] : register(t3);
@@ -73,6 +79,7 @@ SamplerState gssSkyBox          : register(s4);
 
 #include "Light.hlsli"
 #include "Fog.hlsli"
+#include "Normal.hlsli"
 
 //-------------------------------------------------------------------------------------------------------------------------------
 struct VS_DIFFUSED_INPUT
@@ -276,6 +283,25 @@ struct VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT
 };
 
 //-------------------------------------------------------------------------------------------------------------------------------
+
+struct VS_SKINNED_INPUT
+{
+	float3 position : POSITION;
+	float3 normal : NORMAL;
+	float2 texCoord : TEXCOORD0;
+	float4 boneWeights : WEIGHTS;
+	float4 boneIndices : BONEINDICES;
+};
+
+struct VS_SKINNED_OUTPUT
+{
+	float4 position : SV_POSITION;
+	float3 positionW : POSITION;
+	float3 normalW : NORMAL;
+	float2 texCoord : TEXCOORD0;
+};
+
+//-------------------------------------------------------------------------------------------------------------------------------
 VS_DIFFUSED_OUTPUT VSDiffusedColor(VS_DIFFUSED_INPUT input)
 {
 	VS_DIFFUSED_OUTPUT output = (VS_DIFFUSED_OUTPUT)0;
@@ -363,10 +389,11 @@ VS_TEXTURED_LIGHTING_TANGENT_OUTPUT VSTexturedLightingTangent(VS_TEXTURED_LIGHTI
 
 float4 PSTexturedLightingTangent(VS_TEXTURED_LIGHTING_TANGENT_OUTPUT input) : SV_Target
 {
-// Tangent 계산 해야하는데 임시적으로 제작하였기때문에 현재 없음
-    input.normalW = normalize(input.normalW);
-    float4 cIllumination = Lighting(input.positionW, input.normalW);
-    float4 cColor = gtxtDefault.Sample(gssDefault, input.texCoord) * cIllumination;
+    float3 normalW = CalcNormal(input.normalW, input.tangentW, input.texCoord);
+   
+    float4 cIllumination = Lighting(input.positionW, normalW);
+    float4 cColor = gtxtDiffuse.Sample(gssDefault, input.texCoord) * cIllumination;
+//    return float4(normalW, 0.0f);
 
     return (cColor);
 }
@@ -608,4 +635,42 @@ float4 PSInstancedTexturedLightingColor(VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT in
         cColor = Fog(cColor, input.positionW);
 
 	return(cColor);
+}
+
+
+VS_SKINNED_OUTPUT VSSkinnedTexturedLightingColor(VS_SKINNED_INPUT input)
+{
+	VS_SKINNED_OUTPUT output = (VS_SKINNED_OUTPUT) 0;
+
+	float weights[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	weights[0] = input.boneWeights.x;
+	weights[1] = input.boneWeights.y;
+	weights[2] = input.boneWeights.z;
+	weights[3] = input.boneWeights.w;
+   // weights[3] = 1 - weights[0] - weights[1] - weights[2];
+
+	float3 posL = float3(0.0f, 0.0f, 0.0f);
+	float3 normalL = float3(0.0f, 0.0f, 0.0f);
+
+	for (int i = 0; i < 4; i++)
+	{
+		posL += weights[i] * mul(float4(input.position, 1.0f), gBoneTransform[input.boneIndices[i]]).xyz;
+		normalL += weights[i] * mul(input.normal, (float3x3) gBoneTransform[input.boneIndices[i]]);
+	}
+	
+	output.positionW = mul(float4(posL, 1.0f), gmtxWorld).xyz;
+	output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
+	output.normalW = mul(normalL, (float3x3) gmtxWorld);
+	output.texCoord = input.texCoord;
+
+	return output;
+}
+
+float4 PSSkinnedTexturedLightingColor(VS_SKINNED_OUTPUT input) : SV_Target
+{
+	input.normalW = normalize(input.normalW);
+	float4 cIllumination = Lighting(input.positionW, input.normalW);
+    float4 cColor = gtxtDiffuse.Sample(gssDefault, input.texCoord) * cIllumination;
+
+	return (cColor);
 }

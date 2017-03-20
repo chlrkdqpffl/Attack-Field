@@ -23,6 +23,8 @@ public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 
 	// ------ Get, Setter ------ //
+	CFbxModelSkinnedMesh* GetSkinnedMesh() const { return m_pSkinnedMesh; }
+
 	void SetMesh(CFbxModelSkinnedMesh* mesh);
 	void SetAnimation(AnimationData::CharacterAnim anim, float speed = 1.0f);
 };

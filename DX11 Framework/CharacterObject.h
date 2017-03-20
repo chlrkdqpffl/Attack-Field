@@ -19,9 +19,5 @@ public:
 	virtual void CreateObjectData(ID3D11Device *pd3dDevice) override;
 	virtual void Update(float fTimeElapsed) override;
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
-
-	// =========== Get, Setter ========= //
-	virtual void SetPosition(float x, float y, float z, bool isLocal = false) override;
-	virtual void SetPosition(XMFLOAT3 d3dxvPosition) override;
 };
 

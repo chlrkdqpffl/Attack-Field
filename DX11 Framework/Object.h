@@ -119,7 +119,7 @@ public:
 
 protected:
 	static UINT						m_iObjectId;
-
+	MeshTag							m_meshTag = MeshTag::eNone;
 	CMesh							**m_ppMeshes = nullptr;
 	int								m_nMeshes = 0;
 
@@ -141,6 +141,28 @@ public:
 	ID3D11BlendState				*m_pd3dBlendState = nullptr;
 
 public:
+	virtual void Update(float fTimeElapsed);
+	virtual void Update(float fTimeElapsed, XMMATRIX *pd3dxmtxParent);
+	virtual void OnPrepareRender();
+	virtual void RenderMesh(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
+
+	bool IsVisible(CCamera *pCamera = NULL);
+	void Animate(XMMATRIX *pd3dxmtxParent);
+	void CreateAxisObject(ID3D11Device *pd3dDevice);
+	void CreateBoundingBox(ID3D11Device *pd3dDevice);
+	void SetActive(bool bActive = false) { m_bActive = bActive; }
+	void GenerateRayForPicking(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxWorld, XMMATRIX *pd3dxmtxView, XMVECTOR *pd3dxvPickRayPosition, XMVECTOR *pd3dxvPickRayDirection);
+	int PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, MESHINTERSECTINFO *pd3dxIntersectInfo);
+
+	void MoveStrafe(float fDistance = 1.0f);
+	void MoveUp(float fDistance = 1.0f);
+	void MoveForward(float fDistance = 1.0f);
+	void Move(XMFLOAT3 vPos, bool isLocal = false);
+	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f, bool isLocal = false);
+	void Rotate(XMFLOAT3 fAngle, bool isLocal = false);
+	void Rotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLocal = false);
+	// ---------- Get, Setter ---------- //
 	void SetMesh(CMesh *pMesh, int nIndex = 0);
 	CMesh *GetMesh(int nIndex = 0) { return(m_ppMeshes[nIndex]); }
 	UINT GetMeshType() { return((m_ppMeshes) ? m_ppMeshes[0]->GetType() : 0x00); }
@@ -157,18 +179,12 @@ public:
 	void SetChild(CGameObject *pChild);
 	CGameObject *GetParent() { return(m_pParent); }
 
-	virtual void SetPosition(float x, float y, float z, bool isLocal = false);
-	virtual void SetPosition(XMVECTOR d3dxvPosition, bool isLocal = false);
-	virtual void SetPosition(XMFLOAT3 d3dxvPosition);
-
-	void MoveStrafe(float fDistance = 1.0f);
-	void MoveUp(float fDistance = 1.0f);
-	void MoveForward(float fDistance = 1.0f);
-	void Move(XMFLOAT3 vPos, bool isLocal = false);
-
-	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
-	void Rotate(XMFLOAT3 fAngle);
-	void Rotate(XMVECTOR *pd3dxvAxis, float fAngle);
+	void SetPosition(float x, float y, float z, bool isLocal = false);
+	void SetPosition(XMVECTOR d3dxvPosition, bool isLocal = false);
+	void SetPosition(XMFLOAT3 d3dxvPosition, bool isLocal = false);
+	void SetRotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f, bool isLocal = false);
+	void SetRotate(XMFLOAT3 fAngle, bool isLocal = false);
+	void SetRotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLocal = false);
 
 	XMVECTOR GetvPosition(bool bIsLocal = false) const;
 	XMFLOAT3 GetPosition(bool isLocal = false) const;
@@ -176,22 +192,8 @@ public:
 	XMVECTOR GetUp(bool bIsLocal = true);
 	XMVECTOR GetRight(bool bIsLocal = true);
 
-	bool IsVisible(CCamera *pCamera = NULL);
-
-	void Animate(XMMATRIX *pd3dxmtxParent);
-
-	virtual void Update(float fTimeElapsed);
-	virtual void Update(float fTimeElapsed, XMMATRIX *pd3dxmtxParent);
-	virtual void OnPrepareRender();
-	virtual void RenderMesh(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
-
-	void CreateAxisObject(ID3D11Device *pd3dDevice);
-	void CreateBoundingBox(ID3D11Device *pd3dDevice);
-	void SetActive(bool bActive = false) { m_bActive = bActive; }
-	void GenerateRayForPicking(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxWorld, XMMATRIX *pd3dxmtxView, XMVECTOR *pd3dxvPickRayPosition, XMVECTOR *pd3dxvPickRayDirection);
-	int PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, MESHINTERSECTINFO *pd3dxIntersectInfo);
-
+	void SetMeshTag(MeshTag tag) { m_meshTag = tag; }
+	MeshTag GetMeshTag() const { return m_meshTag; }
 public:
 	static ID3D11Buffer				*m_pd3dcbWorldMatrix;
 	static ID3D11Buffer				*m_pd3dcbMaterialColors;

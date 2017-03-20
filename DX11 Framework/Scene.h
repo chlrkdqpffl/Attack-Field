@@ -23,6 +23,7 @@
 
 // ----- Character -----
 #include "PoliceCharacterObject.h"
+#include "TerroristCharacterObject.h"
 
 // ========== System ========== 
 #include "ParticleSystem.h"

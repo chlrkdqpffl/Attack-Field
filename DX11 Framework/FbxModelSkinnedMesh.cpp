@@ -60,6 +60,38 @@ void CFbxModelSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 		}
 	}
 
+	// Create Index Buffer
+	for (UINT i = 0, j = 0; i < m_nIndices / 3; ++i, j += 3) {
+		m_pnIndices[j] = (UINT)m_meshData.m_vecIndex[i].x;
+		m_pnIndices[j + 1] = (UINT)m_meshData.m_vecIndex[i].y;
+		m_pnIndices[j + 2] = (UINT)m_meshData.m_vecIndex[i].z;
+	}
+
+	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
+
+
+	/*
+	// Tangent 수동 계산 보류중
+	if (m_meshData.m_bTangent) {
+		XMVECTOR* tangent = new XMVECTOR[m_nVertices];
+		CalculateVertexTangent(tangent);
+
+		for (int i = 0; i < m_nVertices; ++i) {
+//			cout << m_pTangents[i].x << ", " << m_pTangents[i].y << ", " << m_pTangents[i].z << endl;
+//			cout << XMVectorGetX(tangent[i]) << ", " << XMVectorGetY(tangent[i]) << ", " << XMVectorGetZ(tangent[i]) << endl;
+//			cout << endl;
+	//		XMStoreFloat3(&m_pTangents[i], tangent[i]);
+		}
+
+		delete[] tangent;
+
+		cout << endl << endl;
+	}
+	
+	*/
+
+
 	// Create Buffer
 	if (m_meshData.m_bTangent) {
 		m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
@@ -95,15 +127,6 @@ void CFbxModelSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
 	DXUT_SetDebugName(m_pd3dBoneWeightBuffer, "BoneWeight");
 	DXUT_SetDebugName(m_pd3dBoneIndiceBuffer, "BoneIndice");
-	
-	for (UINT i = 0, j = 0; i < m_nIndices / 3; ++i, j += 3) {
-		m_pnIndices[j] = (UINT)m_meshData.m_vecIndex[i].x;
-		m_pnIndices[j + 1] = (UINT)m_meshData.m_vecIndex[i].y;
-		m_pnIndices[j + 2] = (UINT)m_meshData.m_vecIndex[i].z;
-	}
-
-	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 
 	CreateConstantBuffer(pd3dDevice);
 

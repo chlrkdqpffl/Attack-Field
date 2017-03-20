@@ -22,4 +22,3 @@ public:
 	static ID3D11Buffer						*g_pd3dcbRenderOption;
 	static bool								g_bShowWorldAxis;
 };
-

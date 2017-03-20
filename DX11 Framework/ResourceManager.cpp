@@ -16,9 +16,11 @@ void CResourceManager::InitializeManager()
 	cout << "====================================== Texture Loading ======================================" << endl;
 	// Model
 	AddResourece(TextureTag::eDarkFighterD,			"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_color.png");
+	AddResourece(TextureTag::eDarkFighterN,			"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_NM.jpg");
+	
 	AddResourece(TextureTag::eTerroristD,			"../Assets/FBX Model/Character/Terrorist/TerrorristD.dds");
 	AddResourece(TextureTag::eTerroristND,			"../Assets/FBX Model/Character/Terrorist/TerrorristNM_D.dds.dds");
-	//AddResourece(ePoliceDiffuse,					"../Assets/FBX Model/Character/Police/");
+	AddResourece(TextureTag::ePoliceD,				"../Assets/FBX Model/Character/Police/AllTex.PNG");
 	
 	AddResourece(TextureTag::eRifleD,				"../Assets/FBX Model/Weapon/Rifle/rifle.bmp");
 	AddResourece(TextureTag::eRifleN,				"../Assets/FBX Model/Weapon/Rifle/RifleNM.png");
@@ -55,6 +57,8 @@ void CResourceManager::InitializeManager()
 	AddResourece(TextureTag::eWallND,				"../Assets/Image/Miscellaneous/wall_NM_height.dds");
 	
 
+	AddResourece(TextureTag::eTest,					"../Assets/FBX Model/Soldier_1_albedo.png");
+
 	cout << endl;
 	cout << "==========================================================================================" << endl;
 	cout << "====================================== Mesh Loading ======================================" << endl;
@@ -62,17 +66,18 @@ void CResourceManager::InitializeManager()
 	// Character
 	AddResourece(MeshTag::eDarkFighter,				"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.model");
 
-//	AddResourece(MeshTag::ePolice,					"../Assets/FBX Model/Character/Police/Police.model");
+	AddResourece(MeshTag::ePolice,					"../Assets/FBX Model/Character/Police/Police.model");
 	AddResourece(MeshTag::eTerrorist,				"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
-	AddResourece(MeshTag::eRifle,					"../Assets/FBX Model/Weapon/Rifle/rifle(70).model");
+	AddResourece(MeshTag::eRifle,					"../Assets/FBX Model/Weapon/Rifle/rifle(120).model");
 
 	// Object
 //	AddResourece(MeshTag::eRoad,					"../Assets/FBX Model/Road.model");
 	
 	// Building
-	AddResourece(MeshTag::eBuilding18,				 "../Assets/FBX Model/test.model");
 
 	// Etc
+	AddResourece(MeshTag::eTest,					"../Assets/FBX Model/Soldier.model");
+	
 
 	cout << endl;
 	cout << "=============================== Resource Loading Complete ==================================" << endl;
@@ -91,12 +96,10 @@ void CResourceManager::AddResourece(const TextureTag& textureTag, const string& 
 	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
 	D3DX11CreateShaderResourceViewFromFile(STATEOBJ_MGR->g_pd3dDevice, s_to_ws(source).c_str(), NULL, NULL, &pd3dsrvTexture, &hResult);
 
-#if defined(DEBUG) || defined(_DEBUG)
 	if ((HRESULT)hResult >= 0)
 		ShowTaskSuccess("\t Success!!");
 	else
 		ShowTaskFail("\t Error!! \t\t 파일 또는 경로를 확인하세요.");
-#endif
 
 	string str = "TextureTag : " + to_string(static_cast<int>(textureTag));
 	DXUT_SetDebugName(pd3dsrvTexture, str.c_str());

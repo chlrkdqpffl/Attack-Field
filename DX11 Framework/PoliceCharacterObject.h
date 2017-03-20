@@ -15,4 +15,3 @@ public:
 	virtual void CreateAnimation();
 	virtual void CreateWeapon(ID3D11Device *pd3dDevice);
 };
-

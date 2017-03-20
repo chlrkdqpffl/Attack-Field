@@ -55,6 +55,16 @@ void CFbxModelMesh::Initialize(ID3D11Device *pd3dDevice)
 		}
 	}
 
+	// Create Index Buffer
+	for (UINT i = 0, j = 0; i < m_nIndices / 3; ++i, j += 3) {
+		m_pnIndices[j] = (UINT)m_meshData.m_vecIndex[i].x;
+		m_pnIndices[j + 1] = (UINT)m_meshData.m_vecIndex[i].y;
+		m_pnIndices[j + 2] = (UINT)m_meshData.m_vecIndex[i].z;
+	}
+
+	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
+
 	// Create Buffer
 	if (m_meshData.m_bTangent) {
 		m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
@@ -83,13 +93,58 @@ void CFbxModelMesh::Initialize(ID3D11Device *pd3dDevice)
 	if (m_meshData.m_bTangent)
 		DXUT_SetDebugName(m_pd3dTangentBuffer, "Tangent");
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
+}
 
-	for (UINT i = 0, j = 0; i < m_nIndices / 3; ++i, j += 3) {
-		m_pnIndices[j] = (UINT)m_meshData.m_vecIndex[i].x;
-		m_pnIndices[j + 1] = (UINT)m_meshData.m_vecIndex[i].y;
-		m_pnIndices[j + 2] = (UINT)m_meshData.m_vecIndex[i].z;
+void CFbxModelMesh::CalculateVertexTangent(XMVECTOR *pd3dxvTangents)
+{
+	XMVECTOR d3dxvSumOfTangent = XMVectorZero();
+	XMVECTOR *pd3dxvPositions = NULL;
+	UINT nIndex0, nIndex1, nIndex2;
+
+	for (int j = 0; j < m_nVertices; j++)
+	{
+		d3dxvSumOfTangent = XMVectorZero();
+		for (int i = 0; i < m_meshData.m_vecIndex.size(); i++)
+		{
+			nIndex0 = (3 * i + 0);
+			nIndex0 = m_pnIndices[nIndex0];
+			nIndex1 = (3 * i + 1);
+			nIndex1 = m_pnIndices[nIndex1];
+			nIndex2 = m_pnIndices[3 * i + 2];
+			if ((nIndex0 == j) || (nIndex1 == j) || (nIndex2 == j)) d3dxvSumOfTangent += CalculateTriAngleTangent(nIndex0, nIndex1, nIndex2);
+		}
+		d3dxvSumOfTangent = XMVector3Normalize(d3dxvSumOfTangent);
+		pd3dxvTangents[j] = d3dxvSumOfTangent;
+		pd3dxvPositions = &XMLoadFloat3(m_pPositions) + j;
+
 	}
+}
 
-	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
+XMVECTOR CFbxModelMesh::CalculateTriAngleTangent(UINT nIndex0, UINT nIndex1, UINT nIndex2)
+{
+	XMFLOAT3 vTangent{ 0.0f, 0.0f, 0.0f };
+	XMFLOAT3 vector1, vector2;
+	XMFLOAT2 tuVector, tvVector;
+	float den;
+
+	vector1.x = m_pPositions[nIndex1].x - m_pPositions[nIndex0].x;
+	vector1.y = m_pPositions[nIndex1].y - m_pPositions[nIndex0].y;
+	vector1.z = m_pPositions[nIndex1].z - m_pPositions[nIndex0].z;
+
+	vector2.x = m_pPositions[nIndex2].x - m_pPositions[nIndex0].x;
+	vector2.y = m_pPositions[nIndex2].y - m_pPositions[nIndex0].y;
+	vector2.z = m_pPositions[nIndex2].z - m_pPositions[nIndex0].z;
+
+	tuVector.x = m_pTexCoords[nIndex1].x - m_pTexCoords[nIndex0].x;
+	tuVector.y = m_pTexCoords[nIndex1].y - m_pTexCoords[nIndex0].y;
+	tvVector.x = m_pTexCoords[nIndex2].x - m_pTexCoords[nIndex0].x;
+	tvVector.y = m_pTexCoords[nIndex2].y - m_pTexCoords[nIndex0].y;
+
+	den = 1.0f / (tuVector.x * tvVector.y - tuVector.y * tvVector.x);
+
+	vTangent.x = (tuVector.x * vector2.x - tvVector.x * vector1.x) * den;
+	vTangent.y = (tuVector.x * vector2.y - tvVector.x * vector1.y) * den;
+	vTangent.z = (tuVector.x * vector2.z - tvVector.x * vector1.z) * den;
+
+	return(XMVector3Normalize(XMLoadFloat3(&vTangent)));
 }

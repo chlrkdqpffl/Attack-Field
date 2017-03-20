@@ -56,9 +56,8 @@ public:
 	CCamera *GetCamera() { return(m_pCamera); }
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
 
-	void Move(ULONG nDirection, float fDistance, bool bVelocity = false);
+	void Move(DWORD nDirection, float fDistance, bool bVelocity = false);
 	void Move(const XMVECTOR d3dxvShift, bool bVelocity = false);
-	void Move(float fxOffset = 0.0f, float fyOffset = 0.0f, float fzOffset = 0.0f);
 	void Rotate(float x, float y, float z);
 
 	void Update(float fTimeElapsed);

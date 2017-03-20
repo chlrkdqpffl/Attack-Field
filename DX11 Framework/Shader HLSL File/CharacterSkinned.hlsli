@@ -36,7 +36,7 @@ struct VS_SKINNED_OUTPUT
     float2 texCoord : TEXCOORD0;
 };
 
-VS_SKINNED_OUTPUT VSSkinned(VS_SKINNED_INPUT input)
+VS_SKINNED_OUTPUT VSSkinnedTexturedLightingColor(VS_SKINNED_INPUT input)
 {
     VS_SKINNED_OUTPUT output = (VS_SKINNED_OUTPUT) 0;
 
@@ -64,7 +64,7 @@ VS_SKINNED_OUTPUT VSSkinned(VS_SKINNED_INPUT input)
     return output;
 }
 
-float4 PSSkinned(VS_SKINNED_OUTPUT input) : SV_Target
+float4 PSSkinnedTexturedLightingColor(VS_SKINNED_OUTPUT input) : SV_Target
 {
     input.normalW = normalize(input.normalW);
     float4 cIllumination = Lighting(input.positionW, input.normalW);

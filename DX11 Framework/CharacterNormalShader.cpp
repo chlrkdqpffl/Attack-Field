@@ -22,6 +22,6 @@ void CCharacterNormalShader::CreateShader(ID3D11Device *pd3dDevice)
 	};
 	UINT nElements = ARRAYSIZE(d3dInputElements);
 
-	CreateVertexShaderFromFile(pd3dDevice, L"Shader HLSL File/CharacterSkinnedNormal.hlsli", "VSSkinned", "vs_5_0", &m_pd3dVertexShader, d3dInputElements, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(pd3dDevice, L"Shader HLSL File/CharacterSkinnedNormal.hlsli", "PSSkinned", "ps_5_0", &m_pd3dPixelShader);
+	CreateVertexShaderFromFile(pd3dDevice, L"Shader HLSL File/CharacterSkinnedNormal.hlsli", "VSSkinnedTexturedBumpedLightingColor", "vs_5_0", &m_pd3dVertexShader, d3dInputElements, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(pd3dDevice, L"Shader HLSL File/CharacterSkinnedNormal.hlsli", "PSSkinnedTexturedBumpedLightingColor", "ps_5_0", &m_pd3dPixelShader);
 }

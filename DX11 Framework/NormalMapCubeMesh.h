@@ -1,5 +1,5 @@
 #pragma once
-#include "MeshNormalMap.h"
+#include "Mesh.h"
 
 class CNormalMapCubeMesh : public CMeshNormalMap
 {

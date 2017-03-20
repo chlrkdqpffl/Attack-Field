@@ -138,7 +138,7 @@ void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice)
 	d3dBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	pd3dDevice->CreateBlendState(&d3dBlendStateDesc, &m_pd3dBlendState);
 
-	DXUT_SetDebugName(m_pd3dBlendState, "ParticleBST");
+	DXUT_SetDebugName(m_pd3dBlendState, "ParticleBS");
 }
 
 void CParticleSystem::Update(float fTimeStep, float fGameTime)

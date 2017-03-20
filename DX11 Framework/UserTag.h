@@ -49,14 +49,14 @@ namespace AnimationData
 
 enum class TextureTag
 {
-	eNone,
+	eNone, eTest,
 
 	// Environment
 	eWaterD, eWaterDetailD, eSkyBoxD,
 	eTerrainD, eTerrainDetailD, eTerrainN, eTerrainH,
 
 	// Model
-	eDarkFighterD,
+	eDarkFighterD, eDarkFighterN,
 
 	eTerroristD, eTerroristND,
 	ePoliceD,
@@ -82,12 +82,12 @@ enum class MeshTag
 	eNone,
 
 	// Skinned
-	ePolice, eTerrorist,
+	eTerrorist, eTest,
 
 	// --------------------------------------------------------- // 
 	MaxSkinnedMesh = 100,
 	// --------------------------------------------------------- // 
-
+	ePolice,
 	// Character
 	eDarkFighter, eRifle,
 
@@ -95,7 +95,7 @@ enum class MeshTag
 	eRoad,
 
 	// Building
-	eBuilding18
+	eBuilding18, eBuilding19
 
 	// Etc
 

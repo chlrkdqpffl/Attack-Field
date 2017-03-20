@@ -213,15 +213,26 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 */
 #pragma region [Create Character]
 
-	for (int i = 0; i < 1; ++i) {
-		m_pPlayerCharacter = new CPoliceCharacterObject();
-		m_pPlayerCharacter->CreateObjectData(pd3dDevice);
-		
-		//m_pPlayerCharacter->SetPosition(rand() & 300, 250, 100);
-		m_pPlayerCharacter->SetPosition(100, 250, 100);
-//		m_pPlayerCharacter->Rotate(0, 180.0f, 0.0f);
-		m_vObjectsVector.push_back(m_pPlayerCharacter);
-	}
+
+	m_pPlayerCharacter = new CTerroristCharacterObject();
+	m_pPlayerCharacter->CreateObjectData(pd3dDevice);
+	m_pPlayerCharacter->CreateAxisObject(pd3dDevice);
+	
+	m_pPlayerCharacter->SetPosition(100, 250, 100);
+
+	m_vObjectsVector.push_back(m_pPlayerCharacter);
+	
+
+	/*
+	CCharacterObject* police = new CPoliceCharacterObject();
+	police->CreateObjectData(pd3dDevice);
+	police->CreateAxisObject(pd3dDevice);
+
+	police->SetPosition(150, 250, 100);
+
+	m_vObjectsVector.push_back(police);
+	*/
+
 #pragma endregion 
 
 #pragma region [Create Test - NomalMapping]	
@@ -236,8 +247,9 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	
 	CMaterial *pPlayerMaterial = new CMaterial();
 
-	CTexture *pPlayerTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
+	CTexture *pPlayerTexture = new CTexture(2, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
 	pPlayerTexture->SetTexture(0, TextureTag::eDarkFighterD);
+	pPlayerTexture->SetTexture(1, TextureTag::eDarkFighterN);
 	pPlayerTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pPlayerMaterial->SetTexture(pPlayerTexture);
 	
@@ -246,15 +258,15 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 
 	CObjectsShader* pModelShader = new CObjectsShader(10);
 	pModelShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0);
-	pModelShader->SetMaterial(pPlayerMaterial);
+	pModelShader->SetMaterial(pPlayerMaterial);																			
 	
-	CGameObject* pPlayer = new CGameObject();
-	pPlayer->SetPosition(200, 330, 200);
-	pPlayer->SetMesh(pPlayerMesh);
-	pPlayer->CreateBoundingBox(pd3dDevice);
-	pModelShader->AddObject(pPlayer);
+	CGameObject* pDarkFighter = new CGameObject();
+	pDarkFighter->SetPosition(200, 250, 200);
+	pDarkFighter->SetMesh(pPlayerMesh);
+	pDarkFighter->CreateBoundingBox(pd3dDevice);
+	pDarkFighter->CreateAxisObject(pd3dDevice);
+	pModelShader->AddObject(pDarkFighter);
 	m_vObjectsShaderVector.push_back(pModelShader);
-	
 #pragma endregion
 
 #pragma region [Create Instancing Object]

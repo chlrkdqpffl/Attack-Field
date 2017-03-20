@@ -48,7 +48,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	
+//	_CrtSetBreakAlloc(305984);	// 70	 - wstr 에서 오류
 //	_CrtSetBreakAlloc(255527);	// 70
 //	_CrtSetBreakAlloc(205);		// 16
 //	_CrtSetBreakAlloc(206);		// 16
@@ -771,6 +771,7 @@ void CGameFramework::UpdateObjects()
 void CGameFramework::FrameAdvance()
 {
 	m_GameTimer.Tick(60);
+//	m_GameTimer.Tick();
 
 	ProcessInput();
 	UpdateObjects();
@@ -852,4 +853,5 @@ void CGameFramework::FrameAdvance()
 
 	m_GameTimer.SetTitleName(m_strTitleName);
 	::SetWindowText(m_hWnd, m_strTitleName.c_str());
+	m_pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
 }

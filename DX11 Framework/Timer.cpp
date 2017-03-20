@@ -110,7 +110,7 @@ void CGameTimer::SetTitleName(wstring& wStr)
 {
 	wStr = PROJECT_NAME;
 
-	WCHAR str[50];
+	WCHAR str[80];
 	_itow(m_nCurrentFrameRate, str, 10);
 
 	wStr += str;

@@ -2,8 +2,10 @@
 #include "Weapon.h"
 #include "CharacterObject.h"
 
-CWeapon::CWeapon()
+CWeapon::CWeapon(CCharacterObject* pOwner) : m_pOwner(pOwner)
 {
+//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-8.5f, 13.f, 0.5f);
+//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(-35.f, -90.f, 100.f);
 }
 
 CWeapon::~CWeapon()
@@ -16,19 +18,10 @@ void CWeapon::Fire()
 
 void CWeapon::Update(float fTimeElapsed)
 {
-	SetParentMtx(m_pSkinnedMesh->GetFinalBoneMtx(TWBAR_MGR->g_nBoneIndex));
+	m_mtxParent = m_pOwner->GetSkinnedMesh()->GetFinalBoneMtx(m_nBoneIndex);
 
-//	XMFLOAT3 pos = GetPosition();
-	XMStoreFloat4x4(&m_d3dxmtxWorld,  m_mtxParent);
-//	XMStoreFloat4x4(&m_d3dxmtxLocal, m_mtxParent);
-	Move(XMFLOAT3(100, 250, 100));
-//	Move(XMFLOAT3(0, 250, 0));
+	XMStoreFloat4x4(&m_d3dxmtxWorld, m_mtxParent * XMLoadFloat4x4(&m_pOwner->m_d3dxmtxWorld));
 
-//	ShowXMFloat4x4(m_d3dxmtxLocal);
-//	SetPosition(m_pCharacterObject->GetPosition());
-
-	TWBAR_MGR->g_xmf3Rotate.y = 180;
-	Rotate(TWBAR_MGR->g_xmf3Rotate);
-//	Move(TWBAR_MGR->g_xmf3Offset, true);
-	SetPosition(TWBAR_MGR->g_xmf3Offset.x, TWBAR_MGR->g_xmf3Offset.y, TWBAR_MGR->g_xmf3Offset.z, true);
+//	SetRotate(TWBAR_MGR->g_xmf3Rotate, true);
+//	SetPosition(TWBAR_MGR->g_xmf3Offset, true);
 }

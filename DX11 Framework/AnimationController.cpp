@@ -47,7 +47,7 @@ void CAnimationController::AddAnimation(tuple<AnimationData::CharacterAnim, Anim
 void CAnimationController::UpdateTime(float fTimeElapsed)
 {
 	float endTime = m_pSkinnedMesh->GetClipEndTime(m_pSkinnedMesh->GetClipName());
-	float timeElapse = get<1>(m_currAnimState).m_fSpeed * fTimeElapsed;
+	float timeElapse = get<1>(m_currAnimState).m_fSpeed * fTimeElapsed * TWBAR_MGR->g_fAnimationSpeed;
 
 	switch (GetAnimType()) {
 	case AnimationData::Type::eLoop:

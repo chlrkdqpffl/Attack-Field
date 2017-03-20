@@ -12,6 +12,7 @@ public:
 
 	// Etc
 	UINT g_nBoneIndex = 0;
+	float g_fAnimationSpeed = 1.0f;
 	XMFLOAT3 g_xmf3Offset = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3 g_xmf3Rotate = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	
