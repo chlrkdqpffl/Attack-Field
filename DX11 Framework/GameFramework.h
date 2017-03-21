@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Timer.h"
-
-#include "TerrainPlayer.h"
 #include "Scene_Main.h"
 #include "ScreenShader.h"
 
@@ -77,7 +75,7 @@ private:
 
 	CGameTimer						m_GameTimer;
 
-	CPlayer							*m_pPlayer;
+//	CPlayer							*m_pPlayer;
 	CCamera							*m_pCamera;
 
 	POINT							m_ptOldCursorPos;

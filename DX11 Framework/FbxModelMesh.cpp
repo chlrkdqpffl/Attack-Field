@@ -5,7 +5,7 @@
 CFbxModelMesh::CFbxModelMesh(ID3D11Device *pd3dDevice, const MeshTag meshTag, const float size)
 	: m_fModelSize(size)
 {
-	m_meshTag = meshTag;
+	m_tagMesh = meshTag;
 }
 
 CFbxModelMesh::~CFbxModelMesh()
@@ -18,7 +18,7 @@ CFbxModelMesh::~CFbxModelMesh()
 
 void CFbxModelMesh::Initialize(ID3D11Device *pd3dDevice)
 {
-	m_meshData = RESOURCE_MGR->CloneFbxMeshData(m_meshTag);
+	m_meshData = RESOURCE_MGR->CloneFbxMeshData(m_tagMesh);
 
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 

@@ -212,16 +212,22 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 #pragma endregion
 */
 #pragma region [Create Character]
-
-
 	m_pPlayerCharacter = new CTerroristCharacterObject();
 	m_pPlayerCharacter->CreateObjectData(pd3dDevice);
 	m_pPlayerCharacter->CreateAxisObject(pd3dDevice);
 	
 	m_pPlayerCharacter->SetPosition(100, 250, 100);
 
-	m_vObjectsVector.push_back(m_pPlayerCharacter);
+//	m_vObjectsVector.push_back(m_pPlayerCharacter);
 	
+	m_pPlayer = new CTerrainPlayer(m_pPlayerCharacter);
+	m_pPlayer->ChangeCamera(pd3dDevice, CameraTag::eThirdPerson, 0.0f);
+	SetPlayer(m_pPlayer);
+	m_pPlayer->SetPlayerUpdatedContext(pTerrain);
+	m_pPlayer->SetCameraUpdatedContext(pTerrain);
+	
+	SCENE_MGR->m_pPlayer = m_pPlayer;
+	m_pPlayer->SetPosition(XMVectorSet(100.0f, 300.0f, 100.0f, 0.0f));
 
 	/*
 	CCharacterObject* police = new CPoliceCharacterObject();

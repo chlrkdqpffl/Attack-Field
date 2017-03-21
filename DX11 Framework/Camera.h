@@ -30,7 +30,7 @@ protected:
 	float           				m_fRoll;
 	float           				m_fYaw;
 
-	DWORD							m_nMode;
+	CameraTag						m_tagCamera = CameraTag::eNone;
 
 	XMFLOAT3						m_d3dxvOffset;
 	float           				m_fTimeLag;
@@ -51,8 +51,8 @@ public:
 	CCamera(CCamera *pCamera);
 	virtual ~CCamera();
 
-	void SetMode(DWORD nMode) { m_nMode = nMode; }
-	DWORD GetMode() { return(m_nMode); }
+	void SetCameraTag(CameraTag tag) { m_tagCamera = tag; }
+	CameraTag GetCameraTag() const { return m_tagCamera; }
 
 	void GenerateViewMatrix();
 	void RegenerateViewMatrix();

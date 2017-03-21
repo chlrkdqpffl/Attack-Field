@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "TerrainPlayer.h"
 
-CTerrainPlayer::CTerrainPlayer()
+CTerrainPlayer::CTerrainPlayer(CCharacterObject* pCharacter)
+	: CPlayer(pCharacter)
 {
 }
 
@@ -9,38 +10,38 @@ CTerrainPlayer::~CTerrainPlayer()
 {
 }
 
-void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, DWORD nNewCameraMode, float fTimeElapsed)
+void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, float fTimeElapsed)
 {
-	DWORD nCurrentCameraMode = (m_pCamera) ? m_pCamera->GetMode() : 0x00;
-	if (nCurrentCameraMode == nNewCameraMode) return;
-	switch (nNewCameraMode)
+	CameraTag nCurrentCameraTag = (m_pCamera) ? m_pCamera->GetCameraTag() : CameraTag::eNone;
+	if (nCurrentCameraTag == nNewCameraTag) return;
+	switch (nNewCameraTag)
 	{
-	case FIRST_PERSON_CAMERA:
+	case CameraTag::eFirstPerson:
 		SetFriction(250.0f);
 		SetGravity(XMVectorSet(0.0f, -400.0f, 0.0f, 0.0f));
-		SetMaxVelocityXZ(300.0f);
+
 		SetMaxVelocityY(400.0f);
-		m_pCamera = OnChangeCamera(pd3dDevice, FIRST_PERSON_CAMERA, nCurrentCameraMode);
+		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFirstPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
 		m_pCamera->SetOffset(XMVectorSet(0.0f, 20.0f, 0.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		break;
-	case SPACESHIP_CAMERA:
+	case CameraTag::eSpaceShip:
 		SetFriction(125.0f);
 		SetGravity(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-		SetMaxVelocityXZ(300.0f);
+
 		SetMaxVelocityY(400.0f);
-		m_pCamera = OnChangeCamera(pd3dDevice, SPACESHIP_CAMERA, nCurrentCameraMode);
+		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eSpaceShip, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
 		m_pCamera->SetOffset(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		break;
-	case THIRD_PERSON_CAMERA:
+	case CameraTag::eThirdPerson:
 		SetFriction(250.0f);
 		SetGravity(XMVectorSet(0.0f, -250.0f, 0.0f, 0.0f));
-		SetMaxVelocityXZ(300.0f);
+		
 		SetMaxVelocityY(400.0f);
-		m_pCamera = OnChangeCamera(pd3dDevice, THIRD_PERSON_CAMERA, nCurrentCameraMode);
+		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eThirdPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.25f);
 		m_pCamera->SetOffset(XMVectorSet(0.0f, 20.0f, -50.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
@@ -48,6 +49,7 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, DWORD nNewCameraMode
 	default:
 		break;
 	}
+	SetMaxVelocityXZ(1000.0f);
 	Update(fTimeElapsed);
 }
 
@@ -85,7 +87,7 @@ void CTerrainPlayer::OnCameraUpdated(float fTimeElapsed)
 	{
 		d3dxvCameraPosition.y = fHeight;
 		m_pCamera->SetPosition(XMLoadFloat3(&d3dxvCameraPosition));
-		if (m_pCamera->GetMode() == THIRD_PERSON_CAMERA)
+		if (m_pCamera->GetCameraTag() == CameraTag::eThirdPerson)
 		{
 			CThirdPersonCamera *p3rdPersonCamera = (CThirdPersonCamera *)m_pCamera;
 			p3rdPersonCamera->SetLookAt(GetvPosition());

@@ -6,11 +6,11 @@
 class CAirplanePlayer : public CPlayer
 {
 public:
-	CAirplanePlayer();
+	CAirplanePlayer(CCharacterObject* pCharacter);
 	virtual ~CAirplanePlayer();
 
 	virtual void OnPrepareRender();
 
 	virtual void OnPlayerUpdated(float fTimeElapsed);
-	virtual void ChangeCamera(ID3D11Device *pd3dDevice, DWORD nNewCameraMode, float fTimeElapsed);
+	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, float fTimeElapsed);
 };

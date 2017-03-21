@@ -119,7 +119,7 @@ public:
 
 protected:
 	static UINT						m_iObjectId;
-	MeshTag							m_meshTag = MeshTag::eNone;
+	MeshTag							m_tagMesh = MeshTag::eNone;
 	CMesh							**m_ppMeshes = nullptr;
 	int								m_nMeshes = 0;
 
@@ -192,8 +192,8 @@ public:
 	XMVECTOR GetUp(bool bIsLocal = true);
 	XMVECTOR GetRight(bool bIsLocal = true);
 
-	void SetMeshTag(MeshTag tag) { m_meshTag = tag; }
-	MeshTag GetMeshTag() const { return m_meshTag; }
+	void SetMeshTag(MeshTag tag) { m_tagMesh = tag; }
+	MeshTag GetMeshTag() const { return m_tagMesh; }
 public:
 	static ID3D11Buffer				*m_pd3dcbWorldMatrix;
 	static ID3D11Buffer				*m_pd3dcbMaterialColors;

@@ -13,7 +13,6 @@ CGameFramework::CGameFramework()
 	m_pd3dDepthStencilBuffer = NULL;
 	m_pd3dDepthStencilView = NULL;
 
-	m_pPlayer = NULL;
 	m_pCamera = NULL;
 
 	m_nWndClientWidth = FRAME_BUFFER_WIDTH;
@@ -47,7 +46,9 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
+//	_CrtSetBreakAlloc(220);
+	//_CrtSetBreakAlloc(307509);
+	
 //	_CrtSetBreakAlloc(305984);	// 70	 - wstr 에서 오류
 //	_CrtSetBreakAlloc(255527);	// 70
 //	_CrtSetBreakAlloc(205);		// 16
@@ -137,7 +138,6 @@ bool CGameFramework::CreateDirect3DDisplay()
 	pAdapter->GetDesc(&adapterDesc);
 	m_ui64VideoMemory = (unsigned __int64)(adapterDesc.DedicatedVideoMemory + adapterDesc.SharedSystemMemory);
 	m_wsGraphicBrandName = adapterDesc.Description;
-	
 	
 #if !defined(DEBUG) && !defined(_DEBUG)
 	int gpu_index = 0;
@@ -340,6 +340,7 @@ void CGameFramework::OnDestroy()
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtDumpMemoryLeaks();
 #endif
+
 }
 
 void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -356,6 +357,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		if (false == m_bMouseBindFlag) {
 			ReleaseCapture();
 		}
+		break;
 	case WM_MOUSEMOVE:
 
 		break;
@@ -383,16 +385,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case VK_RETURN:
 			break;
-		case VK_F1:
-		case VK_F2:
-		case VK_F3:
-			if (m_pPlayer)
-			{
-				m_pPlayer->ChangeCamera(m_pd3dDevice, DWORD(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
-				m_pCamera = m_pPlayer->GetCamera();
-				SCENE_MGR->m_nowScene->SetCamera(m_pCamera);
-			}
-			break;
 		case VK_F5:
 		{
 			ScreenCapture(m_pd3dRenderTargetView);
@@ -418,9 +410,9 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		}
 		break;
 		case VK_F10:
-		{
+		
 			cout << "F10 안된다.";
-		}
+		
 		break;
 		default:
 			break;
@@ -430,11 +422,11 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		break;
 	case WM_KEYUP:
 		switch (wParam)	{
-		case VK_CONTROL:
-			m_bMouseBindFlag = false;
-			ShowCursor(false);
-			break;
-		}
+			case VK_CONTROL:
+				m_bMouseBindFlag = false;
+				ShowCursor(false);
+				break;
+			}
 		break;
 	}
 }
@@ -612,36 +604,36 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers();
 
-	CCubeMeshDiffused *pCubeMesh = new CCubeMeshDiffused(m_pd3dDevice, 4.0f, 12.0f, 4.0f);
-	m_pPlayer = new CTerrainPlayer();
-	m_pPlayer->AddRef();
-	m_pPlayer->SetMesh(pCubeMesh);
-	m_pPlayer->ChangeCamera(m_pd3dDevice, THIRD_PERSON_CAMERA, 0.0f);
-	CShader *pPlayerShader = new CShader();
-	pPlayerShader->CreateShader(m_pd3dDevice, m_pPlayer->GetMeshType());
-	m_pPlayer->SetShader(pPlayerShader);
-	m_pPlayer->CreateAxisObject(m_pd3dDevice);
+//	m_pPlayer = new CTerrainPlayer();
+//	m_pPlayer->AddRef();
+//	m_pPlayer->SetMesh(pCubeMesh);
+//	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson, 0.0f);
+//	CShader *pPlayerShader = new CShader();
+//	pPlayerShader->CreateShader(m_pd3dDevice, m_pPlayer->GetMeshType());
+//	m_pPlayer->SetShader(pPlayerShader);
+//	m_pPlayer->CreateAxisObject(m_pd3dDevice);
 
 	CScene* m_pScene = new CScene_Main();
-
 	SCENE_MGR->m_nowScene = m_pScene;
-	m_pScene->SetPlayer(m_pPlayer);
+	m_pScene->SetDevice(m_pd3dDevice);
+	m_pScene->SetDeviceContext(m_pd3dDeviceContext);
+
+//	m_pScene->SetPlayer(m_pPlayer);
 	m_pScene->BuildObjects(m_pd3dDevice);
 
-	CHeightMapTerrain *pTerrain = m_pScene->GetTerrain();
 //	m_pPlayer->SetPosition(XMVectorSet(pTerrain->GetWidth()*0.5f, 500.0f, pTerrain->GetLength()*0.5f, 0.0f));
-	m_pPlayer->SetPosition(XMVectorSet(100.0f, 300.0f, 100.0f, 0.0f));
+//	m_pPlayer->SetPosition(XMVectorSet(100.0f, 300.0f, 100.0f, 0.0f));
 
-	m_pPlayer->SetPlayerUpdatedContext(pTerrain);
-	m_pPlayer->SetCameraUpdatedContext(pTerrain);
+//	m_pPlayer->SetPlayerUpdatedContext(pTerrain);
+//	m_pPlayer->SetCameraUpdatedContext(pTerrain);
 
-	m_pCamera = m_pPlayer->GetCamera();
+	m_pCamera = m_pScene->GetPlayer()->GetCamera();
 	m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	m_pCamera->GenerateViewMatrix();
 
 	m_pScene->SetCamera(m_pCamera);
 
-	SCENE_MGR->m_pPlayer = m_pPlayer;
+
 	SCENE_MGR->m_pCamera = m_pCamera;
 
 	// Screen Shader
@@ -661,7 +653,6 @@ void CGameFramework::ReleaseObjects()
 	delete SCENE_MGR->m_nowScene;
 
 	SafeDelete(m_pScreenShader);
-	SafeDelete(m_pPlayer);
 }
 
 void CGameFramework::CreateConstantBuffers()
@@ -697,34 +688,14 @@ void CGameFramework::ReleaseConstantBuffers()
 
 void CGameFramework::ProcessInput()
 {
+	cout << "프로세스 인풋이 누를때마다 뜨는지 확인하고 플레이어 업데이트를 한 번만 호출해주기" << endl;
+
 	static UCHAR pKeysBuffer[256];
 	bool bProcessedByScene = false;
-	float fPlayerSpeed = 300;
 
-	if (GetKeyboardState(pKeysBuffer) && SCENE_MGR->m_nowScene) bProcessedByScene = SCENE_MGR->m_nowScene->ProcessInput(pKeysBuffer);
+//	if (GetKeyboardState(pKeysBuffer) && SCENE_MGR->m_nowScene) bProcessedByScene = SCENE_MGR->m_nowScene->ProcessInput(pKeysBuffer);
 	if (!bProcessedByScene)
 	{
-		DWORD dwDirection = 0;
-		if (pKeysBuffer[VK_UP] & 0xF0) dwDirection |= DIR_FORWARD;
-		if (pKeysBuffer[VK_W] & 0xF0) dwDirection |= DIR_FORWARD;
-
-		if (pKeysBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
-		if (pKeysBuffer[VK_S] & 0xF0) dwDirection |= DIR_BACKWARD;
-
-		if (pKeysBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
-		if (pKeysBuffer[VK_A] & 0xF0) dwDirection |= DIR_LEFT;
-
-		if (pKeysBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
-		if (pKeysBuffer[VK_D] & 0xF0) dwDirection |= DIR_RIGHT;
-
-		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
-		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
-
-		if (pKeysBuffer[VK_SHIFT] & 0xF0) 
-		{
-			fPlayerSpeed *= 100; 
-		}
-
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 		POINT ptCursorPos;
 		
@@ -740,8 +711,8 @@ void CGameFramework::ProcessInput()
 				SetCursorPos(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2);
 			}
 		}
-		
-		if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
+		/*
+		if ((cxDelta != 0.0f) || (cyDelta != 0.0f))
 		{
 			if (cxDelta || cyDelta)
 			{
@@ -750,19 +721,16 @@ void CGameFramework::ProcessInput()
 				else
 					m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
 			}
-			if (dwDirection) m_pPlayer->Move(dwDirection, fPlayerSpeed * m_GameTimer.GetTimeElapsed(), true);
 		}
+		*/
 	}
-	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
+	
 }
 
 void CGameFramework::UpdateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
-	
-	if (m_pPlayer) 
-		m_pPlayer->Animate(fTimeElapsed, NULL);
-	
+	SCENE_MGR->m_nowScene->SetTimeElapsed(fTimeElapsed);
 	SCENE_MGR->m_nowScene->UpdateObjects(fTimeElapsed);
 }
 
@@ -818,7 +786,6 @@ void CGameFramework::FrameAdvance()
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 	
-	if (m_pPlayer) m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
 	m_pCamera->SetViewport(m_pd3dDeviceContext);
 
 	// WireFrame Mode
@@ -832,9 +799,6 @@ void CGameFramework::FrameAdvance()
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
 	
-	if (m_pPlayer) 
-		m_pPlayer->Render(m_pd3dDeviceContext, m_pCamera);
-
 	SCENE_MGR->m_nowScene->RenderAllText(m_pd3dDeviceContext);		// 텍스트는 항상 제일 마지막에 그려야 정상적으로 그려짐
 
 	// Graphic Crad Info

@@ -18,7 +18,7 @@ CFbxModelSkinnedMesh::~CFbxModelSkinnedMesh()
 
 void CFbxModelSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 {
-	m_meshData = RESOURCE_MGR->CloneFbxMeshData(m_meshTag);
+	m_meshData = RESOURCE_MGR->CloneFbxMeshData(m_tagMesh);
 
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 

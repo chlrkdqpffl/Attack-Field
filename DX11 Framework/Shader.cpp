@@ -207,7 +207,7 @@ void CShader::CreateShader(ID3D11Device *pd3dDevice, D3D11_INPUT_ELEMENT_DESC *p
 	CreatePixelShaderFromFile(pd3dDevice, pszFileName, pszPSShaderName, pszPSShaderModel, &m_pd3dPixelShader);
 }
 
-void CShader::CreateShader(ID3D11Device *pd3dDevice, eShaderTag shaderTag)
+void CShader::CreateShader(ID3D11Device *pd3dDevice, ShaderTag shaderTag)
 {
 	cout << "여기 들어오면 안됨" << endl;
 	if (shaderTag == eShader_NormalMap) {

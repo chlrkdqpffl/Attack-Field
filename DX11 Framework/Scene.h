@@ -22,6 +22,7 @@
 #include "AxisObjects.h"
 
 // ----- Character -----
+#include "TerrainPlayer.h"
 #include "PoliceCharacterObject.h"
 #include "TerroristCharacterObject.h"
 
@@ -93,9 +94,15 @@ public:
 
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
 	void SetPlayer(CPlayer *pPlayer) { m_pPlayer = pPlayer; }
-
+	CPlayer* GetPlayer() const { return m_pPlayer; }
+	void SetDevice(ID3D11Device* pDevice) { m_pd3dDevice = pDevice; }
+	void SetDeviceContext(ID3D11DeviceContext* pDeviceContext) { m_pd3dDeviceContext = pDeviceContext; }
+	void SetTimeElapsed(float fTimeElapsed) { m_fTimeElapsed = fTimeElapsed; }
 
 protected:
+	ID3D11Device					*m_pd3dDevice = nullptr;
+	ID3D11DeviceContext				*m_pd3dDeviceContext = nullptr;
+
 	CGameObject						**m_ppObjects;
 	int								m_nObjects;
 
@@ -103,7 +110,6 @@ protected:
 	vector<CObjectsShader*>				m_vObjectsShaderVector;
 	vector<CInstancedObjectsShader*>	m_vInstancedObjectsShaderVector;
 
-	CPlayer							*m_pPlayer;
 	CCamera							*m_pCamera;
 	CGameObject						*m_pSelectedObject;
 	CAxisObjects					*m_pWorldCenterAxis = nullptr;
@@ -120,5 +126,7 @@ protected:
 	CParticleSystem					*m_pParticleSystem;
 
 
+	float							m_fTimeElapsed = 0.0f;
+	CPlayer							*m_pPlayer = nullptr;
 	CCharacterObject				*m_pPlayerCharacter = nullptr;
 };

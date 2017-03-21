@@ -4,10 +4,10 @@
 
 CThirdPersonCamera::CThirdPersonCamera(CCamera *pCamera) : CCamera(pCamera)
 {
-	m_nMode = THIRD_PERSON_CAMERA;
+	m_tagCamera = CameraTag::eThirdPerson;
 	if (pCamera)
 	{
-		if (pCamera->GetMode() == SPACESHIP_CAMERA)
+		if (pCamera->GetCameraTag() == CameraTag::eSpaceShip)
 		{
 			XMStoreFloat3(&m_d3dxvUp, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 			m_d3dxvRight.y = 0.0f;

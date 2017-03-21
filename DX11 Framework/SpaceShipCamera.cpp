@@ -3,7 +3,7 @@
 
 CSpaceShipCamera::CSpaceShipCamera(CCamera *pCamera) : CCamera(pCamera)
 {
-	m_nMode = SPACESHIP_CAMERA;
+	m_tagCamera = CameraTag::eSpaceShip;
 }
 
 CSpaceShipCamera::~CSpaceShipCamera()

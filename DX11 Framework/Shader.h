@@ -63,7 +63,7 @@ public:
 	virtual void CreateShader(ID3D11Device *pd3dDevice) { }
 	virtual void CreateShader(ID3D11Device *pd3dDevice, UINT nType);
 	virtual void CreateShader(ID3D11Device *pd3dDevice, D3D11_INPUT_ELEMENT_DESC *pd3dInputElementDesc, int nInputElements, WCHAR *pszFileName, LPCSTR pszVSShaderName, LPCSTR pszVSShaderModel, LPCSTR pszPSShaderName, LPCSTR pszPSShaderModel);
-	virtual void CreateShader(ID3D11Device *pd3dDevice, eShaderTag shaderTag);
+	virtual void CreateShader(ID3D11Device *pd3dDevice, ShaderTag shaderTag);
 
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void ReleaseShaderVariables();

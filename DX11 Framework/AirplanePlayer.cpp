@@ -2,7 +2,8 @@
 #include "AirplanePlayer.h"
 
 
-CAirplanePlayer::CAirplanePlayer()
+CAirplanePlayer::CAirplanePlayer(CCharacterObject* pCharacter)
+	: CPlayer(pCharacter)
 {
 }
 
@@ -15,38 +16,38 @@ void CAirplanePlayer::OnPrepareRender()
 	CPlayer::OnPrepareRender();
 }
 
-void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, DWORD nNewCameraMode, float fTimeElapsed)
+void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, float fTimeElapsed)
 {
-	DWORD nCurrentCameraMode = (m_pCamera) ? m_pCamera->GetMode() : 0x00;
-	if (nCurrentCameraMode == nNewCameraMode) return;
-	switch (nNewCameraMode)
+	CameraTag nCurrentCameraTag = (m_pCamera) ? m_pCamera->GetCameraTag() : CameraTag::eNone;
+	if (nCurrentCameraTag == nNewCameraTag) return;
+	switch (nNewCameraTag)
 	{
-	case FIRST_PERSON_CAMERA:
+	case CameraTag::eFirstPerson:
 		SetFriction(200.0f);
 		SetGravity(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 		SetMaxVelocityXZ(125.0f);
 		SetMaxVelocityY(400.0f);
-		m_pCamera = OnChangeCamera(pd3dDevice, FIRST_PERSON_CAMERA, nCurrentCameraMode);
+		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFirstPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
 		m_pCamera->SetOffset(XMVectorSet(0.0f, 20.0f, 0.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 50000.0f, ASPECT_RATIO, 60.0f);
 		break;
-	case SPACESHIP_CAMERA:
+	case CameraTag::eSpaceShip:
 		SetFriction(125.0f);
 		SetGravity(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 		SetMaxVelocityXZ(400.0f);
 		SetMaxVelocityY(400.0f);
-		m_pCamera = OnChangeCamera(pd3dDevice, SPACESHIP_CAMERA, nCurrentCameraMode);
+		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eSpaceShip, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
 		m_pCamera->SetOffset(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 50000.0f, ASPECT_RATIO, 60.0f);
 		break;
-	case THIRD_PERSON_CAMERA:
+	case CameraTag::eThirdPerson:
 		SetFriction(250.0f);
 		SetGravity(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 		SetMaxVelocityXZ(125.0f);
 		SetMaxVelocityY(400.0f);
-		m_pCamera = OnChangeCamera(pd3dDevice, THIRD_PERSON_CAMERA, nCurrentCameraMode);
+		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eThirdPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.25f);
 		m_pCamera->SetOffset(XMVectorSet(0.0f, 25.0f, -35.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 50000.0f, ASPECT_RATIO, 60.0f);

@@ -4,7 +4,7 @@
 
 CTerroristCharacterObject::CTerroristCharacterObject()
 {
-	m_meshTag = MeshTag::eTerrorist;
+	m_tagMesh = MeshTag::eTerrorist;
 }
 
 CTerroristCharacterObject::~CTerroristCharacterObject()

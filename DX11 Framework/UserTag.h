@@ -1,11 +1,40 @@
 #pragma once
 
+// ========================================================================================================================== //
+// ====================================================== KeyInput ========================================================== //
 
-enum eSceneTag {
+enum class KeyInput
+{
+	eNone,
+
+	// Direction & Moving
+	eForward		= 0x01,
+	eBackward		= 0x02,
+	eLeft			= 0x04,
+	eRight			= 0x08,
+	eRun			= 0x10,
+
+	// Mouse
+	eLeftMouse		= 0x20,
+	eRightMouse		= 0x40,
+	eMouseWheel		= 0x80,		// 휠 위아래는 추후 구현
+
+};
+
+enum class CameraTag 
+{
+	eNone,
+
+	eFirstPerson, eSpaceShip, eThirdPerson,
+
+	eDeadCam, eFreeCam
+};
+
+enum SceneTag {
 	eScene_Title, eScene_Loading, eScene_Main
 };
 
-enum eShaderTag {
+enum ShaderTag {
 	eShader_NormalMap
 };
 

@@ -33,12 +33,14 @@ bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 	{
 	case WM_LBUTTONDOWN:
 //		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam));
+		m_pPlayer->SetKeyDown(KeyInput::eLeftMouse);
+		break;
+	case WM_LBUTTONUP:
+		m_pPlayer->SetKeyUp(KeyInput::eLeftMouse);
 		break;
 	case WM_RBUTTONDOWN:
 		break;
 	case WM_MOUSEMOVE:
-		break;
-	case WM_LBUTTONUP:
 		break;
 	case WM_RBUTTONUP:
 		break;
@@ -53,49 +55,83 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	switch (nMessageID) {
 	case WM_KEYDOWN:
 		switch (wParam) {
-		case '1':
-		{
-			cout << "RGB Axis Option" << endl;
-			GLOBAL_MGR->g_bShowWorldAxis = !GLOBAL_MGR->g_bShowWorldAxis;
-		}
-		break;
-		case '2':
-		{
-			cout << "Fog Option" << endl;
-			GLOBAL_MGR->g_vRenderOption.x = !GLOBAL_MGR->g_vRenderOption.x;
-		
-			D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-			STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Map(GLOBAL_MGR->g_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-			XMFLOAT4 *pcbRenderOption = (XMFLOAT4 *)d3dMappedResource.pData;
-			*pcbRenderOption = GLOBAL_MGR->g_vRenderOption;
-			STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
+			case '1':
+				cout << "RGB Axis Option" << endl;
+				GLOBAL_MGR->g_bShowWorldAxis = !GLOBAL_MGR->g_bShowWorldAxis;
 			break;
-		}
-		case '3':
-		{
-			//	cout << "后 加己" << endl;
+			case '2':
+			{
+				cout << "Fog Option" << endl;
+				GLOBAL_MGR->g_vRenderOption.x = !GLOBAL_MGR->g_vRenderOption.x;
+			
+				D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Map(GLOBAL_MGR->g_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+				XMFLOAT4 *pcbRenderOption = (XMFLOAT4 *)d3dMappedResource.pData;
+				*pcbRenderOption = GLOBAL_MGR->g_vRenderOption;
+				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
+				break;
+			}
+			case '3':
+			
+				//	cout << "后 加己" << endl;
+
+				break;
+			case '4':
+			{	
+				cout << "BoundingBox Rendering Option" << endl;
+				GLOBAL_MGR->g_vRenderOption.y = !GLOBAL_MGR->g_vRenderOption.y;
+
+				D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Map(GLOBAL_MGR->g_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+				XMFLOAT4 *pcbRenderOption = (XMFLOAT4 *)d3dMappedResource.pData;
+				*pcbRenderOption = GLOBAL_MGR->g_vRenderOption;
+				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
 
 			break;
-		}
-		case '4':
-		{	
-			cout << "BoundingBox Rendering Option" << endl;
-			GLOBAL_MGR->g_vRenderOption.y = !GLOBAL_MGR->g_vRenderOption.y;
-
-			D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-			STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Map(GLOBAL_MGR->g_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-			XMFLOAT4 *pcbRenderOption = (XMFLOAT4 *)d3dMappedResource.pData;
-			*pcbRenderOption = GLOBAL_MGR->g_vRenderOption;
-			STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
-
+			}
+		case VK_W:
+			m_pPlayer->SetKeyDown(KeyInput::eForward);
 			break;
-		}
+		case VK_S:
+			m_pPlayer->SetKeyDown(KeyInput::eBackward);
+			break;
+		case VK_A:
+			m_pPlayer->SetKeyDown(KeyInput::eLeft);
+			break;
+		case VK_D:
+			m_pPlayer->SetKeyDown(KeyInput::eRight);
+			break;
+		case VK_SHIFT:
+			m_pPlayer->SetKeyDown(KeyInput::eRun);
+			break;
+		case VK_F1:
+		case VK_F2:
+		case VK_F3:
+			if (m_pPlayer)
+			{
+				m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag(wParam - VK_F1 + 1), m_fTimeElapsed);
+				m_pCamera = m_pPlayer->GetCamera();
+				SCENE_MGR->m_nowScene->SetCamera(m_pCamera);
+			}
+			break;
 		}
 		break;
 	case WM_KEYUP:
 		switch (wParam) {
-		case VK_A:
-
+			case VK_W:
+				m_pPlayer->SetKeyUp(KeyInput::eForward);
+			break;
+			case VK_S:
+				m_pPlayer->SetKeyUp(KeyInput::eBackward);
+			break;
+			case VK_A:
+				m_pPlayer->SetKeyUp(KeyInput::eLeft);
+			break;
+			case VK_D:
+				m_pPlayer->SetKeyUp(KeyInput::eRight);
+			break;
+			case VK_SHIFT:
+				m_pPlayer->SetKeyUp(KeyInput::eRun);
 			break;
 		}
 		break;
@@ -149,6 +185,9 @@ void CScene::ReleaseObjects()
 	m_vInstancedObjectsShaderVector.clear();
 
 	CScene::ReleaseConstantBuffers();
+
+	SafeDelete(m_pPlayer);
+	SafeDelete(m_pPlayerCharacter);
 }
 
 void CScene::CreateConstantBuffers(ID3D11Device *pd3dDevice)
@@ -255,7 +294,13 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 
 void CScene::UpdateObjects(float fTimeElapsed)
 {
-	CScene::UpdateConstantBuffers(STATEOBJ_MGR->g_pd3dImmediateDeviceContext);
+	if (m_pPlayer) {
+		m_pPlayer->Animate(fTimeElapsed, NULL);
+		m_pPlayer->Update(fTimeElapsed);
+		m_pPlayer->UpdateKeyInput(fTimeElapsed);
+		m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
+	}
+	CScene::UpdateConstantBuffers(m_pd3dDeviceContext);
 	
 	if(m_pSkyBox) m_pSkyBox->Update(fTimeElapsed, NULL);
 	if(m_pTerrain) m_pTerrain->Update(fTimeElapsed, NULL);
@@ -284,6 +329,9 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 	
 	if (m_pTerrain->IsVisible(pCamera)) 
 		m_pTerrain->Render(pd3dDeviceContext, pCamera);
+
+	if (m_pPlayer)
+		m_pPlayer->Render(m_pd3dDeviceContext, m_pCamera);
 
 	if (GLOBAL_MGR->g_bShowWorldAxis) m_pWorldCenterAxis->Render(pd3dDeviceContext, pCamera);
 	

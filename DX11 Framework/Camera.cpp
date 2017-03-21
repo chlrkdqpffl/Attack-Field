@@ -34,7 +34,6 @@ CCamera::CCamera(CCamera *pCamera)
 		m_fYaw = 0.0f;
 		m_fTimeLag = 0.0f;
 		XMStoreFloat3(&m_d3dxvOffset, XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-		m_nMode = 0x00;
 		m_pPlayer = NULL;
 		XMStoreFloat4x4(&m_d3dxmtxView, XMMatrixIdentity());
 		XMStoreFloat4x4(&m_d3dxmtxProjection, XMMatrixIdentity());
