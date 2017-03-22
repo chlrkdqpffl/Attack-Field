@@ -24,6 +24,7 @@ public:
 
 	// ------ Get, Setter ------ //
 	CFbxModelSkinnedMesh* GetSkinnedMesh() const { return m_pSkinnedMesh; }
+	AnimationData::CharacterAnim GetAnimation() const { return m_pAnimController->GetAnimEnum(); }
 
 	void SetMesh(CFbxModelSkinnedMesh* mesh);
 	void SetAnimation(AnimationData::CharacterAnim anim, float speed = 1.0f);

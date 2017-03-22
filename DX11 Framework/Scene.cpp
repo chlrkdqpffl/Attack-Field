@@ -33,10 +33,9 @@ bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 	{
 	case WM_LBUTTONDOWN:
 //		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam));
-		m_pPlayer->SetKeyDown(KeyInput::eLeftMouse);
+	
 		break;
 	case WM_LBUTTONUP:
-		m_pPlayer->SetKeyUp(KeyInput::eLeftMouse);
 		break;
 	case WM_RBUTTONDOWN:
 		break;
@@ -89,49 +88,12 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 
 			break;
 			}
-		case VK_W:
-			m_pPlayer->SetKeyDown(KeyInput::eForward);
-			break;
-		case VK_S:
-			m_pPlayer->SetKeyDown(KeyInput::eBackward);
-			break;
-		case VK_A:
-			m_pPlayer->SetKeyDown(KeyInput::eLeft);
-			break;
-		case VK_D:
-			m_pPlayer->SetKeyDown(KeyInput::eRight);
-			break;
-		case VK_SHIFT:
-			m_pPlayer->SetKeyDown(KeyInput::eRun);
-			break;
-		case VK_F1:
-		case VK_F2:
-		case VK_F3:
-			if (m_pPlayer)
-			{
-				m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag(wParam - VK_F1 + 1), m_fTimeElapsed);
-				m_pCamera = m_pPlayer->GetCamera();
-			}
-			break;
+		
 		}
 		break;
 	case WM_KEYUP:
 		switch (wParam) {
-			case VK_W:
-				m_pPlayer->SetKeyUp(KeyInput::eForward);
-			break;
-			case VK_S:
-				m_pPlayer->SetKeyUp(KeyInput::eBackward);
-			break;
-			case VK_A:
-				m_pPlayer->SetKeyUp(KeyInput::eLeft);
-			break;
-			case VK_D:
-				m_pPlayer->SetKeyUp(KeyInput::eRight);
-			break;
-			case VK_SHIFT:
-				m_pPlayer->SetKeyUp(KeyInput::eRun);
-			break;
+			
 		}
 		break;
 	}

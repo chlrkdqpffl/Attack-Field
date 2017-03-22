@@ -22,15 +22,17 @@ bool CScene_Main::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 		if (m_pSelectedObject)
 			cout << m_pSelectedObject->GetPosition().x << ", " << m_pSelectedObject->GetPosition().y << ", " << m_pSelectedObject->GetPosition().z << endl;
 			*/
-
+		m_pPlayer->SetKeyDown(KeyInput::eLeftMouse);
+		m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eStanding_Fire);
+		break;
+	case WM_LBUTTONUP:
+		m_pPlayer->SetKeyUp(KeyInput::eLeftMouse);
 		break;
 	case WM_RBUTTONDOWN:
 		break;
-	case WM_MOUSEMOVE:
-		break;
-	case WM_LBUTTONUP:
-		break;
 	case WM_RBUTTONUP:
+		break;
+	case WM_MOUSEMOVE:
 		break;
 	default:
 		break;
@@ -45,24 +47,61 @@ bool CScene_Main::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 	switch (nMessageID) {
 		case WM_KEYDOWN:
 			switch (wParam) {
-				case VK_Z:
-					m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eIdle);
+			case VK_W:
+				m_pPlayer->SetKeyDown(KeyInput::eForward);
 				break;
-				case VK_X:
-					m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
+			case VK_S:
+				m_pPlayer->SetKeyDown(KeyInput::eBackward);
 				break;
-				case VK_C:
-					m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
-					break;
-				case VK_V:
-					m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eStanding_Fire);
-					break;
+			case VK_A:
+				m_pPlayer->SetKeyDown(KeyInput::eLeft);
+				break;
+			case VK_D:
+				m_pPlayer->SetKeyDown(KeyInput::eRight);
+				break;
+			case VK_SHIFT:
+				m_pPlayer->SetKeyDown(KeyInput::eRun);
+				break;
+			case VK_F1:
+			case VK_F2:
+			case VK_F3:
+				if (m_pPlayer)
+				{
+					m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag(wParam - VK_F1 + 1), m_fTimeElapsed);
+					m_pCamera = m_pPlayer->GetCamera();
+				}
+				break;
+			case VK_Z:
+				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eIdle);
+				break;
+			case VK_X:
+				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
+				break;
+			case VK_C:
+				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
+				break;
+			case VK_V:
+				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eStanding_Fire);
+				break;
 			}
 			break;
 		case WM_KEYUP:
 			switch (wParam) {
-				case VK_A:
-					
+			case VK_W:
+				m_pPlayer->SetKeyUp(KeyInput::eForward);
+				break;
+			case VK_S:
+				m_pPlayer->SetKeyUp(KeyInput::eBackward);
+				break;
+			case VK_A:
+				m_pPlayer->SetKeyUp(KeyInput::eLeft);
+				break;
+			case VK_D:
+				m_pPlayer->SetKeyUp(KeyInput::eRight);
+				break;
+			case VK_SHIFT:
+				m_pPlayer->SetKeyUp(KeyInput::eRun);
+				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 				break;
 			}
 			break;
@@ -216,10 +255,10 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_pPlayerCharacter->CreateObjectData(pd3dDevice);
 	m_pPlayerCharacter->CreateAxisObject(pd3dDevice);
 	
-	m_pPlayerCharacter->SetPosition(100, 250, 100);
+//	m_pPlayerCharacter->SetPosition(100, 250, 100);
+//	m_pPlayerCharacter->SetPosition(0, 150, 0, true);
+	m_pPlayerCharacter->SetRotate(0, 180, 0, true);
 
-//	m_vObjectsVector.push_back(m_pPlayerCharacter);
-	
 	m_pPlayer = new CTerrainPlayer(m_pPlayerCharacter);
 	m_pPlayer->ChangeCamera(pd3dDevice, CameraTag::eThirdPerson, 0.0f);
 	SetPlayer(m_pPlayer);
@@ -552,7 +591,7 @@ void CScene_Main::UpdateObjects(float fTimeElapsed)
 		XMVECTOR d3dxvTerrainCenter = XMVectorSet(pTerrain->GetWidth()*0.5f, pTerrain->GetPeakHeight() + 10.0f, pTerrain->GetLength()*0.5f, 0.0f);
 		XMStoreFloat3(&m_pLights->m_pLights[0].m_d3dxvPosition, d3dxvTerrainCenter + d3dxvRotated);
 		m_pLights->m_pLights[0].m_fRange = pTerrain->GetPeakHeight();
-
+		
 		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvPosition, m_pPlayer->GetvPosition());
 		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvDirection, m_pPlayer->GetLookVector());
 

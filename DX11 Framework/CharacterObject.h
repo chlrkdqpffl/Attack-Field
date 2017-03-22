@@ -17,6 +17,7 @@ protected:
 
 public:
 	virtual void CreateObjectData(ID3D11Device *pd3dDevice) override;
+	void Fire();
 	virtual void Update(float fTimeElapsed) override;
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 };

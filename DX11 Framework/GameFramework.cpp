@@ -792,14 +792,12 @@ void CGameFramework::FrameAdvance()
 			exit(0);
 		}	
 	}
-	cout << endl;
 	m_pDXGISwapChain->Present(0, 0);
 
 	m_GameTimer.SetTitleName(m_strTitleName);
 	::SetWindowText(m_hWnd, m_strTitleName.c_str());
 	m_pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
 }
-
 
 void CGameFramework::RenderAllText()
 {

@@ -49,21 +49,53 @@ void CPlayer::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 //	m_pCharacter->
 }
 
-void CPlayer::UpdateKeyInput(float fTimeElapsed)
+void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계를 확실히 해야함. 일단 임시로 제작
 {
 	// Keyboard
 	XMVECTOR d3dxvShift = XMVectorZero();
 
-	if (m_wKeyState & static_cast<int>(KeyInput::eForward))		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
-	if (m_wKeyState & static_cast<int>(KeyInput::eBackward))	d3dxvShift -= XMLoadFloat3(&m_d3dxvLook);
-	if (m_wKeyState & static_cast<int>(KeyInput::eRight))		d3dxvShift += XMLoadFloat3(&m_d3dxvRight);
-	if (m_wKeyState & static_cast<int>(KeyInput::eLeft))		d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
+	if (m_wKeyState & static_cast<int>(KeyInput::eForward)) {
+		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
 
-	if (m_wKeyState & static_cast<int>(KeyInput::eRun))			d3dxvShift *= 10;		// m_fSpeed 로 변경해야함
+		if(m_pCharacter->GetAnimation() != AnimationData::CharacterAnim::eRun)
+			m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
+	}
+
+	if (m_wKeyState & static_cast<int>(KeyInput::eBackward)) {
+		d3dxvShift -= XMLoadFloat3(&m_d3dxvLook);
+		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
+	}
+
+	if (m_wKeyState & static_cast<int>(KeyInput::eRight)) {
+		d3dxvShift += XMLoadFloat3(&m_d3dxvRight);
+		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
+	}
+
+	if (m_wKeyState & static_cast<int>(KeyInput::eLeft)) {
+		d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
+		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
+	}
+
+	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
+		d3dxvShift *= 10;		// m_fSpeed 로 변경해야함
+		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
+	}
+
 
 	// Mouse
-//	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse))	d3dxvShift *= 10;
-//	if (m_wKeyState & static_cast<int>(KeyInput::eRightMouse))	d3dxvShift *= 10;
+	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)) {
+		d3dxvShift *= 10;
+		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eStanding_Fire);
+	}
+	if (m_wKeyState & static_cast<int>(KeyInput::eRightMouse)) {
+		d3dxvShift *= 10;
+
+	}
+
+
+	if (m_wKeyState == 0) {
+		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eIdle);
+	}
 
 	d3dxvShift *= m_fSpeed * fTimeElapsed;
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
@@ -73,6 +105,7 @@ void CPlayer::Move(XMVECTOR d3dxvShift, bool bUpdateVelocity)
 {
 	if (bUpdateVelocity)
 	{
+		cout << "여기를 안들어오는 것 같다. 추후 지우기";
 		cout << "무브";
 		ShowXMFloat3(m_d3dxvVelocity);
 		XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
@@ -159,12 +192,12 @@ void CPlayer::Update(float fTimeElapsed)
 		m_d3dxvVelocity.x *= (fMaxVelocityXZ / fLength);
 		m_d3dxvVelocity.z *= (fMaxVelocityXZ / fLength);
 	}
+	
+	// Apply Gravity
 	float fMaxVelocityY = m_fMaxVelocityY * fTimeElapsed;
 	fLength = sqrtf(m_d3dxvVelocity.y * m_d3dxvVelocity.y);
 	if (fLength > fMaxVelocityY) m_d3dxvVelocity.y *= (fMaxVelocityY / fLength);
 
-//	ShowXMFloat3(m_d3dxvVelocity);
-//	cout << endl;
 	Move(XMLoadFloat3(&m_d3dxvVelocity), false);
 	if (m_pPlayerUpdatedContext) OnPlayerUpdated(fTimeElapsed);
 
@@ -174,6 +207,7 @@ void CPlayer::Update(float fTimeElapsed)
 	if (nCurrentCameraTag == CameraTag::eThirdPerson) m_pCamera->SetLookAt(XMLoadFloat3(&m_d3dxvPosition));
 	m_pCamera->RegenerateViewMatrix();
 
+	// Apply Deceleration 
 	XMVECTOR d3dxvDeceleration = -XMLoadFloat3(&m_d3dxvVelocity);
 	d3dxvDeceleration = XMVector3Normalize(d3dxvDeceleration);
 	fLength = XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_d3dxvVelocity)));
