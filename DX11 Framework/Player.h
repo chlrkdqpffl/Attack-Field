@@ -4,8 +4,7 @@
 #include "Camera.h"
 
 class CCharacterObject;
-class CPlayer 
-	//: public CGameObject
+class CPlayer //: public CGameObject
 //class CPlayer : public CSkinnedObject
 {
 protected:
@@ -43,7 +42,6 @@ public:
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
 	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag, float fTimeElapsed);
 	virtual void OnPrepareRender();
-	virtual void Animate(float fTimeElapsed, XMMATRIX *pd3dxmtxParent);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 
 	CCamera *OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag);

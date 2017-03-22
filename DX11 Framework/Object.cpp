@@ -738,7 +738,7 @@ void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 
 	if (!XMMatrixIsIdentity(XMLoadFloat4x4(&m_d3dxmtxLocal)))
 		XMStoreFloat4x4(&m_d3dxmtxWorld, XMLoadFloat4x4(&m_d3dxmtxLocal) * XMLoadFloat4x4(&m_d3dxmtxWorld));
-
+	
 	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&m_d3dxmtxWorld));
 	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
 

@@ -5,11 +5,10 @@
 class CSceneManager : public CSingletonManager<CSceneManager>
 {
 public:
-	CScene				*m_nowScene		= nullptr;
-	CPlayer				*m_pPlayer		= nullptr;
-	CCamera				*m_pCamera		= nullptr;
-	ULONG				fFrameRate		= 0;
-	float				fTimeElapsed	= 0.0f;
+	CScene				*g_nowScene		= nullptr;
+	CPlayer				*g_pPlayer		= nullptr;
+	CCamera				*g_pCamera		= nullptr;
+	float				g_fTimeElapsed	= 0.0f;
 
 	CSceneManager();
 	virtual ~CSceneManager();

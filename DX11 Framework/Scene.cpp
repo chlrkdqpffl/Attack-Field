@@ -111,7 +111,6 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			{
 				m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag(wParam - VK_F1 + 1), m_fTimeElapsed);
 				m_pCamera = m_pPlayer->GetCamera();
-				SCENE_MGR->m_nowScene->SetCamera(m_pCamera);
 			}
 			break;
 		}
@@ -294,12 +293,7 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 
 void CScene::UpdateObjects(float fTimeElapsed)
 {
-	if (m_pPlayer) {
-		m_pPlayer->Animate(fTimeElapsed, NULL);
-		m_pPlayer->Update(fTimeElapsed);
-		m_pPlayer->UpdateKeyInput(fTimeElapsed);
-		m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
-	}
+	
 	CScene::UpdateConstantBuffers(m_pd3dDeviceContext);
 	
 	if(m_pSkyBox) m_pSkyBox->Update(fTimeElapsed, NULL);
@@ -308,6 +302,14 @@ void CScene::UpdateObjects(float fTimeElapsed)
 
 	for (auto object : m_vObjectsVector)
 		object->Update(fTimeElapsed);
+
+	if (m_pPlayer) {
+		m_pPlayer->OnPrepareRender();
+		m_pPlayer->Update(fTimeElapsed);
+		m_pPlayer->UpdateKeyInput(fTimeElapsed);
+		m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
+		
+	}
 
 	/*
 	for (auto shaderObject : m_vObjectsShaderVector)
@@ -350,16 +352,4 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 
 void CScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 {
-	string str;
-	
-	// Draw FrameRate
-	int fps = (int)SCENE_MGR->fFrameRate;
-	str = to_string(fps) + " FPS";
-
-	if (60 <= fps)
-		TEXT_MGR->RenderText(pd3dDeviceContext, str, 40, 1500, 20, 0xFFFFFFFF, FW1_LEFT);
-	else if(30 <= fps && fps < 60)
-		TEXT_MGR->RenderText(pd3dDeviceContext, str, 40, 1500, 20, 0xFF1270FF, FW1_LEFT);
-	else if (fps < 30)
-		TEXT_MGR->RenderText(pd3dDeviceContext, str, 40, 1500, 20, 0xFF0000FF, FW1_LEFT);
 }

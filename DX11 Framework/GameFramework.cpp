@@ -345,7 +345,7 @@ void CGameFramework::OnDestroy()
 
 void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	SCENE_MGR->m_nowScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
+	SCENE_MGR->g_nowScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
 		if (false == m_bMouseBindFlag) {
@@ -368,7 +368,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 
 void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	SCENE_MGR->m_nowScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+	SCENE_MGR->g_nowScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 	switch (nMessageID)
 	{
 	case WM_KEYDOWN:
@@ -604,28 +604,11 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers();
 
-//	m_pPlayer = new CTerrainPlayer();
-//	m_pPlayer->AddRef();
-//	m_pPlayer->SetMesh(pCubeMesh);
-//	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson, 0.0f);
-//	CShader *pPlayerShader = new CShader();
-//	pPlayerShader->CreateShader(m_pd3dDevice, m_pPlayer->GetMeshType());
-//	m_pPlayer->SetShader(pPlayerShader);
-//	m_pPlayer->CreateAxisObject(m_pd3dDevice);
-
 	CScene* m_pScene = new CScene_Main();
-	SCENE_MGR->m_nowScene = m_pScene;
+	SCENE_MGR->g_nowScene = m_pScene;
 	m_pScene->SetDevice(m_pd3dDevice);
 	m_pScene->SetDeviceContext(m_pd3dDeviceContext);
-
-//	m_pScene->SetPlayer(m_pPlayer);
 	m_pScene->BuildObjects(m_pd3dDevice);
-
-//	m_pPlayer->SetPosition(XMVectorSet(pTerrain->GetWidth()*0.5f, 500.0f, pTerrain->GetLength()*0.5f, 0.0f));
-//	m_pPlayer->SetPosition(XMVectorSet(100.0f, 300.0f, 100.0f, 0.0f));
-
-//	m_pPlayer->SetPlayerUpdatedContext(pTerrain);
-//	m_pPlayer->SetCameraUpdatedContext(pTerrain);
 
 	m_pCamera = m_pScene->GetPlayer()->GetCamera();
 	m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
@@ -634,7 +617,7 @@ void CGameFramework::BuildObjects()
 	m_pScene->SetCamera(m_pCamera);
 
 
-	SCENE_MGR->m_pCamera = m_pCamera;
+	SCENE_MGR->g_pCamera = m_pCamera;
 
 	// Screen Shader
 	m_pScreenShader = new CScreenShader();
@@ -649,8 +632,8 @@ void CGameFramework::ReleaseObjects()
 {
 	ReleaseConstantBuffers();
 
-	SCENE_MGR->m_nowScene->ReleaseObjects();
-	delete SCENE_MGR->m_nowScene;
+	SCENE_MGR->g_nowScene->ReleaseObjects();
+	delete SCENE_MGR->g_nowScene;
 
 	SafeDelete(m_pScreenShader);
 }
@@ -688,8 +671,6 @@ void CGameFramework::ReleaseConstantBuffers()
 
 void CGameFramework::ProcessInput()
 {
-	cout << "프로세스 인풋이 누를때마다 뜨는지 확인하고 플레이어 업데이트를 한 번만 호출해주기" << endl;
-
 	static UCHAR pKeysBuffer[256];
 	bool bProcessedByScene = false;
 
@@ -711,27 +692,29 @@ void CGameFramework::ProcessInput()
 				SetCursorPos(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2);
 			}
 		}
-		/*
+		
 		if ((cxDelta != 0.0f) || (cyDelta != 0.0f))
 		{
 			if (cxDelta || cyDelta)
 			{
 				if (pKeysBuffer[VK_RBUTTON] & 0xF0)
-					m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
+					SCENE_MGR->g_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
 				else
-					m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+					SCENE_MGR->g_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
 			}
 		}
-		*/
 	}
 	
 }
 
 void CGameFramework::UpdateObjects()
 {
-	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
-	SCENE_MGR->m_nowScene->SetTimeElapsed(fTimeElapsed);
-	SCENE_MGR->m_nowScene->UpdateObjects(fTimeElapsed);
+	m_fTimeElapsed = m_GameTimer.GetTimeElapsed();
+	m_nFrameRate = m_GameTimer.GetFrameRate();
+
+	SCENE_MGR->g_fTimeElapsed = m_fTimeElapsed;
+	SCENE_MGR->g_nowScene->SetTimeElapsed(m_fTimeElapsed);
+	SCENE_MGR->g_nowScene->UpdateObjects(m_fTimeElapsed);
 }
 
 //#define _WITH_PLAYER_TOP
@@ -744,7 +727,7 @@ void CGameFramework::FrameAdvance()
 	ProcessInput();
 	UpdateObjects();
 
-	SCENE_MGR->m_nowScene->OnPreRender(m_pd3dDeviceContext);
+	SCENE_MGR->g_nowScene->OnPreRender(m_pd3dDeviceContext);
 	
 	/*
 	// 블러링
@@ -785,7 +768,7 @@ void CGameFramework::FrameAdvance()
 	float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-	
+	m_pCamera = SCENE_MGR->g_nowScene->GetPlayer()->GetCamera();
 	m_pCamera->SetViewport(m_pd3dDeviceContext);
 
 	// WireFrame Mode
@@ -794,16 +777,13 @@ void CGameFramework::FrameAdvance()
 	else
 		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 
-	SCENE_MGR->m_nowScene->Render(m_pd3dDeviceContext, m_pCamera);
+	SCENE_MGR->g_nowScene->Render(m_pd3dDeviceContext, m_pCamera);
 #ifdef _WITH_PLAYER_TOP
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
 	
-	SCENE_MGR->m_nowScene->RenderAllText(m_pd3dDeviceContext);		// 텍스트는 항상 제일 마지막에 그려야 정상적으로 그려짐
-
-	// Graphic Crad Info
-	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_wsGraphicBrandName, 30, 20, 830, 0xFF41FF3A, FW1_LEFT);
-	TEXT_MGR->RenderText(m_pd3dDeviceContext, "Video Memory : " + to_string(m_ui64VideoMemory / 1048576) + "MB", 30, 20, 860, 0xFF0000FF, FW1_LEFT);
+	SCENE_MGR->g_nowScene->RenderAllText(m_pd3dDeviceContext);		// 텍스트는 마지막에 렌더링
+	RenderAllText();
 
 	// Draw tweak bars
 	if (true == m_bMouseBindFlag) {
@@ -812,10 +792,32 @@ void CGameFramework::FrameAdvance()
 			exit(0);
 		}	
 	}
-	
+	cout << endl;
 	m_pDXGISwapChain->Present(0, 0);
 
 	m_GameTimer.SetTitleName(m_strTitleName);
 	::SetWindowText(m_hWnd, m_strTitleName.c_str());
 	m_pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
+}
+
+
+void CGameFramework::RenderAllText()
+{
+	string str;
+
+	// Draw FrameRate
+	UINT fps = m_nFrameRate;
+	str = to_string(fps) + " FPS";
+
+	if (60 <= fps)
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 40, 1500, 20, 0xFFFFFFFF, FW1_LEFT);
+	else if (30 <= fps && fps < 60)
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 40, 1500, 20, 0xFF1270FF, FW1_LEFT);
+	else if (fps < 30)
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 40, 1500, 20, 0xFF0000FF, FW1_LEFT);
+
+	// Graphic Crad Info
+	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_wsGraphicBrandName, 30, 20, 830, 0xFF41FF3A, FW1_LEFT);
+	TEXT_MGR->RenderText(m_pd3dDeviceContext, "Video Memory : " + to_string(m_ui64VideoMemory / 1048576) + "MB", 30, 20, 860, 0xFF0000FF, FW1_LEFT);
+
 }

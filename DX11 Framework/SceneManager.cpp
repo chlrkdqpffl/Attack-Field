@@ -19,11 +19,11 @@ void CSceneManager::ReleseManager()
 
 void CSceneManager::ChangeScene(CScene* newScene)
 {
-	if (m_nowScene) {
-		m_nowScene->ReleaseObjects();
-		delete m_nowScene;
+	if (g_nowScene) {
+		g_nowScene->ReleaseObjects();
+		delete g_nowScene;
 	}
-	m_nowScene = newScene;
+	g_nowScene = newScene;
 
-	m_nowScene->BuildObjects(STATEOBJ_MGR->g_pd3dDevice);
+	g_nowScene->BuildObjects(STATEOBJ_MGR->g_pd3dDevice);
 }

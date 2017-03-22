@@ -38,6 +38,8 @@ public:
 
 	void ScreenCapture(ID3D11Resource* resource);
 	void ScreenCapture(ID3D11View* shaderResourceView);
+	void RenderAllText();
+
 private:
 	HINSTANCE						m_hInstance;
 	HWND							m_hWnd;
@@ -89,4 +91,8 @@ private:
 	// TweakBar
 	bool							m_bMouseBindFlag		= false;
 	bool							m_bTweakInit			= false;
+
+	// FrameRate
+	UINT							m_nFrameRate = 0;
+	float							m_fTimeElapsed = 0.0f;
 };

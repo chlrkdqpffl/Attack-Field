@@ -46,6 +46,7 @@ void CPlayer::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 //	GetMaterial()->UpdateShaderVariable(pd3dDeviceContext);
 	 //UpdateShaderVariable
 	if (m_pCamera) m_pCamera->UpdateShaderVariables(pd3dDeviceContext);
+//	m_pCharacter->
 }
 
 void CPlayer::UpdateKeyInput(float fTimeElapsed)
@@ -53,17 +54,18 @@ void CPlayer::UpdateKeyInput(float fTimeElapsed)
 	// Keyboard
 	XMVECTOR d3dxvShift = XMVectorZero();
 
-	if (m_wKeyState & static_cast<int>(KeyInput::eForward))		d3dxvShift += XMLoadFloat3(&m_d3dxvLook) * (m_fSpeed * fTimeElapsed);
-	if (m_wKeyState & static_cast<int>(KeyInput::eBackward))	d3dxvShift -= XMLoadFloat3(&m_d3dxvLook) * (m_fSpeed * fTimeElapsed);
-	if (m_wKeyState & static_cast<int>(KeyInput::eRight))		d3dxvShift += XMLoadFloat3(&m_d3dxvRight) * (m_fSpeed * fTimeElapsed);
-	if (m_wKeyState & static_cast<int>(KeyInput::eLeft))		d3dxvShift -= XMLoadFloat3(&m_d3dxvRight) * (m_fSpeed * fTimeElapsed);
+	if (m_wKeyState & static_cast<int>(KeyInput::eForward))		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
+	if (m_wKeyState & static_cast<int>(KeyInput::eBackward))	d3dxvShift -= XMLoadFloat3(&m_d3dxvLook);
+	if (m_wKeyState & static_cast<int>(KeyInput::eRight))		d3dxvShift += XMLoadFloat3(&m_d3dxvRight);
+	if (m_wKeyState & static_cast<int>(KeyInput::eLeft))		d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
 
-	if (m_wKeyState & static_cast<int>(KeyInput::eRun))			d3dxvShift *= 10;
+	if (m_wKeyState & static_cast<int>(KeyInput::eRun))			d3dxvShift *= 10;		// m_fSpeed 로 변경해야함
 
 	// Mouse
-	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse))	d3dxvShift *= 10;
-	if (m_wKeyState & static_cast<int>(KeyInput::eRightMouse))	d3dxvShift *= 10;
+//	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse))	d3dxvShift *= 10;
+//	if (m_wKeyState & static_cast<int>(KeyInput::eRightMouse))	d3dxvShift *= 10;
 
+	d3dxvShift *= m_fSpeed * fTimeElapsed;
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
 }
 
@@ -71,6 +73,8 @@ void CPlayer::Move(XMVECTOR d3dxvShift, bool bUpdateVelocity)
 {
 	if (bUpdateVelocity)
 	{
+		cout << "무브";
+		ShowXMFloat3(m_d3dxvVelocity);
 		XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
 	}
 	else
@@ -159,6 +163,8 @@ void CPlayer::Update(float fTimeElapsed)
 	fLength = sqrtf(m_d3dxvVelocity.y * m_d3dxvVelocity.y);
 	if (fLength > fMaxVelocityY) m_d3dxvVelocity.y *= (fMaxVelocityY / fLength);
 
+//	ShowXMFloat3(m_d3dxvVelocity);
+//	cout << endl;
 	Move(XMLoadFloat3(&m_d3dxvVelocity), false);
 	if (m_pPlayerUpdatedContext) OnPlayerUpdated(fTimeElapsed);
 
@@ -174,6 +180,9 @@ void CPlayer::Update(float fTimeElapsed)
 	float fDeceleration = (m_fFriction * fTimeElapsed);
 	if (fDeceleration > fLength) fDeceleration = fLength;
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvDeceleration * fDeceleration);
+
+	// Character Update
+	m_pCharacter->Update(fTimeElapsed);
 }
 
 CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag)
@@ -238,22 +247,10 @@ void CPlayer::OnPrepareRender()
 	m_pCharacter->m_d3dxmtxWorld._21 = m_d3dxvUp.x;			m_pCharacter->m_d3dxmtxWorld._22 = m_d3dxvUp.y;			m_pCharacter->m_d3dxmtxWorld._23 = m_d3dxvUp.z;
 	m_pCharacter->m_d3dxmtxWorld._31 = m_d3dxvLook.x;		m_pCharacter->m_d3dxmtxWorld._32 = m_d3dxvLook.y;		m_pCharacter->m_d3dxmtxWorld._33 = m_d3dxvLook.z;
 	m_pCharacter->m_d3dxmtxWorld._41 = m_d3dxvPosition.x;	m_pCharacter->m_d3dxmtxWorld._42 = m_d3dxvPosition.y;	m_pCharacter->m_d3dxmtxWorld._43 = m_d3dxvPosition.z;
-
-	m_pCharacter->Update(NULL);
-}
-
-void CPlayer::Animate(float fTimeElapsed, XMMATRIX *pd3dxmtxParent)
-{
-//	CGameObject::Update(fTimeElapsed);
-//	CGameObject::Animate(pd3dxmtxParent);
-	CPlayer::OnPrepareRender();
-	m_pCharacter->Update(fTimeElapsed);
 }
 
 void CPlayer::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	if (m_pCamera->GetCameraTag() == CameraTag::eThirdPerson) {
-	//	CGameObject::Render(pd3dDeviceContext, pCamera);
+//	if (m_pCamera->GetCameraTag() == CameraTag::eThirdPerson)
 		m_pCharacter->Render(pd3dDeviceContext, pCamera);
-	}
 }

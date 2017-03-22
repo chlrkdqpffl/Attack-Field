@@ -165,7 +165,7 @@ void CFbxModelSkinnedMesh::UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceC
 	VS_CB_SKINNED *pcbBones = (VS_CB_SKINNED*)d3dMappedResource.pData;
 	for (UINT i = 0; i < m_meshData.m_nBoneCount; i++)
 	{
-		XMStoreFloat4x4(&pcbBones->m_mtxBoneTransform[i], XMMatrixTranspose(finalBoneVector[i]));
+		XMStoreFloat4x4(&pcbBones->m_mtxBoneTransform[i], XMMatrixTranspose(m_vecFinalBone[i]));
 	}
 	pd3dDeviceContext->Unmap(m_pd3dcbBones, 0);
 
@@ -188,13 +188,13 @@ void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData,
 	XMVECTOR Q1 = zero, Q2 = zero;
 
 	static float addTime = 0.0f;
-	static float changeTime = 0.3f;
+	static float changeTime = 0.3f;		// 애니메이션 전환 시간 0.3초
 	float blendFactor = addTime / changeTime;
 	
-	addTime += SCENE_MGR->fTimeElapsed;
+	addTime += SCENE_MGR->g_fTimeElapsed;
 
-	if (blendFactor > 1) {
-		// 애니메이션 완전히 전환 시점		
+	if (blendFactor > 1) 		// 애니메이션 전환 시점
+	{
 		addTime = 0.0f;
 		enable = false;
 	}
@@ -290,14 +290,14 @@ void CFbxModelSkinnedMesh::GetFinalTransforms(const string& clipName, const floa
 	auto clip = m_meshData.m_mapAnimationClip.find(clipName);
 	clip->second.Interpolate(fTimePos, toRootTransforms);
 
-	finalBoneVector.resize(m_meshData.m_nBoneCount);
+	m_vecFinalBone.resize(m_meshData.m_nBoneCount);
 
 	for (UINT i = 0; i < m_meshData.m_nBoneCount; ++i)
 	{
 		XMMATRIX mtxOffset = XMLoadFloat4x4(&m_meshData.m_vecBoneOffsets[i]);
 		XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
 
-		finalBoneVector[i] = mtxOffset * mtxToRoot;
+		m_vecFinalBone[i] = mtxOffset * mtxToRoot;
 	}
 }
 
@@ -319,13 +319,13 @@ void CFbxModelSkinnedMesh::GetFinalTransformsBlending(AnimationTrack& prevAnim, 
 		currClip->second.Interpolate(fTimePos, toRootTransforms);
 
 
-	finalBoneVector.resize(m_meshData.m_nBoneCount);
+	m_vecFinalBone.resize(m_meshData.m_nBoneCount);
 
 	for (UINT i = 0; i < m_meshData.m_nBoneCount; ++i)
 	{
 		XMMATRIX mtxOffset = XMLoadFloat4x4(&m_meshData.m_vecBoneOffsets[i]);
 		XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
 
-		finalBoneVector[i] = mtxOffset * mtxToRoot;
+		m_vecFinalBone[i] = mtxOffset * mtxToRoot;
 	}
 }

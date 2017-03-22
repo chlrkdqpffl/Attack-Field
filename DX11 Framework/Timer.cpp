@@ -100,10 +100,6 @@ void CGameTimer::Tick(float fLockFPS)
     m_fTimeElapsed = 0.0f;
     for (ULONG i = 0; i < m_nSampleCount; i++) m_fTimeElapsed += m_fFrameTime[i];
     if (m_nSampleCount > 0) m_fTimeElapsed /= m_nSampleCount;
-
-
-	SCENE_MGR->fTimeElapsed = fTimeElapsed;
-	SCENE_MGR->fFrameRate = GetFrameRate();
 }
 
 void CGameTimer::SetTitleName(wstring& wStr)

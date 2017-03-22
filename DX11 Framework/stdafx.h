@@ -193,19 +193,19 @@ inline void ShowXMFloat4x4(XMFLOAT4X4 mtx)
 
 inline void ShowXMFloat4(XMFLOAT4 xmf4)
 {
-	cout << xmf4.x << ", " << xmf4.y << ", " << xmf4.z << ", " << xmf4.w << endl << endl;
+	cout << xmf4.x << ", " << xmf4.y << ", " << xmf4.z << ", " << xmf4.w << endl;
 }
 
 inline void ShowXMFloat3(XMFLOAT3 xmf3)
 {
-	cout << xmf3.x << ", " << xmf3.y << ", " << xmf3.z << endl << endl;
+	cout << xmf3.x << ", " << xmf3.y << ", " << xmf3.z << endl;
 }
 
 inline void ShowXMVector(XMVECTOR xmVector)
 {
 	XMFLOAT4 out;
 	XMStoreFloat4(&out, xmVector);
-	cout << out.x << ", " << out.y << ", " << out.z << ", " << out.w << endl << endl;
+	cout << out.x << ", " << out.y << ", " << out.z << ", " << out.w << endl;
 }
 
 inline void ShowTaskSuccess(string message)

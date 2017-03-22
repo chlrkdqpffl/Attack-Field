@@ -226,7 +226,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	m_pPlayer->SetPlayerUpdatedContext(pTerrain);
 	m_pPlayer->SetCameraUpdatedContext(pTerrain);
 	
-	SCENE_MGR->m_pPlayer = m_pPlayer;
+	SCENE_MGR->g_pPlayer = m_pPlayer;
 	m_pPlayer->SetPosition(XMVectorSet(100.0f, 300.0f, 100.0f, 0.0f));
 
 	/*
@@ -553,11 +553,10 @@ void CScene_Main::UpdateObjects(float fTimeElapsed)
 		XMStoreFloat3(&m_pLights->m_pLights[0].m_d3dxvPosition, d3dxvTerrainCenter + d3dxvRotated);
 		m_pLights->m_pLights[0].m_fRange = pTerrain->GetPeakHeight();
 
-		CPlayer *pPlayer = m_pCamera->GetPlayer();
-		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvPosition, pPlayer->GetvPosition());
-		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvDirection, pPlayer->GetLookVector());
+		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvPosition, m_pPlayer->GetvPosition());
+		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvDirection, m_pPlayer->GetLookVector());
 
-		XMStoreFloat3(&m_pLights->m_pLights[3].m_d3dxvPosition, pPlayer->GetvPosition() + XMVectorSet(0.0f, 80.0f, 0.0f, 0.0f));
+		XMStoreFloat3(&m_pLights->m_pLights[3].m_d3dxvPosition, m_pPlayer->GetvPosition() + XMVectorSet(0.0f, 80.0f, 0.0f, 0.0f));
 	}
 
 	// Light Shader Update
