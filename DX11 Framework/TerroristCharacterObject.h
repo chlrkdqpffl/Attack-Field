@@ -9,7 +9,7 @@ public:
 	CTerroristCharacterObject();
 	virtual ~CTerroristCharacterObject();
 
-	virtual void CreateMaterial(ID3D11Device *pd3dDevice);
+	virtual void CreateMaterial();
 	virtual void CreateMesh(ID3D11Device *pd3dDevice);
 	virtual void CreateShader(ID3D11Device *pd3dDevice);
 	virtual void CreateAnimation();

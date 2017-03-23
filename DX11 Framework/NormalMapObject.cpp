@@ -11,7 +11,7 @@ CNormalMapObject::~CNormalMapObject()
 {
 }
 
-void CNormalMapObject::CreateMaterial(ID3D11Device *pd3dDevice)
+void CNormalMapObject::CreateMaterial()
 {
 	CMaterialColors *pColors = new CMaterialColors();
 	pColors->m_d3dxcDiffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);

@@ -51,7 +51,7 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 	}
 	SetMaxVelocityXZ(500.0f);
 //	SetMaxVelocityXZ(300.0f);
-	Update(fTimeElapsed);
+//	Update(fTimeElapsed);
 }
 
 void CTerrainPlayer::OnPlayerUpdated(float fTimeElapsed)

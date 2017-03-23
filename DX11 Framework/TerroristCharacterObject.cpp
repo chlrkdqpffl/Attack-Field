@@ -26,7 +26,7 @@ void CTerroristCharacterObject::CreateShader(ID3D11Device *pd3dDevice)
 	m_pShader->CreateShader(pd3dDevice);
 }
 
-void CTerroristCharacterObject::CreateMaterial(ID3D11Device *pd3dDevice)
+void CTerroristCharacterObject::CreateMaterial()
 {
 	CTexture *pCharacterTexture = new CTexture(2, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
 
@@ -50,7 +50,7 @@ void CTerroristCharacterObject::CreateAnimation()
 
 void CTerroristCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)
 {
-	m_pWeapon = new CRifleGunWeapon(this);
+	m_pWeapon = new CRifleGunWeapon(pd3dDevice, this);
 
 	m_pWeapon->CreateObjectData(pd3dDevice);
 	m_pWeapon->CreateAxisObject(pd3dDevice);

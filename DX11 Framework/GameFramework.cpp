@@ -817,5 +817,4 @@ void CGameFramework::RenderAllText()
 	// Graphic Crad Info
 	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_wsGraphicBrandName, 30, 20, 830, 0xFF41FF3A, FW1_LEFT);
 	TEXT_MGR->RenderText(m_pd3dDeviceContext, "Video Memory : " + to_string(m_ui64VideoMemory / 1048576) + "MB", 30, 20, 860, 0xFF0000FF, FW1_LEFT);
-
 }

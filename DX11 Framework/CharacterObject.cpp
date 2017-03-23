@@ -19,11 +19,13 @@ void CCharacterObject::CreateObjectData(ID3D11Device *pd3dDevice)
 
 void CCharacterObject::Fire()
 {
-
+	SetAnimation(AnimationData::CharacterAnim::eStanding_Fire);
+	m_pWeapon->Fire();
 }
 
 void CCharacterObject::Update(float fTimeElapsed)
 {
+	CGameObject::Update(fTimeElapsed);
 	CSkinnedObject::Update(fTimeElapsed);
 	m_pWeapon->Update(fTimeElapsed);
 }

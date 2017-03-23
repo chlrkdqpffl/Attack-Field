@@ -100,7 +100,7 @@ public:
 protected:
 	virtual void CreateMesh(ID3D11Device *pd3dDevice)		{ cout << "No have Mesh" << endl; };
 	virtual void CreateShader(ID3D11Device *pd3dDevice)		{ cout << "No have Shader" << endl; };
-	virtual void CreateMaterial(ID3D11Device *pd3dDevice)	{ cout << "No have Material" << endl; };
+	virtual void CreateMaterial()							{ cout << "No have Material" << endl; };
 	
 private:
 	int								m_nReferences = 0;
@@ -151,7 +151,6 @@ public:
 	void Animate(XMMATRIX *pd3dxmtxParent);
 	void CreateAxisObject(ID3D11Device *pd3dDevice);
 	void CreateBoundingBox(ID3D11Device *pd3dDevice);
-	void SetActive(bool bActive = false) { m_bActive = bActive; }
 	void GenerateRayForPicking(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxWorld, XMMATRIX *pd3dxmtxView, XMVECTOR *pd3dxvPickRayPosition, XMVECTOR *pd3dxvPickRayDirection);
 	int PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, MESHINTERSECTINFO *pd3dxIntersectInfo);
 
@@ -166,6 +165,9 @@ public:
 	void SetMesh(CMesh *pMesh, int nIndex = 0);
 	CMesh *GetMesh(int nIndex = 0) { return(m_ppMeshes[nIndex]); }
 	UINT GetMeshType() { return((m_ppMeshes) ? m_ppMeshes[0]->GetType() : 0x00); }
+
+	void SetActive(bool bActive = false) { m_bActive = bActive; }
+	bool GetActive() const { return m_bActive; }
 
 	void SetShader(CShader *pShader);
 	CShader *GetShader() { return(m_pShader); }

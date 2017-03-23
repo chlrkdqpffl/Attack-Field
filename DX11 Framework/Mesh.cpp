@@ -578,8 +578,9 @@ CSphereMeshDiffused::CSphereMeshDiffused(ID3D11Device *pd3dDevice, float fRadius
 		}
 	}
 
-	XMCOLOR *pd3dxColors = new XMCOLOR[m_nVertices];
-	for (int i = 0; i < m_nVertices; i++) XMStoreColor(&pd3dxColors[i], d3dxColor/* + RANDOM_COLOR*/);
+	XMVECTOR *pd3dxColors = new XMVECTOR[m_nVertices];
+	for (int i = 0; i < m_nVertices; i++)
+		pd3dxColors[i] = d3dxColor + XMVectorSet(0, 0, ((100 / m_nVertices) * i / m_nVertices), 0);
 
 	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dColorBuffer = CreateBuffer(pd3dDevice, sizeof(XMCOLOR), m_nVertices, pd3dxColors, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);

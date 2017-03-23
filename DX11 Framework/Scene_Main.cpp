@@ -443,7 +443,7 @@ void CScene_Main::BuildObjects(ID3D11Device *pd3dDevice)
 	CreateTweakBars();
 
 	cout << "================================== Scene Loading Complete ===================================" << endl;
-	cout << "=============================================================================================" << endl;
+	cout << "=============================================================================================" << endl << endl;
 }
 
 void CScene_Main::CreateTweakBars()

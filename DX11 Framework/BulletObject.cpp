@@ -4,12 +4,12 @@
 
 CBulletObject::CBulletObject()
 {
+	m_fSpeed = 1.0f;
 }
 
 CBulletObject::~CBulletObject()
 {
 }
-
 
 void CBulletObject::CreateMesh(ID3D11Device *pd3dDevice)
 {
@@ -25,7 +25,7 @@ void CBulletObject::CreateShader(ID3D11Device *pd3dDevice)
 	m_pShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_COLOR_ELEMENT);
 }
 
-void CBulletObject::CreateMaterial(ID3D11Device *pd3dDevice)
+void CBulletObject::CreateMaterial()
 {
 	m_pMaterial = new CMaterial();
 
@@ -36,4 +36,9 @@ void CBulletObject::CreateMaterial(ID3D11Device *pd3dDevice)
 
 	m_pMaterial->SetTexture(pTexture);
 	*/
+}
+
+void CBulletObject::Update(float fTimeElapsed)
+{
+	MoveForward(m_fSpeed * fTimeElapsed);
 }

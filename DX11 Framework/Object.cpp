@@ -286,7 +286,7 @@ void CGameObject::CreateObjectData(ID3D11Device *pd3dDevice)
 {
 	CreateMesh(pd3dDevice);
 	CreateShader(pd3dDevice);
-	CreateMaterial(pd3dDevice);
+	CreateMaterial();
 //	CreateBoundingBox(pd3dDevice);
 }
 
@@ -653,8 +653,8 @@ void CGameObject::UpdateConstantBuffer_Material(ID3D11DeviceContext *pd3dDeviceC
 
 bool CGameObject::IsVisible(CCamera *pCamera)
 {
-	OnPrepareRender();
-	Update(NULL);
+//	OnPrepareRender();
+//	Update(NULL);
 
 	m_bIsVisible = (m_bActive) ? true : false;
 #ifdef _WITH_FRUSTUM_CULLING_BY_OBJECT
@@ -682,6 +682,9 @@ void CGameObject::Update(float fTimeElapsed)
 		if (GLOBAL_MGR->g_bShowWorldAxis)
 			m_pAxisObject->Update(fTimeElapsed);
 	}
+
+	if (!XMMatrixIsIdentity(XMLoadFloat4x4(&m_d3dxmtxLocal)))
+		XMStoreFloat4x4(&m_d3dxmtxWorld, XMMatrixMultiply(XMLoadFloat4x4(&m_d3dxmtxLocal), XMLoadFloat4x4(&m_d3dxmtxWorld)));
 }
 
 void CGameObject::Update(float fTimeElapsed, XMMATRIX *pd3dxmtxParent)
@@ -731,18 +734,15 @@ void CGameObject::OnPrepareRender()
 
 void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-//	OnPrepareRender();
-//	Update(NULL);
-
-	if (m_pShader) m_pShader->Render(pd3dDeviceContext, pCamera);
-
-	if (!XMMatrixIsIdentity(XMLoadFloat4x4(&m_d3dxmtxLocal)))
-		XMStoreFloat4x4(&m_d3dxmtxWorld, XMLoadFloat4x4(&m_d3dxmtxLocal) * XMLoadFloat4x4(&m_d3dxmtxWorld));
+	OnPrepareRender();
+	//	Update(NULL);
 	
-	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&m_d3dxmtxWorld));
+	if (m_pShader) m_pShader->Render(pd3dDeviceContext, pCamera);
 	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
 
-//	pd3dDeviceContext->RSSetState(m_pd3dRasterizerState);
+	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&m_d3dxmtxWorld));
+
+	//	pd3dDeviceContext->RSSetState(m_pd3dRasterizerState);
 	pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 0);
 	if (m_pd3dBlendState) pd3dDeviceContext->OMSetBlendState(m_pd3dBlendState, NULL, 0xffffffff);
 

@@ -291,18 +291,20 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 	if (m_pSkyBox)
 		m_pSkyBox->Render(pd3dDeviceContext, pCamera);
 	
-	if (m_pTerrain->IsVisible(pCamera)) 
-		m_pTerrain->Render(pd3dDeviceContext, pCamera);
+	if (m_pTerrain)
+		if (m_pTerrain->IsVisible(pCamera))
+			m_pTerrain->Render(pd3dDeviceContext, pCamera);
 
 	if (m_pPlayer)
 		m_pPlayer->Render(m_pd3dDeviceContext, m_pCamera);
 
-	if (GLOBAL_MGR->g_bShowWorldAxis) m_pWorldCenterAxis->Render(pd3dDeviceContext, pCamera);
+	if (GLOBAL_MGR->g_bShowWorldAxis)
+		m_pWorldCenterAxis->Render(pd3dDeviceContext, pCamera);
 	
-	for (auto object : m_vObjectsVector) {
-	//	if (object->IsVisible(pCamera))
-			object->Render(pd3dDeviceContext, pCamera);
-	}
+
+	// isVisible ³Ö±â
+	for (auto object : m_vObjectsVector)
+		object->Render(pd3dDeviceContext, pCamera);
 
 	for (auto shaderObject : m_vObjectsShaderVector)
 		shaderObject->Render(pd3dDeviceContext, pCamera);

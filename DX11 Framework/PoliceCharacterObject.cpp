@@ -24,7 +24,7 @@ void CPoliceCharacterObject::CreateShader(ID3D11Device *pd3dDevice)
 	m_pShader->CreateShader(pd3dDevice);
 }
 
-void CPoliceCharacterObject::CreateMaterial(ID3D11Device *pd3dDevice)
+void CPoliceCharacterObject::CreateMaterial()
 {
 	CTexture *pCharacterTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
 
@@ -47,7 +47,7 @@ void CPoliceCharacterObject::CreateAnimation()
 
 void CPoliceCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)
 {
-	m_pWeapon = new CRifleGunWeapon(this);
+	m_pWeapon = new CRifleGunWeapon(pd3dDevice, this);
 
 	m_pWeapon->CreateObjectData(pd3dDevice);
 	m_pWeapon->CreateAxisObject(pd3dDevice);

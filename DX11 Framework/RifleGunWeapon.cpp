@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RifleGunWeapon.h"
 
-CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner) : CWeapon(pOwner)
+CRifleGunWeapon::CRifleGunWeapon(ID3D11Device* pd3dDevice, CCharacterObject* pOwner) : CWeapon(pd3dDevice, pOwner)
 {
 	m_Type = WeaponData::Type::eRifle;
 
@@ -29,7 +29,6 @@ CRifleGunWeapon::~CRifleGunWeapon()
 
 void CRifleGunWeapon::CreateMesh(ID3D11Device *pd3dDevice)
 {
-	//CFbxModelMesh* pMesh = new CFbxModelMesh(pd3dDevice, MeshTag::eRifle, 1.2f);
 	CFbxModelMesh* pMesh = new CFbxModelMesh(pd3dDevice, MeshTag::eRifle);
 	pMesh->Initialize(pd3dDevice);
 
@@ -44,7 +43,7 @@ void CRifleGunWeapon::CreateShader(ID3D11Device *pd3dDevice)
 //	m_pShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0);
 }
 
-void CRifleGunWeapon::CreateMaterial(ID3D11Device *pd3dDevice)
+void CRifleGunWeapon::CreateMaterial()
 {
 	m_pMaterial = new CMaterial();
 
