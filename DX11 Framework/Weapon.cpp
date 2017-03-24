@@ -54,9 +54,9 @@ void CWeapon::Update(float fTimeElapsed)
 //	SetPosition(TWBAR_MGR->g_xmf3Offset, true);
 
 
-	XMMATRIX test = XMMatrixIdentity();
-	test.r[0].m128_f32[3] = 1;
-	ShowXMMatrix(test);
+//	XMMATRIX test = XMMatrixIdentity();
+//	test.r[0].m128_f32[3] = 1;
+//	ShowXMMatrix(test);
 }
 
 void CWeapon::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
