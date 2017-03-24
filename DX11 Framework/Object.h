@@ -113,9 +113,13 @@ public:
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 public:
-	XMFLOAT4X4						m_d3dxmtxLocal;
-	XMFLOAT4X4						m_d3dxmtxWorld;
-	XMFLOAT4X4						m_d3dxmtxShadow;
+//	XMFLOAT4X4						m_d3dxmtxLocal;
+//	XMFLOAT4X4						m_d3dxmtxWorld;
+//	XMFLOAT4X4						m_d3dxmtxShadow;
+
+	XMMATRIX						m_mtxLocal = XMMatrixIdentity();
+	XMMATRIX						m_mtxWorld = XMMatrixIdentity();
+	XMMATRIX						m_mtxShadow = XMMatrixIdentity();
 
 protected:
 	static UINT						m_iObjectId;
@@ -174,7 +178,7 @@ public:
 	void SetShader(CShader *pShader);
 	CShader *GetShader() { return(m_pShader); }
 
-	void SetShadowMatrix(XMMATRIX *pd3dxmtxShadow) { XMStoreFloat4x4(&m_d3dxmtxShadow, *pd3dxmtxShadow); }
+	void SetShadowMatrix(XMMATRIX *pd3dxmtxShadow) { m_mtxShadow = *pd3dxmtxShadow; }
 	void SetShadowMatrix(XMVECTOR d3dxvLight, XMVECTOR d3dxPlane);
 
 	void SetMaterial(CMaterial *pMaterial);

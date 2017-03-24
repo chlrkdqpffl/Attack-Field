@@ -275,10 +275,16 @@ void CPlayer::OnCameraUpdated(float fTimeElapsed)
 
 void CPlayer::OnPrepareRender()
 {
-	m_pCharacter->m_d3dxmtxWorld._11 = m_d3dxvRight.x;		m_pCharacter->m_d3dxmtxWorld._12 = m_d3dxvRight.y;		m_pCharacter->m_d3dxmtxWorld._13 = m_d3dxvRight.z;
-	m_pCharacter->m_d3dxmtxWorld._21 = m_d3dxvUp.x;			m_pCharacter->m_d3dxmtxWorld._22 = m_d3dxvUp.y;			m_pCharacter->m_d3dxmtxWorld._23 = m_d3dxvUp.z;
-	m_pCharacter->m_d3dxmtxWorld._31 = m_d3dxvLook.x;		m_pCharacter->m_d3dxmtxWorld._32 = m_d3dxvLook.y;		m_pCharacter->m_d3dxmtxWorld._33 = m_d3dxvLook.z;
-	m_pCharacter->m_d3dxmtxWorld._41 = m_d3dxvPosition.x;	m_pCharacter->m_d3dxmtxWorld._42 = m_d3dxvPosition.y;	m_pCharacter->m_d3dxmtxWorld._43 = m_d3dxvPosition.z;
+	XMFLOAT4X4 mtx;
+
+	XMStoreFloat4x4(&mtx, m_pCharacter->m_mtxWorld);
+
+	mtx._11 = m_d3dxvRight.x;		mtx._12 = m_d3dxvRight.y;		mtx._13 = m_d3dxvRight.z;
+	mtx._21 = m_d3dxvUp.x;			mtx._22 = m_d3dxvUp.y;			mtx._23 = m_d3dxvUp.z;
+	mtx._31 = m_d3dxvLook.x;		mtx._32 = m_d3dxvLook.y;		mtx._33 = m_d3dxvLook.z;
+	mtx._41 = m_d3dxvPosition.x;	mtx._42 = m_d3dxvPosition.y;	mtx._43 = m_d3dxvPosition.z;
+
+	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&mtx);
 }
 
 void CPlayer::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
