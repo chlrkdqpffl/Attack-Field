@@ -48,8 +48,7 @@ void CWeapon::Update(float fTimeElapsed)
 	}
 
 	m_mtxParent = m_pOwner->GetSkinnedMesh()->GetFinalBoneMtx(m_nBoneIndex);
-	XMStoreFloat4x4(&m_d3dxmtxWorld, XMLoadFloat4x4(&m_d3dxmtxLocal) * m_mtxParent * XMLoadFloat4x4(&m_pOwner->m_d3dxmtxWorld));
-
+	m_mtxWorld = m_mtxLocal * m_mtxParent * m_pOwner->m_mtxWorld;
 //	SetRotate(TWBAR_MGR->g_xmf3Rotate, true);
 //	SetPosition(TWBAR_MGR->g_xmf3Offset, true);
 
