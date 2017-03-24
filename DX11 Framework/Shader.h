@@ -15,14 +15,12 @@
 
 struct VS_CB_WORLD_MATRIX
 {
-	XMMATRIX				m_mtxWorld;
-//	XMFLOAT4X4						m_d3dxmtxWorld;
+	XMFLOAT4X4						m_d3dxmtxWorld;
 };
 
 struct VS_VB_INSTANCE
 {
-	XMMATRIX				m_mtxTransform;
-	//XMFLOAT4X4						m_d3dxTransform;
+	XMFLOAT4X4						m_d3dxTransform;
 };
 
 class CShader

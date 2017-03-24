@@ -53,7 +53,7 @@ void CSkyBox::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 	SetPosition(f3vCameraPos.x, f3vCameraPos.y, f3vCameraPos.z);
 	Update(NULL);
 
-	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &m_mtxWorld);
+	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&m_d3dxmtxWorld));
 
 	if (m_pShader) m_pShader->Render(pd3dDeviceContext, pCamera);
 

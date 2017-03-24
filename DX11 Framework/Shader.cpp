@@ -467,7 +467,7 @@ void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCa
 			pd3dDeviceContext->Map(m_pd3dInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 			XMMATRIX *pd3dxmtxInstances = (XMMATRIX *)d3dMappedResource.pData;
 
-			pd3dxmtxInstances[nInstances++] = XMMatrixTranspose(object->m_mtxWorld);
+			pd3dxmtxInstances[nInstances++] = XMMatrixTranspose(XMLoadFloat4x4(&object->m_d3dxmtxWorld));
 
 			pd3dDeviceContext->Unmap(m_pd3dInstanceBuffer, 0);
 
