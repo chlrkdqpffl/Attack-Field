@@ -430,16 +430,16 @@ void CGameObject::SetPosition(float x, float y, float z, bool isLocal)
 	if (isLocal) {
 		XMStoreFloat4x4(&mtx, m_mtxLocal);
 		mtx._41 = x;
-		mtx._42 = x;
-		mtx._43 = x;
+		mtx._42 = y;
+		mtx._43 = z;
 
 		m_mtxLocal = XMLoadFloat4x4(&mtx);
 	}
 	else {
 		XMStoreFloat4x4(&mtx, m_mtxWorld);
 		mtx._41 = x;
-		mtx._42 = x;
-		mtx._43 = x;
+		mtx._42 = y;
+		mtx._43 = z;
 
 		m_mtxWorld = XMLoadFloat4x4(&mtx);
 	}
