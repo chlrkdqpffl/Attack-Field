@@ -46,6 +46,8 @@ void CAxisObjects::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCame
 
 	if (m_pOwnerObject)
 		m_pWorldAxisObject->UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&m_pOwnerObject->m_d3dxmtxWorld));
+	else
+		m_pWorldAxisObject->UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMMatrixIdentity());
 
 	m_pWorldAxisObject->RenderMesh(pd3dDeviceContext, pCamera);
 }

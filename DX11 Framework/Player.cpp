@@ -84,12 +84,10 @@ void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계
 
 	// Mouse
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)) {
-		d3dxvShift *= 10;
 		m_pCharacter->Fire();
 	}
 	if (m_wKeyState & static_cast<int>(KeyInput::eRightMouse)) {
-		d3dxvShift *= 10;
-
+	
 	}
 
 

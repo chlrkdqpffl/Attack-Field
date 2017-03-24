@@ -1,11 +1,8 @@
 #include "stdafx.h"
 #include "RifleGunWeapon.h"
 
-CRifleGunWeapon::CRifleGunWeapon(ID3D11Device* pd3dDevice, CCharacterObject* pOwner) : CWeapon(pd3dDevice, pOwner)
+CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner) : CWeapon(pOwner)
 {
-	m_Type = WeaponData::Type::eRifle;
-
-
 	XMFLOAT3 offsetPos, offsetRotate;
 
 	if (pOwner->GetMeshTag() == MeshTag::eTerrorist) {
@@ -21,6 +18,16 @@ CRifleGunWeapon::CRifleGunWeapon(ID3D11Device* pd3dDevice, CCharacterObject* pOw
 	SetRotate(offsetRotate, true);
 	SetPosition(offsetPos, true);
 	m_mtxOffset = XMLoadFloat4x4(&m_pOwner->GetSkinnedMesh()->GetOffsetMtx(m_nBoneIndex));
+
+
+	// Data Initialize
+	m_Type = WeaponData::Type::eRifle;
+	m_fDamage = 100.f;
+//	m_fBulletMovingSpeed = 500.f;
+	m_fBulletMovingSpeed = 0.f;
+	m_fRange = 1000.f;
+	m_uiFireSpeed = 200;
+
 }
 
 CRifleGunWeapon::~CRifleGunWeapon()
@@ -52,4 +59,16 @@ void CRifleGunWeapon::CreateMaterial()
 	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
 	
 	m_pMaterial->SetTexture(pTexture);
+}
+
+void CRifleGunWeapon::CreateBulletPool(ID3D11Device* pd3dDevice)
+{
+	for (int i = 0; i < 10; ++i) {
+		CRifleBullet* pBulletObject = new CRifleBullet(m_fRange, m_fBulletMovingSpeed);
+		pBulletObject->CreateObjectData(pd3dDevice);
+		pBulletObject->CreateAxisObject(pd3dDevice);
+		pBulletObject->CreateBoundingBox(pd3dDevice);
+		pBulletObject->SetActive(false);
+		m_vecBulletContainer.push_back(pBulletObject);
+	}
 }

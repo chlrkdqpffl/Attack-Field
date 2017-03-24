@@ -169,6 +169,7 @@
     <ClCompile Include="GlobalVariableManager.cpp" />
     <ClCompile Include="NormalDisplaceMapShader.cpp" />
     <ClCompile Include="PoliceCharacterObject.cpp" />
+    <ClCompile Include="RifleBullet.cpp" />
     <ClCompile Include="RifleGunWeapon.cpp" />
     <ClCompile Include="ScreenShader.cpp" />
     <ClCompile Include="FbxModelSkinnedMesh.cpp">
@@ -252,6 +253,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="AxisObjects.h" />
+    <ClInclude Include="RifleBullet.h" />
     <ClInclude Include="RifleGunWeapon.h" />
     <ClInclude Include="RotatingObject.h" />
     <ClInclude Include="Scene.h" />

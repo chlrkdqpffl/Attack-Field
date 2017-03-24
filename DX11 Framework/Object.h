@@ -120,6 +120,8 @@ public:
 protected:
 	static UINT						m_iObjectId;
 	MeshTag							m_tagMesh = MeshTag::eNone;
+	TeamType						m_tagTeam = TeamType::eNone;		// 팀 종류 구별하여 충돌 처리시 사용하기. 현재는 아무것도 없음
+
 	CMesh							**m_ppMeshes = nullptr;
 	int								m_nMeshes = 0;
 
@@ -190,9 +192,13 @@ public:
 
 	XMVECTOR GetvPosition(bool bIsLocal = false) const;
 	XMFLOAT3 GetPosition(bool isLocal = false) const;
-	XMVECTOR GetLook(bool bIsLocal = true);
-	XMVECTOR GetUp(bool bIsLocal = true);
-	XMVECTOR GetRight(bool bIsLocal = true);
+	XMVECTOR GetLook(bool bIsLocal = false) const;
+	XMVECTOR GetUp(bool bIsLocal = false) const;
+	XMVECTOR GetRight(bool bIsLocal = false) const;
+
+	void SetLook(XMFLOAT3 axis, bool bIsLocal = false);
+	void SetUp(XMFLOAT3 axis, bool bIsLocal = false);
+	void SetRight(XMFLOAT3 axis, bool bIsLocal = false);
 
 	void SetMeshTag(MeshTag tag) { m_tagMesh = tag; }
 	MeshTag GetMeshTag() const { return m_tagMesh; }

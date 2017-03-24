@@ -300,11 +300,11 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 
 	if (GLOBAL_MGR->g_bShowWorldAxis)
 		m_pWorldCenterAxis->Render(pd3dDeviceContext, pCamera);
-	
 
-	// isVisible ³Ö±â
-	for (auto object : m_vObjectsVector)
-		object->Render(pd3dDeviceContext, pCamera);
+	for (auto object : m_vObjectsVector) {
+		if(object->IsVisible(pCamera))
+			object->Render(pd3dDeviceContext, pCamera);
+	}
 
 	for (auto shaderObject : m_vObjectsShaderVector)
 		shaderObject->Render(pd3dDeviceContext, pCamera);

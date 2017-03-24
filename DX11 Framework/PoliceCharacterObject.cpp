@@ -47,7 +47,7 @@ void CPoliceCharacterObject::CreateAnimation()
 
 void CPoliceCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)
 {
-	m_pWeapon = new CRifleGunWeapon(pd3dDevice, this);
+	m_pWeapon = new CRifleGunWeapon(this);
 
 	m_pWeapon->CreateObjectData(pd3dDevice);
 	m_pWeapon->CreateAxisObject(pd3dDevice);

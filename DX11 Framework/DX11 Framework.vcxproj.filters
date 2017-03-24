@@ -97,8 +97,11 @@
     <Filter Include="Objects\Weopon\RifleGun">
       <UniqueIdentifier>{e58cf0b1-c265-493a-8231-63a41f6b90f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Objects\Bullet">
+    <Filter Include="Objects\Weopon\Bullet">
       <UniqueIdentifier>{dc44146e-c0f2-43e4-9ebf-46f356d401c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Weopon\Bullet\RifleGun">
+      <UniqueIdentifier>{9eb295c1-aa22-4fe4-83fa-c38bc6c4d91c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -274,7 +277,10 @@
       <Filter>Objects\Character</Filter>
     </ClCompile>
     <ClCompile Include="BulletObject.cpp">
-      <Filter>Objects\Bullet</Filter>
+      <Filter>Objects\Weopon\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="RifleBullet.cpp">
+      <Filter>Objects\Weopon\Bullet\RifleGun</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -468,7 +474,10 @@
       <Filter>Objects\Character</Filter>
     </ClInclude>
     <ClInclude Include="BulletObject.h">
-      <Filter>Objects\Bullet</Filter>
+      <Filter>Objects\Weopon\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="RifleBullet.h">
+      <Filter>Objects\Weopon\Bullet\RifleGun</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

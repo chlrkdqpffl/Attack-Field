@@ -4,20 +4,16 @@
 class CBulletObject : public CGameObject
 {
 	float			m_fSpeed = 0.0f;
+	float			m_fRange = 0.0f;
+	float			m_fMovingDistance = 0.0f;
 
 public:
-	CBulletObject();
+	CBulletObject(float fRange, float fSpeed);
 	virtual ~CBulletObject();
-
-	virtual void CreateMesh(ID3D11Device *pd3dDevice);
-	virtual void CreateShader(ID3D11Device *pd3dDevice);
-	virtual void CreateMaterial();
 
 	virtual void Update(float fTimeElapsed) override;
 
+	void InitializeData();
 	// ----- Get, Setter ----- //
-	void SetSpeed(float fSpeed) { m_fSpeed = fSpeed; }
-
-	float GetSpeed() const { return m_fSpeed; }
 };
 

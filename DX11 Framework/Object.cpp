@@ -581,7 +581,7 @@ XMFLOAT3 CGameObject::GetPosition(bool isLocal) const
 		XMFLOAT3(m_d3dxmtxWorld._41, m_d3dxmtxWorld._42, m_d3dxmtxWorld._43);
 }
 
-XMVECTOR CGameObject::GetRight(bool bIsLocal)
+XMVECTOR CGameObject::GetRight(bool bIsLocal) const
 {
 	XMVECTOR d3dxvRight = (bIsLocal) ? XMVectorSet(m_d3dxmtxLocal._11, m_d3dxmtxLocal._12, m_d3dxmtxLocal._13, 0.0f) : 
 		XMVectorSet(m_d3dxmtxWorld._11, m_d3dxmtxWorld._12, m_d3dxmtxWorld._13, 0.0f);
@@ -589,7 +589,7 @@ XMVECTOR CGameObject::GetRight(bool bIsLocal)
 	return(d3dxvRight);
 }
 
-XMVECTOR CGameObject::GetUp(bool bIsLocal)
+XMVECTOR CGameObject::GetUp(bool bIsLocal) const
 {
 	XMVECTOR d3dxvUp = (bIsLocal) ? XMVectorSet(m_d3dxmtxLocal._21, m_d3dxmtxLocal._22, m_d3dxmtxLocal._23, 0.0f) : 
 		XMVectorSet(m_d3dxmtxWorld._21, m_d3dxmtxWorld._22, m_d3dxmtxWorld._23, 0.0f);
@@ -597,12 +597,30 @@ XMVECTOR CGameObject::GetUp(bool bIsLocal)
 	return(d3dxvUp);
 }
 
-XMVECTOR CGameObject::GetLook(bool bIsLocal)
+XMVECTOR CGameObject::GetLook(bool bIsLocal) const
 {
 	XMVECTOR d3dxvLookAt = (bIsLocal) ? XMVectorSet(m_d3dxmtxLocal._31, m_d3dxmtxLocal._32, m_d3dxmtxLocal._33, 0.0f) : 
 		XMVectorSet(m_d3dxmtxWorld._31, m_d3dxmtxWorld._32, m_d3dxmtxWorld._33, 0.0f);
 	d3dxvLookAt = XMVector3Normalize(d3dxvLookAt);
 	return(d3dxvLookAt);
+}
+
+void CGameObject::SetRight(XMFLOAT3 axis, bool bIsLocal)
+{
+	(bIsLocal) ? (m_d3dxmtxLocal._11 = axis.x, m_d3dxmtxLocal._12 = axis.y, m_d3dxmtxLocal._13 = axis.z)
+		: (m_d3dxmtxWorld._11 = axis.x, m_d3dxmtxWorld._12 = axis.y, m_d3dxmtxWorld._13 = axis.z);
+}
+
+void CGameObject::SetUp(XMFLOAT3 axis, bool bIsLocal)
+{
+	(bIsLocal) ? (m_d3dxmtxLocal._21 = axis.x, m_d3dxmtxLocal._22 = axis.y, m_d3dxmtxLocal._23 = axis.z)
+		: (m_d3dxmtxWorld._21 = axis.x, m_d3dxmtxWorld._22 = axis.y, m_d3dxmtxWorld._23 = axis.z);
+}
+
+void CGameObject::SetLook(XMFLOAT3 axis, bool bIsLocal)
+{
+	(bIsLocal) ? (m_d3dxmtxLocal._31 = axis.x, m_d3dxmtxLocal._32 = axis.y, m_d3dxmtxLocal._33 = axis.z)
+		: (m_d3dxmtxWorld._31 = axis.x, m_d3dxmtxWorld._32 = axis.y, m_d3dxmtxWorld._33 = axis.z);
 }
 
 void CGameObject::CreateConstantBuffers(ID3D11Device *pd3dDevice)
@@ -753,8 +771,10 @@ void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 
 	if (m_pBoundingBoxMesh) {
 		if (GLOBAL_MGR->g_vRenderOption.y) {
+			pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
 			m_pBoundingBoxShader->Render(pd3dDeviceContext, pCamera);
 			m_pBoundingBoxMesh->Render(pd3dDeviceContext);
+			pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 		}
 	}
 	if (m_pAxisObject) {

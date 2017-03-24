@@ -30,6 +30,12 @@ enum class CameraTag
 	eDeadCam, eFreeCam
 };
 
+enum class TeamType
+{
+	eNone,
+	eRedTeam, eBlueTeam
+};
+
 enum SceneTag {
 	eScene_Title, eScene_Loading, eScene_Main
 };
