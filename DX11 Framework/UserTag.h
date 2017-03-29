@@ -36,8 +36,8 @@ enum class TeamType
 	eRedTeam, eBlueTeam
 };
 
-enum SceneTag {
-	eScene_Title, eScene_Loading, eScene_Main
+enum class SceneTag {
+	eNone, eTitleScene, eLoadingScene, eMainScene
 };
 
 enum ShaderTag {
@@ -100,8 +100,11 @@ enum class TextureTag
 	// Building
 	eBuilding18,
 
+	// BackGround Image
+	eTitleBackGroundD, eLoadingBackGroundD,
+
 	// UI
-	eTitleD,
+	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
 
 	// Etc
 	eStoneD, eStoneN, eStone02D, eStone02N, eBricksD, eBricksN,
@@ -117,7 +120,7 @@ enum class MeshTag
 	eNone,
 
 	// Skinned
-	eTerrorist, eTest,
+	eTerrorist, 
 
 	// --------------------------------------------------------- // 
 	MaxSkinnedMesh = 100,
@@ -130,10 +133,10 @@ enum class MeshTag
 	eRoad,
 
 	// Building
-	eBuilding18, eBuilding19
+	eBuilding18, eBuilding19,
 
 	// Etc
-
+	eTest, eTest2
 };
 
 // 충돌 처리시 사용할 Layer

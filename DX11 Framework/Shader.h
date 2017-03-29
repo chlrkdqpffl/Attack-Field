@@ -25,6 +25,9 @@ struct VS_VB_INSTANCE
 	//XMFLOAT4X4						m_d3dxTransform;
 };
 
+class CBoundingBoxMesh;
+class CBoundingBoxShader;
+
 class CShader
 {
 public:
@@ -127,4 +130,7 @@ protected:
 	UINT							m_nInstanceBufferOffset = 0;
 
 	ID3D11Buffer					*m_pd3dInstanceBuffer = nullptr;
+
+	CBoundingBoxMesh				*m_pBoundingBoxMesh = nullptr;
+	CBoundingBoxShader				*m_pBoundingBoxShader = nullptr;
 };

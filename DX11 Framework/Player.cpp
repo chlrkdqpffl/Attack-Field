@@ -29,7 +29,8 @@ CPlayer::CPlayer(CCharacterObject* pCharacter)
 
 
 	// 임시
-	m_fSpeed = 200;
+//	m_fSpeed = 200;
+	m_fSpeed = 100;
 }
 
 CPlayer::~CPlayer()
@@ -78,6 +79,7 @@ void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
 		d3dxvShift *= 10;		// m_fSpeed 로 변경해야함
+//		d3dxvShift *= 10;		// m_fSpeed 로 변경해야함
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
 	}
 

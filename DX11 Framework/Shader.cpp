@@ -4,6 +4,9 @@
 
 #include "stdafx.h"
 #include "Shader.h"
+#include "BoundingBoxMesh.h"
+#include "BoundingBoxShader.h"
+#include "BoundingBoxInstancedShader.h"
 #include "Scene.h"
 
 CShader::CShader()
@@ -344,20 +347,20 @@ void CObjectsShader::BuildObjects(ID3D11Device *pd3dDevice, void *pContext)
 
 void CObjectsShader::ReleaseObjects()
 {
-	if (m_pMaterial) m_pMaterial->Release();
+	ReleaseCOM(m_pMaterial);
 
-	for (auto& object : m_vObjectsVector) {
-		object->Release();
-		object = nullptr;
-	}
+	for (auto& object : m_vObjectsVector)
+		ReleaseCOM(object);
 
 	m_vObjectsVector.clear();
 }
 
 void CObjectsShader::UpdateObjects(float fTimeElapsed)
 {
-	for (auto object : m_vObjectsVector)
-		object->Update(fTimeElapsed, NULL);
+	for (auto object : m_vObjectsVector) {
+		if(object->GetActive())
+			object->Update(fTimeElapsed);
+	}
 }
 
 void CObjectsShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
@@ -442,39 +445,58 @@ void CInstancedObjectsShader::BuildObjects(ID3D11Device *pd3dDevice, void *pCont
 
 	m_pd3dInstanceBuffer = CreateBuffer(pd3dDevice, m_nInstanceBufferStride, (int)m_vObjectsVector.capacity(), NULL, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
 	m_pMesh->AssembleToVertexBuffer(1, &m_pd3dInstanceBuffer, &m_nInstanceBufferStride, &m_nInstanceBufferOffset);
+
+
+	m_pBoundingBoxMesh = new CBoundingBoxMesh(pd3dDevice, m_pMesh->GetBoundingCube());
+	m_pBoundingBoxShader = new CBoundingBoxShader();
+//	m_pBoundingBoxShader = new CBoundingBoxInstancedShader();
+	m_pBoundingBoxShader->CreateShader(pd3dDevice);
+//	m_pBoundingBoxMesh->AssembleToVertexBuffer(1, &m_pd3dInstanceBuffer, &m_nInstanceBufferStride, &m_nInstanceBufferOffset);
 }
 
 void CInstancedObjectsShader::ReleaseObjects()
 {
 	CObjectsShader::ReleaseObjects();
 
-	if (m_pMesh) m_pMesh->Release();
-
-	if (m_pd3dInstanceBuffer) m_pd3dInstanceBuffer->Release();
+	ReleaseCOM(m_pMesh);
+	ReleaseCOM(m_pd3dInstanceBuffer);
 }
 
 void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
+	OnPrepareRender(pd3dDeviceContext);
+	
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
+
+	int nInstances = 0;
+	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+	pd3dDeviceContext->Map(m_pd3dInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	XMMATRIX *pd3dxmtxInstances = (XMMATRIX *)d3dMappedResource.pData;
+
 	for (auto object : m_vObjectsVector) {
-		if (object->IsVisible(pCamera)) {
-			OnPrepareRender(pd3dDeviceContext);
-
-			if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
-
-			D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-
-			int nInstances = 0;
-			pd3dDeviceContext->Map(m_pd3dInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-			XMMATRIX *pd3dxmtxInstances = (XMMATRIX *)d3dMappedResource.pData;
-
+		if (object->IsVisible(pCamera))
 			pd3dxmtxInstances[nInstances++] = XMMatrixTranspose(object->m_mtxWorld);
-
-			pd3dDeviceContext->Unmap(m_pd3dInstanceBuffer, 0);
-
-			m_pMesh->RenderInstanced(pd3dDeviceContext, nInstances, 0);
-
-			CShader::OnPostRender(pd3dDeviceContext);
-		}
 	}
-}
 
+	pd3dDeviceContext->Unmap(m_pd3dInstanceBuffer, 0);
+
+	m_pMesh->RenderInstanced(pd3dDeviceContext, nInstances, 0);
+
+
+	// Bounding Box Rendering
+	if (GLOBAL_MGR->g_vRenderOption.y) {
+		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
+		m_pBoundingBoxShader->OnPrepareSetting(pd3dDeviceContext, false);
+
+		for (auto object : m_vObjectsVector) {
+			if (object->IsVisible(pCamera)) {
+				CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &object->m_mtxWorld);
+
+				m_pBoundingBoxMesh->Render(pd3dDeviceContext);
+			}
+		}
+		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
+	}
+	
+	CShader::OnPostRender(pd3dDeviceContext);
+}

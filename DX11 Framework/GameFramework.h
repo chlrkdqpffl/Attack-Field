@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Timer.h"
-#include "Scene_Main.h"
+//#include "TitleScene.h"
+//#include "MainScene.h"
 #include "ScreenShader.h"
 
 class CGameFramework

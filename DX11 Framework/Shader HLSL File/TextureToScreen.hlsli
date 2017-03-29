@@ -9,7 +9,7 @@ struct VS_INPUT
 
 struct VS_OUTPUT
 {
-    float4 positionW : SV_POSITION;
+    float4 position : SV_POSITION;
     float2 texCoord : TEXCOORD0;
 };
 
@@ -44,7 +44,7 @@ float4 WeightedAveragefilterBlurring(float2 textCoord)
 VS_OUTPUT VSTextureToScreen(VS_INPUT input)
 {
     VS_OUTPUT output = (VS_OUTPUT) 0;
-    output.positionW = float4(input.position, 1.0f);
+    output.position = float4(input.position, 1.0f);
     output.texCoord = input.texCoord;
     return (output);
 }
@@ -52,6 +52,5 @@ VS_OUTPUT VSTextureToScreen(VS_INPUT input)
 float4 PSTextureToScreen(VS_OUTPUT input) : SV_Target
 {
     return gtxtDiffuse.Sample(gssDefault, input.texCoord);
-    return float4(0.5f, 0.5f, 0.5f, 1.0f);
     //return WeightedAveragefilterBlurring(input.texCoord);
 }

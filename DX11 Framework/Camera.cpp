@@ -9,7 +9,7 @@ CCamera::CCamera(CCamera *pCamera)
 {
 	if (pCamera)
 	{
-		XMStoreFloat3(&m_d3dxvPosition, pCamera->GetPosition());
+		m_d3dxvPosition = pCamera->GetPosition();
 		XMStoreFloat3(&m_d3dxvRight, pCamera->GetRightVector());
 		XMStoreFloat3(&m_d3dxvLook, pCamera->GetLookVector());
 		XMStoreFloat3(&m_d3dxvUp, pCamera->GetUpVector());

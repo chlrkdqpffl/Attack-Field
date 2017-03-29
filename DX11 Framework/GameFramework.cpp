@@ -1,9 +1,7 @@
-//-----------------------------------------------------------------------------
-// File: CGameFramework.cpp
-//-----------------------------------------------------------------------------
-
 #include "stdafx.h"
 #include "GameFramework.h"
+#include "TitleScene.h"
+#include "MainScene.h"
 
 CGameFramework::CGameFramework()
 {
@@ -46,8 +44,8 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(220);
-	//_CrtSetBreakAlloc(307509);
+//	_CrtSetBreakAlloc(370100);
+//	_CrtSetBreakAlloc(370101);
 	
 //	_CrtSetBreakAlloc(305984);	// 70	 - wstr 에서 오류
 //	_CrtSetBreakAlloc(255527);	// 70
@@ -450,6 +448,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 		m_nWndClientWidth = LOWORD(lParam);
 		m_nWndClientHeight = HIWORD(lParam);
 
+		SCENE_MGR->g_nowScene->SetClientSize(POINT{ m_nWndClientWidth, m_nWndClientHeight });
 //		m_pd3dDeviceContext->OMSetRenderTargets(0, NULL, NULL);
 
 		if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();		// 왜 최소화 하면 안만들어지는가 ?
@@ -604,11 +603,12 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers();
 
-	CScene* m_pScene = new CScene_Main();
+//	CScene* m_pScene = new CMainScene();
+	CScene* m_pScene = new CTitleScene();
 	SCENE_MGR->g_nowScene = m_pScene;
 	m_pScene->SetDevice(m_pd3dDevice);
 	m_pScene->SetDeviceContext(m_pd3dDeviceContext);
-	m_pScene->BuildObjects(m_pd3dDevice);
+	m_pScene->Initialize();
 
 	m_pCamera = m_pScene->GetPlayer()->GetCamera();
 	m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
@@ -770,12 +770,6 @@ void CGameFramework::FrameAdvance()
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 	m_pCamera = SCENE_MGR->g_nowScene->GetPlayer()->GetCamera();
 	m_pCamera->SetViewport(m_pd3dDeviceContext);
-
-	// WireFrame Mode
-	if (GetAsyncKeyState('3') & 0x8000)
-		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
-	else
-		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 
 	SCENE_MGR->g_nowScene->Render(m_pd3dDeviceContext, m_pCamera);
 #ifdef _WITH_PLAYER_TOP

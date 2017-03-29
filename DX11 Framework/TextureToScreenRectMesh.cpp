@@ -37,7 +37,7 @@ CTextureToScreenRectMesh::CTextureToScreenRectMesh(ID3D11Device *pd3dDevice, flo
 
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
-	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
+//	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 }
 
 CTextureToScreenRectMesh::~CTextureToScreenRectMesh()

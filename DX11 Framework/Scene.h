@@ -20,6 +20,7 @@
 #include "RotatingObject.h"
 #include "NormalMapObject.h"
 #include "AxisObjects.h"
+#include "UIObject.h"
 
 // ----- Character -----
 #include "TerrainPlayer.h"
@@ -69,15 +70,18 @@ public:
 	virtual bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	virtual void OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMaterial, int nIndex = 0);
 
-	virtual void BuildObjects(ID3D11Device *pd3dDevice);
-	virtual void CreateTweakBars();
+	virtual void Initialize();
 	virtual void ReleaseObjects();
 
-	virtual void CreateConstantBuffers(ID3D11Device *pd3dDevice);
-	virtual void UpdateConstantBuffers(ID3D11DeviceContext *pd3dDeviceContext);
+	virtual void CreateConstantBuffers();
+	virtual void UpdateConstantBuffers();
 	virtual void ReleaseConstantBuffers();
 
-	virtual void CreateLights() = 0;
+	virtual void CreateLights() {};
+	virtual void CreateUIImage() {};
+	virtual void CreateTweakBars() {};
+	virtual void CreatePlayer();
+	virtual void IsCollisionUI(POINT mousePos) {};
 
 	virtual bool ProcessInput(UCHAR *pKeysBuffer);
 	virtual void UpdateObjects(float fTimeElapsed);
@@ -91,42 +95,54 @@ public:
 
 	// ----- Get, Setter ----- // 
 	CHeightMapTerrain *GetTerrain() const {	return m_pTerrain; }
-
+	void SetClientSize(POINT size) { m_ptWndClientSize = size; }
+	
+	POINT GetClientSize() const { return m_ptWndClientSize; }
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
 	void SetPlayer(CPlayer *pPlayer) { m_pPlayer = pPlayer; }
 	CPlayer* GetPlayer() const { return m_pPlayer; }
 	void SetDevice(ID3D11Device* pDevice) { m_pd3dDevice = pDevice; }
 	void SetDeviceContext(ID3D11DeviceContext* pDeviceContext) { m_pd3dDeviceContext = pDeviceContext; }
 	void SetTimeElapsed(float fTimeElapsed) { m_fTimeElapsed = fTimeElapsed; }
+	void SetTag(SceneTag tag) { m_tagScene = tag; }
 
 protected:
-	ID3D11Device					*m_pd3dDevice = nullptr;
-	ID3D11DeviceContext				*m_pd3dDeviceContext = nullptr;
+	SceneTag							m_tagScene = SceneTag::eNone;
+	ID3D11Device						*m_pd3dDevice = nullptr;
+	ID3D11DeviceContext					*m_pd3dDeviceContext = nullptr;
 
-	CGameObject						**m_ppObjects;
-	int								m_nObjects;
+	CGameObject							**m_ppObjects;
+	int									m_nObjects;
 
 	vector<CGameObject*>				m_vObjectsVector;
 	vector<CObjectsShader*>				m_vObjectsShaderVector;
 	vector<CInstancedObjectsShader*>	m_vInstancedObjectsShaderVector;
 
-	CCamera							*m_pCamera;
-	CGameObject						*m_pSelectedObject;
-	CAxisObjects					*m_pWorldCenterAxis = nullptr;
+	vector<CGameObject*>				m_vecStaticMeshContainer;
+	vector<CGameObject*>				m_vecDynamicMeshContainer;
+
+	CCamera								*m_pCamera;
+	CGameObject							*m_pSelectedObject;
+	CAxisObjects						*m_pWorldCenterAxis = nullptr;
+
+	POINT								m_ptWndClientSize;
 
 	// Light
-	LIGHTS							*m_pLights;
+	LIGHTS								*m_pLights;
 
 	// Environment
-	CSkyBox							*m_pSkyBox			= nullptr;
-	CHeightMapTerrain				*m_pTerrain			= nullptr;
+	CSkyBox								*m_pSkyBox			= nullptr;
+	CHeightMapTerrain					*m_pTerrain			= nullptr;
 
 	// Particle
-	float							m_fGametime;
-	CParticleSystem					*m_pParticleSystem;
+	float								m_fGametime;
+	CParticleSystem						*m_pParticleSystem;
 
 
-	float							m_fTimeElapsed = 0.0f;
-	CPlayer							*m_pPlayer = nullptr;
-	CCharacterObject				*m_pPlayerCharacter = nullptr;
+	float								m_fTimeElapsed = 0.0f;
+	CPlayer								*m_pPlayer = nullptr;
+	CCharacterObject					*m_pPlayerCharacter = nullptr;
+
+	// UI
+	CUIManager							*m_pUIManager = nullptr;
 };

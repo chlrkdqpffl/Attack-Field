@@ -168,7 +168,7 @@ void CFbxModelSkinnedMesh::UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceC
 		XMStoreFloat4x4(&pcbBones->m_mtxBoneTransform[i], XMMatrixTranspose(m_vecFinalBone[i]));
 	}
 	pd3dDeviceContext->Unmap(m_pd3dcbBones, 0);
-
+	
 	pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_BONETRANSFORM, 1, &m_pd3dcbBones);
 }
 

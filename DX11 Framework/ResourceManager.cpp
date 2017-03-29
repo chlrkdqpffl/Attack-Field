@@ -25,8 +25,15 @@ void CResourceManager::InitializeManager()
 	AddResourece(TextureTag::eRifleD,				"../Assets/FBX Model/Weapon/Rifle/rifle.bmp");
 	AddResourece(TextureTag::eRifleN,				"../Assets/FBX Model/Weapon/Rifle/RifleNM.png");
 	
+	// BackGround Image
+	AddResourece(TextureTag::eTitleBackGroundD, 	"../Assets/Image/UI/TitleScene.jpg");
+	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene.jpg");
+	
 	// UI
-	AddResourece(TextureTag::eTitleD,				"../Assets/Image/UI/BackGround2.jpg");
+	AddResourece(TextureTag::eStartButtonOn,		"../Assets/Image/UI/StartOn.png");
+	AddResourece(TextureTag::eStartButtonOff,		"../Assets/Image/UI/StartOff.png");
+	AddResourece(TextureTag::eExitButtonOn,			"../Assets/Image/UI/ExitOn.png");
+	AddResourece(TextureTag::eExitButtonOff,		"../Assets/Image/UI/ExitOff.png");
 
 	// Environment
 	AddResourece(TextureTag::eTerrainD,				"../Assets/Image/Terrain/Base_Texture.jpg");
@@ -43,7 +50,7 @@ void CResourceManager::InitializeManager()
 	AddResourece(TextureTag::eWaterDetailD,			"../Assets/Image/Terrain/Water_Detail_Texture_0.dds");
 
 	// Building
-	AddResourece(TextureTag::eBuilding18,			"../Assets/FBX Model/novotel.jpg");
+//	AddResourece(TextureTag::eBuilding18,			"../Assets/FBX Model/novotel.jpg");
 
 
 	// Etc
@@ -57,7 +64,7 @@ void CResourceManager::InitializeManager()
 	AddResourece(TextureTag::eWallND,				"../Assets/Image/Miscellaneous/wall_NM_height.dds");
 	
 
-	AddResourece(TextureTag::eTest,					"../Assets/FBX Model/Soldier_1_albedo.png");
+//	AddResourece(TextureTag::eTest,					"../Assets/FBX Model/Soldier_1_albedo.png");
 
 	cout << endl;
 	cout << "==========================================================================================" << endl;
@@ -76,7 +83,8 @@ void CResourceManager::InitializeManager()
 	// Building
 
 	// Etc
-	AddResourece(MeshTag::eTest,					"../Assets/FBX Model/Soldier.model");
+	AddResourece(MeshTag::eTest,					"../Assets/FBX Model/test.model");
+	AddResourece(MeshTag::eTest2,					"../Assets/FBX Model/test2.model");
 	
 
 	cout << endl;

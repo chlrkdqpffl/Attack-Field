@@ -34,9 +34,6 @@
     <Filter Include="헤더 파일\Object\Player">
       <UniqueIdentifier>{ab119e5b-c74b-45da-b984-ae26afa70731}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Scene">
-      <UniqueIdentifier>{35270786-75a3-46ec-9576-cc2a3ebc4b24}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\Mesh">
       <UniqueIdentifier>{1ff06d3d-2915-4bb4-9b32-7c1273b81689}</UniqueIdentifier>
     </Filter>
@@ -58,6 +55,18 @@
     <Filter Include="Particle">
       <UniqueIdentifier>{212ba4fb-c602-4b82-bf63-ababc9048f83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Mesh\NormalMap">
+      <UniqueIdentifier>{3337359f-fdc1-4be3-8786-e06ef93680cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Mesh\NormalMap">
+      <UniqueIdentifier>{419b3b71-1ecc-4fd8-866e-5ccb6eaed9b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Mesh\FbxFile">
+      <UniqueIdentifier>{8dff3e21-7700-4215-bdb2-ed37db3ec827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Mesh\FbxFile">
+      <UniqueIdentifier>{2640aa36-1ca3-41df-ab5d-1b29a419ebb0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Objects">
       <UniqueIdentifier>{22e16c88-e3ad-40e7-af8a-757e32f0e765}</UniqueIdentifier>
     </Filter>
@@ -70,29 +79,11 @@
     <Filter Include="Objects\Terrain">
       <UniqueIdentifier>{519f8bc8-9ccd-42e2-94d7-69e470d6b63a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Mesh\NormalMap">
-      <UniqueIdentifier>{3337359f-fdc1-4be3-8786-e06ef93680cf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Mesh\NormalMap">
-      <UniqueIdentifier>{419b3b71-1ecc-4fd8-866e-5ccb6eaed9b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Scene">
-      <UniqueIdentifier>{501b630d-f68f-45c9-947c-309d4f666895}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Objects\Character">
       <UniqueIdentifier>{f38c5697-509f-4dcb-9183-19185c1ca890}</UniqueIdentifier>
     </Filter>
     <Filter Include="Objects\Weopon">
       <UniqueIdentifier>{4b5c47f8-e720-4ebf-9baa-857837285bda}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Mesh\FbxFile">
-      <UniqueIdentifier>{8dff3e21-7700-4215-bdb2-ed37db3ec827}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Mesh\FbxFile">
-      <UniqueIdentifier>{2640aa36-1ca3-41df-ab5d-1b29a419ebb0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Objects\BoundingBox">
-      <UniqueIdentifier>{a2c00bf9-129c-4536-b6f6-5c01e117e062}</UniqueIdentifier>
     </Filter>
     <Filter Include="Objects\Weopon\RifleGun">
       <UniqueIdentifier>{e58cf0b1-c265-493a-8231-63a41f6b90f3}</UniqueIdentifier>
@@ -102,6 +93,15 @@
     </Filter>
     <Filter Include="Objects\Weopon\Bullet\RifleGun">
       <UniqueIdentifier>{9eb295c1-aa22-4fe4-83fa-c38bc6c4d91c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\BoundingBox">
+      <UniqueIdentifier>{a2c00bf9-129c-4536-b6f6-5c01e117e062}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{501b630d-f68f-45c9-947c-309d4f666895}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{e7238440-4167-4996-8cd8-b8e833658337}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -139,7 +139,7 @@
       <Filter>소스 파일\Object\Player</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
-      <Filter>소스 파일\Scene</Filter>
+      <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>소스 파일\Object</Filter>
@@ -164,9 +164,6 @@
     </ClCompile>
     <ClCompile Include="TextManager.cpp">
       <Filter>소스 파일\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene_Main.cpp">
-      <Filter>소스 파일\Scene</Filter>
     </ClCompile>
     <ClCompile Include="ParticleSystem.cpp">
       <Filter>Particle</Filter>
@@ -282,6 +279,24 @@
     <ClCompile Include="RifleBullet.cpp">
       <Filter>Objects\Weopon\Bullet\RifleGun</Filter>
     </ClCompile>
+    <ClCompile Include="BoundingBoxInstancedShader.cpp">
+      <Filter>Objects\BoundingBox</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="MainScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMesh.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIObject.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -323,9 +338,6 @@
     <ClInclude Include="AirplanePlayer.h">
       <Filter>헤더 파일\Object\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>헤더 파일\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>헤더 파일\Mesh</Filter>
     </ClInclude>
@@ -358,9 +370,6 @@
     </ClInclude>
     <ClInclude Include="TextManager.h">
       <Filter>헤더 파일\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene_Main.h">
-      <Filter>헤더 파일\Scene</Filter>
     </ClInclude>
     <ClInclude Include="UserTag.h">
       <Filter>헤더 파일</Filter>
@@ -428,9 +437,6 @@
     <ClInclude Include="AnimationController.h">
       <Filter>헤더 파일\Object</Filter>
     </ClInclude>
-    <ClInclude Include="AntTweakBarManager.h">
-      <Filter>헤더 파일\Manager</Filter>
-    </ClInclude>
     <ClInclude Include="PoliceCharacterObject.h">
       <Filter>Objects\Character</Filter>
     </ClInclude>
@@ -478,6 +484,30 @@
     </ClInclude>
     <ClInclude Include="RifleBullet.h">
       <Filter>Objects\Weopon\Bullet\RifleGun</Filter>
+    </ClInclude>
+    <ClInclude Include="AntTweakBarManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBoxInstancedShader.h">
+      <Filter>Objects\BoundingBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MainScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UIObject.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMesh.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -539,5 +569,8 @@
       <Filter>HLSL</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
+    <None Include="Shader HLSL File\UI.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@
 XMFLOAT4		CGlobalVariableManager::g_vRenderOption = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 ID3D11Buffer*	CGlobalVariableManager::g_pd3dcbRenderOption = nullptr;
 bool			CGlobalVariableManager::g_bShowWorldAxis = false;
+bool			CGlobalVariableManager::g_bShowWireFrame = false;
 
 CGlobalVariableManager::CGlobalVariableManager()
 {
@@ -40,4 +41,14 @@ void CGlobalVariableManager::UpdateManager()
 void CGlobalVariableManager::ReleseManager()
 {
 	ReleaseCOM(g_pd3dcbRenderOption);
+}
+
+bool CGlobalVariableManager::SetTimer(DWORD& timeVar, int time)
+{
+	if (GetTickCount() - timeVar >= time) {
+		timeVar = GetTickCount();
+		return true;
+	}
+	else
+		return false;
 }

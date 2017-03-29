@@ -24,6 +24,9 @@ void CSceneManager::ChangeScene(CScene* newScene)
 		delete g_nowScene;
 	}
 	g_nowScene = newScene;
+	g_nowScene->SetDevice(STATEOBJ_MGR->g_pd3dDevice);
+	g_nowScene->SetDeviceContext(STATEOBJ_MGR->g_pd3dImmediateDeviceContext);
+//	g_nowScene->SetCamera(STATEOBJ_MGR->g);
 
-	g_nowScene->BuildObjects(STATEOBJ_MGR->g_pd3dDevice);
+	g_nowScene->Initialize();
 }

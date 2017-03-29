@@ -113,10 +113,6 @@ public:
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 public:
-//	XMFLOAT4X4						m_d3dxmtxLocal;
-//	XMFLOAT4X4						m_d3dxmtxWorld;
-//	XMFLOAT4X4						m_d3dxmtxShadow;
-
 	XMMATRIX						m_mtxLocal = XMMatrixIdentity();
 	XMMATRIX						m_mtxWorld = XMMatrixIdentity();
 	XMMATRIX						m_mtxShadow = XMMatrixIdentity();
@@ -139,6 +135,8 @@ protected:
 
 //	BoundingBox						m_bcBoundingBox;			// 사용자가 정하는 바운딩 박스
 	BoundingBox						m_bcMeshBoundingBox;		// 실제 메쉬 바운딩 박스
+	BoundingOrientedBox				m_bcMeshBoundingOBox;		// 테스트용 OBB 박스
+
 	CBoundingBoxMesh				*m_pBoundingBoxMesh	= nullptr;
 	CBoundingBoxShader				*m_pBoundingBoxShader = nullptr;
 
@@ -152,6 +150,7 @@ public:
 	virtual void OnPrepareRender();
 	virtual void RenderMesh(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
+	void BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext);
 
 	bool IsVisible(CCamera *pCamera = NULL);
 	void Animate(XMMATRIX *pd3dxmtxParent);

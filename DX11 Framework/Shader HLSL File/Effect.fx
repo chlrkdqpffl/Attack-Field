@@ -42,7 +42,7 @@ cbuffer cbSkyBox : register(b4)                             // PS Set
 */
 cbuffer cbRenderOption : register(b5)                       // PS Set
 {
-    float4      gbRenderOption : packoffset(c0);     // (x : Fog)
+    float4 gbRenderOption : packoffset(c0);                 // (x : Fog Render, y : BoundingBox Render )
 };
 
 cbuffer cbSkinned : register(b7)							// VS Set
@@ -279,7 +279,7 @@ struct VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT
 	float3 normalW : NORMAL;
 	float2 texCoord : TEXCOORD0;
 
-	float2 texCoordShadow : TEXCOORD1;
+//	float2 texCoordShadow : TEXCOORD1;
 };
 
 //-------------------------------------------------------------------------------------------------------------------------------
@@ -635,42 +635,4 @@ float4 PSInstancedTexturedLightingColor(VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT in
         cColor = Fog(cColor, input.positionW);
 
 	return(cColor);
-}
-
-
-VS_SKINNED_OUTPUT VSSkinnedTexturedLightingColor(VS_SKINNED_INPUT input)
-{
-	VS_SKINNED_OUTPUT output = (VS_SKINNED_OUTPUT) 0;
-
-	float weights[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	weights[0] = input.boneWeights.x;
-	weights[1] = input.boneWeights.y;
-	weights[2] = input.boneWeights.z;
-	weights[3] = input.boneWeights.w;
-   // weights[3] = 1 - weights[0] - weights[1] - weights[2];
-
-	float3 posL = float3(0.0f, 0.0f, 0.0f);
-	float3 normalL = float3(0.0f, 0.0f, 0.0f);
-
-	for (int i = 0; i < 4; i++)
-	{
-		posL += weights[i] * mul(float4(input.position, 1.0f), gBoneTransform[input.boneIndices[i]]).xyz;
-		normalL += weights[i] * mul(input.normal, (float3x3) gBoneTransform[input.boneIndices[i]]);
-	}
-	
-	output.positionW = mul(float4(posL, 1.0f), gmtxWorld).xyz;
-	output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
-	output.normalW = mul(normalL, (float3x3) gmtxWorld);
-	output.texCoord = input.texCoord;
-
-	return output;
-}
-
-float4 PSSkinnedTexturedLightingColor(VS_SKINNED_OUTPUT input) : SV_Target
-{
-	input.normalW = normalize(input.normalW);
-	float4 cIllumination = Lighting(input.positionW, input.normalW);
-    float4 cColor = gtxtDiffuse.Sample(gssDefault, input.texCoord) * cIllumination;
-
-	return (cColor);
 }

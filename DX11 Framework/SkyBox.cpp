@@ -47,10 +47,8 @@ CSkyBox::~CSkyBox()
 
 void CSkyBox::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	XMVECTOR d3dxvCameraPos = pCamera->GetPosition();
-	XMFLOAT3 f3vCameraPos;
-	XMStoreFloat3(&f3vCameraPos, d3dxvCameraPos);
-	SetPosition(f3vCameraPos.x, f3vCameraPos.y, f3vCameraPos.z);
+	XMFLOAT3 vCameraPos = pCamera->GetPosition();
+	SetPosition(vCameraPos.x, vCameraPos.y, vCameraPos.z);
 	Update(NULL);
 
 	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &m_mtxWorld);

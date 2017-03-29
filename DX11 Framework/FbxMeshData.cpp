@@ -133,6 +133,23 @@ bool CFbxMeshData::LoadFbxModelDatafromFile(const string& fileName)
 	}
 	fin.close();
 
+	// 임시로 바운딩 박스롤 이렇게 맞춰놓은 것 - 추후에 수정하기
+	float max_x = m_vecPosition[0].x, max_y = m_vecPosition[0].y, max_z = m_vecPosition[0].z;
+	for (int i = 0; i < m_nVertexCount; i++) {
+		if (max_x < m_vecPosition[i].x) max_x = m_vecPosition[i].x;
+		if (max_y < m_vecPosition[i].y) max_y = m_vecPosition[i].y;
+		if (max_z < m_vecPosition[i].z) max_z = m_vecPosition[i].z;
+	}
+	float min_x = m_vecPosition[0].x, min_y = m_vecPosition[0].y, min_z = m_vecPosition[0].z;
+	for (int i = 0; i < m_nVertexCount; i++) {
+		if (min_x > m_vecPosition[i].x) min_x = m_vecPosition[i].x;
+		if (min_y > m_vecPosition[i].y) min_y = m_vecPosition[i].y;
+		if (min_z > m_vecPosition[i].z) min_z = m_vecPosition[i].z;
+	}
+
+	m_boundingBox.Center = XMFLOAT3(0, 0, 0);
+	m_boundingBox.Extents = XMFLOAT3(max_x, max_y, max_z);
+
 	return true;
 }
 
@@ -221,7 +238,7 @@ void CFbxMeshData::LoadBBoxData(ifstream& fin)
 	fin >> bBoxCenter.x >> bBoxCenter.y >> bBoxCenter.z;
 	fin >> buf; // Extents
 	fin >> bBoxExtents.x >> bBoxExtents.y >> bBoxExtents.z;
-	
+
 	m_boundingBox.Center = bBoxCenter;
 	m_boundingBox.Extents = bBoxExtents;
 }

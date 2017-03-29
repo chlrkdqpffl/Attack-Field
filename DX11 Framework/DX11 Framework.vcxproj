@@ -158,6 +158,7 @@
     <ClCompile Include="AirplanePlayer.cpp" />
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="AntTweakBarManager.cpp" />
+    <ClCompile Include="BoundingBoxInstancedShader.cpp" />
     <ClCompile Include="BoundingBoxMesh.cpp" />
     <ClCompile Include="BoundingBoxShader.cpp" />
     <ClCompile Include="BulletObject.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="CharacterShader.cpp" />
     <ClCompile Include="FbxMeshData.cpp" />
     <ClCompile Include="GlobalVariableManager.cpp" />
+    <ClCompile Include="LoadingScene.cpp" />
     <ClCompile Include="NormalDisplaceMapShader.cpp" />
     <ClCompile Include="PoliceCharacterObject.cpp" />
     <ClCompile Include="RifleBullet.cpp" />
@@ -200,7 +202,7 @@
     <ClCompile Include="RotatingObject.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="Scene_Main.cpp" />
+    <ClCompile Include="MainScene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="SkyBoxMesh.cpp" />
@@ -215,6 +217,9 @@
     <ClCompile Include="TexturedRectMesh.cpp" />
     <ClCompile Include="ThirdPersonCamera.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
+    <ClCompile Include="UIMesh.cpp" />
+    <ClCompile Include="UIObject.cpp" />
     <ClCompile Include="WaterGridMesh.cpp" />
     <ClCompile Include="WaterShader.cpp" />
     <ClCompile Include="Weapon.cpp" />
@@ -223,6 +228,7 @@
     <ClInclude Include="AirplanePlayer.h" />
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="AntTweakBarManager.h" />
+    <ClInclude Include="BoundingBoxInstancedShader.h" />
     <ClInclude Include="BoundingBoxMesh.h" />
     <ClInclude Include="BoundingBoxShader.h" />
     <ClInclude Include="BulletObject.h" />
@@ -233,6 +239,7 @@
     <ClInclude Include="ConstantBuffer_Slot.h" />
     <ClInclude Include="FbxMeshData.h" />
     <ClInclude Include="GlobalVariableManager.h" />
+    <ClInclude Include="LoadingScene.h" />
     <ClInclude Include="NormalDisplaceMapShader.h" />
     <ClInclude Include="NormalMapCubeMesh.h" />
     <ClInclude Include="DirectX11_Project.h" />
@@ -258,7 +265,7 @@
     <ClInclude Include="RotatingObject.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="Scene_Main.h" />
+    <ClInclude Include="MainScene.h" />
     <ClInclude Include="ScreenShader.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SingletonManager.h" />
@@ -282,6 +289,9 @@
     <ClInclude Include="TextureToScreenRectMesh.h" />
     <ClInclude Include="ThirdPersonCamera.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="UIMesh.h" />
+    <ClInclude Include="UIObject.h" />
     <ClInclude Include="UserDefine.h" />
     <ClInclude Include="UserTag.h" />
     <ClInclude Include="WaterGridMesh.h" />
@@ -328,6 +338,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </None>
     <None Include="Shader HLSL File\TextureToScreen.hlsli" />
+    <None Include="Shader HLSL File\UI.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

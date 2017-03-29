@@ -429,18 +429,12 @@ void CGameObject::SetPosition(float x, float y, float z, bool isLocal)
 	XMFLOAT4X4 mtx; 
 	if (isLocal) {
 		XMStoreFloat4x4(&mtx, m_mtxLocal);
-		mtx._41 = x;
-		mtx._42 = x;
-		mtx._43 = x;
-
+		mtx._41 = x;  mtx._42 = y; 	mtx._43 = z;
 		m_mtxLocal = XMLoadFloat4x4(&mtx);
 	}
 	else {
 		XMStoreFloat4x4(&mtx, m_mtxWorld);
-		mtx._41 = x;
-		mtx._42 = x;
-		mtx._43 = x;
-
+		mtx._41 = x;  mtx._42 = y; 	mtx._43 = z;
 		m_mtxWorld = XMLoadFloat4x4(&mtx);
 	}
 }
@@ -457,16 +451,12 @@ void CGameObject::SetPosition(XMFLOAT3 pos, bool isLocal)
 	XMFLOAT4X4 mtx;
 	if (isLocal) {
 		XMStoreFloat4x4(&mtx, m_mtxLocal);
-		mtx._41 = pos.x;
-		mtx._42 = pos.y;
-		mtx._43 = pos.z;
+		mtx._41 = pos.x; mtx._42 = pos.y; mtx._43 = pos.z;
 		m_mtxLocal = XMLoadFloat4x4(&mtx);
 	}
 	else {
 		XMStoreFloat4x4(&mtx, m_mtxWorld);
-		mtx._41 = pos.x;
-		mtx._42 = pos.y;
-		mtx._43 = pos.z;
+		mtx._41 = pos.x; mtx._42 = pos.y; mtx._43 = pos.z;
 		m_mtxWorld = XMLoadFloat4x4(&mtx);
 	}
 }
@@ -841,14 +831,9 @@ void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 	if (m_pSibling) m_pSibling->Render(pd3dDeviceContext, pCamera);
 	if (m_pChild) m_pChild->Render(pd3dDeviceContext, pCamera);
 
-	if (m_pBoundingBoxMesh) {
-		if (GLOBAL_MGR->g_vRenderOption.y) {
-			pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
-			m_pBoundingBoxShader->Render(pd3dDeviceContext, pCamera);
-			m_pBoundingBoxMesh->Render(pd3dDeviceContext);
-			pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
-		}
-	}
+	if (GLOBAL_MGR->g_vRenderOption.y)
+		BoundingBoxRender(pd3dDeviceContext);
+
 	if (m_pAxisObject) {
 		if (GLOBAL_MGR->g_bShowWorldAxis)
 			m_pAxisObject->Render(pd3dDeviceContext, pCamera);
@@ -857,4 +842,14 @@ void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 	if (m_pShader) m_pShader->OnPostRender(pd3dDeviceContext);
 	if (m_pd3dDepthStencilState) pd3dDeviceContext->OMSetDepthStencilState(NULL, 0);
 	if (m_pd3dBlendState) pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
+}
+
+void CGameObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
+{
+	if (m_pBoundingBoxMesh) {
+		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
+		m_pBoundingBoxShader->OnPrepareSetting(pd3dDeviceContext, true);
+		m_pBoundingBoxMesh->Render(pd3dDeviceContext);
+		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
+	}
 }

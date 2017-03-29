@@ -83,8 +83,8 @@ void CTerrainPlayer::OnCameraUpdated(float fTimeElapsed)
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)m_pCameraUpdatedContext;
 	XMFLOAT3 d3dxvScale;
 	XMStoreFloat3(&d3dxvScale, pTerrain->GetScale());
-	XMFLOAT3 d3dxvCameraPosition;
-	XMStoreFloat3(&d3dxvCameraPosition, m_pCamera->GetPosition());
+	XMFLOAT3 d3dxvCameraPosition = m_pCamera->GetPosition();
+
 	int z = (int)(d3dxvCameraPosition.z / d3dxvScale.z);
 	bool bReverseQuad = ((z % 2) != 0);
 	float fHeight = pTerrain->GetHeight(d3dxvCameraPosition.x, d3dxvCameraPosition.z, bReverseQuad) + 5.0f;

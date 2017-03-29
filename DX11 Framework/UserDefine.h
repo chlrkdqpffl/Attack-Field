@@ -37,8 +37,13 @@
 
 // Check Timer
 #define STARTTIMER(msg)			{ cout << msg; GLOBAL_MGR->g_startTime = chrono::system_clock::now();}
-#define ENDTIMER				{GLOBAL_MGR->g_timeGap = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now() - GLOBAL_MGR->g_startTime); \
-								 cout << GLOBAL_MGR->g_timeGap.count() << " milliseconds" << endl;}
+
+#define ENDTIMER_MILLI			{GLOBAL_MGR->g_GapMilliseconds = chrono::duration_cast<chrono::milliseconds> (chrono::system_clock::now() - GLOBAL_MGR->g_startTime); \
+								 cout << GLOBAL_MGR->g_GapMilliseconds.count() << " milliseconds" << endl;}
+#define ENDTIMER_MICRO			{GLOBAL_MGR->g_GapMicroseconds = chrono::duration_cast<chrono::microseconds> (chrono::system_clock::now() - GLOBAL_MGR->g_startTime); \
+								 cout << GLOBAL_MGR->g_GapMicroseconds.count() << " microseconds" << endl;}
+#define ENDTIMER_NANO			{GLOBAL_MGR->g_GapNanoseconds = chrono::duration_cast<chrono::nanoseconds> (chrono::system_clock::now() - GLOBAL_MGR->g_startTime); \
+								 cout << GLOBAL_MGR->g_GapNanoseconds.count() << " nanoseconds" << endl;}
 
 // Returns random float in [a, b).
 #define RAND_FLOAT(a, b) float(a + ((float)(rand()) / (float)RAND_MAX) * (b - a))

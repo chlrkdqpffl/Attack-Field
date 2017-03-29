@@ -37,3 +37,8 @@ void CRifleBullet::CreateMaterial()
 	m_pMaterial->SetTexture(pTexture);
 	*/
 }
+
+void CRifleBullet::Update(float fTimeElapsed)
+{
+	CBulletObject::Update(fTimeElapsed);
+}

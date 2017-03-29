@@ -51,11 +51,6 @@ void CWeapon::Update(float fTimeElapsed)
 	m_mtxWorld = m_mtxLocal * m_mtxParent * m_pOwner->m_mtxWorld;
 //	SetRotate(TWBAR_MGR->g_xmf3Rotate, true);
 //	SetPosition(TWBAR_MGR->g_xmf3Offset, true);
-
-
-//	XMMATRIX test = XMMatrixIdentity();
-//	test.r[0].m128_f32[3] = 1;
-//	ShowXMMatrix(test);
 }
 
 void CWeapon::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
