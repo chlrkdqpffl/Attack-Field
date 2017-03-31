@@ -74,39 +74,6 @@ void CUIManager::Initialize(ID3D11Device* pDevice)
 	m_pUIShader->CreateShader(pDevice);
 }
 
-void CUIManager::IsCollision(POINT mousePos)
-{
-	for (auto& uiObj : m_vecUIObject) {
-		if (uiObj->IsCollision(mousePos)) {
-			auto tag = uiObj->GetTag();
-
-			switch (tag) {
-			case TextureTag::eStartButtonOn:
-				SCENE_MGR->ChangeScene(new CMainScene());
-				return;
-
-				break;
-			case TextureTag::eExitButtonOn:
-				::PostQuitMessage(0);
-				break;
-			}
-		}
-	}
-}
-
-bool CUIManager::IsEqualTag(POINT mousePos, TextureTag tag)
-{
-	for (auto& uiObj : m_vecUIObject) {
-		if (uiObj->GetActive()) {
-			if (uiObj->IsCollision(mousePos)) {
-				if(tag == uiObj->GetTag())
-					return true;
-			}
-		}
-	}
-	return false;
-}
-
 TextureTag CUIManager::FindCollisionUIObject(POINT mousePos)
 {
 	for (auto& uiObj : m_vecUIObject) {
@@ -115,6 +82,8 @@ TextureTag CUIManager::FindCollisionUIObject(POINT mousePos)
 				return uiObj->GetTag();
 		}
 	}
+
+	return TextureTag::eNone;
 }
 
 void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)

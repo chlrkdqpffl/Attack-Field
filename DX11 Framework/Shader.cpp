@@ -459,6 +459,8 @@ void CInstancedObjectsShader::ReleaseObjects()
 	CObjectsShader::ReleaseObjects();
 
 	ReleaseCOM(m_pMesh);
+	SafeDelete(m_pBoundingBoxMesh);
+	SafeDelete(m_pBoundingBoxShader);
 	ReleaseCOM(m_pd3dInstanceBuffer);
 }
 

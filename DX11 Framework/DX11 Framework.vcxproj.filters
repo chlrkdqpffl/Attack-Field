@@ -16,23 +16,11 @@
     <Filter Include="HLSL">
       <UniqueIdentifier>{b36ea3a8-3cb6-4680-a615-a0844cf96048}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Camera">
-      <UniqueIdentifier>{56880aa6-fa68-402f-9d74-61b1b0cc0890}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Camera">
-      <UniqueIdentifier>{086240bc-a4c8-4211-bbe4-2d9bac0f0bc6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\Object">
       <UniqueIdentifier>{95bc00e2-a8e6-4a66-b8da-dc732c5ed1de}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Object">
       <UniqueIdentifier>{5c0a154d-6f11-4f3e-beff-cd86d85b23e1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Object\Player">
-      <UniqueIdentifier>{1bb24e83-1e5b-4f6d-a530-4f0466b6c54e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Object\Player">
-      <UniqueIdentifier>{ab119e5b-c74b-45da-b984-ae26afa70731}</UniqueIdentifier>
     </Filter>
     <Filter Include="헤더 파일\Mesh">
       <UniqueIdentifier>{1ff06d3d-2915-4bb4-9b32-7c1273b81689}</UniqueIdentifier>
@@ -103,6 +91,12 @@
     <Filter Include="UI">
       <UniqueIdentifier>{e7238440-4167-4996-8cd8-b8e833658337}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{7f87cd86-f7cc-4b49-94af-d21819fb1dd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Player">
+      <UniqueIdentifier>{6a423d7e-855a-42c4-b1bb-4a4f7a70010e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -116,27 +110,6 @@
     </ClCompile>
     <ClCompile Include="GameFramework.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>소스 파일\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="SpaceShipCamera.cpp">
-      <Filter>소스 파일\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="FirstPersonCamera.cpp">
-      <Filter>소스 파일\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="ThirdPersonCamera.cpp">
-      <Filter>소스 파일\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>소스 파일\Object\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="TerrainPlayer.cpp">
-      <Filter>소스 파일\Object\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="AirplanePlayer.cpp">
-      <Filter>소스 파일\Object\Player</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Scene</Filter>
@@ -297,6 +270,27 @@
     <ClCompile Include="UIObject.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="FirstPersonCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceShipCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdPersonCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="AirplanePlayer.cpp">
+      <Filter>Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainPlayer.cpp">
+      <Filter>Objects\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -316,27 +310,6 @@
     </ClInclude>
     <ClInclude Include="GameFramework.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>헤더 파일\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="SpaceShipCamera.h">
-      <Filter>헤더 파일\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="FirstPersonCamera.h">
-      <Filter>헤더 파일\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="ThirdPersonCamera.h">
-      <Filter>헤더 파일\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>헤더 파일\Object\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="TerrainPlayer.h">
-      <Filter>헤더 파일\Object\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="AirplanePlayer.h">
-      <Filter>헤더 파일\Object\Player</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>헤더 파일\Mesh</Filter>
@@ -508,6 +481,27 @@
     </ClInclude>
     <ClInclude Include="UIMesh.h">
       <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="FirstPersonCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceShipCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPersonCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="AirplanePlayer.h">
+      <Filter>Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainPlayer.h">
+      <Filter>Objects\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

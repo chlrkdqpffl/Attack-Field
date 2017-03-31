@@ -73,9 +73,9 @@ public:
 	virtual void Initialize();
 	virtual void ReleaseObjects();
 
-	virtual void CreateConstantBuffers();
-	virtual void UpdateConstantBuffers();
-	virtual void ReleaseConstantBuffers();
+	virtual void CreateConstantBuffers() {};
+	virtual void UpdateConstantBuffers() {};
+	virtual void ReleaseConstantBuffers() {};
 
 	virtual void CreateLights() {};
 	virtual void CreateUIImage() {};
@@ -88,7 +88,7 @@ public:
 
 	virtual void OnPreRender(ID3D11DeviceContext *pd3dDeviceContext);
 	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera);
-	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext);
+	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext) {};
 
 public:
 	CGameObject *PickObjectPointedByCursor(int xClient, int yClient);
@@ -103,7 +103,6 @@ public:
 	CPlayer* GetPlayer() const { return m_pPlayer; }
 	void SetDevice(ID3D11Device* pDevice) { m_pd3dDevice = pDevice; }
 	void SetDeviceContext(ID3D11DeviceContext* pDeviceContext) { m_pd3dDeviceContext = pDeviceContext; }
-	void SetTimeElapsed(float fTimeElapsed) { m_fTimeElapsed = fTimeElapsed; }
 	void SetTag(SceneTag tag) { m_tagScene = tag; }
 
 protected:

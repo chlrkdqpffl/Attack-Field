@@ -1,10 +1,12 @@
 #pragma once
 #include "Scene.h"
+#include "LoadingScene.h"
+//#include "MainScene.h"
 
 class CTitleScene :	public CScene
 {
-	DWORD		m_dwCycleTime = 0;
-	TextureTag	m_tagSelectUI = TextureTag::eNone;
+	TextureTag	m_tagCursorSelectUI = TextureTag::eNone;
+	POINT		m_resizeMousePos;
 
 public:
 	CTitleScene();
@@ -12,6 +14,8 @@ public:
 
 	virtual void Initialize() override;
 	virtual void CreateUIImage() override;
+
+	void IsOnCursorUI(POINT mousePos);
 	virtual void IsCollisionUI(POINT mousePos) override;
 
 	virtual bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) override;

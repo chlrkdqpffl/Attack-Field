@@ -219,6 +219,11 @@ inline void ShowTaskFail(string message)
 	system("pause");
 }
 
+inline void ShowTag(TextureTag tag)
+{
+	cout << static_cast<int> (tag) << endl;
+}
+
 /*
 LPCWSTR WINAPI DXUTDXGIFormatToString(DXGI_FORMAT format, bool bWithPrefix)
 {

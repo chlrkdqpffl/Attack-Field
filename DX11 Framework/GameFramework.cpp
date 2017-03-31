@@ -44,9 +44,9 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(370100);
-//	_CrtSetBreakAlloc(370101);
-	
+//	_CrtSetBreakAlloc(373175);
+//	_CrtSetBreakAlloc(373173);
+
 //	_CrtSetBreakAlloc(305984);	// 70	 - wstr 에서 오류
 //	_CrtSetBreakAlloc(255527);	// 70
 //	_CrtSetBreakAlloc(205);		// 16
@@ -602,7 +602,7 @@ void CGameFramework::DrawBlurredSceneToScreen(ID3D11DeviceContext* pd3dDeviceCon
 void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers();
-
+	
 //	CScene* m_pScene = new CMainScene();
 	CScene* m_pScene = new CTitleScene();
 	SCENE_MGR->g_nowScene = m_pScene;
@@ -713,7 +713,6 @@ void CGameFramework::UpdateObjects()
 	m_nFrameRate = m_GameTimer.GetFrameRate();
 
 	SCENE_MGR->g_fTimeElapsed = m_fTimeElapsed;
-	SCENE_MGR->g_nowScene->SetTimeElapsed(m_fTimeElapsed);
 	SCENE_MGR->g_nowScene->UpdateObjects(m_fTimeElapsed);
 }
 
@@ -769,7 +768,6 @@ void CGameFramework::FrameAdvance()
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 	m_pCamera = SCENE_MGR->g_nowScene->GetPlayer()->GetCamera();
-	m_pCamera->SetViewport(m_pd3dDeviceContext);
 
 	SCENE_MGR->g_nowScene->Render(m_pd3dDeviceContext, m_pCamera);
 #ifdef _WITH_PLAYER_TOP

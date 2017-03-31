@@ -190,7 +190,7 @@ void CMainScene::Initialize()
 	CShader *pSkyBoxShader = new CSkyBoxShader();
 	pSkyBoxShader->CreateShader(m_pd3dDevice);
 	pSkyBox->SetShader(pSkyBoxShader);
-
+	
 	m_pSkyBox = move(pSkyBox);
 #pragma endregion
 
@@ -337,6 +337,7 @@ void CMainScene::Initialize()
 	
 #pragma endregion
 
+	/*
 #pragma region [Create Instancing Object]
 	
 	CMaterial *pInstancingMaterials[3];
@@ -452,7 +453,7 @@ void CMainScene::Initialize()
 		}
 	}
 #pragma endregion
-
+*/
 #pragma region [Particle System]
 	m_pParticleSystem = new CParticleSystem();
 	m_pParticleSystem->Initialize(m_pd3dDevice, NULL, m_pParticleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 200);
@@ -633,13 +634,27 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 {
 	CScene::Render(pd3dDeviceContext, pCamera);
 
+	// WireFrame Mode
+	if (GLOBAL_MGR->g_bShowWireFrame)
+		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
+	else
+		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
+
+	if (GLOBAL_MGR->g_bShowWorldAxis)
+		m_pWorldCenterAxis->Render(pd3dDeviceContext, pCamera);
+
+	if (m_pTerrain)
+		if (m_pTerrain->IsVisible(pCamera))
+			m_pTerrain->Render(pd3dDeviceContext, pCamera);
+
+	if (m_pPlayer)
+		m_pPlayer->Render(m_pd3dDeviceContext, m_pCamera);
+
 //	m_pParticleSystem->Render(pd3dDeviceContext);
 }
 
 void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 {
-	CScene::RenderAllText(pd3dDeviceContext);
-
 	string str;
 	
 	// Draw Position

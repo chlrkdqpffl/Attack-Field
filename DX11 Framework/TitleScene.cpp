@@ -7,14 +7,13 @@ CTitleScene::CTitleScene()
 	m_tagScene = SceneTag::eTitleScene;
 }
 
-
 CTitleScene::~CTitleScene()
 {
 }
 
 void CTitleScene::Initialize()
 {
-	CScene::Initialize();
+	CScene::CreatePlayer();
 	CreateUIImage();
 }
 
@@ -30,62 +29,60 @@ void CTitleScene::CreateUIImage()
 
 	// Start
 	CUIObject* pStartButtonOn = new CUIObject(TextureTag::eStartButtonOn);
-	pStartButtonOn->Initialize(m_pd3dDevice, POINT{ 1000, 450 }, POINT{ 1400, 550 }, 0.1f);
+	pStartButtonOn->Initialize(m_pd3dDevice, POINT{ 1050, 450 }, POINT{ 1400, 550 }, 0.1f);
 	pStartButtonOn->SetActive(false);
 	m_pUIManager->AddUIObject(pStartButtonOn);
 
 	CUIObject* pStartButtonOff = new CUIObject(TextureTag::eStartButtonOff);
-	pStartButtonOff->Initialize(m_pd3dDevice, POINT{ 1000, 450 }, POINT{ 1400, 550 }, 0.1f);
+	pStartButtonOff->Initialize(m_pd3dDevice, POINT{ 1050, 450 }, POINT{ 1400, 550 }, 0.1f);
 	m_pUIManager->AddUIObject(pStartButtonOff);
 
 	// Exit
 	CUIObject* pExitButtonOn = new CUIObject(TextureTag::eExitButtonOn);
-	pExitButtonOn->Initialize(m_pd3dDevice, POINT{ 1000, 580 }, POINT{ 1400, 680 }, 0.1f);
+	pExitButtonOn->Initialize(m_pd3dDevice, POINT{ 1050, 580 }, POINT{ 1400, 680 }, 0.1f);
 	pExitButtonOn->SetActive(false);
 	m_pUIManager->AddUIObject(pExitButtonOn);
 
 	CUIObject* pExitButtonOff = new CUIObject(TextureTag::eExitButtonOff);
-	pExitButtonOff->Initialize(m_pd3dDevice, POINT{ 1000, 580 }, POINT{ 1400, 680 }, 0.1f);
+	pExitButtonOff->Initialize(m_pd3dDevice, POINT{ 1050, 580 }, POINT{ 1400, 680 }, 0.1f);
 	m_pUIManager->AddUIObject(pExitButtonOff);
+}
+
+void CTitleScene::IsOnCursorUI(POINT mousePos)
+{
+	auto findTag = m_pUIManager->FindCollisionUIObject(mousePos);
+
+	switch (findTag) {
+	case TextureTag::eNone:
+		m_tagCursorSelectUI = TextureTag::eNone;
+		m_pUIManager->GetUIObject(TextureTag::eStartButtonOn)->SetActive(false);
+		m_pUIManager->GetUIObject(TextureTag::eExitButtonOn)->SetActive(false);
+
+		break;
+	case TextureTag::eStartButtonOff:
+		m_tagCursorSelectUI = TextureTag::eStartButtonOn;
+		m_pUIManager->GetUIObject(TextureTag::eStartButtonOn)->SetActive(true);
+
+		break;
+	case TextureTag::eExitButtonOff:
+		m_tagCursorSelectUI = TextureTag::eExitButtonOn;
+		m_pUIManager->GetUIObject(TextureTag::eExitButtonOn)->SetActive(true);
+
+		break;
+	}
 }
 
 void CTitleScene::IsCollisionUI(POINT mousePos)
 {
-	if (m_pUIManager->IsEqualTag(mousePos, m_tagSelectUI))
-		return;
-	왜 안되지, 동일한 위치에 있으면 안바껴야하는데
-	auto findTag = m_pUIManager->FindCollisionUIObject(mousePos);
-
-	switch (findTag) {
-	case TextureTag::eStartButtonOff:
-		m_tagSelectUI = TextureTag::eStartButtonOff;
-		m_pUIManager->GetUIObject(TextureTag::eStartButtonOff)->SetActive(false);
-		m_pUIManager->GetUIObject(TextureTag::eStartButtonOn)->SetActive(true);
-
-		break;
+	switch (m_tagCursorSelectUI) {
 	case TextureTag::eStartButtonOn:
-		m_tagSelectUI = TextureTag::eStartButtonOn;
-		m_pUIManager->GetUIObject(TextureTag::eStartButtonOn)->SetActive(false);
-		m_pUIManager->GetUIObject(TextureTag::eStartButtonOff)->SetActive(true);
-
+	//	SCENE_MGR->ChangeScene(new CMainScene());
+		SCENE_MGR->ChangeScene(new CLoadingScene());
 		break;
-	case TextureTag::eExitButtonOff:
-		m_tagSelectUI = TextureTag::eExitButtonOff;
-		m_pUIManager->GetUIObject(TextureTag::eExitButtonOff)->SetActive(false);
-		m_pUIManager->GetUIObject(TextureTag::eExitButtonOn)->SetActive(true);
-
-		break;
+	
 	case TextureTag::eExitButtonOn:
-		m_tagSelectUI = TextureTag::eExitButtonOn;
-		m_pUIManager->GetUIObject(TextureTag::eExitButtonOn)->SetActive(false);
-		m_pUIManager->GetUIObject(TextureTag::eExitButtonOff)->SetActive(true);
-
+		::PostQuitMessage(0);
 		break;
-
-//	default:
-//		m_pUIManager->GetUIObject(TextureTag::eStartButtonOn)->SetActive(false);
-//		m_pUIManager->GetUIObject(TextureTag::eExitButtonOn)->SetActive(false);
-//		break;
 	}
 }
 
@@ -94,16 +91,14 @@ bool CTitleScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 	float resizeRatioX = (float)FRAME_BUFFER_WIDTH / GetClientSize().x;
 	float resizeRatioY = (float)FRAME_BUFFER_HEIGHT / GetClientSize().y;
 
-	POINT resizeMousePos = { LOWORD(lParam) * resizeRatioX, HIWORD(lParam) * resizeRatioY };
+	m_resizeMousePos = POINT{ (LONG)(LOWORD(lParam) * resizeRatioX), (LONG)(HIWORD(lParam) * resizeRatioY) };
 
 	switch (nMessageID)
 	{
 	case WM_LBUTTONDOWN:
-		m_pUIManager->IsCollision(resizeMousePos);
+		IsCollisionUI(m_resizeMousePos);
 		break;
 	case WM_MOUSEMOVE:
-		
-		IsCollisionUI(resizeMousePos);
 	
 		break;
 	case WM_RBUTTONUP:
@@ -116,5 +111,7 @@ bool CTitleScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 
 void CTitleScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
+	IsOnCursorUI(m_resizeMousePos);
+
 	m_pUIManager->RenderAll(pd3dDeviceContext);
 }

@@ -110,9 +110,6 @@ void CScene::Initialize()
 {
 	cout << "========================================================================================" << endl;
 	cout << "==================================== Scene Loading =====================================" << endl;
-
-	CScene::CreatePlayer();
-	CScene::CreateConstantBuffers();
 }
 
 void CScene::CreatePlayer()
@@ -127,8 +124,8 @@ void CScene::CreatePlayer()
 
 	m_pPlayer = new CTerrainPlayer(m_pPlayerCharacter);
 	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson, 0.0f);
-	SetPlayer(m_pPlayer);
-
+	m_pCamera = m_pPlayer->GetCamera();
+	카메라를 가져왔다.
 
 	SCENE_MGR->g_pPlayer = m_pPlayer;
 	m_pPlayer->SetPosition(XMVectorSet(100.0f, 300.0f, 100.0f, 0.0f));
@@ -163,24 +160,6 @@ void CScene::ReleaseObjects()
 	SafeDelete(m_pPlayer);
 	SafeDelete(m_pPlayerCharacter);
 	SafeDelete(m_pUIManager);
-}
-
-void CScene::CreateConstantBuffers()
-{
-	D3D11_BUFFER_DESC d3dBufferDesc;
-	ZeroMemory(&d3dBufferDesc, sizeof(d3dBufferDesc));
-	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	d3dBufferDesc.ByteWidth = sizeof(XMFLOAT4);
-	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-}
-
-void CScene::UpdateConstantBuffers()
-{
-}
-
-void CScene::ReleaseConstantBuffers()
-{
 }
 
 bool CScene::ProcessInput(UCHAR *pKeysBuffer)
@@ -269,8 +248,8 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 
 void CScene::UpdateObjects(float fTimeElapsed)
 {
-	CScene::UpdateConstantBuffers();
-	
+	m_fTimeElapsed = fTimeElapsed;
+
 	if(m_pSkyBox) m_pSkyBox->Update(fTimeElapsed, NULL);
 	if(m_pTerrain) m_pTerrain->Update(fTimeElapsed, NULL);
 	if(GLOBAL_MGR->g_bShowWorldAxis) m_pWorldCenterAxis->Update(fTimeElapsed);
@@ -313,35 +292,14 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 {
 	if (m_pSkyBox)
 		m_pSkyBox->Render(pd3dDeviceContext, pCamera);
-	
-	// WireFrame Mode
-	if (GLOBAL_MGR->g_bShowWireFrame)
-		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
-	else
-		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 
-	if (GLOBAL_MGR->g_bShowWorldAxis)
-		m_pWorldCenterAxis->Render(pd3dDeviceContext, pCamera);
-
-	if (m_pTerrain)
-		if (m_pTerrain->IsVisible(pCamera))
-			m_pTerrain->Render(pd3dDeviceContext, pCamera);
-
-	if (m_pPlayer)
-		m_pPlayer->Render(m_pd3dDeviceContext, m_pCamera);
-
-	for (auto object : m_vObjectsVector) {
+	for (auto object : m_vObjectsVector)
 		if(object->IsVisible(pCamera))
 			object->Render(pd3dDeviceContext, pCamera);
-	}
 
 	for (auto shaderObject : m_vObjectsShaderVector)
 		shaderObject->Render(pd3dDeviceContext, pCamera);
 	
 	for (auto instancedShaderObject : m_vInstancedObjectsShaderVector)
 		instancedShaderObject->Render(pd3dDeviceContext, pCamera);	
-}
-
-void CScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
-{
 }
