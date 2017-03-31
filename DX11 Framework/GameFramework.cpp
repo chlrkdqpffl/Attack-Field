@@ -13,15 +13,15 @@ CGameFramework::CGameFramework()
 
 	m_pCamera = NULL;
 
-	m_nWndClientWidth = FRAME_BUFFER_WIDTH;
-	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
+	m_nWndClientSize.x  = FRAME_BUFFER_WIDTH;
+	m_nWndClientSize.y = FRAME_BUFFER_HEIGHT;
 
 	srand(timeGetTime());
 	
 	// 마우스 정보
 	ShowCursor(false);
-	m_ptOldCursorPos.x = m_nWndClientWidth / 2;
-	m_ptOldCursorPos.y = m_nWndClientHeight / 2;
+	m_ptOldCursorPos.x = m_nWndClientSize.x / 2;
+	m_ptOldCursorPos.y = m_nWndClientSize.y / 2;
 	SetCursorPos(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2);	// 정중앙
 
 
@@ -77,14 +77,14 @@ bool CGameFramework::CreateDirect3DDisplay()
 {
 	RECT rcClient;
 	::GetClientRect(m_hWnd, &rcClient);
-	m_nWndClientWidth = rcClient.right - rcClient.left;
-	m_nWndClientHeight = rcClient.bottom - rcClient.top;
+	m_nWndClientSize.x = rcClient.right - rcClient.left;
+	m_nWndClientSize.y = rcClient.bottom - rcClient.top;
 
 	DXGI_SWAP_CHAIN_DESC dxgiSwapChainDesc;
 	::ZeroMemory(&dxgiSwapChainDesc, sizeof(dxgiSwapChainDesc));
 	dxgiSwapChainDesc.BufferCount = 1;
-	dxgiSwapChainDesc.BufferDesc.Width = m_nWndClientWidth;
-	dxgiSwapChainDesc.BufferDesc.Height = m_nWndClientHeight;
+	dxgiSwapChainDesc.BufferDesc.Width = m_nWndClientSize.x;
+	dxgiSwapChainDesc.BufferDesc.Height = m_nWndClientSize.y;
 	dxgiSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	dxgiSwapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
 	dxgiSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
@@ -222,8 +222,8 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	// Create depth stencil texture
 	D3D11_TEXTURE2D_DESC d3dDepthStencilBufferDesc;
 	ZeroMemory(&d3dDepthStencilBufferDesc, sizeof(D3D11_TEXTURE2D_DESC));
-	d3dDepthStencilBufferDesc.Width = m_nWndClientWidth;
-	d3dDepthStencilBufferDesc.Height = m_nWndClientHeight;
+	d3dDepthStencilBufferDesc.Width = m_nWndClientSize.x;
+	d3dDepthStencilBufferDesc.Height = m_nWndClientSize.y;
 	d3dDepthStencilBufferDesc.MipLevels = 1;
 	d3dDepthStencilBufferDesc.ArraySize = 1;
 	d3dDepthStencilBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -262,8 +262,8 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	// Create Off Screen
 	D3D11_TEXTURE2D_DESC d3dTextureBufferDesc;
 	ZeroMemory(&d3dTextureBufferDesc, sizeof(D3D11_TEXTURE2D_DESC));
-	d3dTextureBufferDesc.Width				= m_nWndClientWidth;
-	d3dTextureBufferDesc.Height				= m_nWndClientHeight;
+	d3dTextureBufferDesc.Width				= m_nWndClientSize.x;
+	d3dTextureBufferDesc.Height				= m_nWndClientSize.y;
 	d3dTextureBufferDesc.MipLevels			= 1;
 	d3dTextureBufferDesc.ArraySize			= 1;
 	d3dTextureBufferDesc.Format				= DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -396,8 +396,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			{
 				DXGI_MODE_DESC dxgiTargetParameters;
 				dxgiTargetParameters.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-				dxgiTargetParameters.Width = m_nWndClientWidth;
-				dxgiTargetParameters.Height = m_nWndClientHeight;
+				dxgiTargetParameters.Width = m_nWndClientSize.x;
+				dxgiTargetParameters.Height = m_nWndClientSize.y;
 				dxgiTargetParameters.RefreshRate.Numerator = 0;
 				dxgiTargetParameters.RefreshRate.Denominator = 0;
 				dxgiTargetParameters.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
@@ -445,21 +445,25 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	switch (nMessageID) {
 	case WM_SIZE:
 	{
-		m_nWndClientWidth = LOWORD(lParam);
-		m_nWndClientHeight = HIWORD(lParam);
+		m_nWndClientSize.x = LOWORD(lParam);
+		m_nWndClientSize.y = HIWORD(lParam);
+	
+		m_fResizeRatioX = m_nWndClientSize.x / (float)FRAME_BUFFER_WIDTH;
+		m_fResizeRatioY = m_nWndClientSize.y / (float)FRAME_BUFFER_HEIGHT;
+		TEXT_MGR->SetResizeRatio(m_fResizeRatioX, m_fResizeRatioY);
+		SCENE_MGR->g_nowScene->SetResizeRatio(m_fResizeRatioX, m_fResizeRatioY);
 
-		SCENE_MGR->g_nowScene->SetClientSize(POINT{ m_nWndClientWidth, m_nWndClientHeight });
 //		m_pd3dDeviceContext->OMSetRenderTargets(0, NULL, NULL);
 
 		if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();		// 왜 최소화 하면 안만들어지는가 ?
 		if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
 		if (m_pd3dDepthStencilView) m_pd3dDepthStencilView->Release();
 
-		m_pDXGISwapChain->ResizeBuffers(1, m_nWndClientWidth, m_nWndClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+		m_pDXGISwapChain->ResizeBuffers(1, m_nWndClientSize.x, m_nWndClientSize.y, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 
 		CreateRenderTargetDepthStencilView();
 
-		if (m_pCamera) m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, m_nWndClientWidth, m_nWndClientHeight, 0.0f, 1.0f);
+		if (m_pCamera) m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, m_nWndClientSize.x, m_nWndClientSize.y, 0.0f, 1.0f);
 		break;
 	}
 	case WM_LBUTTONDOWN:
@@ -518,8 +522,8 @@ void CGameFramework::SceneBlurring(int nBlurCount)
 	if (nBlurCount == 0)
 		return;
 
-	UINT cxGroups = (UINT)ceilf(m_nWndClientWidth / 256.0f);
-	UINT cyGroups = (UINT)ceilf(m_nWndClientHeight / 256.0f);
+	UINT cxGroups = (UINT)ceilf(m_nWndClientSize.x / 256.0f);
+	UINT cyGroups = (UINT)ceilf(m_nWndClientSize.y / 256.0f);
 
 	ID3D11ShaderResourceView *pd3dNullResourceViews[1] = { nullptr };
 	ID3D11UnorderedAccessView *pd3dNullUnorderedViews[1] = { nullptr };
@@ -531,7 +535,7 @@ void CGameFramework::SceneBlurring(int nBlurCount)
 		m_pd3dDeviceContext->CSSetShaderResources(CS_TEXTURE_SLOT_BLUR, 1, &m_pd3dSRVOffScreen);
 		m_pd3dDeviceContext->CSSetUnorderedAccessViews(0, 1, &m_pd3dUAVTexture, nullptr);
 		m_pd3dDeviceContext->CSSetShader(m_pHorizontalBlurShader, nullptr, 0);
-		m_pd3dDeviceContext->Dispatch(cxGroups, m_nWndClientHeight, 1);
+		m_pd3dDeviceContext->Dispatch(cxGroups, m_nWndClientSize.y, 1);
 
 		m_pd3dDeviceContext->CSSetShaderResources(0, 1, pd3dNullResourceViews);
 		m_pd3dDeviceContext->CSSetUnorderedAccessViews(0, 1, pd3dNullUnorderedViews, nullptr);
@@ -539,7 +543,7 @@ void CGameFramework::SceneBlurring(int nBlurCount)
 		m_pd3dDeviceContext->CSSetShaderResources(CS_TEXTURE_SLOT_BLUR, 1, &m_pd3dSRVTexture);
 		m_pd3dDeviceContext->CSSetUnorderedAccessViews(0, 1, &m_pd3dUAVOffScreen, nullptr);
 		m_pd3dDeviceContext->CSSetShader(m_pVerticalBlurShader, nullptr, 0);
-		m_pd3dDeviceContext->Dispatch(m_nWndClientWidth, cyGroups, 1);
+		m_pd3dDeviceContext->Dispatch(m_nWndClientSize.x, cyGroups, 1);
 
 		m_pd3dDeviceContext->CSSetShaderResources(0, 1, pd3dNullResourceViews);
 		m_pd3dDeviceContext->CSSetUnorderedAccessViews(0, 1, pd3dNullUnorderedViews, nullptr);
@@ -803,7 +807,7 @@ void CGameFramework::RenderAllText()
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 40, 1500, 20, 0xFFFFFFFF, FW1_LEFT);
 	else if (30 <= fps && fps < 60)
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 40, 1500, 20, 0xFF1270FF, FW1_LEFT);
-	else if (fps < 30)
+	else if (fps < 30)										   
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 40, 1500, 20, 0xFF0000FF, FW1_LEFT);
 
 	// Graphic Crad Info

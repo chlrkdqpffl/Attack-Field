@@ -6,7 +6,6 @@
 class CTitleScene :	public CScene
 {
 	TextureTag	m_tagCursorSelectUI = TextureTag::eNone;
-	POINT		m_resizeMousePos;
 
 public:
 	CTitleScene();

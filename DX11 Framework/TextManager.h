@@ -29,6 +29,8 @@ private:
 	IFW1Factory*			m_pFW1FontFactory;
 	IFW1GlyphProvider*		m_pFW1Glyphrovider;
 	TCHAR*					m_tChar;
+	float					m_fResizeRatioX = 1.0f;
+	float					m_fResizeRatioY = 1.0f;
 
 public:
 	CTextManager();
@@ -44,4 +46,7 @@ public:
 	virtual void InitializeManager() {};
 	void InitializeManager(ID3D11Device* pd3dDevice, std::wstring font = L"¸¼Àº °íµñ");
 	virtual void ReleseManager() override;
+
+	void SetResizeRatio(float x, float y) { m_fResizeRatioX = x, m_fResizeRatioY = y; }
+	XMFLOAT2 GetResizeRatio() const { return XMFLOAT2(m_fResizeRatioX, m_fResizeRatioY); }
 };

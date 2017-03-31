@@ -16,12 +16,12 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 
 	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
-		/*
-		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam));
+		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam) * m_fResizeRatioX, HIWORD(lParam) * m_fResizeRatioY);
+		cout << "OnProcessingMouseMessage-> size : " << LOWORD(lParam) * m_fResizeRatioX << ", " << HIWORD(lParam) * m_fResizeRatioY << endl;
 		
 		if (m_pSelectedObject)
 			cout << m_pSelectedObject->GetPosition().x << ", " << m_pSelectedObject->GetPosition().y << ", " << m_pSelectedObject->GetPosition().z << endl;
-			*/
+			
 		m_pPlayer->SetKeyDown(KeyInput::eLeftMouse);
 		m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eStanding_Fire);
 		break;
@@ -229,30 +229,31 @@ void CMainScene::Initialize()
 
 	m_pTerrain = move(pTerrain);
 #pragma endregion
+	
 	/*
 #pragma region [Create Water]
 	CTexture *pTerrainWaterTexture = new CTexture(2, 2, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	pTerrainWaterTexture->SetTexture(0, RESOURCE_MGR->FindResourceAndCreateSRV(eWater));
+	pTerrainWaterTexture->SetTexture(0, TextureTag::eWaterD);
 	pTerrainWaterTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 
-	pTerrainWaterTexture->SetTexture(1, RESOURCE_MGR->FindResourceAndCreateSRV(eWaterDetail));
+	pTerrainWaterTexture->SetTexture(1, TextureTag::eWaterDetailD);
 	pTerrainWaterTexture->SetSampler(1, STATEOBJ_MGR->g_pPointWarpSS);
 
 	CMaterialColors *pWaterColors = new CMaterialColors();
 	CMaterial *pTerrainWaterMaterial = new CMaterial(pWaterColors);
 	pTerrainWaterMaterial->SetTexture(pTerrainWaterTexture);
 
-	CTerrainWater *pTerrainWater = new CTerrainWater(pd3dDevice, 257, 257, 257, 257, d3dxvScale);
+	CTerrainWater *pTerrainWater = new CTerrainWater(m_pd3dDevice, 257, 257, 257, 257, d3dxvScale);
 	pTerrainWater->SetMaterial(pTerrainWaterMaterial);
 	pTerrainWater->SetPosition(0.0f, 80.0f, 0.0f);
 
 	CShader *pTerrainWaterShader = new CWaterShader();
-	pTerrainWaterShader->CreateShader(pd3dDevice);
+	pTerrainWaterShader->CreateShader(m_pd3dDevice);
 	pTerrainWater->SetShader(pTerrainWaterShader);
 	
 	m_vObjectsVector.push_back(move(pTerrainWater));
 #pragma endregion
-*/
+	*/
 	
 #pragma region [Create Character]
 	CScene::CreatePlayer();
@@ -337,7 +338,7 @@ void CMainScene::Initialize()
 	
 #pragma endregion
 
-	/*
+	
 #pragma region [Create Instancing Object]
 	
 	CMaterial *pInstancingMaterials[3];
@@ -395,7 +396,8 @@ void CMainScene::Initialize()
 	float fTerrainWidth = pTerrain->GetWidth();
 	float fTerrainLength = pTerrain->GetLength();
 
-	int xObjects = int(fTerrainWidth / (fxPitch * 3.0f)), zObjects = int(fTerrainLength / (fzPitch * 3.0f));
+	//int xObjects = int(fTerrainWidth / (fxPitch * 3.0f)), zObjects = int(fTerrainLength / (fzPitch * 3.0f));
+	int xObjects = 3, zObjects = 3;
 
 
 	m_vInstancedObjectsShaderVector.reserve(6);
@@ -453,7 +455,7 @@ void CMainScene::Initialize()
 		}
 	}
 #pragma endregion
-*/
+
 #pragma region [Particle System]
 	m_pParticleSystem = new CParticleSystem();
 	m_pParticleSystem->Initialize(m_pd3dDevice, NULL, m_pParticleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 200);

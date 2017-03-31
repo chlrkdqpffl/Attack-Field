@@ -46,8 +46,7 @@ private:
 	HWND							m_hWnd;
 	HMENU							m_hMenu;
 
-	int								m_nWndClientWidth;
-	int								m_nWndClientHeight;
+	POINT							m_nWndClientSize;
 
 	IDXGISwapChain					*m_pDXGISwapChain;
 	ID3D11RenderTargetView			*m_pd3dRenderTargetView;
@@ -55,16 +54,16 @@ private:
 	ID3D11DeviceContext				*m_pd3dDeviceContext	= nullptr;
 
 	// ----- Blurring ----- //
-	ID3D11ShaderResourceView		*m_pd3dSRVOffScreen = nullptr;
-	ID3D11UnorderedAccessView		*m_pd3dUAVOffScreen = nullptr;
-	ID3D11RenderTargetView			*m_pd3dRTVOffScreen = nullptr;
+	ID3D11ShaderResourceView		*m_pd3dSRVOffScreen		= nullptr;
+	ID3D11UnorderedAccessView		*m_pd3dUAVOffScreen		= nullptr;
+	ID3D11RenderTargetView			*m_pd3dRTVOffScreen		= nullptr;
 
-	ID3D11ShaderResourceView		*m_pd3dSRVTexture	= nullptr;
-	ID3D11UnorderedAccessView		*m_pd3dUAVTexture	= nullptr;
+	ID3D11ShaderResourceView		*m_pd3dSRVTexture		= nullptr;
+	ID3D11UnorderedAccessView		*m_pd3dUAVTexture		= nullptr;
 
 	float							m_fGaussianWeights[11];
-	ID3D11Buffer					*m_pd3dcbWeights	= nullptr;
-	CScreenShader					*m_pScreenShader	= nullptr;
+	ID3D11Buffer					*m_pd3dcbWeights		= nullptr;
+	CScreenShader					*m_pScreenShader		= nullptr;
 
 	ID3D11ComputeShader				*m_pHorizontalBlurShader	= nullptr;
 	ID3D11ComputeShader				*m_pVerticalBlurShader		= nullptr;
@@ -96,4 +95,8 @@ private:
 	// FrameRate
 	UINT							m_nFrameRate = 0;
 	float							m_fTimeElapsed = 0.0f;
+
+	// ResizeRatio
+	float							m_fResizeRatioX = 1.0f;
+	float							m_fResizeRatioY = 1.0f;
 };

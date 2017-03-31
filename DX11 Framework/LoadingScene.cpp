@@ -31,8 +31,8 @@ void CLoadingScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCam
 {
 	m_pUIManager->RenderAll(pd3dDeviceContext);
 
-	if (GLOBAL_MGR->SetTimer(m_dwLoadingStartTime, 1000)) {
-
-		SCENE_MGR->ChangeScene(new CMainScene());
-	}
+//	if (GLOBAL_MGR->SetTimer(m_dwLoadingStartTime, 5000)) {
+//		cout << "¤¾¤·" << endl;
+//		SCENE_MGR->ChangeScene(new CMainScene());
+//	}
 }

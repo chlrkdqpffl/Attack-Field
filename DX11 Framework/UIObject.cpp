@@ -22,8 +22,8 @@ CUIObject::~CUIObject()
 
 bool CUIObject::IsCollision(POINT mousePos)
 {
-	if (m_ptStartPos.x <= mousePos.x && mousePos.x <= m_ptEndPos.x) {
-		if (m_ptStartPos.y <= mousePos.y && mousePos.y <= m_ptEndPos.y)
+	if (m_ptStartPos.x * TEXT_MGR->GetResizeRatio().x <= mousePos.x && mousePos.x <= m_ptEndPos.x * TEXT_MGR->GetResizeRatio().x) {
+		if (m_ptStartPos.y * TEXT_MGR->GetResizeRatio().y <= mousePos.y && mousePos.y <= m_ptEndPos.y * TEXT_MGR->GetResizeRatio().y)
 			return true;
 	}
 	return false;

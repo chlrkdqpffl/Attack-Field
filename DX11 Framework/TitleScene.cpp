@@ -88,15 +88,12 @@ void CTitleScene::IsCollisionUI(POINT mousePos)
 
 bool CTitleScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	float resizeRatioX = (float)FRAME_BUFFER_WIDTH / GetClientSize().x;
-	float resizeRatioY = (float)FRAME_BUFFER_HEIGHT / GetClientSize().y;
+	POINT mousePos{ LOWORD(lParam), HIWORD(lParam) };
+	IsOnCursorUI(mousePos);
 
-	m_resizeMousePos = POINT{ (LONG)(LOWORD(lParam) * resizeRatioX), (LONG)(HIWORD(lParam) * resizeRatioY) };
-
-	switch (nMessageID)
-	{
+	switch (nMessageID)	{
 	case WM_LBUTTONDOWN:
-		IsCollisionUI(m_resizeMousePos);
+		IsCollisionUI(mousePos);
 		break;
 	case WM_MOUSEMOVE:
 	
@@ -111,7 +108,5 @@ bool CTitleScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 
 void CTitleScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	IsOnCursorUI(m_resizeMousePos);
-
 	m_pUIManager->RenderAll(pd3dDeviceContext);
 }

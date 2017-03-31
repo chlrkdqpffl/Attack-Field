@@ -95,9 +95,8 @@ public:
 
 	// ----- Get, Setter ----- // 
 	CHeightMapTerrain *GetTerrain() const {	return m_pTerrain; }
-	void SetClientSize(POINT size) { m_ptWndClientSize = size; }
+	void SetResizeRatio(float x, float y) { m_fResizeRatioX = x, m_fResizeRatioY = y; }
 	
-	POINT GetClientSize() const { return m_ptWndClientSize; }
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
 	void SetPlayer(CPlayer *pPlayer) { m_pPlayer = pPlayer; }
 	CPlayer* GetPlayer() const { return m_pPlayer; }
@@ -109,22 +108,14 @@ protected:
 	SceneTag							m_tagScene = SceneTag::eNone;
 	ID3D11Device						*m_pd3dDevice = nullptr;
 	ID3D11DeviceContext					*m_pd3dDeviceContext = nullptr;
-
-	CGameObject							**m_ppObjects;
-	int									m_nObjects;
-
-	vector<CGameObject*>				m_vObjectsVector;
-	vector<CObjectsShader*>				m_vObjectsShaderVector;
-	vector<CInstancedObjectsShader*>	m_vInstancedObjectsShaderVector;
-
-	vector<CGameObject*>				m_vecStaticMeshContainer;
-	vector<CGameObject*>				m_vecDynamicMeshContainer;
-
 	CCamera								*m_pCamera;
+
 	CGameObject							*m_pSelectedObject;
 	CAxisObjects						*m_pWorldCenterAxis = nullptr;
 
-	POINT								m_ptWndClientSize;
+	// ResizeRatio
+	float								m_fResizeRatioX = 1.0f;
+	float								m_fResizeRatioY = 1.0f;
 
 	// Light
 	LIGHTS								*m_pLights;
@@ -144,4 +135,11 @@ protected:
 
 	// UI
 	CUIManager							*m_pUIManager = nullptr;
+
+	vector<CGameObject*>				m_vObjectsVector;
+	vector<CObjectsShader*>				m_vObjectsShaderVector;
+	vector<CInstancedObjectsShader*>	m_vInstancedObjectsShaderVector;
+
+	vector<CGameObject*>				m_vecStaticMeshContainer;
+	vector<CGameObject*>				m_vecDynamicMeshContainer;
 };

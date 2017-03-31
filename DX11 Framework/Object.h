@@ -11,6 +11,7 @@ class CShader;
 class CBoundingBoxMesh;
 class CBoundingBoxShader;
 class CAxisObjects;
+class CGameObject;
 
 class CMaterialColors
 {
@@ -88,6 +89,15 @@ public:
 
 	CMaterialColors					*m_pColors = nullptr;
 	CTexture						*m_pTexture = nullptr;
+};
+
+
+class CollisionInfo {
+	CGameObject*	m_pHitObject = nullptr;
+	float			m_fDistance = 0.0f;
+	XMFLOAT3		m_f3HitNormal;
+
+public:
 };
 
 class CGameObject

@@ -32,8 +32,6 @@ bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 	switch (nMessageID)
 	{
 	case WM_LBUTTONDOWN:
-//		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam), HIWORD(lParam));
-	
 		break;
 	case WM_LBUTTONUP:
 		break;
@@ -125,7 +123,6 @@ void CScene::CreatePlayer()
 	m_pPlayer = new CTerrainPlayer(m_pPlayerCharacter);
 	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson, 0.0f);
 	m_pCamera = m_pPlayer->GetCamera();
-	카메라를 가져왔다.
 
 	SCENE_MGR->g_pPlayer = m_pPlayer;
 	m_pPlayer->SetPosition(XMVectorSet(100.0f, 300.0f, 100.0f, 0.0f));
@@ -193,6 +190,15 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 	CGameObject *pIntersectedObject = NULL, *pNearestObject = NULL;
 
 
+	for (auto& object : m_vObjectsVector) {
+		nIntersected = object->PickObjectByRayIntersection(&d3dxvPickPosition, &d3dxmtxView, &d3dxIntersectInfo);
+		if ((nIntersected > 0) && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
+		{
+			fNearHitDistance = d3dxIntersectInfo.m_fDistance;
+			pNearestObject = object;
+		}
+	}
+
 	for (auto shaderObject : m_vObjectsShaderVector) {
 		pIntersectedObject = shaderObject->PickObjectByRayIntersection(&d3dxvPickPosition, &d3dxmtxView, &d3dxIntersectInfo);
 		if (pIntersectedObject && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
@@ -208,15 +214,6 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 		{
 			fNearHitDistance = d3dxIntersectInfo.m_fDistance;
 			pNearestObject = pIntersectedObject;
-		}
-	}
-
-	for (auto& object : m_vObjectsVector) {
-		nIntersected = object->PickObjectByRayIntersection(&d3dxvPickPosition, &d3dxmtxView, &d3dxIntersectInfo);
-		if ((nIntersected > 0) && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
-		{
-			fNearHitDistance = d3dxIntersectInfo.m_fDistance;
-			pNearestObject = object;
 		}
 	}
 	

@@ -31,7 +31,6 @@ public:
 class CUIManager
 {
 	CShader					*m_pUIShader = nullptr;
-	
 	CUIObject*				m_pBackGroundUI = nullptr;
 	vector<CUIObject*>		m_vecUIObject;
 
