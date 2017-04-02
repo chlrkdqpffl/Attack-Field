@@ -33,11 +33,6 @@ void CGlobalVariableManager::InitializeManager()
 	DXUT_SetDebugName(g_pd3dcbRenderOption, "Render Option");
 }
 
-void CGlobalVariableManager::UpdateManager()
-{
-
-}
-
 void CGlobalVariableManager::ReleseManager()
 {
 	ReleaseCOM(g_pd3dcbRenderOption);

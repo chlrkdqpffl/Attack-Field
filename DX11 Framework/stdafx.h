@@ -76,6 +76,7 @@ using namespace std;
 #include "SceneManager.h"
 #include "TextManager.h"
 #include "AntTweakBarManager.h"
+#include "CollisionManager.h"
 // ------------------------------- //
 
 inline char* ConvertWCtoC(const WCHAR* str)

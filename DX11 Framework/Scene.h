@@ -6,6 +6,7 @@
 // ========== Mesh ========== 
 #include "FbxModelMesh.h"
 #include "FbxModelSkinnedMesh.h"
+#include "TexturedRectMesh.h"
 
 // ========== Shader ========== 
 #include "SkyBoxShader.h"
@@ -21,6 +22,7 @@
 #include "NormalMapObject.h"
 #include "AxisObjects.h"
 #include "UIObject.h"
+#include "BillboardObject.h"
 
 // ----- Character -----
 #include "TerrainPlayer.h"
@@ -92,6 +94,7 @@ public:
 
 public:
 	CGameObject *PickObjectPointedByCursor(int xClient, int yClient);
+	XMFLOAT2 ObjectPositionConvertToScreen(XMFLOAT3 d3dxvObjPos);
 
 	// ----- Get, Setter ----- // 
 	CHeightMapTerrain *GetTerrain() const {	return m_pTerrain; }
@@ -136,10 +139,7 @@ protected:
 	// UI
 	CUIManager							*m_pUIManager = nullptr;
 
-	vector<CGameObject*>				m_vObjectsVector;
-	vector<CObjectsShader*>				m_vObjectsShaderVector;
-	vector<CInstancedObjectsShader*>	m_vInstancedObjectsShaderVector;
-
-	vector<CGameObject*>				m_vecStaticMeshContainer;
-	vector<CGameObject*>				m_vecDynamicMeshContainer;
+	vector<CGameObject*>				m_vecObjectsContainer;
+	vector<CObjectsShader*>				m_vecObjectsShaderContainer;
+	vector<CInstancedObjectsShader*>	m_vecInstancedObjectsShaderContainer;
 };

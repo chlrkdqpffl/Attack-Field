@@ -311,7 +311,7 @@ ID3D11Buffer *CShader::CreateBuffer(ID3D11Device *pd3dDevice, UINT nStride, int 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 CObjectsShader::CObjectsShader(int nObjects)
 {
-	m_vObjectsVector.reserve(nObjects);
+	m_vecObjectsContainer.reserve(nObjects);
 
 	m_pMaterial = NULL;
 	m_pContext = NULL;
@@ -323,14 +323,14 @@ CObjectsShader::~CObjectsShader()
 
 void CObjectsShader::SetObject(int nIndex, CGameObject *pGameObject)
 {
-	if (m_vObjectsVector[nIndex]) m_vObjectsVector[nIndex]->Release();
-	m_vObjectsVector[nIndex] = pGameObject;
+	if (m_vecObjectsContainer[nIndex]) m_vecObjectsContainer[nIndex]->Release();
+	m_vecObjectsContainer[nIndex] = pGameObject;
 	if (pGameObject) pGameObject->AddRef();
 }
 
 void CObjectsShader::AddObject(CGameObject *pGameObject)
 {
-	m_vObjectsVector.push_back(pGameObject);
+	m_vecObjectsContainer.push_back(pGameObject);
 	if (pGameObject) pGameObject->AddRef();
 }
 
@@ -349,15 +349,15 @@ void CObjectsShader::ReleaseObjects()
 {
 	ReleaseCOM(m_pMaterial);
 
-	for (auto& object : m_vObjectsVector)
+	for (auto& object : m_vecObjectsContainer)
 		ReleaseCOM(object);
 
-	m_vObjectsVector.clear();
+	m_vecObjectsContainer.clear();
 }
 
 void CObjectsShader::UpdateObjects(float fTimeElapsed)
 {
-	for (auto object : m_vObjectsVector) {
+	for (auto object : m_vecObjectsContainer) {
 		if(object->GetActive())
 			object->Update(fTimeElapsed);
 	}
@@ -370,12 +370,11 @@ void CObjectsShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
 
 void CObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	for (auto object : m_vObjectsVector) {
+	for (auto object : m_vecObjectsContainer) {
 		if (object->IsVisible(pCamera)) {
 			CShader::OnPrepareRender(pd3dDeviceContext);
 
 			if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
-
 			object->Render(pd3dDeviceContext, pCamera);
 
 			CShader::OnPostRender(pd3dDeviceContext);
@@ -390,7 +389,7 @@ CGameObject *CObjectsShader::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPos
 	CGameObject *pSelectedObject = NULL;
 	MESHINTERSECTINFO d3dxIntersectInfo;
 
-	for (auto object : m_vObjectsVector) {
+	for (auto object : m_vecObjectsContainer) {
 
 		nIntersected = object->PickObjectByRayIntersection(pd3dxvPickPosition, pd3dxmtxView, &d3dxIntersectInfo);
 		if ((nIntersected > 0) && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
@@ -443,7 +442,7 @@ void CInstancedObjectsShader::BuildObjects(ID3D11Device *pd3dDevice, void *pCont
 {
 	CObjectsShader::BuildObjects(pd3dDevice, pContext);
 
-	m_pd3dInstanceBuffer = CreateBuffer(pd3dDevice, m_nInstanceBufferStride, (int)m_vObjectsVector.capacity(), NULL, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+	m_pd3dInstanceBuffer = CreateBuffer(pd3dDevice, m_nInstanceBufferStride, (int)m_vecObjectsContainer.capacity(), NULL, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
 	m_pMesh->AssembleToVertexBuffer(1, &m_pd3dInstanceBuffer, &m_nInstanceBufferStride, &m_nInstanceBufferOffset);
 
 
@@ -475,7 +474,7 @@ void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCa
 	pd3dDeviceContext->Map(m_pd3dInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	XMMATRIX *pd3dxmtxInstances = (XMMATRIX *)d3dMappedResource.pData;
 
-	for (auto object : m_vObjectsVector) {
+	for (auto object : m_vecObjectsContainer) {
 		if (object->IsVisible(pCamera))
 			pd3dxmtxInstances[nInstances++] = XMMatrixTranspose(object->m_mtxWorld);
 	}
@@ -488,10 +487,10 @@ void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCa
 	// Bounding Box Rendering
 	if (GLOBAL_MGR->g_vRenderOption.y) {
 		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
-		m_pBoundingBoxShader->OnPrepareSetting(pd3dDeviceContext, false);
 
-		for (auto object : m_vObjectsVector) {
+		for (auto object : m_vecObjectsContainer) {
 			if (object->IsVisible(pCamera)) {
+				m_pBoundingBoxShader->OnPrepareSetting(pd3dDeviceContext,object->GetCollisionCheck());
 				CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &object->m_mtxWorld);
 
 				m_pBoundingBoxMesh->Render(pd3dDeviceContext);

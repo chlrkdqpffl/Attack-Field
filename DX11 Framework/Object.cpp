@@ -671,7 +671,7 @@ void CGameObject::SetUp(XMFLOAT3 axis, bool isLocal)
 void CGameObject::SetLook(XMFLOAT3 axis, bool isLocal)
 {
 	XMFLOAT4X4 mtx;
-
+	
 	if (isLocal) {
 		XMStoreFloat4x4(&mtx, m_mtxLocal);
 		mtx._31 = axis.x, mtx._32 = axis.y, mtx._33 = axis.z;
@@ -749,6 +749,24 @@ bool CGameObject::IsVisible(CCamera *pCamera)
 #endif
 
 	return(m_bIsVisible);
+}
+
+bool CGameObject::IsCollision(CGameObject* pObject)
+{
+	BoundingBox pTargetBBox = pObject->GetBoundingBox();
+	pTargetBBox.Center.x += pObject->GetPosition().x;
+	pTargetBBox.Center.y += pObject->GetPosition().y;
+	pTargetBBox.Center.z += pObject->GetPosition().z;
+
+	BoundingBox pSourceBBox = GetBoundingBox();
+	pSourceBBox.Center.x += GetPosition().x;
+	pSourceBBox.Center.y += GetPosition().y;
+	pSourceBBox.Center.z += GetPosition().z;
+
+	if (pSourceBBox.Intersects(pTargetBBox))
+		return true;
+	else
+		return false;
 }
 
 void CGameObject::Update(float fTimeElapsed)
@@ -848,8 +866,10 @@ void CGameObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	if (m_pBoundingBoxMesh) {
 		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
-		m_pBoundingBoxShader->OnPrepareSetting(pd3dDeviceContext, true);
+	
+		m_pBoundingBoxShader->OnPrepareSetting(pd3dDeviceContext, m_bIsCollision);
 		m_pBoundingBoxMesh->Render(pd3dDeviceContext);
+
 		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 	}
 }

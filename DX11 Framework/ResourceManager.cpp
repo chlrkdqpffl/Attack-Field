@@ -34,11 +34,13 @@ void CResourceManager::InitializeManager()
 	AddResourece(TextureTag::eStartButtonOff,		"../Assets/Image/UI/StartOff.png");
 	AddResourece(TextureTag::eExitButtonOn,			"../Assets/Image/UI/ExitOn.png");
 	AddResourece(TextureTag::eExitButtonOff,		"../Assets/Image/UI/ExitOff.png");
+	AddResourece(TextureTag::eCaptureArea,			"../Assets/Image/UI/CaptureArea.png");
 
 	// Environment
 	AddResourece(TextureTag::eTerrainD,				"../Assets/Image/Terrain/Base_Texture.jpg");
 	AddResourece(TextureTag::eTerrainDetailD,		"../Assets/Image/Terrain/Detail_Texture_7.jpg");
 	AddResourecePath(TextureTag::eTerrainH,			"../Assets/Image/Terrain/HeightMap.raw");
+
 
 	//	AddResourece(eTerrain,							"../Assets/Image/Terrain/TerrainDiffuse2.jpg");
 	//	AddResourece(eTerrainDetail,					"../Assets/Image/Terrain/Detail_Texture_7.jpg");

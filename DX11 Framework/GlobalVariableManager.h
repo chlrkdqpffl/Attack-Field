@@ -8,7 +8,6 @@ public:
 	virtual ~CGlobalVariableManager();
 
 	virtual void InitializeManager() override;
-	void UpdateManager();
 	virtual void ReleseManager() override;
 
 	bool SetTimer(DWORD& timeVar, int time);

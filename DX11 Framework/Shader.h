@@ -89,7 +89,7 @@ public:
 	virtual ~CObjectsShader();
 
 protected:
-	vector<CGameObject*>			m_vObjectsVector;
+	vector<CGameObject*>			m_vecObjectsContainer;
 
 	CMaterial						*m_pMaterial = nullptr;
 
@@ -102,10 +102,13 @@ public:
 	virtual void OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext) override;
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 
-	void SetObject(int nIndex, CGameObject *pGameObject);
 	void AddObject(CGameObject *pGameObject);
-	void SetMaterial(CMaterial *pMaterial);
 	CGameObject *PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, MESHINTERSECTINFO *pd3dxIntersectInfo);
+
+	// -----  Get, Setter ----- //
+	CGameObject* GetObjectInfo(int index) const { return m_vecObjectsContainer[index]; }
+	void SetObject(int nIndex, CGameObject *pGameObject);
+	void SetMaterial(CMaterial *pMaterial);
 };
 
 class CInstancedObjectsShader : public CObjectsShader

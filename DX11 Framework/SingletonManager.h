@@ -34,6 +34,7 @@ public:
 	}
 	// 추상 클래스 생성
 	virtual void InitializeManager() = 0;
+	virtual void UpdateManager() {};
 	virtual void ReleseManager() = 0;
 };
 

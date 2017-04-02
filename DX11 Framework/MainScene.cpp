@@ -21,7 +21,8 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 		
 		if (m_pSelectedObject)
 			cout << m_pSelectedObject->GetPosition().x << ", " << m_pSelectedObject->GetPosition().y << ", " << m_pSelectedObject->GetPosition().z << endl;
-			
+		cout << "피킹 확인중" << endl;
+
 		m_pPlayer->SetKeyDown(KeyInput::eLeftMouse);
 		m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eStanding_Fire);
 		break;
@@ -251,7 +252,7 @@ void CMainScene::Initialize()
 	pTerrainWaterShader->CreateShader(m_pd3dDevice);
 	pTerrainWater->SetShader(pTerrainWaterShader);
 	
-	m_vObjectsVector.push_back(move(pTerrainWater));
+	m_vecObjectsContainer.push_back(move(pTerrainWater));
 #pragma endregion
 	*/
 	
@@ -267,17 +268,43 @@ void CMainScene::Initialize()
 
 	police->SetPosition(150, 250, 100);
 
-	m_vObjectsVector.push_back(police);
+	m_vecObjectsContainer.push_back(police);
 	*/
 
 #pragma endregion 
 
+	/*
+#pragma region [Create CaptureArea]
+	// Material
+	CMaterial* pCaptureAreaMaterial = new CMaterial();
+	CTexture *pCaptureAreaTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
+	pCaptureAreaTexture->SetTexture(0, TextureTag::eCaptureArea);
+	pCaptureAreaTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	pCaptureAreaMaterial->SetTexture(pCaptureAreaTexture);
+	
+	// Mesh
+	CMesh* pCaptureAreaMesh = new CTexturedRectMesh(m_pd3dDevice, 50, 50);
+	
+	// Shader
+	CShader* pCaptureAreaShader = new CShader();
+	pCaptureAreaShader->CreateShader(m_pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_TEXTURE_ELEMENT_0);
+
+	CBillboardObject* pCaptureAreaObject = new CBillboardObject(m_pPlayer);
+	pCaptureAreaObject->SetMaterial(pCaptureAreaMaterial);
+	pCaptureAreaObject->SetMesh(pCaptureAreaMesh);
+	pCaptureAreaObject->SetShader(pCaptureAreaShader);
+
+	pCaptureAreaObject->SetPosition(0, 300, 0);
+
+	m_vecObjectsContainer.push_back(pCaptureAreaObject);
+#pragma endregion 
+*/
 #pragma region [Create Test - NomalMapping]	
 	CNormalMapObject* normalMapObject = new CNormalMapObject();
 	normalMapObject->CreateObjectData(m_pd3dDevice);
 
 	normalMapObject->SetPosition(1000, 700, 1000);
-	m_vObjectsVector.push_back(normalMapObject);
+	m_vecObjectsContainer.push_back(normalMapObject);
 #pragma endregion 
 
 #pragma region [Create Shader Object]
@@ -304,7 +331,7 @@ void CMainScene::Initialize()
 	pDarkFighter->CreateBoundingBox(pd3dDevice);
 	pDarkFighter->CreateAxisObject(pd3dDevice);
 	pModelShader->AddObject(pDarkFighter);
-	m_vObjectsShaderVector.push_back(pModelShader);
+	m_vecObjectsShaderContainer.push_back(pModelShader);
 	*/
 
 
@@ -334,7 +361,7 @@ void CMainScene::Initialize()
 
 	pModelShader->AddObject(pTestObject);
 	pModelShader->AddObject(pTest2Object);
-	m_vObjectsShaderVector.push_back(pModelShader);
+	m_vecObjectsShaderContainer.push_back(pModelShader);
 	
 #pragma endregion
 
@@ -400,7 +427,7 @@ void CMainScene::Initialize()
 	int xObjects = 3, zObjects = 3;
 
 
-	m_vInstancedObjectsShaderVector.reserve(6);
+	m_vecInstancedObjectsShaderContainer.reserve(6);
 
 	CInstancedObjectsShader *pInstancingShaders;
 	for (int k = 0; k < 6; k++)
@@ -411,7 +438,7 @@ void CMainScene::Initialize()
 		pInstancingShaders->BuildObjects(m_pd3dDevice, NULL);
 		pInstancingShaders->CreateShader(m_pd3dDevice);
 
-		m_vInstancedObjectsShaderVector.push_back(move(pInstancingShaders));
+		m_vecInstancedObjectsShaderContainer.push_back(move(pInstancingShaders));
 	}
 
 	XMVECTOR d3dxvRotateAxis;
@@ -441,7 +468,8 @@ void CMainScene::Initialize()
 				pRotatingObject->SetRotationSpeed(0.0f);
 				pRotatingObject->CreateBoundingBox(m_pd3dDevice);
 
-				m_vInstancedObjectsShaderVector[k * 2]->AddObject(pRotatingObject);
+				m_vecInstancedObjectsShaderContainer[k * 2]->AddObject(pRotatingObject);
+				COLLISION_MGR->m_vecStaticMeshContainer.push_back(pRotatingObject);
 
 				pRotatingObject = new CRotatingObject();
 				pRotatingObject->SetMesh(pMeshes[k * 2 + 1]);
@@ -450,7 +478,8 @@ void CMainScene::Initialize()
 				pRotatingObject->SetRotationSpeed(0.0f);
 				pRotatingObject->CreateBoundingBox(m_pd3dDevice);
 
-				m_vInstancedObjectsShaderVector[k * 2 + 1]->AddObject(pRotatingObject);
+				m_vecInstancedObjectsShaderContainer[k * 2 + 1]->AddObject(pRotatingObject);
+				COLLISION_MGR->m_vecStaticMeshContainer.push_back(pRotatingObject);
 			}
 		}
 	}
@@ -598,6 +627,8 @@ bool CMainScene::ProcessInput(UCHAR *pKeysBuffer)
 
 void CMainScene::UpdateObjects(float fTimeElapsed)
 {
+	COLLISION_MGR->UpdateManager();
+
 	CScene::UpdateObjects(fTimeElapsed);
 
 	if (m_pLights && m_pd3dcbLights)
@@ -636,11 +667,6 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 {
 	CScene::Render(pd3dDeviceContext, pCamera);
 
-	// WireFrame Mode
-	if (GLOBAL_MGR->g_bShowWireFrame)
-		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
-	else
-		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 
 	if (GLOBAL_MGR->g_bShowWorldAxis)
 		m_pWorldCenterAxis->Render(pd3dDeviceContext, pCamera);
@@ -665,17 +691,11 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 50, 0xFFFFFFFF, FW1_LEFT);
 
 	/*
-	// Draw Time Gap
-	XMFLOAT3 cameraPos;
-	XMStoreFloat3(&cameraPos, m_pCamera->GetPosition());
-	str = "Camera Position : (" + to_string(cameraPos.x) + ", " + to_string(cameraPos.y) + ", " + to_string(cameraPos.z) + ")";
-	wstr.assign(str.begin(), str.end());
-	TEXT_MGR->RenderText(pd3dDeviceContext, wstr, 30, 20, 80, 0xFFFFFFFF, FW1_LEFT);
+	XMFLOAT2 pos = ObjectPositionConvertToScreen(m_vecObjectsContainer.front()->GetPosition());
+	m_vecObjectsContainer.front()->SetPosition(pos.x, pos.y, 0.0f);
+
+	str = "Position : (" + to_string(pos.x) + ", " + to_string(pos.y) + ")";
+
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 30, 20, 80, 0xFFFFFFFF, FW1_LEFT);
 	*/
-
-
-//	str = L"최고의 플레이";
-//	wstr = L"최고의 플레이";
-//	wstr.assign(str.begin(), str.end());
-//	TEXT_MGR->RenderText(pd3dDeviceContext, wstr, 40, 70, 100, 0xFFFFFFFF, FW1_LEFT);
 }

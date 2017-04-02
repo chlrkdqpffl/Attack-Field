@@ -97,6 +97,9 @@
     <Filter Include="Objects\Player">
       <UniqueIdentifier>{6a423d7e-855a-42c4-b1bb-4a4f7a70010e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\Billboard">
+      <UniqueIdentifier>{16748d53-bd13-4cb5-93ea-0ffd814ef231}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -290,6 +293,12 @@
     </ClCompile>
     <ClCompile Include="TerrainPlayer.cpp">
       <Filter>Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="BillboardObject.cpp">
+      <Filter>Objects\Billboard</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -502,6 +511,12 @@
     </ClInclude>
     <ClInclude Include="TerrainPlayer.h">
       <Filter>Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="BillboardObject.h">
+      <Filter>Objects\Billboard</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

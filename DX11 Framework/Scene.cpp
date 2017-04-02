@@ -15,9 +15,9 @@ CScene::CScene()
 	m_pSkyBox = nullptr;
 	m_pTerrain = nullptr;
 
-	m_vObjectsVector.clear();
-	m_vObjectsShaderVector.clear();
-	m_vInstancedObjectsShaderVector.clear();
+	m_vecObjectsContainer.clear();
+	m_vecObjectsShaderContainer.clear();
+	m_vecInstancedObjectsShaderContainer.clear();
 
 	m_pParticleSystem = nullptr;
 	m_fGametime = 0.0f;
@@ -135,28 +135,66 @@ void CScene::ReleaseObjects()
 	
 	SafeDelete(m_pWorldCenterAxis);
 
-	for (auto& object : m_vObjectsVector)
+	for (auto& object : m_vecObjectsContainer)
 		ReleaseCOM(object)
 
-	m_vObjectsVector.clear();
+	m_vecObjectsContainer.clear();
 
-	for (auto& shaderObject : m_vObjectsShaderVector) {
+	for (auto& shaderObject : m_vecObjectsShaderContainer) {
 		shaderObject->ReleaseObjects();
 		shaderObject->Release();
 	}
-	m_vObjectsShaderVector.clear();
+	m_vecObjectsShaderContainer.clear();
 
-	for (auto& instancedShaderObject : m_vInstancedObjectsShaderVector) {
+	for (auto& instancedShaderObject : m_vecInstancedObjectsShaderContainer) {
 		instancedShaderObject->ReleaseObjects();
 		instancedShaderObject->Release();
 	}
-	m_vInstancedObjectsShaderVector.clear();
+	m_vecInstancedObjectsShaderContainer.clear();
 
 	CScene::ReleaseConstantBuffers();
 
 	SafeDelete(m_pPlayer);
 	SafeDelete(m_pPlayerCharacter);
 	SafeDelete(m_pUIManager);
+}
+
+XMFLOAT2 CScene::ObjectPositionConvertToScreen(XMFLOAT3 d3dxvObjPos)
+{
+	// 임시 보류 - 제대로 실행되지 않는다. 다른 우선순위에서 밀려나서 다음에 다시 구현
+	if (!m_pCamera) return(XMFLOAT2(0.0f, 0.0f));
+
+	XMFLOAT2 d3dxvScreenPos;
+
+	float w = 1.0f;
+
+	XMMATRIX mtxView = m_pCamera->GetViewMatrix();
+	XMMATRIX mtxProjection = m_pCamera->GetProjectionMatrix();
+	XMMATRIX mtxIdentity = XMMatrixIdentity();
+
+	/*
+	D3D10_VIEWPORT d3d10ViewPort;
+
+	d3d10ViewPort.Height = d3dViewport.Height;
+	d3d10ViewPort.MaxDepth = d3dViewport.MaxDepth;
+	d3d10ViewPort.MinDepth = d3dViewport.MinDepth;
+	d3d10ViewPort.TopLeftX = d3dViewport.TopLeftX;
+	d3d10ViewPort.TopLeftY = d3dViewport.TopLeftY;
+	d3d10ViewPort.Width = d3dViewport.Width;
+
+	//프로젝션 행렬, 뷰포트 행렬, 뷰 행렬, 월드변환 행렬(화면 좌표계로 변환이므로 단위행렬 넣어주면 됨)을 모두 곱한다.
+	//왜 D3DXVec3Project함수는 D3D10 뷰포트만 지원할까...
+	D3DXVec3Project(&d3dxvOut, &d3dxvObjPos, &d3d10ViewPort, &d3dxmtxProjection, &d3dxmtxView, &d3dxmIdentityWorld);
+	*/
+	XMVECTOR pOutVector;
+	D3D11_VIEWPORT d3d11ViewPort = m_pCamera->GetViewport();
+
+	pOutVector = XMVector3Project(XMLoadFloat3(&d3dxvObjPos), d3d11ViewPort.TopLeftX, d3d11ViewPort.TopLeftY, d3d11ViewPort.Width, d3d11ViewPort.Height,
+		d3d11ViewPort.MinDepth, d3d11ViewPort.MaxDepth,	mtxProjection, mtxView, mtxIdentity);
+
+	XMStoreFloat2(&d3dxvScreenPos, pOutVector);
+
+	return d3dxvScreenPos;
 }
 
 bool CScene::ProcessInput(UCHAR *pKeysBuffer)
@@ -190,7 +228,7 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 	CGameObject *pIntersectedObject = NULL, *pNearestObject = NULL;
 
 
-	for (auto& object : m_vObjectsVector) {
+	for (auto& object : m_vecObjectsContainer) {
 		nIntersected = object->PickObjectByRayIntersection(&d3dxvPickPosition, &d3dxmtxView, &d3dxIntersectInfo);
 		if ((nIntersected > 0) && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
 		{
@@ -199,7 +237,7 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 		}
 	}
 
-	for (auto shaderObject : m_vObjectsShaderVector) {
+	for (auto shaderObject : m_vecObjectsShaderContainer) {
 		pIntersectedObject = shaderObject->PickObjectByRayIntersection(&d3dxvPickPosition, &d3dxmtxView, &d3dxIntersectInfo);
 		if (pIntersectedObject && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
 		{
@@ -208,7 +246,7 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 		}
 	}
 
-	for (auto instancedShaderObject : m_vInstancedObjectsShaderVector) {
+	for (auto instancedShaderObject : m_vecInstancedObjectsShaderContainer) {
 		pIntersectedObject = instancedShaderObject->PickObjectByRayIntersection(&d3dxvPickPosition, &d3dxmtxView, &d3dxIntersectInfo);
 		if (pIntersectedObject && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
 		{
@@ -251,7 +289,7 @@ void CScene::UpdateObjects(float fTimeElapsed)
 	if(m_pTerrain) m_pTerrain->Update(fTimeElapsed, NULL);
 	if(GLOBAL_MGR->g_bShowWorldAxis) m_pWorldCenterAxis->Update(fTimeElapsed);
 
-	for (auto object : m_vObjectsVector) {
+	for (auto object : m_vecObjectsContainer) {
 		if(object->GetActive())
 			object->Update(fTimeElapsed);
 	}
@@ -264,10 +302,10 @@ void CScene::UpdateObjects(float fTimeElapsed)
 		
 	}
 
-	for (auto shaderObject : m_vObjectsShaderVector)
+	for (auto shaderObject : m_vecObjectsShaderContainer)
 		shaderObject->UpdateObjects(fTimeElapsed);
 
-	for (auto instancedShaderObject : m_vInstancedObjectsShaderVector)
+	for (auto instancedShaderObject : m_vecInstancedObjectsShaderContainer)
 		instancedShaderObject->UpdateObjects(fTimeElapsed);
 
 
@@ -289,14 +327,20 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 {
 	if (m_pSkyBox)
 		m_pSkyBox->Render(pd3dDeviceContext, pCamera);
+	
+	// WireFrame Mode
+	if (GLOBAL_MGR->g_bShowWireFrame)
+		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
+	else
+		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 
-	for (auto object : m_vObjectsVector)
+	for (auto object : m_vecObjectsContainer)
 		if(object->IsVisible(pCamera))
 			object->Render(pd3dDeviceContext, pCamera);
 
-	for (auto shaderObject : m_vObjectsShaderVector)
+	for (auto shaderObject : m_vecObjectsShaderContainer)
 		shaderObject->Render(pd3dDeviceContext, pCamera);
 	
-	for (auto instancedShaderObject : m_vInstancedObjectsShaderVector)
+	for (auto instancedShaderObject : m_vecInstancedObjectsShaderContainer)
 		instancedShaderObject->Render(pd3dDeviceContext, pCamera);	
 }

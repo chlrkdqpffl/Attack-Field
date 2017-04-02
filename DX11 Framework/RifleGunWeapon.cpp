@@ -69,6 +69,8 @@ void CRifleGunWeapon::CreateBulletPool(ID3D11Device* pd3dDevice)
 		pBulletObject->CreateAxisObject(pd3dDevice);
 		pBulletObject->CreateBoundingBox(pd3dDevice);
 		pBulletObject->SetActive(false);
+
 		m_vecBulletContainer.push_back(pBulletObject);
+		COLLISION_MGR->m_vecDynamicMeshContainer.push_back(pBulletObject);
 	}
 }

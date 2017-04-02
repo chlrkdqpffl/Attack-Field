@@ -91,7 +91,6 @@ public:
 	CTexture						*m_pTexture = nullptr;
 };
 
-
 class CollisionInfo {
 	CGameObject*	m_pHitObject = nullptr;
 	float			m_fDistance = 0.0f;
@@ -143,12 +142,17 @@ protected:
 	CGameObject 					*m_pParent = nullptr;
 	CAxisObjects					*m_pAxisObject = nullptr;
 
+	
+	// Collision Info
+	bool							m_bIsCollision = false;
 //	BoundingBox						m_bcBoundingBox;			// 사용자가 정하는 바운딩 박스
 	BoundingBox						m_bcMeshBoundingBox;		// 실제 메쉬 바운딩 박스
 	BoundingOrientedBox				m_bcMeshBoundingOBox;		// 테스트용 OBB 박스
 
 	CBoundingBoxMesh				*m_pBoundingBoxMesh	= nullptr;
 	CBoundingBoxShader				*m_pBoundingBoxShader = nullptr;
+	
+
 
 public:
 	ID3D11DepthStencilState			*m_pd3dDepthStencilState = nullptr;
@@ -162,10 +166,13 @@ public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 	void BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext);
 
-	bool IsVisible(CCamera *pCamera = NULL);
-	void Animate(XMMATRIX *pd3dxmtxParent);
 	void CreateAxisObject(ID3D11Device *pd3dDevice);
 	void CreateBoundingBox(ID3D11Device *pd3dDevice);
+
+	bool IsVisible(CCamera *pCamera = NULL);
+	bool IsCollision(CGameObject* pObject);
+
+	void Animate(XMMATRIX *pd3dxmtxParent);
 	void GenerateRayForPicking(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxWorld, XMMATRIX *pd3dxmtxView, XMVECTOR *pd3dxvPickRayPosition, XMVECTOR *pd3dxvPickRayDirection);
 	int PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, MESHINTERSECTINFO *pd3dxIntersectInfo);
 
@@ -215,6 +222,10 @@ public:
 
 	void SetMeshTag(MeshTag tag) { m_tagMesh = tag; }
 	MeshTag GetMeshTag() const { return m_tagMesh; }
+	BoundingBox GetBoundingBox() const { return m_bcMeshBoundingBox; }
+	bool GetCollisionCheck() const { return m_bIsCollision; }
+	void SetCollision(bool collision) { m_bIsCollision = collision; }
+
 public:
 	static ID3D11Buffer				*m_pd3dcbWorldMatrix;
 	static ID3D11Buffer				*m_pd3dcbMaterialColors;

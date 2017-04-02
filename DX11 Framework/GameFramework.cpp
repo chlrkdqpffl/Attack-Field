@@ -605,10 +605,10 @@ void CGameFramework::DrawBlurredSceneToScreen(ID3D11DeviceContext* pd3dDeviceCon
 
 void CGameFramework::BuildObjects()
 {
-	CreateConstantBuffers();
+	CreateConstantBuffers(); 
 	
-//	CScene* m_pScene = new CMainScene();
-	CScene* m_pScene = new CTitleScene();
+	CScene* m_pScene = new CMainScene();
+//	CScene* m_pScene = new CTitleScene();
 	SCENE_MGR->g_nowScene = m_pScene;
 	m_pScene->SetDevice(m_pd3dDevice);
 	m_pScene->SetDeviceContext(m_pd3dDeviceContext);
