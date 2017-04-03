@@ -44,8 +44,8 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(373175);
-//	_CrtSetBreakAlloc(373173);
+//	_CrtSetBreakAlloc(281);
+//	_CrtSetBreakAlloc(220);
 
 //	_CrtSetBreakAlloc(305984);	// 70	 - wstr 에서 오류
 //	_CrtSetBreakAlloc(255527);	// 70
@@ -67,6 +67,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	SCENE_MGR->InitializeManager();
 	RESOURCE_MGR->InitializeManager();
 	TWBAR_MGR->InitializeManager();
+	COLLISION_MGR->InitializeManager();
 
 	BuildObjects();
 
@@ -334,7 +335,7 @@ void CGameFramework::OnDestroy()
 	SCENE_MGR->ReleseInstance();
 	RESOURCE_MGR->ReleseInstance();
 	TWBAR_MGR->ReleseInstance();
-
+	COLLISION_MGR->ReleseInstance();
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtDumpMemoryLeaks();
 #endif

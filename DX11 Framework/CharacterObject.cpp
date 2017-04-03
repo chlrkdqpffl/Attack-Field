@@ -19,7 +19,7 @@ void CCharacterObject::CreateObjectData(ID3D11Device *pd3dDevice)
 
 void CCharacterObject::Fire()
 {
-	SetAnimation(AnimationData::CharacterAnim::eStanding_Fire);
+	SetAnimation(AnimationData::CharacterAnim::eStandingFire);
 	m_pWeapon->Fire();
 }
 

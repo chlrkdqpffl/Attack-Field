@@ -91,8 +91,11 @@ void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계
 	if (m_wKeyState & static_cast<int>(KeyInput::eRightMouse)) {
 	
 	}
-
-
+	/*	- FSM 만들고 사용하기
+	if ((m_wKeyState & static_cast<int>(KeyInput::eForward))
+		&& (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)))
+		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalkingFire);
+		*/
 	if (m_wKeyState == 0) {
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eIdle);
 	}

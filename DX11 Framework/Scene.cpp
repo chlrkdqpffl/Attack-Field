@@ -285,8 +285,8 @@ void CScene::UpdateObjects(float fTimeElapsed)
 {
 	m_fTimeElapsed = fTimeElapsed;
 
-	if(m_pSkyBox) m_pSkyBox->Update(fTimeElapsed, NULL);
-	if(m_pTerrain) m_pTerrain->Update(fTimeElapsed, NULL);
+	if(m_pSkyBox) m_pSkyBox->Update(fTimeElapsed);
+	if(m_pTerrain) m_pTerrain->Update(fTimeElapsed);
 	if(GLOBAL_MGR->g_bShowWorldAxis) m_pWorldCenterAxis->Update(fTimeElapsed);
 
 	for (auto object : m_vecObjectsContainer) {
@@ -331,8 +331,6 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 	// WireFrame Mode
 	if (GLOBAL_MGR->g_bShowWireFrame)
 		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
-	else
-		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 
 	for (auto object : m_vecObjectsContainer)
 		if(object->IsVisible(pCamera))

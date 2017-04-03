@@ -17,6 +17,15 @@ void CBulletObject::InitializeData()
 	m_fMovingDistance = 0;
 }
 
+void CBulletObject::OnCollisionEnter()
+{
+	CollisionInfo info;
+
+	if (COLLISION_MGR->RayCastCollision(info, GetvPosition(), GetLook(), m_fRange)) {
+		cout << "CBulletObject - 충돌 되었네" << endl;
+	}
+}
+
 void CBulletObject::Update(float fTimeElapsed)
 { 
 	if (m_fMovingDistance < m_fRange) {
@@ -26,4 +35,6 @@ void CBulletObject::Update(float fTimeElapsed)
 	else {
 		InitializeData();
 	}
+
+	OnCollisionEnter();
 }

@@ -42,7 +42,7 @@ void CPoliceCharacterObject::CreateAnimation()
 //	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,				AnimationTrack("Idle"), AnimationData::Type::eLoop));
 //	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk,				AnimationTrack("Walk"), AnimationData::Type::eLoop));
 //	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eRun,				AnimationTrack("Run"), AnimationData::Type::eLoop));
-//	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eStanding_Fire,	AnimationTrack("StandingFire"), AnimationData::Type::eOnce));
+//	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eStandingFire,	AnimationTrack("StandingFire"), AnimationData::Type::eOnce));
 }
 
 void CPoliceCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)

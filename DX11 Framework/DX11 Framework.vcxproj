@@ -171,6 +171,7 @@
     <ClCompile Include="FbxMeshData.cpp" />
     <ClCompile Include="GlobalVariableManager.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="NormalDisplaceMapShader.cpp" />
     <ClCompile Include="PoliceCharacterObject.cpp" />
     <ClCompile Include="RifleBullet.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="FbxMeshData.h" />
     <ClInclude Include="GlobalVariableManager.h" />
     <ClInclude Include="LoadingScene.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="NormalDisplaceMapShader.h" />
     <ClInclude Include="NormalMapCubeMesh.h" />
     <ClInclude Include="DirectX11_Project.h" />

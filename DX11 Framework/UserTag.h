@@ -68,7 +68,7 @@ namespace AnimationData
 
 	enum class CharacterAnim
 	{
-		eNone, eIdle, eWalk, eRun, eStanding_Fire, eWalking_Fire, eDeath
+		eNone, eIdle, eWalk, eRun, eStandingFire, eWalkingFire, eStandingReloading		//eDeath
 	};
 }
 

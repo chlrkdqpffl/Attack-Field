@@ -75,9 +75,12 @@ void CResourceManager::InitializeManager()
 	// Character
 	AddResourece(MeshTag::eDarkFighter,				"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.model");
 
-	AddResourece(MeshTag::ePolice,					"../Assets/FBX Model/Character/Police/Police.model");
-	AddResourece(MeshTag::eTerrorist,				"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
-	AddResourece(MeshTag::eRifle,					"../Assets/FBX Model/Weapon/Rifle/rifle(120).model");
+//	AddResourece(MeshTag::ePolice,					"../Assets/FBX Model/Character/Police/Police.model");
+//	AddResourece(MeshTag::eTerrorist,				"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
+	AddResourece(MeshTag::eTerrorist,				"../Assets/FBX Model/Character/Terrorist/Terrorist(use).model");
+	
+	//AddResourece(MeshTag::eRifle,					"../Assets/FBX Model/Weapon/Rifle/rifle(120).model");
+	AddResourece(MeshTag::eRifle,					"../Assets/FBX Model/Weapon/Rifle/rifle.model");
 
 	// Object
 //	AddResourece(MeshTag::eRoad,					"../Assets/FBX Model/Road.model");

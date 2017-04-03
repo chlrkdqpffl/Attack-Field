@@ -7,8 +7,8 @@ CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner) : CWeapon(pOwner)
 
 	if (pOwner->GetMeshTag() == MeshTag::eTerrorist) {
 		m_nBoneIndex = 22;
-		offsetPos = XMFLOAT3(-8.5f, 13.f, 0.5f);
-		offsetRotate = XMFLOAT3(-35.f, -90.f, 100.f);
+		offsetPos = XMFLOAT3(-7.5f, -1.5f, 0.3f);
+		offsetRotate = XMFLOAT3(-35.f, -65.f, 90.f);
 	}
 	else if(pOwner->GetMeshTag() == MeshTag::ePolice)
 	{

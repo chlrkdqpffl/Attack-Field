@@ -24,7 +24,7 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 		cout << "피킹 확인중" << endl;
 
 		m_pPlayer->SetKeyDown(KeyInput::eLeftMouse);
-		m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eStanding_Fire);
+	//	((CCharacterObject*)m_vecObjectsContainer.back())->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
 		break;
 	case WM_LBUTTONUP:
 		m_pPlayer->SetKeyUp(KeyInput::eLeftMouse);
@@ -82,7 +82,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
 				break;
 			case VK_V:
-				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eStanding_Fire);
+				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
 				break;
 			}
 			break;
@@ -102,7 +102,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_SHIFT:
 				m_pPlayer->SetKeyUp(KeyInput::eRun);
-				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
+//				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 				break;
 			}
 			break;
@@ -261,15 +261,6 @@ void CMainScene::Initialize()
 	m_pPlayer->SetPlayerUpdatedContext(pTerrain);
 	m_pPlayer->SetCameraUpdatedContext(pTerrain);
 	
-	/*
-	CCharacterObject* police = new CPoliceCharacterObject();
-	police->CreateObjectData(pd3dDevice);
-	police->CreateAxisObject(pd3dDevice);
-
-	police->SetPosition(150, 250, 100);
-
-	m_vecObjectsContainer.push_back(police);
-	*/
 
 #pragma endregion 
 
@@ -306,6 +297,18 @@ void CMainScene::Initialize()
 	normalMapObject->SetPosition(1000, 700, 1000);
 	m_vecObjectsContainer.push_back(normalMapObject);
 #pragma endregion 
+
+	// ==== Test용 ==== //
+	CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject();
+	pCharacter->CreateObjectData(m_pd3dDevice);
+	pCharacter->CreateAxisObject(m_pd3dDevice);
+
+	pCharacter->SetPosition(XMVectorSet(50.0f, 250.0f, 50.0f, 0.0f));
+
+	m_vecObjectsContainer.push_back(pCharacter);
+
+
+
 
 #pragma region [Create Shader Object]
 	
@@ -679,6 +682,8 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 		m_pPlayer->Render(m_pd3dDeviceContext, m_pCamera);
 
 //	m_pParticleSystem->Render(pd3dDeviceContext);
+
+	m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 }
 
 void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)

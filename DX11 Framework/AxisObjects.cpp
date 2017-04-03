@@ -45,7 +45,7 @@ void CAxisObjects::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCame
 	m_pShader->Render(pd3dDeviceContext, pCamera);
 
 	if (m_pOwnerObject)
-		m_pWorldAxisObject->UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &m_mtxWorld);
+		m_pWorldAxisObject->UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &m_pOwnerObject->m_mtxWorld);
 	else
 		m_pWorldAxisObject->UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMMatrixIdentity());
 

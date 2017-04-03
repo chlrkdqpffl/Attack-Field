@@ -3,7 +3,6 @@
 
 CCollisionManager::CCollisionManager()
 {
-//	m_dwInitTime = 500;
 }
 
 CCollisionManager::~CCollisionManager()
@@ -42,7 +41,6 @@ void CCollisionManager::UpdateManager()
 			// Dynamic to Static
 			for (auto& staticObject : m_vecStaticMeshContainer) {
 				if (dynamicObject->IsCollision(staticObject)) {
-					
 					dynamicObject->SetActive(false);
 					staticObject->SetCollision(true);
 				}
@@ -50,4 +48,35 @@ void CCollisionManager::UpdateManager()
 			}
 		}
 	}
+}
+
+bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction, float distance)
+{
+	// Dynamic to Dynamic
+
+	// Dynamic to Static
+	for (auto& staticObject : m_vecStaticMeshContainer) {
+		bool isCollision = staticObject->GetBoundingBox().Intersects(originPos, direction, distance);
+	
+		if (isCollision) {
+			info.m_pHitObject = staticObject;
+			float fDist;
+			XMStoreFloat(&fDist, XMVectorSubtract(staticObject->GetvPosition(), originPos));
+			info.m_fDistance = fDist;
+			cout << fDist << " 거리가 제대로 출력되는가? " << endl;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void CCollisionManager::AABBCollision()
+{
+
+}
+
+void CCollisionManager::OBBCollision()
+{
+
 }
