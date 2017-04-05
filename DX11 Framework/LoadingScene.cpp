@@ -15,8 +15,11 @@ void CLoadingScene::Initialize()
 	CreatePlayer();
 	CreateUIImage();
 
-	if (RESOURCE_MGR->LoadResourceAll())
-		SCENE_MGR->ChangeScene(new CMainScene());
+
+	if (RESOURCE_MGR->LoadResourceAll()) {
+		if(SCENE_MGR->LoadSceneData())
+			SCENE_MGR->ChangeScene(SceneTag::eMainScene);
+	}
 }
 
 void CLoadingScene::CreatePlayer()

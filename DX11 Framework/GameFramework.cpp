@@ -611,13 +611,16 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers(); 
 	
-//	CScene* m_pScene = new CMainScene();
-	CScene* m_pScene = new CTitleScene();
+	CScene* m_pScene = new CMainScene();
+//	CScene* m_pScene = new CTitleScene();
+	RESOURCE_MGR->LoadResourceAll();
+
+
+
 	SCENE_MGR->g_nowScene = m_pScene;
 	m_pScene->SetDevice(m_pd3dDevice);
 	m_pScene->SetDeviceContext(m_pd3dDeviceContext);
 	m_pScene->Initialize();
-
 	m_pCamera = m_pScene->GetPlayer()->GetCamera();
 	m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	m_pCamera->GenerateViewMatrix();

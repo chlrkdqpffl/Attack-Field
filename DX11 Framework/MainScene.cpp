@@ -17,12 +17,10 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
 		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam) * m_fResizeRatioX, HIWORD(lParam) * m_fResizeRatioY);
-		cout << "OnProcessingMouseMessage-> size : " << LOWORD(lParam) * m_fResizeRatioX << ", " << HIWORD(lParam) * m_fResizeRatioY << endl;
-		
+
 		if (m_pSelectedObject)
 			cout << m_pSelectedObject->GetPosition().x << ", " << m_pSelectedObject->GetPosition().y << ", " << m_pSelectedObject->GetPosition().z << endl;
-		cout << "피킹 확인중" << endl;
-
+	
 		m_pPlayer->SetKeyDown(KeyInput::eLeftMouse);
 	//	((CCharacterObject*)m_vecObjectsContainer.back())->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
 		break;
@@ -720,12 +718,12 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	str = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")";
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 50, 0xFFFFFFFF, FW1_LEFT);
 
-	/*
-	XMFLOAT2 pos = ObjectPositionConvertToScreen(m_vecObjectsContainer.front()->GetPosition());
-	m_vecObjectsContainer.front()->SetPosition(pos.x, pos.y, 0.0f);
+	// Draw Select Object
+	if (m_pSelectedObject) {
+		XMFLOAT3 pos = m_pSelectedObject->GetPosition();
+	
+		str = "Position : (" + to_string(pos.x) + ", " + to_string(pos.y) + to_string(pos.z) + ")";
 
-	str = "Position : (" + to_string(pos.x) + ", " + to_string(pos.y) + ")";
-
-	TEXT_MGR->RenderText(pd3dDeviceContext, str, 30, 20, 80, 0xFFFFFFFF, FW1_LEFT);
-	*/
+		TEXT_MGR->RenderText(pd3dDeviceContext, str, 30, 20, 80, 0xFFFFFFFF, FW1_LEFT);
+	}
 }

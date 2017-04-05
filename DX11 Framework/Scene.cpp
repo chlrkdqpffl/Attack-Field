@@ -255,29 +255,6 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 		}
 	}
 	
-
-
-
-	/*
-	for (int i = 0; i < m_nObjectShaders; i++)
-	{
-		pIntersectedObject = m_ppObjectShaders[i]->PickObjectByRayIntersection(&d3dxvPickPosition, &d3dxmtxView, &d3dxIntersectInfo);
-		if (pIntersectedObject && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
-		{
-			fNearHitDistance = d3dxIntersectInfo.m_fDistance;
-			pNearestObject = pIntersectedObject;
-		}
-	}
-	for (int i = 1; i < m_nObjects; i++)
-	{
-		nIntersected = m_ppObjects[i]->PickObjectByRayIntersection(&d3dxvPickPosition, &d3dxmtxView, &d3dxIntersectInfo);
-		if ((nIntersected > 0) && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
-		{
-			fNearHitDistance = d3dxIntersectInfo.m_fDistance;
-			pNearestObject = m_ppObjects[i];
-		}
-	}
-	*/
 	return(pNearestObject);
 }
 

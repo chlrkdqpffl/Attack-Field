@@ -85,8 +85,7 @@ void CTitleScene::IsCollisionUI(POINT mousePos)
 {
 	switch (m_tagCursorSelectUI) {
 	case TextureTag::eStartButtonOn:
-	//	SCENE_MGR->ChangeScene(new CMainScene());
-		SCENE_MGR->ChangeScene(new CLoadingScene());
+		SCENE_MGR->ChangeScene(SceneTag::eLoadingScene);
 		break;
 	
 	case TextureTag::eExitButtonOn:

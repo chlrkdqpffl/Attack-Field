@@ -70,8 +70,8 @@ bool CResourceManager::LoadResourceAll()
 	AddResourece(TextureTag::eWaterDetailD,			"../Assets/Image/Terrain/Water_Detail_Texture_0.dds");
 
 	// Building
-	AddResourece(TextureTag::eBuilding21D,			"../Assets/FBX Model/21building.jpg");
-	AddResourece(TextureTag::eBuilding50D,			"../Assets/FBX Model/50building.jpg");
+	AddResourece(TextureTag::eBuilding21D,			"../Assets/FBX Model/Building/21building.jpg");
+	AddResourece(TextureTag::eBuilding50D,			"../Assets/FBX Model/Building/50building.jpg");
 
 
 	// Etc
@@ -205,7 +205,8 @@ wstring CResourceManager::FindResourcePath(const TextureTag& textureTag)
 	auto findResource = m_mapPathPool.find(textureTag);
 
 	// Pool에 해당 데이터가 존재하지 않는다.
-	assert(findResource != m_mapPathPool.end());
+	if (findResource == m_mapPathPool.end())
+		MessageBox(NULL, s_to_ws("Texture Tag : " + to_string(static_cast<int>(textureTag))).c_str(), L"Resource Error", MB_OK);
 
 	return s_to_ws((*findResource).second.c_str());
 }
@@ -215,7 +216,8 @@ ID3D11ShaderResourceView* CResourceManager::CloneShaderResourceView(const Textur
 	auto findResource = m_mapTexturePool.find(textureTag);
 
 	// Pool에 해당 데이터가 존재하지 않는다.
-	assert(findResource != m_mapTexturePool.end());
+	if(findResource == m_mapTexturePool.end())
+		MessageBox(NULL, s_to_ws("Texture Tag : " + to_string(static_cast<int>(textureTag))).c_str(), L"Resource Error", MB_OK);
 
 	return (*findResource).second;
 }
@@ -225,7 +227,8 @@ CFbxMeshData CResourceManager::CloneFbxMeshData(const MeshTag& meshTag)
 	auto findResource = m_mapFbxMeshPool.find(meshTag);
 
 	// Pool에 해당 데이터가 존재하지 않는다.
-	assert(findResource != m_mapFbxMeshPool.end());
+	if (findResource == m_mapFbxMeshPool.end())
+		MessageBox(NULL, s_to_ws("Mesh Tag : " + to_string(static_cast<int>(meshTag))).c_str(), L"Resource Error", MB_OK);
 
 	return (*findResource).second;
 }
@@ -235,7 +238,8 @@ CMesh* CResourceManager::CloneNoneFbxMeshData(const MeshTag& meshTag)
 	auto findResource = m_mapNoneFbxMeshPool.find(meshTag);
 
 	// Pool에 해당 데이터가 존재하지 않는다.
-	assert(findResource != m_mapNoneFbxMeshPool.end());
+	if (findResource == m_mapNoneFbxMeshPool.end())
+		MessageBox(NULL, s_to_ws("Mesh Tag : " + to_string(static_cast<int>(meshTag))).c_str(), L"Resource Error", MB_OK);
 
 	return (*findResource).second;
 }

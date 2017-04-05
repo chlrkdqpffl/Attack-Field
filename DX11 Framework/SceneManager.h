@@ -1,10 +1,14 @@
 #pragma once
 #include "SingletonManager.h"
 #include "Scene.h"
+#include "TitleScene.h"
+#include "LoadingScene.h"
+#include "MainScene.h"
 
 class CSceneManager : public CSingletonManager<CSceneManager>
 {
 public:
+	CMainScene			*g_pMainScene	= nullptr;
 	CScene				*g_nowScene		= nullptr;
 	CCamera				*g_pCamera		= nullptr;
 	CPlayer				*g_pPlayer		= nullptr;
@@ -15,8 +19,9 @@ public:
 	CSceneManager();
 	virtual ~CSceneManager();
 
-	void ChangeScene(CScene* newScene);
-
 	virtual void InitializeManager() override;
 	virtual void ReleseManager() override;
+
+	void ChangeScene(SceneTag tagScene);
+	bool LoadSceneData();
 };

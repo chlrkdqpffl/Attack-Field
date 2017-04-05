@@ -192,7 +192,7 @@ int CGameObject::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMAT
 		GenerateRayForPicking(pd3dxvPickPosition, &m_mtxWorld, pd3dxmtxView, &d3dxvPickRayPosition, &d3dxvPickRayDirection);
 		for (int i = 0; i < m_nMeshes; i++)
 		{
-			//nIntersected = m_ppMeshes[i]->CheckRayIntersection(&d3dxvPickRayPosition, &d3dxvPickRayDirection, pd3dxIntersectInfo);
+			nIntersected = m_ppMeshes[i]->CheckRayIntersection(&d3dxvPickRayPosition, &d3dxvPickRayDirection, pd3dxIntersectInfo);
 			if (nIntersected > 0) break;
 		}
 	}
