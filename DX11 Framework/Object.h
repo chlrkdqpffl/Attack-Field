@@ -38,8 +38,10 @@ public:
 	XMMATRIX						m_mtxShadow = XMMatrixIdentity();
 
 protected:
+	// ----- Identity ----- //
 	static UINT						m_iObjectId;
 	MeshTag							m_tagMesh = MeshTag::eNone;
+	TextureTag						m_tagTexture = TextureTag::eNone;
 	TeamType						m_tagTeam = TeamType::eNone;		// 팀 종류 구별하여 충돌 처리시 사용하기. 현재는 아무것도 없음
 
 	CMesh							**m_ppMeshes = nullptr;
@@ -74,7 +76,7 @@ public:
 	virtual void OnPrepareRender();
 	virtual void RenderMesh(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
-	virtual void OnCollisionEnter() {};
+	virtual void OnCollisionCheck() {};
 
 	void BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext);
 
@@ -133,7 +135,7 @@ public:
 
 	void SetMeshTag(MeshTag tag) { m_tagMesh = tag; }
 	MeshTag GetMeshTag() const { return m_tagMesh; }
-	BoundingBox GetBoundingBox() const { return m_bcMeshBoundingBox; }
+	BoundingBox GetBoundingBox(bool isLocal = false);
 	bool GetCollisionCheck() const { return m_bIsCollision; }
 	void SetCollision(bool collision) { m_bIsCollision = collision; }
 

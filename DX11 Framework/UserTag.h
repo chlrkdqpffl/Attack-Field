@@ -40,8 +40,9 @@ enum class SceneTag {
 	eNone, eTitleScene, eLoadingScene, eMainScene
 };
 
-enum ShaderTag {
-	eShader_NormalMap
+enum class ShaderTag {
+	eColor, eTexture, eNormalTexture, eNormalTangentTexture,
+	eInstanceNormalTexture
 };
 
 // ========================================================================================================================== //
@@ -98,10 +99,13 @@ enum class TextureTag
 	eRifleD, eRifleN,
 
 	// Building
-	eBuilding18,
+	eBuilding21D, eBuilding50D,
 
 	// BackGround Image
 	eTitleBackGroundD, eLoadingBackGroundD,
+
+	// Road
+	eRoadD,
 
 	// UI
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
@@ -126,18 +130,22 @@ enum class MeshTag
 	// --------------------------------------------------------- // 
 	MaxSkinnedMesh = 100,
 	// --------------------------------------------------------- // 
+
 	ePolice,
 	// Character
 	eDarkFighter, eRifle,
 
 	// Environment
-	eRoad,
 
 	// Building
-	eBuilding18, eBuilding19,
+	eBuilding21, eBuilding50,
+
+	// Road
+	eRoad,
+
 
 	// Etc
-	eTest, eTest2
+	eTest, eTest2,
 };
 
 // 충돌 처리시 사용할 Layer

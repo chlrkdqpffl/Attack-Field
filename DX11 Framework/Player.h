@@ -4,8 +4,7 @@
 #include "Camera.h"
 
 class CCharacterObject;
-class CPlayer //: public CGameObject
-//class CPlayer : public CSkinnedObject
+class CPlayer
 {
 protected:
 	XMFLOAT3					m_d3dxvPosition;
@@ -33,7 +32,7 @@ protected:
 	CCharacterObject			*m_pCharacter = nullptr;
 
 public:
-	CPlayer(CCharacterObject* pCharacter);
+	CPlayer(CCharacterObject* pCharacter = nullptr);
 	virtual ~CPlayer();
 
 	virtual void OnPlayerUpdated(float fTimeElapsed);

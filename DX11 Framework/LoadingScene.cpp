@@ -12,8 +12,20 @@ CLoadingScene::~CLoadingScene()
 
 void CLoadingScene::Initialize()
 {
-	CScene::CreatePlayer();
+	CreatePlayer();
 	CreateUIImage();
+
+	if (RESOURCE_MGR->LoadResourceAll())
+		SCENE_MGR->ChangeScene(new CMainScene());
+}
+
+void CLoadingScene::CreatePlayer()
+{
+	m_pPlayer = new CTerrainPlayer();
+	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson, 0.0f);
+	m_pCamera = m_pPlayer->GetCamera();
+
+	SCENE_MGR->g_pPlayer = m_pPlayer;
 }
 
 void CLoadingScene::CreateUIImage()
@@ -30,9 +42,4 @@ void CLoadingScene::CreateUIImage()
 void CLoadingScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 {
 	m_pUIManager->RenderAll(pd3dDeviceContext);
-
-//	if (GLOBAL_MGR->SetTimer(m_dwLoadingStartTime, 5000)) {
-//		cout << "¤¾¤·" << endl;
-//		SCENE_MGR->ChangeScene(new CMainScene());
-//	}
 }

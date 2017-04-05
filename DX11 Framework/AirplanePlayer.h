@@ -6,7 +6,7 @@
 class CAirplanePlayer : public CPlayer
 {
 public:
-	CAirplanePlayer(CCharacterObject* pCharacter);
+	CAirplanePlayer(CCharacterObject* pCharacter = nullptr);
 	virtual ~CAirplanePlayer();
 
 	virtual void OnPrepareRender();

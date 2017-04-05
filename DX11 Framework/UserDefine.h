@@ -35,6 +35,7 @@
 #define TWBAR_MGR CAntTweakBarManager::GetInstance()
 #define GLOBAL_MGR CGlobalVariableManager::GetInstance()
 #define COLLISION_MGR CCollisionManager::GetInstance()
+#define MAPDATA_MGR CMapDataManager::GetInstance()
 
 // Check Timer
 #define STARTTIMER(msg)			{ cout << msg; GLOBAL_MGR->g_startTime = chrono::system_clock::now();}

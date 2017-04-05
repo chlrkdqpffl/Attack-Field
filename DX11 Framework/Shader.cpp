@@ -212,10 +212,30 @@ void CShader::CreateShader(ID3D11Device *pd3dDevice, D3D11_INPUT_ELEMENT_DESC *p
 
 void CShader::CreateShader(ID3D11Device *pd3dDevice, ShaderTag shaderTag)
 {
-	cout << "여기 들어오면 안됨" << endl;
-	if (shaderTag == eShader_NormalMap) {
-		// 노말맵 하고나서 구현해보기
+	LPCSTR pszVSShaderName = NULL, pszVSShaderModel = "vs_5_0", pszPSShaderName = NULL, pszPSShaderModel = "ps_5_0";
+	
+	switch (shaderTag) {
+	case ShaderTag::eColor:
+		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_COLOR_ELEMENT;
+		break;
+	case ShaderTag::eTexture:
+		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_TEXTURE_ELEMENT_0;
+		break;
+	case ShaderTag::eNormalTexture:
+		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0;
+		break;
+	case ShaderTag::eNormalTangentTexture:
+		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0;
+		break;
+
+	case ShaderTag::eInstanceNormalTexture:
+		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_INSTANCING_ELEMENT;
+		break;
 	}
+
+	GetShaderName(m_nType, &pszVSShaderName, &pszVSShaderModel, &pszPSShaderName, &pszPSShaderModel);
+	CreateShader(pd3dDevice, NULL, 0, L"Shader HLSL File/Effect.fx", pszVSShaderName, pszVSShaderModel, pszPSShaderName, pszPSShaderModel);
+
 }
 
 void CShader::CreateShaderVariables(ID3D11Device *pd3dDevice)

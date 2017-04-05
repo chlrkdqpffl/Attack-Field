@@ -17,12 +17,13 @@ void CBulletObject::InitializeData()
 	m_fMovingDistance = 0;
 }
 
-void CBulletObject::OnCollisionEnter()
+void CBulletObject::OnCollisionCheck()
 {
 	CollisionInfo info;
 
 	if (COLLISION_MGR->RayCastCollision(info, GetvPosition(), GetLook(), m_fRange)) {
-		cout << "CBulletObject - 충돌 되었네" << endl;
+		SetActive(false);
+		info.m_pHitObject->SetCollision(true);
 	}
 }
 
@@ -36,5 +37,5 @@ void CBulletObject::Update(float fTimeElapsed)
 		InitializeData();
 	}
 
-	OnCollisionEnter();
+//	OnCollisionCheck();
 }

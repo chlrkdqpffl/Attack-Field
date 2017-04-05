@@ -25,6 +25,7 @@ void CCollisionManager::UpdateManager()
 			staticObject->SetCollision(false);
 	}
 
+	
 	for (auto& dynamicObject : m_vecDynamicMeshContainer) {
 		if (dynamicObject->GetActive()) {
 			// Dynamic to Dynamic
@@ -59,15 +60,14 @@ bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos
 		bool isCollision = staticObject->GetBoundingBox().Intersects(originPos, direction, distance);
 	
 		if (isCollision) {
-			info.m_pHitObject = staticObject;
 			float fDist;
-			XMStoreFloat(&fDist, XMVectorSubtract(staticObject->GetvPosition(), originPos));
+			info.m_pHitObject = staticObject;
+			XMStoreFloat(&fDist, XMVector3LengthEst(staticObject->GetvPosition()- originPos));
 			info.m_fDistance = fDist;
-			cout << fDist << " 거리가 제대로 출력되는가? " << endl;
+
 			return true;
 		}
 	}
-
 	return false;
 }
 

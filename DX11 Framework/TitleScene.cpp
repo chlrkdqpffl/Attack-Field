@@ -13,8 +13,17 @@ CTitleScene::~CTitleScene()
 
 void CTitleScene::Initialize()
 {
-	CScene::CreatePlayer();
+	CreatePlayer();
 	CreateUIImage();
+}
+
+void CTitleScene::CreatePlayer()
+{
+	m_pPlayer = new CTerrainPlayer();
+	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson, 0.0f);
+	m_pCamera = m_pPlayer->GetCamera();
+
+	SCENE_MGR->g_pPlayer = m_pPlayer;
 }
 
 void CTitleScene::CreateUIImage()

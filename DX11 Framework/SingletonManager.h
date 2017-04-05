@@ -9,6 +9,8 @@
 template <typename T>
 class CSingletonManager
 {
+	virtual void ReleseManager() = 0;
+
 protected:
 	static T* m_Instance;
 
@@ -35,7 +37,6 @@ public:
 	// 추상 클래스 생성
 	virtual void InitializeManager() = 0;
 	virtual void UpdateManager() {};
-	virtual void ReleseManager() = 0;
 };
 
 // 싱글톤 인스턴스 초기화

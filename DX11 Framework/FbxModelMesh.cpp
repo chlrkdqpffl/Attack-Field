@@ -46,8 +46,6 @@ void CFbxModelMesh::Initialize(ID3D11Device *pd3dDevice)
 	else {
 		for (int i = 0; i < m_nVertices; ++i) {
 			XMStoreFloat3(&m_pPositions[i], XMVectorScale(XMLoadFloat3(&m_meshData.m_vecPosition[i]), m_fModelSize));
-			//		XMStoreFloat3(&m_pvNormals[i], XMVectorScale(XMLoadFloat3(&m_meshData.m_vecNormal[i]), size));
-			//		XMStoreFloat2(&m_pvTexCoords[i], XMVectorScale(XMLoadFloat2(&m_meshData.m_vecUV[i]), size));
 			if (m_meshData.m_bTangent)
 				m_pTangents[i] = m_meshData.m_vecTangent[i];
 			m_pNormals[i] = m_meshData.m_vecNormal[i];

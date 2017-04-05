@@ -12,7 +12,7 @@ public:
 	virtual ~CBulletObject();
 
 	virtual void Update(float fTimeElapsed) override;
-	virtual void OnCollisionEnter() override;
+	virtual void OnCollisionCheck() override;
 
 	void InitializeData();
 	// ----- Get, Setter ----- //

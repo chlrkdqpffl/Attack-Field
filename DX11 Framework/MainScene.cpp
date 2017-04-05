@@ -494,12 +494,28 @@ void CMainScene::Initialize()
 	m_pParticleSystem->CreateShader(m_pd3dDevice);
 #pragma endregion
 
+	CreateMapDataObject();
 	CreateLights();
 	CreateConstantBuffers();
 	CreateTweakBars();
 
 	cout << "================================== Scene Loading Complete ===================================" << endl;
 	cout << "=============================================================================================" << endl << endl;
+}
+
+void CMainScene::CreateMapDataObject()
+{
+	// Shader
+	CShader* pInstanceNormalTextureShader = new CShader();
+	pInstanceNormalTextureShader->CreateShader(m_pd3dDevice, ShaderTag::eInstanceNormalTexture);
+
+	// Mesh
+
+
+	// Material
+
+
+	// Object
 }
 
 void CMainScene::CreateTweakBars()
@@ -634,6 +650,14 @@ void CMainScene::UpdateObjects(float fTimeElapsed)
 
 	CScene::UpdateObjects(fTimeElapsed);
 
+	if (m_pPlayer) {
+		m_pPlayer->OnPrepareRender();
+		m_pPlayer->Update(fTimeElapsed);
+		m_pPlayer->UpdateKeyInput(fTimeElapsed);
+		m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
+
+	}
+
 	if (m_pLights && m_pd3dcbLights)
 	{
 		XMFLOAT3 f3vCameraPosition = m_pCamera->GetPosition();
@@ -677,6 +701,7 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	if (m_pTerrain)
 		if (m_pTerrain->IsVisible(pCamera))
 			m_pTerrain->Render(pd3dDeviceContext, pCamera);
+
 
 	if (m_pPlayer)
 		m_pPlayer->Render(m_pd3dDeviceContext, m_pCamera);

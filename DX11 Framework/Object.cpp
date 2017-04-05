@@ -409,6 +409,22 @@ XMVECTOR CGameObject::GetLook(bool isLocal) const
 	return d3dxvLookAt;
 }
 
+BoundingBox CGameObject::GetBoundingBox(bool isLocal)
+{
+	if (isLocal) 
+		return m_bcMeshBoundingBox;
+	else {
+		BoundingBox bbox = m_bcMeshBoundingBox;
+		XMFLOAT3 world = GetPosition();
+
+		bbox.Center.x += world.x;
+		bbox.Center.y += world.y;
+		bbox.Center.z += world.z;
+
+		return bbox;
+	}
+}
+
 void CGameObject::SetRight(XMFLOAT3 axis, bool isLocal)
 {
 	XMFLOAT4X4 mtx;
@@ -529,14 +545,7 @@ bool CGameObject::IsVisible(CCamera *pCamera)
 bool CGameObject::IsCollision(CGameObject* pObject)
 {
 	BoundingBox pTargetBBox = pObject->GetBoundingBox();
-	pTargetBBox.Center.x += pObject->GetPosition().x;
-	pTargetBBox.Center.y += pObject->GetPosition().y;
-	pTargetBBox.Center.z += pObject->GetPosition().z;
-
 	BoundingBox pSourceBBox = GetBoundingBox();
-	pSourceBBox.Center.x += GetPosition().x;
-	pSourceBBox.Center.y += GetPosition().y;
-	pSourceBBox.Center.z += GetPosition().z;
 
 	if (pSourceBBox.Intersects(pTargetBBox))
 		return true;

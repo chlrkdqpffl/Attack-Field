@@ -27,6 +27,8 @@ public:
 	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera);
 	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext);
 
+	void CreateMapDataObject();
+
 private:
 	float							m_fGlobalAmbient;
 	ID3D11Buffer					*m_pd3dcbLights		= nullptr;

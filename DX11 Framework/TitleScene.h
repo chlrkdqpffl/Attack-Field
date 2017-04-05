@@ -13,6 +13,7 @@ public:
 
 	virtual void Initialize() override;
 	virtual void CreateUIImage() override;
+	virtual void CreatePlayer() override;
 
 	void IsOnCursorUI(POINT mousePos);
 	virtual void IsCollisionUI(POINT mousePos) override;

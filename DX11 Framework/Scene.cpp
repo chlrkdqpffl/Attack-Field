@@ -294,13 +294,7 @@ void CScene::UpdateObjects(float fTimeElapsed)
 			object->Update(fTimeElapsed);
 	}
 
-	if (m_pPlayer) {
-		m_pPlayer->OnPrepareRender();
-		m_pPlayer->Update(fTimeElapsed);
-		m_pPlayer->UpdateKeyInput(fTimeElapsed);
-		m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
-		
-	}
+	
 
 	for (auto shaderObject : m_vecObjectsShaderContainer)
 		shaderObject->UpdateObjects(fTimeElapsed);

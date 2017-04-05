@@ -303,6 +303,9 @@
     <ClCompile Include="Material.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="MapDataManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -523,6 +526,9 @@
     </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MapDataManager.h">
+      <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

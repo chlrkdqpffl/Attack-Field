@@ -5,13 +5,14 @@
 class CLoadingScene : public CScene
 {
 	DWORD		m_dwLoadingStartTime = 0;
-
+	bool		m_bIsLoadingStart = false;
 public:
 	CLoadingScene();
 	virtual ~CLoadingScene();
 
 	virtual void Initialize() override;
 	virtual void CreateUIImage() override;
+	virtual void CreatePlayer() override;
 
 	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera) override;
 };

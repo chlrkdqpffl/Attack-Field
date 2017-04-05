@@ -65,10 +65,11 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	TEXT_MGR->InitializeManager(m_pd3dDevice, L"Koverwatch");
 //	TEXT_MGR->InitializeManager(m_pd3dDevice, L"a반달곰");			// 폰트 여러개 만들 수 있음
 	SCENE_MGR->InitializeManager();
-	RESOURCE_MGR->InitializeManager();
 	TWBAR_MGR->InitializeManager();
 	COLLISION_MGR->InitializeManager();
 
+	MAPDATA_MGR->InitializeManager();
+	RESOURCE_MGR->InitializeManager();
 	BuildObjects();
 
 	return(true);
@@ -335,7 +336,9 @@ void CGameFramework::OnDestroy()
 	SCENE_MGR->ReleseInstance();
 	RESOURCE_MGR->ReleseInstance();
 	TWBAR_MGR->ReleseInstance();
+	MAPDATA_MGR->ReleseInstance();
 	COLLISION_MGR->ReleseInstance();
+
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtDumpMemoryLeaks();
 #endif
@@ -608,8 +611,8 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers(); 
 	
-	CScene* m_pScene = new CMainScene();
-//	CScene* m_pScene = new CTitleScene();
+//	CScene* m_pScene = new CMainScene();
+	CScene* m_pScene = new CTitleScene();
 	SCENE_MGR->g_nowScene = m_pScene;
 	m_pScene->SetDevice(m_pd3dDevice);
 	m_pScene->SetDeviceContext(m_pd3dDeviceContext);
