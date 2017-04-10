@@ -20,7 +20,7 @@ cbuffer cbRenderOption : register(b5) // PS Set
     float4 gbRenderOption : packoffset(c0); // (x : Fog)
 };
 
-Texture2D gtxtDiffuseMap : register(t18);
+Texture2D gtxtDiffuse : register(t0);
 SamplerState gssDefault : register(s0);
 
 struct VS_TEXTURED_LIGHTING_NORMAL_INPUT
@@ -59,7 +59,7 @@ float4 PS_TexturedLightingNormalMap(VS_TEXTURED_LIGHTING_NORMAL_OUTPUT input) : 
 {
     float3 normalW = CalcNormal(input.normalW, input.tangentW, input.texCoord);
     float4 cIllumination = Lighting(input.positionW, normalW);
-    float4 cColor = gtxtDiffuseMap.Sample(gssDefault, input.texCoord) * cIllumination;
+    float4 cColor = gtxtDiffuse.Sample(gssDefault, input.texCoord) * cIllumination;
   
     if (gbRenderOption.x == 1.0f)
         cColor = Fog(cColor, input.positionW);

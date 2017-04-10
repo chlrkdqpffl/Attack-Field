@@ -4,10 +4,10 @@
 static const float gMaxDist = 500.0f;
 static const float gMinDist = 10.0f;
 
-Texture2D gtxTerrainDiffuse : register(t2);
-Texture2D gtxTerrainDetail : register(t3);
-Texture2D gtxTerrainNormal : register(t4);
-Texture2D gtxTerrainHeight : register(t5);
+Texture2D gtxTerrainDiffuse : register(t4);
+Texture2D gtxTerrainDetail : register(t5);
+Texture2D gtxTerrainNormal : register(t6);
+Texture2D gtxTerrainHeight : register(t7);
 
 SamplerState gssTerrain : register(s2);
 SamplerState gssTerrainDetail : register(s3);

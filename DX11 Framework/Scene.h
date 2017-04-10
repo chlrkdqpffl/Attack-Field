@@ -70,9 +70,9 @@ public:
 
 	virtual bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	virtual bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	virtual void OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMaterial, int nIndex = 0);
+	virtual void OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMaterial, int nIndex = 0) {};
 
-	virtual void Initialize();
+	virtual void Initialize() = 0;
 	virtual void ReleaseObjects();
 
 	virtual void CreateConstantBuffers() {};
@@ -85,7 +85,6 @@ public:
 	virtual void CreatePlayer();
 	virtual void IsCollisionUI(POINT mousePos) {};
 
-	virtual bool ProcessInput(UCHAR *pKeysBuffer);
 	virtual void UpdateObjects(float fTimeElapsed);
 
 	virtual void OnPreRender(ID3D11DeviceContext *pd3dDeviceContext);
@@ -140,6 +139,6 @@ protected:
 	CUIManager							*m_pUIManager = nullptr;
 
 	vector<CGameObject*>				m_vecObjectsContainer;
-	vector<CObjectsShader*>				m_vecObjectsShaderContainer;
 	vector<CInstancedObjectsShader*>	m_vecInstancedObjectsShaderContainer;
+	CObjectsShader						m_vecShaderObjectContainer;
 };

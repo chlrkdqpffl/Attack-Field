@@ -40,6 +40,7 @@ public:
 	void ScreenCapture(ID3D11Resource* resource);
 	void ScreenCapture(ID3D11View* shaderResourceView);
 	void RenderAllText();
+	void SetTitleName();
 
 private:
 	HINSTANCE						m_hInstance;

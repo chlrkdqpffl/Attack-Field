@@ -20,7 +20,7 @@ cbuffer cbSkinned : register(b7)
     matrix gBoneTransform[80];
 };
 
-Texture2D gtxtDiffuseMap : register(t18);
+Texture2D gtxtDiffuse : register(t0);
 SamplerState gSamplerState : register(s0);
 
 struct VS_SKINNED_INPUT
@@ -79,10 +79,10 @@ float4 PSSkinnedTexturedBumpedLightingColor(VS_SKINNED_OUTPUT input) : SV_Target
 {
     float3 normalW = CalcNormal(input.normalW, input.tangentW, input.texCoord);
     float4 cIllumination = Lighting(input.positionW, normalW);
-    float4 cColor = gtxtDiffuseMap.Sample(gSamplerState, input.texCoord) * cIllumination;
+    float4 cColor = gtxtDiffuse.Sample(gSamplerState, input.texCoord) * cIllumination;
 
-
-//    return float4(input.tangentW, 1.0f);
+//    return float4(normalW, 1.0f);
+ //   return float4(input.tangentW, 1.0f);
 //    if (gbRenderOption.x == 1.0f)
  //       cColor = Fog(cColor, input.positionW);
 

@@ -5,8 +5,8 @@
 CWeapon::CWeapon(CCharacterObject* pOwner) 
 	: m_pOwner(pOwner)
 {
-//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-7.5f, -1.5f, 0.3f);
-//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(-35.f, -65.f, 90.f);	
+//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.6f, 2.4f, 0.0f);
+//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(-35.f, 125.f, 85.f);	
 }
 
 CWeapon::~CWeapon()
@@ -29,7 +29,7 @@ void CWeapon::Fire()
 				bullet->SetActive(true);
 				bullet->SetPosition(GetPosition());
 
-				XMFLOAT3 look; XMStoreFloat3(&look, -1 * m_pOwner->GetLook());		// ÀÓ½Ã·Î ¸ÂÃã
+				XMFLOAT3 look; XMStoreFloat3(&look, m_pOwner->GetLook());
 				bullet->SetLook(look);
 				m_dwLastAttackTime = GetTickCount();
 				break;

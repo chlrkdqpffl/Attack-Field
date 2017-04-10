@@ -101,18 +101,3 @@ void CGameTimer::Tick(float fLockFPS)
     for (ULONG i = 0; i < m_nSampleCount; i++) m_fTimeElapsed += m_fFrameTime[i];
     if (m_nSampleCount > 0) m_fTimeElapsed /= m_nSampleCount;
 }
-
-void CGameTimer::SetTitleName(wstring& wStr)
-{
-	wStr = PROJECT_NAME;
-
-	WCHAR str[80];
-	_itow(m_nCurrentFrameRate, str, 10);
-
-	wStr += str;
-	wStr += L" FPS, ";
-
-	_itow(m_nRealFrameRate, str, 10);
-	wStr += str;
-	wStr += L" FPS)";
-}

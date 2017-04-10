@@ -3,7 +3,7 @@
 #define _WITH_SKYBOX_TEXTURE_CUBE
 //#define _WITH_TERRAIN_TEXTURE_ARRAY
 
-//    fxc /E PSInstancedTexturedLightingColor /T ps_5_0 /Od /Zi /Fo CompiledVS.fxo Effect.fx
+//    fxc /E PSTexturedLightingTangent /T ps_5_0 /Od /Zi /Fo CompiledVS.fxo Effect.fx
 
 //-------------------------------------------------------------------------------------------------------------------------------
 // Constant Buffer Variables
@@ -50,10 +50,10 @@ cbuffer cbSkinned : register(b7)							// VS Set
 	matrix gBoneTransform[80];
 };
 
-Texture2D gtxtDefault			: register(t0);
-Texture2D gtxtDefaultDetail		: register(t1);
-Texture2D gtxtTerrain			: register(t2);
-Texture2D gtxtDiffuse           : register(t18);
+Texture2D gtxDiffuse			: register(t0);
+
+Texture2D gtxTerrain			: register(t4);
+Texture2D gtxTerrainDetail		: register(t5);
 
 #ifdef _WITH_TERRAIN_TEXTURE_ARRAY
     Texture2D gtxtTerrainDetails[10] : register(t3);
@@ -347,7 +347,7 @@ VS_TEXTURED_OUTPUT VSTexturedColor(VS_TEXTURED_INPUT input)
 
 float4 PSTexturedColor(VS_TEXTURED_OUTPUT input) : SV_Target
 {
-	float4 cColor = gtxtDefault.Sample(gssDefault, input.texCoord);
+	float4 cColor = gtxDiffuse.Sample(gssDefault, input.texCoord);
 
 	return(cColor);
 }
@@ -368,9 +368,9 @@ float4 PSTexturedLightingColor(VS_TEXTURED_LIGHTING_OUTPUT input) : SV_Target
 {
 	input.normalW = normalize(input.normalW);
 	float4 cIllumination = Lighting(input.positionW, input.normalW);
-		float4 cColor = gtxtDefault.Sample(gssDefault, input.texCoord) * cIllumination;
-
-		return(cColor);
+	float4 cColor = gtxDiffuse.Sample(gssDefault, input.texCoord) * cIllumination;
+//    return float4(input.normalW, 1.0);
+	return(cColor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------
@@ -392,8 +392,8 @@ float4 PSTexturedLightingTangent(VS_TEXTURED_LIGHTING_TANGENT_OUTPUT input) : SV
     float3 normalW = CalcNormal(input.normalW, input.tangentW, input.texCoord);
    
     float4 cIllumination = Lighting(input.positionW, normalW);
-    float4 cColor = gtxtDiffuse.Sample(gssDefault, input.texCoord) * cIllumination;
-//    return float4(normalW, 0.0f);
+    float4 cColor = gtxDiffuse.Sample(gssDefault, input.texCoord) * cIllumination;
+//    return float4(input.normalW, 0.0f);
 
     return (cColor);
 }
@@ -411,8 +411,8 @@ VS_DETAIL_TEXTURED_OUTPUT VSDetailTexturedColor(VS_DETAIL_TEXTURED_INPUT input)
 
 float4 PSDetailTexturedColor(VS_DETAIL_TEXTURED_OUTPUT input) : SV_Target
 {
-	float4 cBaseTexColor = gtxtDefault.Sample(gssDefault, input.texCoordBase);
-	float4 cDetailTexColor = gtxtDefaultDetail.Sample(gssDefaultDetail, input.texCoordDetail);
+	float4 cBaseTexColor = gtxDiffuse.Sample(gssDefault, input.texCoordBase);
+	float4 cDetailTexColor = gtxTerrainDetail.Sample(gssDefaultDetail, input.texCoordDetail);
 	float4 cColor = saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
 	//    float4 cAlphaTexColor = gtxtTerrainAlphaTexture.Sample(gTerrainSamplerState, input.texcoord0);
 	//    float4 cColor = cIllumination * lerp(cBaseTexColor, cDetailTexColor, cAlphaTexColor.r);
@@ -448,8 +448,8 @@ float4 PSDetailTexturedLightingColor(VS_DETAIL_TEXTURED_LIGHTING_OUTPUT input) :
 {
 	input.normalW = normalize(input.normalW);
 	float4 cIllumination = Lighting(input.positionW, input.normalW);
-		float4 cBaseTexColor = gtxtDefault.Sample(gssDefault, input.texCoordBase);
-		float4 cDetailTexColor = gtxtDefaultDetail.Sample(gssDefaultDetail, input.texCoordDetail);
+		float4 cBaseTexColor = gtxDiffuse.Sample(gssDefault, input.texCoordBase);
+		float4 cDetailTexColor = gtxTerrainDetail.Sample(gssDefaultDetail, input.texCoordDetail);
 		float4 cColor = saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
 		//    float4 cAlphaTexColor = gtxtTerrainAlphaTexture.Sample(gTerrainSamplerState, input.texcoord0);
 		//    float4 cColor = cIllumination * lerp(cBaseTexColor, cDetailTexColor, cAlphaTexColor.r);
@@ -519,7 +519,7 @@ float4 PSTerrainDetailTexturedLightingColor(VS_TERRAIN_DETAIL_TEXTURED_LIGHTING_
 {
 	input.normalW = normalize(input.normalW);
 	float4 cIllumination = Lighting(input.positionW, input.normalW);
-	float4 cBaseTexColor = gtxtTerrain.Sample(gssTerrain, input.texCoordBase);
+	float4 cBaseTexColor = gtxTerrain.Sample(gssTerrain, input.texCoordBase);
 	float4 cDetailTexColor = gtxtTerrainDetail.Sample(gssTerrainDetail, input.texCoordDetail);
 	float4 cColor = saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f)) * cIllumination;
 
@@ -609,7 +609,7 @@ VS_INSTANCED_TEXTURED_OUTPUT VSInstancedTexturedColor(VS_INSTANCED_TEXTURED_INPU
 
 float4 PSInstancedTexturedColor(VS_INSTANCED_TEXTURED_OUTPUT input) : SV_Target
 {
-	float4 cColor = gtxtDefault.Sample(gssDefault, input.texCoord);
+	float4 cColor = gtxDiffuse.Sample(gssDefault, input.texCoord);
 
 	return(cColor);
 }
@@ -629,7 +629,7 @@ float4 PSInstancedTexturedLightingColor(VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT in
 {
 	input.normalW = normalize(input.normalW);
 	float4 cIllumination = Lighting(input.positionW, input.normalW);
-	float4 cColor = gtxtDefault.Sample(gssDefault, input.texCoord) * cIllumination;
+	float4 cColor = gtxDiffuse.Sample(gssDefault, input.texCoord) * cIllumination;
 
     if (gbRenderOption.x == 1.0f)
         cColor = Fog(cColor, input.positionW);

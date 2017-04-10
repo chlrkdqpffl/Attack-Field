@@ -46,8 +46,10 @@ void CShader::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFil
 	ID3DBlob *pd3dVertexShaderBlob = NULL, *pd3dErrorBlob = NULL;
 	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dVertexShaderBlob, &pd3dErrorBlob, NULL)))
 	{
-		pd3dDevice->CreateVertexShader(pd3dVertexShaderBlob->GetBufferPointer(), pd3dVertexShaderBlob->GetBufferSize(), NULL, ppd3dVertexShader);
-		pd3dDevice->CreateInputLayout(pd3dInputElements, nElements, pd3dVertexShaderBlob->GetBufferPointer(), pd3dVertexShaderBlob->GetBufferSize(), ppd3dInputLayout);
+		HR(pd3dDevice->CreateVertexShader(pd3dVertexShaderBlob->GetBufferPointer(), pd3dVertexShaderBlob->GetBufferSize(), NULL, ppd3dVertexShader));
+		HR(pd3dDevice->CreateInputLayout(pd3dInputElements, nElements, pd3dVertexShaderBlob->GetBufferPointer(), pd3dVertexShaderBlob->GetBufferSize(), ppd3dInputLayout));
+
+
 		pd3dVertexShaderBlob->Release();
 
 		DXUT_SetDebugName(*ppd3dInputLayout, pszShaderName);
@@ -75,7 +77,7 @@ void CShader::CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFile
 	ID3DBlob *pd3dPixelShaderBlob = NULL, *pd3dErrorBlob = NULL;
 	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dPixelShaderBlob, &pd3dErrorBlob, NULL)))
 	{
-		pd3dDevice->CreatePixelShader(pd3dPixelShaderBlob->GetBufferPointer(), pd3dPixelShaderBlob->GetBufferSize(), NULL, ppd3dPixelShader);
+		HR(pd3dDevice->CreatePixelShader(pd3dPixelShaderBlob->GetBufferPointer(), pd3dPixelShaderBlob->GetBufferSize(), NULL, ppd3dPixelShader));
 		pd3dPixelShaderBlob->Release();
 		DXUT_SetDebugName(*ppd3dPixelShader, pszShaderName);
 	}
@@ -101,7 +103,7 @@ void CShader::CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszF
 	ID3DBlob *pd3dPixelShaderBlob = NULL, *pd3dErrorBlob = NULL;
 	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dPixelShaderBlob, &pd3dErrorBlob, NULL)))
 	{
-		pd3dDevice->CreateGeometryShader(pd3dPixelShaderBlob->GetBufferPointer(), pd3dPixelShaderBlob->GetBufferSize(), NULL, ppd3dGeometryShader);
+		HR(pd3dDevice->CreateGeometryShader(pd3dPixelShaderBlob->GetBufferPointer(), pd3dPixelShaderBlob->GetBufferSize(), NULL, ppd3dGeometryShader));
 		pd3dPixelShaderBlob->Release();
 
 		DXUT_SetDebugName(*ppd3dGeometryShader, pszShaderName);
@@ -128,7 +130,7 @@ void CShader::CreateComputeShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFi
 	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
 	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
 	{
-		pd3dDevice->CreateComputeShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dComputeShader);
+		HR(pd3dDevice->CreateComputeShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dComputeShader));
 		pd3dShaderBlob->Release();
 
 		DXUT_SetDebugName(*ppd3dComputeShader, pszShaderName);
@@ -155,7 +157,7 @@ void CShader::CreateHullShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileN
 	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
 	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
 	{
-		pd3dDevice->CreateHullShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dHullShader);
+		HR(pd3dDevice->CreateHullShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dHullShader));
 		pd3dShaderBlob->Release();
 		DXUT_SetDebugName(*ppd3dHullShader, pszShaderName);
 	}
@@ -181,7 +183,7 @@ void CShader::CreateDomainShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFil
 	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
 	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
 	{
-		pd3dDevice->CreateDomainShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dDomainShader);
+		HR(pd3dDevice->CreateDomainShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dDomainShader));
 		pd3dShaderBlob->Release();
 		DXUT_SetDebugName(*ppd3dDomainShader, pszShaderName);
 	}
@@ -216,26 +218,34 @@ void CShader::CreateShader(ID3D11Device *pd3dDevice, ShaderTag shaderTag)
 	
 	switch (shaderTag) {
 	case ShaderTag::eColor:
+		m_tagShader = ShaderTag::eColor;
 		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_COLOR_ELEMENT;
 		break;
+	case ShaderTag::eNormal:
+		m_tagShader = ShaderTag::eNormal;
+		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT;
+		break;
 	case ShaderTag::eTexture:
+		m_tagShader = ShaderTag::eTexture;
 		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_TEXTURE_ELEMENT_0;
 		break;
 	case ShaderTag::eNormalTexture:
+		m_tagShader = ShaderTag::eNormalTexture;
 		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0;
 		break;
 	case ShaderTag::eNormalTangentTexture:
+		m_tagShader = ShaderTag::eNormalTangentTexture;
 		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0;
 		break;
-
 	case ShaderTag::eInstanceNormalTexture:
+		m_tagShader = ShaderTag::eInstanceNormalTexture;
 		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_INSTANCING_ELEMENT;
 		break;
 	}
 
+	GetInputElementDesc(m_nType);
 	GetShaderName(m_nType, &pszVSShaderName, &pszVSShaderModel, &pszPSShaderName, &pszPSShaderModel);
 	CreateShader(pd3dDevice, NULL, 0, L"Shader HLSL File/Effect.fx", pszVSShaderName, pszVSShaderModel, pszPSShaderName, pszPSShaderModel);
-
 }
 
 void CShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
@@ -329,76 +339,70 @@ ID3D11Buffer *CShader::CreateBuffer(ID3D11Device *pd3dDevice, UINT nStride, int 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-CObjectsShader::CObjectsShader(int nObjects)
+CObjectsShader::CObjectsShader()
 {
-	m_vecObjectsContainer.reserve(nObjects);
-
-	m_pMaterial = NULL;
-	m_pContext = NULL;
 }
 
 CObjectsShader::~CObjectsShader()
 {
 }
 
-void CObjectsShader::SetObject(int nIndex, CGameObject *pGameObject)
+void CObjectsShader::AddObject(ShaderTag tag, CGameObject *pGameObject)
 {
-	if (m_vecObjectsContainer[nIndex]) m_vecObjectsContainer[nIndex]->Release();
-	m_vecObjectsContainer[nIndex] = pGameObject;
-	if (pGameObject) pGameObject->AddRef();
-}
+	auto findShader = m_vecObjectContainer.find(tag);
+	if (findShader == m_vecObjectContainer.end()) {
+		vector<CGameObject*> vecObjectContainer;
+		vecObjectContainer.reserve(100);
+		vecObjectContainer.push_back(pGameObject);
 
-void CObjectsShader::AddObject(CGameObject *pGameObject)
-{
-	m_vecObjectsContainer.push_back(pGameObject);
-	if (pGameObject) pGameObject->AddRef();
-}
+		CShader *pShader = new CShader();
+		pShader->CreateShader(m_pd3dDevice, tag);
 
-void CObjectsShader::SetMaterial(CMaterial *pMaterial)
-{
-	m_pMaterial = pMaterial;
-	if (pMaterial) pMaterial->AddRef();
+		m_vecShaderContainer.insert(make_pair(tag, pShader));
+		m_vecObjectContainer.insert(make_pair(tag, vecObjectContainer));
+	}
+	else
+		findShader->second.push_back(pGameObject);
 }
 
 void CObjectsShader::BuildObjects(ID3D11Device *pd3dDevice, void *pContext)
 {
+	m_pd3dDevice = pd3dDevice;
 	m_pContext = pContext;
 }
 
 void CObjectsShader::ReleaseObjects()
 {
-	ReleaseCOM(m_pMaterial);
+	for (auto& shaderTag : m_vecObjectContainer) {
+		for (auto& vecObject : shaderTag.second)
+			SafeDelete(vecObject);
+	}
 
-	for (auto& object : m_vecObjectsContainer)
-		ReleaseCOM(object);
-
-	m_vecObjectsContainer.clear();
+	for (auto& shader : m_vecShaderContainer)
+		SafeDelete(shader.second);
 }
 
 void CObjectsShader::UpdateObjects(float fTimeElapsed)
 {
-	for (auto object : m_vecObjectsContainer) {
-		if(object->GetActive())
-			object->Update(fTimeElapsed);
+	for (auto shaderTag : m_vecObjectContainer) {
+		for (auto vecObject : shaderTag.second) {
+			if (vecObject->GetActive())
+				vecObject->Update(fTimeElapsed);
+		}
 	}
-}
-
-void CObjectsShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
-{
-	CShader::OnPrepareRender(pd3dDeviceContext);
 }
 
 void CObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	for (auto object : m_vecObjectsContainer) {
-		if (object->IsVisible(pCamera)) {
-			CShader::OnPrepareRender(pd3dDeviceContext);
+	for (auto shaderTag : m_vecObjectContainer) {
+		auto findShader = m_vecShaderContainer.find(shaderTag.first);
+		findShader->second->OnPrepareRender(pd3dDeviceContext);
 
-			if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
-			object->Render(pd3dDeviceContext, pCamera);
-
-			CShader::OnPostRender(pd3dDeviceContext);
+		for (auto vecObject : shaderTag.second) {
+	//		if (vecObject->IsVisible(pCamera))
+				vecObject->Render(pd3dDeviceContext, pCamera);
 		}
+		findShader->second->OnPostRender(pd3dDeviceContext);
 	}
 }
 
@@ -409,36 +413,37 @@ CGameObject *CObjectsShader::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPos
 	CGameObject *pSelectedObject = NULL;
 	MESHINTERSECTINFO d3dxIntersectInfo;
 
-	for (auto object : m_vecObjectsContainer) {
 
-		nIntersected = object->PickObjectByRayIntersection(pd3dxvPickPosition, pd3dxmtxView, &d3dxIntersectInfo);
-		if ((nIntersected > 0) && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
-		{
-			fNearHitDistance = d3dxIntersectInfo.m_fDistance;
-			pSelectedObject = object;
-			if (pd3dxIntersectInfo) *pd3dxIntersectInfo = d3dxIntersectInfo;
+	for (auto shaderTag : m_vecObjectContainer) {
+		for (auto& vecObject : shaderTag.second) {
+
+			nIntersected = vecObject->PickObjectByRayIntersection(pd3dxvPickPosition, pd3dxmtxView, &d3dxIntersectInfo);
+			if ((nIntersected > 0) && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
+			{
+				fNearHitDistance = d3dxIntersectInfo.m_fDistance;
+				pSelectedObject = vecObject;
+				if (pd3dxIntersectInfo) *pd3dxIntersectInfo = d3dxIntersectInfo;
+			}
+
 		}
-
 	}
-
 	return(pSelectedObject);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-CInstancedObjectsShader::CInstancedObjectsShader(int nObjects) : CObjectsShader(nObjects)
+CInstancedObjectsShader::CInstancedObjectsShader(int nObjects)
 {
 	m_nInstanceBufferStride = sizeof(XMMATRIX);
 	m_nInstanceBufferOffset = 0;
 	m_pd3dInstanceBuffer = NULL;
-
-	m_pMesh = NULL;
 
 	m_nType = VERTEX_INSTANCING_ELEMENT;
 }
 
 CInstancedObjectsShader::~CInstancedObjectsShader()
 {
+	ReleaseCOM(m_pMaterial);
 }
 
 void CInstancedObjectsShader::SetMesh(CMesh *pMesh)
@@ -446,6 +451,13 @@ void CInstancedObjectsShader::SetMesh(CMesh *pMesh)
 	if (m_pMesh) m_pMesh->Release();
 	m_pMesh = pMesh;
 	if (m_pMesh) m_pMesh->AddRef();
+}
+
+void CInstancedObjectsShader::SetMaterial(CMaterial *pMaterial)
+{
+	if (pMaterial) pMaterial->Release();
+	m_pMaterial = pMaterial;
+	if (pMaterial) pMaterial->AddRef();
 }
 
 void CInstancedObjectsShader::CreateShader(ID3D11Device *pd3dDevice)
@@ -462,7 +474,8 @@ void CInstancedObjectsShader::BuildObjects(ID3D11Device *pd3dDevice, void *pCont
 {
 	CObjectsShader::BuildObjects(pd3dDevice, pContext);
 
-	m_pd3dInstanceBuffer = CreateBuffer(pd3dDevice, m_nInstanceBufferStride, (int)m_vecObjectsContainer.capacity(), NULL, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+	// 인스턴싱 일단 미루자 
+//	m_pd3dInstanceBuffer = CreateBuffer(pd3dDevice, m_nInstanceBufferStride, (int)m_vecObjectsContainer.capacity(), NULL, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
 	m_pMesh->AssembleToVertexBuffer(1, &m_pd3dInstanceBuffer, &m_nInstanceBufferStride, &m_nInstanceBufferOffset);
 
 
@@ -494,13 +507,14 @@ void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCa
 	pd3dDeviceContext->Map(m_pd3dInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	XMMATRIX *pd3dxmtxInstances = (XMMATRIX *)d3dMappedResource.pData;
 
+	/* 미루자
 	for (auto object : m_vecObjectsContainer) {
 		if (object->IsVisible(pCamera))
 			pd3dxmtxInstances[nInstances++] = XMMatrixTranspose(object->m_mtxWorld);
 	}
 
 	pd3dDeviceContext->Unmap(m_pd3dInstanceBuffer, 0);
-
+	
 	m_pMesh->RenderInstanced(pd3dDeviceContext, nInstances, 0);
 
 
@@ -518,6 +532,6 @@ void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCa
 		}
 		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 	}
-	
+	*/
 	CShader::OnPostRender(pd3dDeviceContext);
 }

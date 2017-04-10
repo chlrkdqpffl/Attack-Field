@@ -26,6 +26,11 @@ public:
 
 	void LoadResourceTitleScene();
 	bool LoadResourceAll();
+	void LoadEnvironmentData();
+	void LoadUIData();
+	void LoadEtcData();
+	void LoadMapData();
+	void LoadCharacterData();
 
 	wstring FindResourcePath(const TextureTag& textureTag);
 	ID3D11ShaderResourceView* CloneShaderResourceView(const TextureTag& textureTag);

@@ -11,8 +11,9 @@ public:
 	void Tick(float fLockFPS = 0.0f);
 
 	unsigned long GetFrameRate() const { return m_nCurrentFrameRate; }
+	unsigned long GetRealFrameRate() const { return m_nRealFrameRate; }
+
 	float GetTimeElapsed() const { return m_fTimeElapsed; }
-	void SetTitleName(wstring& wStr);
 
 private:
     bool							m_bHardwareHasPerformanceCounter;   // Has Performance Counter

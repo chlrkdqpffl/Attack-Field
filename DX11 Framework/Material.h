@@ -27,7 +27,7 @@ public:
 	virtual ~CTexture();
 
 private:
-	TextureTag						m_textureTag;
+	TextureTag						m_tagTexture = TextureTag::eNone;
 	int								m_nReferences = 0;
 
 	int								m_nTextures = 0;
@@ -42,13 +42,14 @@ public:
 	void AddRef() { m_nReferences++; }
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
-	void SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture);
-	void SetTexture(int nIndex, TextureTag);
-
-	void SetSampler(int nIndex, ID3D11SamplerState *pd3dSamplerState);
 	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext);
 	void UpdateTextureShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, int nIndex = 0, int nSlot = 0);
 	void UpdateSamplerShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, int nIndex = 0, int nSlot = 0);
+
+	void SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture);
+	void SetTexture(int nIndex, TextureTag);
+	void SetSampler(int nIndex, ID3D11SamplerState *pd3dSamplerState);
+	TextureTag GetTextureTag() const { return m_tagTexture; }
 
 	static ID3D11Buffer				*m_pd3dcbTextureMatrix;
 
@@ -67,13 +68,17 @@ public:
 private:
 	int								m_nReferences = 0;
 
+	TextureTag						m_tagTexture = TextureTag::eNone;
+	CMaterialColors					*m_pColors = nullptr;
+	CTexture						*m_pTexture = nullptr;
+
 public:
 	void AddRef() { m_nReferences++; }
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 	void SetTexture(CTexture *pTexture);
 	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext);
-
-	CMaterialColors					*m_pColors = nullptr;
-	CTexture						*m_pTexture = nullptr;
+	
+	CTexture* GetTexture() const { return m_pTexture; }
+	TextureTag GetTextureTag() const { return m_tagTexture; }
 };

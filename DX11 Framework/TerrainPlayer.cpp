@@ -18,12 +18,12 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 	{
 	case CameraTag::eFirstPerson:
 		SetFriction(250.0f);
-		SetGravity(XMVectorSet(0.0f, -400.0f, 0.0f, 0.0f));
+//		SetGravity(XMVectorSet(0.0f, -400.0f, 0.0f, 0.0f));
 
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFirstPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(XMVectorSet(0.0f, -10.0f, 50.0f, 0.0f));
+		m_pCamera->SetOffset(XMVectorSet(0.0f, -2.0f, 6.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		break;
 	case CameraTag::eSpaceShip:
@@ -38,12 +38,12 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		break;
 	case CameraTag::eThirdPerson:
 		SetFriction(250.0f);
-		SetGravity(XMVectorSet(0.0f, -250.0f, 0.0f, 0.0f));
+//		SetGravity(XMVectorSet(0.0f, -250.0f, 0.0f, 0.0f));
 		
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eThirdPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.25f);
-		m_pCamera->SetOffset(XMVectorSet(0.0f, 20.0f, -50.0f, 0.0f));
+		m_pCamera->SetOffset(XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		break;
 	default:

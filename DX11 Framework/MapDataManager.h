@@ -9,7 +9,7 @@ struct MapData {
 
 class CMapDataManager : public CSingletonManager<CMapDataManager>
 {
-	multimap<MeshTag, vector<MapData>>		m_mapDataPool;
+	multimap<ObjectTag, vector<MapData>>		m_mapDataPool;
 								
 public:
 	CMapDataManager();
@@ -18,10 +18,10 @@ public:
 	virtual void InitializeManager() override;
 	virtual void ReleseManager() override;
 
-	bool AddMapData(const MeshTag& tag, const string& source);
+	bool AddMapData(const ObjectTag& tag, const string& source);
 
-	vector<MapData> GetDataVector(const MeshTag& tag) const;
-	XMFLOAT3 GetPosition(const MeshTag& tag, const int index) const;
-	XMFLOAT3 GetRotation(const MeshTag& tag, const int index) const;
-	XMFLOAT3 GetScale(const MeshTag& tag, const int index) const;
+	vector<MapData> GetDataVector(const ObjectTag& tag) const;
+	XMFLOAT3 GetPosition(const ObjectTag& tag, const int index) const;
+	XMFLOAT3 GetRotation(const ObjectTag& tag, const int index) const;
+	XMFLOAT3 GetScale(const ObjectTag& tag, const int index) const;
 };

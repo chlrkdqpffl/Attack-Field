@@ -7,8 +7,8 @@ CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner) : CWeapon(pOwner)
 
 	if (pOwner->GetMeshTag() == MeshTag::eTerrorist) {
 		m_nBoneIndex = 22;
-		offsetPos = XMFLOAT3(-7.5f, -1.5f, 0.3f);
-		offsetRotate = XMFLOAT3(-35.f, -65.f, 90.f);
+		offsetPos		= XMFLOAT3(1.6f, 2.4f, 0.0f);
+		offsetRotate	= XMFLOAT3(-35.f, 125.f, 85.f);
 	}
 	else if(pOwner->GetMeshTag() == MeshTag::ePolice)
 	{
@@ -54,7 +54,7 @@ void CRifleGunWeapon::CreateMaterial()
 {
 	m_pMaterial = new CMaterial();
 
-	CTexture *pTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
+	CTexture *pTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
 	pTexture->SetTexture(0, TextureTag::eRifleD);
 	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
 	

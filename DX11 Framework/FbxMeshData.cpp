@@ -176,7 +176,6 @@ bool CFbxMeshData::LoadFbxModelSkinnedDatafromFile(const string& fileName)
 		// End
 		fin >> buf;
 		fin >> buf;
-
 	}
 	fin.close();
 

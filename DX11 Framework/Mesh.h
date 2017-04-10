@@ -88,6 +88,7 @@ protected:
 	//------------------------------------------------------
 
 public:
+	MeshTag	GetMeshTag() const { return m_tagMesh; }
 	UINT GetType() { return(m_nType); }
 	BoundingBox GetBoundingCube() { return(m_bcBoundingBox); }
 	

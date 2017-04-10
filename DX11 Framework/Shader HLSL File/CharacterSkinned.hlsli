@@ -16,7 +16,7 @@ cbuffer cbSkinned : register(b7)
     matrix gBoneTransform[80];
 };
 
-Texture2D gtxtTexture : register(t18);
+Texture2D gtxDiffuse : register(t0);
 SamplerState gSamplerState : register(s0);
 
 struct VS_SKINNED_INPUT
@@ -68,7 +68,7 @@ float4 PSSkinnedTexturedLightingColor(VS_SKINNED_OUTPUT input) : SV_Target
 {
     input.normalW = normalize(input.normalW);
     float4 cIllumination = Lighting(input.positionW, input.normalW);
-    float4 cColor = gtxtTexture.Sample(gSamplerState, input.texCoord) * cIllumination;
+    float4 cColor = gtxDiffuse.Sample(gSamplerState, input.texCoord) * cIllumination;
 
     return (cColor);
 }

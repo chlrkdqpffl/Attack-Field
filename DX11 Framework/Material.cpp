@@ -37,6 +37,7 @@ CMaterial::~CMaterial()
 void CMaterial::SetTexture(CTexture *pTexture)
 {
 	if (m_pTexture) m_pTexture->Release();
+	m_tagTexture = pTexture->GetTextureTag();
 	m_pTexture = pTexture;
 	if (m_pTexture) m_pTexture->AddRef();
 }
@@ -92,7 +93,8 @@ void CTexture::SetTexture(int nIndex, TextureTag textuerTag)
 {
 	if (m_ppd3dsrvTextures[nIndex]) m_ppd3dsrvTextures[nIndex]->Release();
 	m_ppd3dsrvTextures[nIndex] = RESOURCE_MGR->CloneShaderResourceView(textuerTag);
-	m_textureTag = textuerTag;
+	if(m_tagTexture == TextureTag::eNone)
+		m_tagTexture = textuerTag;
 	if (m_ppd3dsrvTextures[nIndex]) m_ppd3dsrvTextures[nIndex]->AddRef();
 }
 

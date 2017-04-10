@@ -1,19 +1,19 @@
  #include "stdafx.h"
 #include "FbxModelSkinnedMesh.h"
 
-CFbxModelSkinnedMesh::CFbxModelSkinnedMesh(ID3D11Device *pd3dDevice, const MeshTag meshTag, const float size)
+CFbxModelSkinnedMesh::CFbxModelSkinnedMesh(ID3D11Device *pd3dDevice, const MeshTag meshTag, const XMFLOAT3 size)
 	: CFbxModelMesh(pd3dDevice, meshTag, size)
 {
 }
 
 CFbxModelSkinnedMesh::~CFbxModelSkinnedMesh()
 {
-	if (m_pd3dBoneWeightBuffer) m_pd3dBoneWeightBuffer->Release();
-	if (m_pd3dBoneIndiceBuffer) m_pd3dBoneIndiceBuffer->Release();
-	if (m_pd3dcbBones) m_pd3dcbBones->Release();
-
-	if (m_pboneWeights) delete[] m_pboneWeights;
-	if (m_pboneIndices) delete[] m_pboneIndices;
+	ReleaseCOM(m_pd3dBoneWeightBuffer);
+	ReleaseCOM(m_pd3dBoneIndiceBuffer);
+	ReleaseCOM(m_pd3dcbBones);
+	
+	SafeDeleteArray(m_pboneWeights);
+	SafeDeleteArray(m_pboneIndices);
 }
 
 void CFbxModelSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
@@ -35,7 +35,8 @@ void CFbxModelSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 	m_pboneWeights = new XMFLOAT4[m_nVertices];
 	m_bcBoundingBox = m_meshData.m_boundingBox;
 
-	if (m_fModelSize == 1.0f) {
+
+	if ((m_fModelSize.x == 1) && (m_fModelSize.y == 1) && (m_fModelSize.z == 1)) {
 		for (int i = 0; i < m_nVertices; ++i) {
 			m_pPositions[i] = m_meshData.m_vecPosition[i];
 			m_pNormals[i] = m_meshData.m_vecNormal[i];
@@ -48,9 +49,10 @@ void CFbxModelSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 	}
 	else {
 		for (int i = 0; i < m_nVertices; ++i) {
-			XMStoreFloat3(&m_pPositions[i], XMVectorScale(XMLoadFloat3(&m_meshData.m_vecPosition[i]), m_fModelSize));
-			//		XMStoreFloat3(&m_pvNormals[i], XMVectorScale(XMLoadFloat3(&m_meshData.m_vecNormal[i]), size));
-			//		XMStoreFloat2(&m_pvTexCoords[i], XMVectorScale(XMLoadFloat2(&m_meshData.m_vecUV[i]), size));
+			m_pPositions[i].x = m_meshData.m_vecPosition[i].x * m_fModelSize.x;
+			m_pPositions[i].y = m_meshData.m_vecPosition[i].y * m_fModelSize.y;
+			m_pPositions[i].z = m_meshData.m_vecPosition[i].z * m_fModelSize.z;
+
 			if (m_meshData.m_bTangent)
 				m_pTangents[i] = m_meshData.m_vecTangent[i];
 			m_pNormals[i] = m_meshData.m_vecNormal[i];

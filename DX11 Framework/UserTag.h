@@ -41,7 +41,8 @@ enum class SceneTag {
 };
 
 enum class ShaderTag {
-	eColor, eTexture, eNormalTexture, eNormalTangentTexture,
+	eNone,
+	eColor, eNormal, eTexture, eNormalTexture, eNormalTangentTexture,
 	eInstanceNormalTexture
 };
 
@@ -55,7 +56,6 @@ namespace WeaponData
 		eNone, eRifle, eSniperRifle
 	};
 }
-
 
 // ============================================================================================================================ //
 // ===================================================== Animation Data ======================================================= //
@@ -99,13 +99,13 @@ enum class TextureTag
 	eRifleD, eRifleN,
 
 	// Building
-	eBuilding21D, eBuilding50D,
+	eBuilding16D, eBuilding19D, eBuilding20D, eBuilding21D, eBuilding22D, eBuilding26D, eBuilding29D, eBuilding30D, eBuilding33D, eBuilding34D, eBuilding50D,
 
 	// BackGround Image
 	eTitleBackGroundD, eLoadingBackGroundD,
 
 	// Road
-	eRoadD,
+	eRoad1D, eRoad2D, eCenterRoadD, eCrossRoadD,
 
 	// UI
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
@@ -138,15 +138,28 @@ enum class MeshTag
 	// Environment
 
 	// Building
-	eBuilding21, eBuilding50,
+	eBuilding16, eBuilding19, eBuilding20, eBuilding21, eBuilding22, eBuilding26, eBuilding29, eBuilding30, eBuilding33, eBuilding34, eBuilding50,
 
 	// Road
-	eRoad,
+	eRoad, eCenterRoad, eCrossRoad,
 
 
 	// Etc
 	eTest, eTest2,
+	eBox100m
 };
+
+enum class ObjectTag
+{
+	eNone,
+
+	// Road
+	eRoad1, eRoad2, eCenterRoad, eCrossRoad,
+
+	// Building
+	eBuilding16, eBuilding19, eBuilding20, eBuilding21, eBuilding22, eBuilding26, eBuilding29, eBuilding30, eBuilding33, eBuilding34, eBuilding50
+};
+
 
 // 충돌 처리시 사용할 Layer
 namespace Layer 

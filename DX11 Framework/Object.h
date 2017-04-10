@@ -42,6 +42,7 @@ protected:
 	static UINT						m_iObjectId;
 	MeshTag							m_tagMesh = MeshTag::eNone;
 	TextureTag						m_tagTexture = TextureTag::eNone;
+	ShaderTag						m_tagShader = ShaderTag::eNone;
 	TeamType						m_tagTeam = TeamType::eNone;		// 팀 종류 구별하여 충돌 처리시 사용하기. 현재는 아무것도 없음
 
 	CMesh							**m_ppMeshes = nullptr;
@@ -50,11 +51,7 @@ protected:
 	CMaterial						*m_pMaterial = nullptr;
 	CShader							*m_pShader = nullptr;
 
-	CGameObject 					*m_pChild = nullptr;
-	CGameObject 					*m_pSibling = nullptr;
-	CGameObject 					*m_pParent = nullptr;
 	CAxisObjects					*m_pAxisObject = nullptr;
-
 	
 	// Collision Info
 	bool							m_bIsCollision = false;
@@ -105,16 +102,15 @@ public:
 	bool GetActive() const { return m_bActive; }
 
 	void SetShader(CShader *pShader);
+	void SetShader(ID3D11Device *pd3dDevice, ShaderTag tag);
 	CShader *GetShader() { return(m_pShader); }
 
 	void SetShadowMatrix(XMMATRIX *pd3dxmtxShadow) { m_mtxShadow = *pd3dxmtxShadow; }
 	void SetShadowMatrix(XMVECTOR d3dxvLight, XMVECTOR d3dxPlane);
 
 	void SetMaterial(CMaterial *pMaterial);
+	void SetMaterial(int textureCount, TextureTag tag, ...);
 	CMaterial *GetMaterial() { return(m_pMaterial); }
-
-	void SetChild(CGameObject *pChild);
-	CGameObject *GetParent() { return(m_pParent); }
 
 	void SetPosition(float x, float y, float z, bool isLocal = false);
 	void SetPosition(XMVECTOR d3dxvPosition, bool isLocal = false);
@@ -122,7 +118,7 @@ public:
 	void SetRotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f, bool isLocal = false);
 	void SetRotate(XMFLOAT3 fAngle, bool isLocal = false);
 	void SetRotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLocal = false);
-
+	
 	XMVECTOR GetvPosition(bool bIsLocal = false) const;
 	XMFLOAT3 GetPosition(bool isLocal = false) const;
 	XMVECTOR GetLook(bool bIsLocal = false) const;

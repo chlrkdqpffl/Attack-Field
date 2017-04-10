@@ -54,7 +54,7 @@
 // Convenience macro for releasing, deleteing COM objects.
 #define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
 #define SafeDelete(x) { if(x) { delete x; x = nullptr;} }
-#define SafeDeleteArray(x) { if(x) { delete x[]; x = nullptr; }}
+#define SafeDeleteArray(x) { if(x) { delete[] x; x = nullptr; }}
 //---------------------------------------------------------------------------------------
 
 

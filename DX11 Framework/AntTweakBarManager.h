@@ -16,6 +16,10 @@ public:
 	XMFLOAT3 g_xmf3Offset = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3 g_xmf3Rotate = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	
+	// Select Object
+	XMFLOAT3 g_xmf3SelectObjectPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 g_xmf3SelectObjectRotate = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
 public:
 	CAntTweakBarManager();
 	virtual ~CAntTweakBarManager();

@@ -47,8 +47,7 @@ CSkyBox::~CSkyBox()
 
 void CSkyBox::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	XMFLOAT3 vCameraPos = pCamera->GetPosition();
-	SetPosition(vCameraPos.x, vCameraPos.y, vCameraPos.z);
+	SetPosition(pCamera->GetPosition());
 	Update(NULL);
 
 	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &m_mtxWorld);
@@ -62,7 +61,7 @@ void CSkyBox::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 	m_pMaterial->m_pTexture->UpdateShaderVariable(pd3dDeviceContext);
 #else
 #ifdef _WITH_SKYBOX_TEXTURE_CUBE
-	m_pMaterial->m_pTexture->UpdateShaderVariable(pd3dDeviceContext);
+	m_pMaterial->GetTexture()->UpdateShaderVariable(pd3dDeviceContext);
 #else
 	m_pMaterial->m_pTexture->UpdateSamplerShaderVariable(pd3dDeviceContext, 0, PS_SAMPLER_SLOT_SKYBOX);
 #endif

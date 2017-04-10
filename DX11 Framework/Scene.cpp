@@ -16,7 +16,6 @@ CScene::CScene()
 	m_pTerrain = nullptr;
 
 	m_vecObjectsContainer.clear();
-	m_vecObjectsShaderContainer.clear();
 	m_vecInstancedObjectsShaderContainer.clear();
 
 	m_pParticleSystem = nullptr;
@@ -100,10 +99,6 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	return(false);
 }
 
-void CScene::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMaterial, int nIndex)
-{
-}
-
 void CScene::Initialize()
 {
 	cout << "========================================================================================" << endl;
@@ -116,16 +111,12 @@ void CScene::CreatePlayer()
 	m_pPlayerCharacter->CreateObjectData(m_pd3dDevice);
 	m_pPlayerCharacter->CreateAxisObject(m_pd3dDevice);
 
-	//	m_pPlayerCharacter->SetPosition(100, 250, 100);
-	//	m_pPlayerCharacter->SetPosition(0, 150, 0, true);
-	m_pPlayerCharacter->SetRotate(0, 180, 0, true);
-
 	m_pPlayer = new CTerrainPlayer(m_pPlayerCharacter);
 	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson, 0.0f);
 	m_pCamera = m_pPlayer->GetCamera();
 
 	SCENE_MGR->g_pPlayer = m_pPlayer;
-	m_pPlayer->SetPosition(XMVectorSet(100.0f, 300.0f, 100.0f, 0.0f));
+	m_pPlayer->SetPosition(XMVectorSet(60.0f, 5.0f, 0.0f, 0.0f));
 }
 
 void CScene::ReleaseObjects()
@@ -136,15 +127,10 @@ void CScene::ReleaseObjects()
 	SafeDelete(m_pWorldCenterAxis);
 
 	for (auto& object : m_vecObjectsContainer)
-		ReleaseCOM(object)
+		//ReleaseCOM(object)
+		SafeDelete(object);
 
 	m_vecObjectsContainer.clear();
-
-	for (auto& shaderObject : m_vecObjectsShaderContainer) {
-		shaderObject->ReleaseObjects();
-		shaderObject->Release();
-	}
-	m_vecObjectsShaderContainer.clear();
 
 	for (auto& instancedShaderObject : m_vecInstancedObjectsShaderContainer) {
 		instancedShaderObject->ReleaseObjects();
@@ -157,6 +143,8 @@ void CScene::ReleaseObjects()
 	SafeDelete(m_pPlayer);
 	SafeDelete(m_pPlayerCharacter);
 	SafeDelete(m_pUIManager);
+
+	m_vecShaderObjectContainer.ReleaseObjects();
 }
 
 XMFLOAT2 CScene::ObjectPositionConvertToScreen(XMFLOAT3 d3dxvObjPos)
@@ -197,11 +185,6 @@ XMFLOAT2 CScene::ObjectPositionConvertToScreen(XMFLOAT3 d3dxvObjPos)
 	return d3dxvScreenPos;
 }
 
-bool CScene::ProcessInput(UCHAR *pKeysBuffer)
-{
-	return(false);
-}
-
 CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 {
 	if (!m_pCamera) return(NULL);
@@ -237,13 +220,11 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 		}
 	}
 
-	for (auto shaderObject : m_vecObjectsShaderContainer) {
-		pIntersectedObject = shaderObject->PickObjectByRayIntersection(&d3dxvPickPosition, &d3dxmtxView, &d3dxIntersectInfo);
-		if (pIntersectedObject && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
-		{
-			fNearHitDistance = d3dxIntersectInfo.m_fDistance;
-			pNearestObject = pIntersectedObject;
-		}
+	pIntersectedObject = m_vecShaderObjectContainer.PickObjectByRayIntersection(&d3dxvPickPosition, &d3dxmtxView, &d3dxIntersectInfo);
+	if (pIntersectedObject && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
+	{
+		fNearHitDistance = d3dxIntersectInfo.m_fDistance;
+		pNearestObject = pIntersectedObject;
 	}
 
 	for (auto instancedShaderObject : m_vecInstancedObjectsShaderContainer) {
@@ -271,10 +252,7 @@ void CScene::UpdateObjects(float fTimeElapsed)
 			object->Update(fTimeElapsed);
 	}
 
-	
-
-	for (auto shaderObject : m_vecObjectsShaderContainer)
-		shaderObject->UpdateObjects(fTimeElapsed);
+	m_vecShaderObjectContainer.UpdateObjects(fTimeElapsed);
 
 	for (auto instancedShaderObject : m_vecInstancedObjectsShaderContainer)
 		instancedShaderObject->UpdateObjects(fTimeElapsed);
@@ -307,8 +285,7 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 		if(object->IsVisible(pCamera))
 			object->Render(pd3dDeviceContext, pCamera);
 
-	for (auto shaderObject : m_vecObjectsShaderContainer)
-		shaderObject->Render(pd3dDeviceContext, pCamera);
+	m_vecShaderObjectContainer.Render(pd3dDeviceContext, pCamera);
 	
 	for (auto instancedShaderObject : m_vecInstancedObjectsShaderContainer)
 		instancedShaderObject->Render(pd3dDeviceContext, pCamera);	

@@ -16,6 +16,7 @@ void CSceneManager::InitializeManager()
 
 void CSceneManager::ReleseManager()
 {
+	SafeDelete(g_pMainScene);
 }
 
 bool CSceneManager::LoadSceneData()

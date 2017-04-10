@@ -27,7 +27,7 @@ void CResourceManager::LoadResourceTitleScene()
 	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene.jpg");
 
 	// Character
-	AddResourece(MeshTag::eTerrorist,				"../Assets/FBX Model/Character/Terrorist/Terrorist(use).model");
+//	AddResourece(MeshTag::eTerrorist,				"../Assets/FBX Model/Character/Terrorist/Terrorist(use).model");
 
 	// UI
 	AddResourece(TextureTag::eStartButtonOn,		"../Assets/Image/UI/StartOn.png");
@@ -39,26 +39,36 @@ void CResourceManager::LoadResourceTitleScene()
 bool CResourceManager::LoadResourceAll()
 {
 	cout << "=============================================================================================" << endl;
-	cout << "====================================== Texture Loading ======================================" << endl;
-	// Model
-	AddResourece(TextureTag::eDarkFighterD,			"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_color.png");
-	AddResourece(TextureTag::eDarkFighterN,			"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6_NM.jpg");
+	cout << "===================================== Resource Loading ======================================" << endl;
+	
+	cout << " ----- Character Data -----" << endl;
+	LoadCharacterData();
 
-	AddResourece(TextureTag::eTerroristD,			"../Assets/FBX Model/Character/Terrorist/TerrorristD.dds");
-	AddResourece(TextureTag::eTerroristND,			"../Assets/FBX Model/Character/Terrorist/TerrorristNM_D.dds.dds");
-	AddResourece(TextureTag::ePoliceD,				"../Assets/FBX Model/Character/Police/AllTex.PNG");
+	cout << " ----- Map Data -----" << endl;
+	LoadMapData();
+	
+	cout << " ----- Environment Data -----" << endl;
+	LoadEnvironmentData();
+	
+	cout << " ----- UI Data -----" << endl;
+	LoadUIData();
+	
+	cout << " ----- Etc Data -----" << endl;
+	LoadEtcData();
 
-	AddResourece(TextureTag::eRifleD,				"../Assets/FBX Model/Weapon/Rifle/rifle.bmp");
-	AddResourece(TextureTag::eRifleN,				"../Assets/FBX Model/Weapon/Rifle/RifleNM.png");
+	cout << endl;
+	cout << "=============================== Resource Loading Complete ==================================" << endl;
+	cout << "============================================================================================" << endl << endl;
 
-	// UI
-	AddResourece(TextureTag::eCaptureArea,			"../Assets/Image/UI/CaptureArea.png");
+	return true;
+}
 
+void CResourceManager::LoadEnvironmentData()
+{
 	// Environment
 	AddResourece(TextureTag::eTerrainD,				"../Assets/Image/Terrain/Base_Texture.jpg");
 	AddResourece(TextureTag::eTerrainDetailD,		"../Assets/Image/Terrain/Detail_Texture_7.jpg");
 	AddResourecePath(TextureTag::eTerrainH,			"../Assets/Image/Terrain/HeightMap.raw");
-
 
 	//	AddResourece(eTerrain,							"../Assets/Image/Terrain/TerrainDiffuse2.jpg");
 	//	AddResourece(eTerrainDetail,					"../Assets/Image/Terrain/Detail_Texture_7.jpg");
@@ -68,59 +78,85 @@ bool CResourceManager::LoadResourceAll()
 
 	AddResourece(TextureTag::eWaterD,				"../Assets/Image/Terrain/water.jpg");
 	AddResourece(TextureTag::eWaterDetailD,			"../Assets/Image/Terrain/Water_Detail_Texture_0.dds");
+}
 
-	// Building
-	AddResourece(TextureTag::eBuilding21D,			"../Assets/FBX Model/Building/21building.jpg");
-	AddResourece(TextureTag::eBuilding50D,			"../Assets/FBX Model/Building/50building.jpg");
+void CResourceManager::LoadUIData()
+{
+	AddResourece(TextureTag::eCaptureArea,		 "../Assets/Image/UI/CaptureArea.png");
+}
 
+void CResourceManager::LoadMapData()
+{
+	// ============== Building ============== //
+	AddResourece(TextureTag::eBuilding16D,		"../Assets/FBX Model/Building/16building/16buildingD.jpg");
+	AddResourece(TextureTag::eBuilding19D,		"../Assets/FBX Model/Building/19building/19buildingD.jpg");
+	AddResourece(TextureTag::eBuilding20D,		"../Assets/FBX Model/Building/20building/20buildingD.jpg");
+	AddResourece(TextureTag::eBuilding21D,		"../Assets/FBX Model/Building/21building/21buildingD.jpg");
+	AddResourece(TextureTag::eBuilding22D,		"../Assets/FBX Model/Building/22building/22buildingD.jpg");
+	AddResourece(TextureTag::eBuilding26D,		"../Assets/FBX Model/Building/26building/26buildingD.jpg");
+	AddResourece(TextureTag::eBuilding29D,		"../Assets/FBX Model/Building/29building/29buildingD.jpg");
+	AddResourece(TextureTag::eBuilding30D,		"../Assets/FBX Model/Building/30building/30buildingD.jpg");
+	AddResourece(TextureTag::eBuilding33D,		"../Assets/FBX Model/Building/33building/33buildingD.jpg");
+	AddResourece(TextureTag::eBuilding34D,		"../Assets/FBX Model/Building/34building/34buildingD.jpg");
+	AddResourece(TextureTag::eBuilding50D,		"../Assets/FBX Model/Building/50building/50buildingD.jpg");
 
-	// Etc
-	AddResourece(TextureTag::eStoneD,				"../Assets/Image/Miscellaneous/stones.dds");
-	AddResourece(TextureTag::eStoneN,				"../Assets/Image/Miscellaneous/stones_nmap.dds");
-	AddResourece(TextureTag::eStone02D,				"../Assets/Image/Miscellaneous/Stone02_Diffuse.jpg");
-	AddResourece(TextureTag::eStone02N,				"../Assets/Image/Miscellaneous/Stone02_nmap.dds");
-	AddResourece(TextureTag::eBricksD,				"../Assets/Image/Miscellaneous/bricks.dds");
-	AddResourece(TextureTag::eBricksN,				"../Assets/Image/Miscellaneous/bricks_nmap.dds");
-	AddResourece(TextureTag::eWallD,				"../Assets/Image/Miscellaneous/wall.jpg");
-	AddResourece(TextureTag::eWallND,				"../Assets/Image/Miscellaneous/wall_NM_height.dds");
-
-
-	//	AddResourece(TextureTag::eTest,					"../Assets/FBX Model/Soldier_1_albedo.png");
-
-	cout << endl;
-	cout << "==========================================================================================" << endl;
-	cout << "====================================== Mesh Loading ======================================" << endl;
-
-	// Character
-	AddResourece(MeshTag::eDarkFighter,					"../Assets/FBX Model/Dark Fighter 6/dark_fighter_6.model");
-
-	//	AddResourece(MeshTag::ePolice,						"../Assets/FBX Model/Character/Police/Police.model");
-	//	AddResourece(MeshTag::eTerrorist,					"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
-
-
-	//AddResourece(MeshTag::eRifle,						"../Assets/FBX Model/Weapon/Rifle/rifle(120).model");
-	AddResourece(MeshTag::eRifle,						"../Assets/FBX Model/Weapon/Rifle/rifle.model");
-
-	// Object
-	//	AddResourece(MeshTag::eRoad,						"../Assets/FBX Model/Road.model");
-
-	// Building
-	AddResourece(MeshTag::eBuilding21,					"../Assets/FBX Model/Building/21building.model");
-	AddResourece(MeshTag::eBuilding50,					"../Assets/FBX Model/Building/50building.model");
+	AddResourece(MeshTag::eBuilding16,			"../Assets/FBX Model/Building/16building/16building.model");
+	AddResourece(MeshTag::eBuilding19,			"../Assets/FBX Model/Building/19building/19building.model");
+	AddResourece(MeshTag::eBuilding20,			"../Assets/FBX Model/Building/20building/20building.model");
+	AddResourece(MeshTag::eBuilding21,			"../Assets/FBX Model/Building/21building/21building.model");
+	AddResourece(MeshTag::eBuilding22,			"../Assets/FBX Model/Building/22building/22building.model");
+	AddResourece(MeshTag::eBuilding26,			"../Assets/FBX Model/Building/26building/26building.model");
+	AddResourece(MeshTag::eBuilding29,			"../Assets/FBX Model/Building/29building/29building.model");
+	AddResourece(MeshTag::eBuilding30,			"../Assets/FBX Model/Building/30building/30building.model");
+	AddResourece(MeshTag::eBuilding33,			"../Assets/FBX Model/Building/33building/33building.model");
+	AddResourece(MeshTag::eBuilding34,			"../Assets/FBX Model/Building/34building/34building.model");
+	AddResourece(MeshTag::eBuilding50,			"../Assets/FBX Model/Building/50building/50building.model");
 
 
-	// Etc
-	AddResourece(MeshTag::eTest,						"../Assets/FBX Model/test.model");
-	AddResourece(MeshTag::eTest2,						"../Assets/FBX Model/test2.model");
+	// ============== Road ============== //
+	AddResourece(TextureTag::eRoad1D,			"../Assets/FBX Model/Road/Road1D.dds");
+	AddResourece(TextureTag::eRoad2D,			"../Assets/FBX Model/Road/Road2D.dds");
+	AddResourece(TextureTag::eCenterRoadD,		"../Assets/FBX Model/Road/CenterRoad.dds");
+	AddResourece(TextureTag::eCrossRoadD,		"../Assets/FBX Model/Road/CrossRoadD.jpg");
 
-	// None Fbx Mesh
-	AddNoneFbxMesh(MeshTag::eRoad);
+	AddResourece(MeshTag::eRoad,				"../Assets/FBX Model/Road/road.model");
+	AddResourece(MeshTag::eCenterRoad,			"../Assets/FBX Model/Road/RoadCenter.model");
+	AddResourece(MeshTag::eCrossRoad,			"../Assets/FBX Model/Road/CrossRoad.model");
 
-	cout << endl;
-	cout << "=============================== Resource Loading Complete ==================================" << endl;
-	cout << "============================================================================================" << endl << endl;
+}
 
-	return true;
+void CResourceManager::LoadCharacterData()
+{
+	AddResourece(TextureTag::eTerroristD,		"../Assets/FBX Model/Character/Terrorist/TerrorristD.dds");
+	AddResourece(TextureTag::eTerroristND,		"../Assets/FBX Model/Character/Terrorist/TerrorristNM_D.dds.dds");
+
+//	AddResourece(TextureTag::ePoliceD,			"../Assets/FBX Model/Character/Police/AllTex.PNG");
+
+	AddResourece(TextureTag::eRifleD,			"../Assets/FBX Model/Weapon/Rifle/rifle.bmp");
+	AddResourece(TextureTag::eRifleN,			"../Assets/FBX Model/Weapon/Rifle/RifleNM.png");
+
+
+//	AddResourece(MeshTag::ePolice,				"../Assets/FBX Model/Character/Police/Police.model");
+	AddResourece(MeshTag::eTerrorist,			"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
+
+
+	AddResourece(MeshTag::eRifle,				"../Assets/FBX Model/Weapon/Rifle/rifle.model");
+
+}
+
+void CResourceManager::LoadEtcData()
+{
+	AddResourece(TextureTag::eStoneD,		"../Assets/Image/Miscellaneous/stones.dds");
+	AddResourece(TextureTag::eStoneN,		"../Assets/Image/Miscellaneous/stones_nmap.dds");
+	AddResourece(TextureTag::eStone02D,		"../Assets/Image/Miscellaneous/Stone02_Diffuse.jpg");
+	AddResourece(TextureTag::eStone02N,		"../Assets/Image/Miscellaneous/Stone02_nmap.dds");
+	AddResourece(TextureTag::eBricksD,		"../Assets/Image/Miscellaneous/bricks.dds");
+	AddResourece(TextureTag::eBricksN,		"../Assets/Image/Miscellaneous/bricks_nmap.dds");
+	AddResourece(TextureTag::eWallD,		"../Assets/Image/Miscellaneous/wall.jpg");
+	AddResourece(TextureTag::eWallND,		"../Assets/Image/Miscellaneous/wall_NM_height.dds");
+
+	AddResourece(MeshTag::eTest,			"../Assets/FBX Model/character2.model");
+	AddResourece(MeshTag::eTest2,			"../Assets/FBX Model/basic2.model");
 }
 
 void CResourceManager::AddResourece(const TextureTag& textureTag, const string& source)
@@ -176,6 +212,7 @@ void CResourceManager::AddResourece(const MeshTag& meshTag, const string& source
 
 void CResourceManager::AddNoneFbxMesh(const MeshTag& meshTag)
 {
+	/*
 	XMFLOAT3 scale;
 	CMesh* pMesh;
 	int nObjectCount = MAPDATA_MGR->GetDataVector(meshTag).size();
@@ -183,13 +220,15 @@ void CResourceManager::AddNoneFbxMesh(const MeshTag& meshTag)
 	for (int index = 0; index < nObjectCount; ++index) {
 		switch (meshTag) {
 		case MeshTag::eRoad:
-			scale = MAPDATA_MGR->GetScale(MeshTag::eRoad, index);
+			scale = MAPDATA_MGR->GetScale(ObjectTag::eRoad, index);
 			pMesh = new CCubeMeshTexturedIlluminated(STATEOBJ_MGR->g_pd3dDevice, scale.x , scale.y, scale.z);
 
 			m_mapNoneFbxMeshPool.insert(make_pair(meshTag, pMesh));
 			break;
 		}
 	}
+	*/
+
 }
 
 void CResourceManager::AddResourecePath(const TextureTag& textureTag, const string& source)

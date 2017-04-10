@@ -1,5 +1,5 @@
 
-Texture2D gtxtNormalMap : register(t19);
+Texture2D gtxtNormalMap : register(t1);
 
 SamplerState LinearSS
 {

@@ -42,6 +42,7 @@ public:
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 protected:
+	ShaderTag						m_tagShader = ShaderTag::eNone;
 	UINT							m_nType = 0;
 	int								m_nInputElements = 0;
 	D3D11_INPUT_ELEMENT_DESC		*m_pd3dInputElementDescs = nullptr;
@@ -77,6 +78,8 @@ public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 	virtual void OnPostRender(ID3D11DeviceContext *pd3dDeviceContext);
 
+	ShaderTag GetShaderTag()const { return m_tagShader; }
+
 public:
 	static ID3D11Buffer *CreateBuffer(ID3D11Device *pd3dDevice, UINT nStride, int nElements, void *pBufferData, UINT nBindFlags, D3D11_USAGE d3dUsage, UINT nCPUAccessFlags);
 };
@@ -85,30 +88,27 @@ public:
 class CObjectsShader : public CShader
 {
 public:
-	CObjectsShader(int nObjects = 1);
+	CObjectsShader();
 	virtual ~CObjectsShader();
 
 protected:
-	vector<CGameObject*>			m_vecObjectsContainer;
+	ID3D11Device						*m_pd3dDevice = nullptr;
 
-	CMaterial						*m_pMaterial = nullptr;
+	map <ShaderTag, CShader*>			m_vecShaderContainer;
+	map <ShaderTag, vector<CGameObject*>> m_vecObjectContainer;
 
-	void							*m_pContext = nullptr;
+	void								*m_pContext = nullptr;
 
 public:
 	virtual void BuildObjects(ID3D11Device *pd3dDevice, void *pContext = NULL);
 	virtual void ReleaseObjects();
 	virtual void UpdateObjects(float fTimeElapsed);
-	virtual void OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext) override;
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 
-	void AddObject(CGameObject *pGameObject);
+	void AddObject(ShaderTag tag, CGameObject *pGameObject);
 	CGameObject *PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, MESHINTERSECTINFO *pd3dxIntersectInfo);
 
 	// -----  Get, Setter ----- //
-	CGameObject* GetObjectInfo(int index) const { return m_vecObjectsContainer[index]; }
-	void SetObject(int nIndex, CGameObject *pGameObject);
-	void SetMaterial(CMaterial *pMaterial);
 };
 
 class CInstancedObjectsShader : public CObjectsShader
@@ -118,6 +118,7 @@ public:
 	virtual ~CInstancedObjectsShader();
 
 	void SetMesh(CMesh *pMesh);
+	void SetMaterial(CMaterial *pMaterial);
 
 	virtual void CreateShader(ID3D11Device *pd3dDevice);
 	virtual void CreateShader(ID3D11Device *pd3dDevice, UINT nType);
@@ -128,6 +129,7 @@ public:
 
 protected:
 	CMesh							*m_pMesh = nullptr;
+	CMaterial						*m_pMaterial = nullptr;
 
 	UINT							m_nInstanceBufferStride = 0;
 	UINT							m_nInstanceBufferOffset = 0;

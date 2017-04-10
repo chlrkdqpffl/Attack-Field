@@ -36,15 +36,14 @@ CMesh::CMesh()
 
 CMesh::~CMesh()
 {
-	if (m_pd3dPositionBuffer) m_pd3dPositionBuffer->Release();
-	if (m_pd3dIndexBuffer) m_pd3dIndexBuffer->Release();
-
-	if (m_ppd3dVertexBuffers) delete[] m_ppd3dVertexBuffers;
-	if (m_pnVertexStrides) delete[] m_pnVertexStrides;
-	if (m_pnVertexOffsets) delete[] m_pnVertexOffsets;
-
-	if (m_pPositions) delete[] m_pPositions;
-	if (m_pnIndices) delete[] m_pnIndices;
+	ReleaseCOM(m_pd3dPositionBuffer);
+	ReleaseCOM(m_pd3dIndexBuffer);
+	
+	SafeDeleteArray(m_ppd3dVertexBuffers);
+	SafeDeleteArray(m_pnVertexStrides);
+	SafeDeleteArray(m_pnVertexOffsets);
+	SafeDeleteArray(m_pPositions);
+	SafeDeleteArray(m_pnIndices);
 }
 
 ID3D11Buffer *CMesh::CreateBuffer(ID3D11Device *pd3dDevice, UINT nStride, int nElements, void *pBufferData, UINT nBindFlags, D3D11_USAGE d3dUsage, UINT nCPUAccessFlags)
@@ -218,7 +217,7 @@ CMeshDiffused::CMeshDiffused()
 
 CMeshDiffused::~CMeshDiffused()
 {
-	if (m_pd3dColorBuffer) m_pd3dColorBuffer->Release();
+	ReleaseCOM(m_pd3dColorBuffer);
 }
 
 //------------------------------------------------------------------------------------------------
@@ -230,7 +229,7 @@ CMeshIlluminated::CMeshIlluminated()
 
 CMeshIlluminated::~CMeshIlluminated()
 {
-	if (m_pd3dNormalBuffer) m_pd3dNormalBuffer->Release();
+	ReleaseCOM(m_pd3dNormalBuffer);
 }
 
 XMVECTOR CMeshIlluminated::CalculateTriAngleNormal(UINT nIndex0, UINT nIndex1, UINT nIndex2)
@@ -316,7 +315,7 @@ CMeshTextured::CMeshTextured()
 
 CMeshTextured::~CMeshTextured()
 {
-	if (m_pd3dTexCoordBuffer) m_pd3dTexCoordBuffer->Release();
+	ReleaseCOM(m_pd3dTexCoordBuffer);
 }
 
 //------------------------------------------------------------------------------------------------
@@ -328,7 +327,7 @@ CMeshDetailTextured::CMeshDetailTextured()
 
 CMeshDetailTextured::~CMeshDetailTextured()
 {
-	if (m_pd3dDetailTexCoordBuffer) m_pd3dDetailTexCoordBuffer->Release();
+	ReleaseCOM(m_pd3dDetailTexCoordBuffer);
 }
 
 //------------------------------------------------------------------------------------------------
@@ -340,7 +339,7 @@ CMeshTexturedIlluminated::CMeshTexturedIlluminated()
 
 CMeshTexturedIlluminated::~CMeshTexturedIlluminated()
 {
-	if (m_pd3dTexCoordBuffer) m_pd3dTexCoordBuffer->Release();
+	ReleaseCOM(m_pd3dTexCoordBuffer);
 }
 
 //------------------------------------------------------------------------------------------------
@@ -454,8 +453,8 @@ CMeshDetailTexturedIlluminated::CMeshDetailTexturedIlluminated()
 
 CMeshDetailTexturedIlluminated::~CMeshDetailTexturedIlluminated()
 {
-	if (m_pd3dTexCoordBuffer) m_pd3dTexCoordBuffer->Release();
-	if (m_pd3dDetailTexCoordBuffer) m_pd3dDetailTexCoordBuffer->Release();
+	ReleaseCOM(m_pd3dTexCoordBuffer);
+	ReleaseCOM(m_pd3dDetailTexCoordBuffer);
 }
 
 //------------------------------------------------------------------------------------------------

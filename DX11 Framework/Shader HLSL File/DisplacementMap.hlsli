@@ -20,7 +20,7 @@ cbuffer cbRenderOption : register(b5) // PS Set
     float4 gbRenderOption : packoffset(c0); // (x : Fog)
 };
 
-Texture2D gtxtDiffuseMap : register(t18);
+Texture2D gtxtDiffuseMap : register(t0);
 
 SamplerState gssDefault : register(s0);
 
