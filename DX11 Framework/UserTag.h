@@ -101,6 +101,8 @@ enum class TextureTag
 	// Building
 	eBuilding16D, eBuilding19D, eBuilding20D, eBuilding21D, eBuilding22D, eBuilding26D, eBuilding29D, eBuilding30D, eBuilding33D, eBuilding34D, eBuilding50D,
 
+	eBenchD, eGrassD,
+
 	// BackGround Image
 	eTitleBackGroundD, eLoadingBackGroundD,
 
@@ -112,6 +114,9 @@ enum class TextureTag
 	eCaptureArea,
 
 	// Etc
+	eBusStopD, eStreetLampD,
+
+	// Etc 2
 	eStoneD, eStoneN, eStone02D, eStone02N, eBricksD, eBricksN,
 	eWallD, eWallND
 };
@@ -145,6 +150,9 @@ enum class MeshTag
 
 
 	// Etc
+	eBench, eBusStop, eStreetLamp,
+
+	// Etc 2
 	eTest, eTest2,
 	eBox100m
 };
@@ -157,7 +165,9 @@ enum class ObjectTag
 	eRoad1, eRoad2, eCenterRoad, eCrossRoad,
 
 	// Building
-	eBuilding16, eBuilding19, eBuilding20, eBuilding21, eBuilding22, eBuilding26, eBuilding29, eBuilding30, eBuilding33, eBuilding34, eBuilding50
+	eBuilding16, eBuilding19, eBuilding20, eBuilding21, eBuilding22, eBuilding26, eBuilding29, eBuilding30, eBuilding33, eBuilding34, eBuilding50,
+
+	eBench, eGrass, eBusStop, eStreetLamp
 };
 
 

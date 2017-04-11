@@ -47,7 +47,6 @@ void CPlayer::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 //	GetMaterial()->UpdateShaderVariable(pd3dDeviceContext);
 	 //UpdateShaderVariable
 	if (m_pCamera) m_pCamera->UpdateShaderVariables(pd3dDeviceContext);
-//	m_pCharacter->
 }
 
 void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계를 확실히 해야함. 일단 임시로 제작
@@ -78,7 +77,7 @@ void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
-		//d3dxvShift *= 3;		// m_fSpeed 로 변경해야함
+//		d3dxvShift *= 3;		// m_fSpeed 로 변경해야함
 		d3dxvShift *= 10;		// m_fSpeed 로 변경해야함
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
 	}

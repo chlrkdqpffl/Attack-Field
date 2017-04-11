@@ -44,7 +44,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(426287);
+//	_CrtSetBreakAlloc(222);
 //	_CrtSetBreakAlloc(426291);
 
 //	_CrtSetBreakAlloc(205);		// 16
@@ -348,18 +348,20 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 	SCENE_MGR->g_nowScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
-		if (false == m_bMouseBindFlag) {
-			GetCursorPos(&m_ptOldCursorPos);
-			SetCapture(hWnd);
-		}
+//		if (false == m_bMouseBindFlag) {
+//			GetCursorPos(&m_ptOldCursorPos);
+//			SetCapture(hWnd);
+//		}
 		break;
+	case WM_RBUTTONUP:
 	case WM_LBUTTONUP:
-		if (false == m_bMouseBindFlag) {
-			ReleaseCapture();
-		}
+//		if (false == m_bMouseBindFlag) {
+		ReleaseCapture();
+//		}
 		break;
 	case WM_MOUSEMOVE:
-
+		if (GetFocus())
+			SetCapture(hWnd);
 		break;
 	default:
 		break;
@@ -381,7 +383,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			m_bMouseBindFlag = true;
 			break;
 		case VK_ESCAPE:
-			::PostQuitMessage(0);
+			m_bMouseBindFlag = !m_bMouseBindFlag;
+			ShowCursor(true);
 			break;
 		case VK_RETURN:
 			break;
@@ -681,39 +684,29 @@ void CGameFramework::ReleaseConstantBuffers()
 void CGameFramework::ProcessInput()
 {
 	static UCHAR pKeysBuffer[256];
-	bool bProcessedByScene = false;
 
-//	if (GetKeyboardState(pKeysBuffer) && SCENE_MGR->m_nowScene) bProcessedByScene = SCENE_MGR->m_nowScene->ProcessInput(pKeysBuffer);
-	if (!bProcessedByScene)
-	{
-		float cxDelta = 0.0f, cyDelta = 0.0f;
-		POINT ptCursorPos;
-		
-		if (false == m_bMouseBindFlag) {
-			if (GetCapture() == m_hWnd) {
-				GetCursorPos(&ptCursorPos);
-				cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
-				cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
-				SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
-			}
-			else {
-				//	ScreenToClient(m_hWnd, POINT(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2));
-				SetCursorPos(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2);
-			}
-		}
-		
-		if ((cxDelta != 0.0f) || (cyDelta != 0.0f))
-		{
-			if (cxDelta || cyDelta)
-			{
-				if (pKeysBuffer[VK_RBUTTON] & 0xF0)
-					SCENE_MGR->g_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
-				else
-					SCENE_MGR->g_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
-			}
+	float cxDelta = 0.0f, cyDelta = 0.0f;
+	POINT ptCursorPos;
+
+	if (GetCapture() == m_hWnd)	{
+		if (m_bMouseBindFlag == false) {
+			SetCursor(NULL);
+			GetCursorPos(&ptCursorPos);
+//			cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
+//			cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
+			cxDelta = (float)(ptCursorPos.x - (FRAME_BUFFER_WIDTH / 2)) / 20;
+			cyDelta = (float)(ptCursorPos.y - (FRAME_BUFFER_HEIGHT / 2)) / 20;
+			SetCursorPos(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2);
 		}
 	}
-	
+
+	// 플레이어 회전
+	if ((cxDelta != 0.0f) || (cyDelta != 0.0f))	{
+		if (pKeysBuffer[VK_RBUTTON] & 0xF0)
+			SCENE_MGR->g_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
+		else
+			SCENE_MGR->g_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+	}
 }
 
 void CGameFramework::UpdateObjects()

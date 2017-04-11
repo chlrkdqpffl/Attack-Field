@@ -16,7 +16,7 @@ CFbxModelMesh::~CFbxModelMesh()
 	ReleaseCOM(m_pd3dTangentBuffer);
 }
 
-void CFbxModelMesh::Initialize(ID3D11Device *pd3dDevice)
+void CFbxModelMesh::Initialize(ID3D11Device *pd3dDevice, bool isCalcTangent)
 {
 	m_meshData = RESOURCE_MGR->CloneFbxMeshData(m_tagMesh);
 
@@ -27,12 +27,11 @@ void CFbxModelMesh::Initialize(ID3D11Device *pd3dDevice)
 
 	m_pPositions = new XMFLOAT3[m_nVertices];
 	m_pNormals = new XMFLOAT3[m_nVertices];
-	if (m_meshData.m_bTangent)
+	if (m_meshData.m_bTangent || isCalcTangent)
 		m_pTangents = new XMFLOAT3[m_nVertices];
 	m_pTexCoords = new XMFLOAT2[m_nVertices];
 	m_pnIndices = new UINT[m_nIndices];
 	m_bcBoundingBox = m_meshData.m_boundingBox;
-
 
 
 	if( (m_fModelSize.x == 1) && (m_fModelSize.y == 1) && (m_fModelSize.z == 1)) {
@@ -67,8 +66,11 @@ void CFbxModelMesh::Initialize(ID3D11Device *pd3dDevice)
 	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 
+	if (isCalcTangent)
+		CalculateVertexTangent(&XMLoadFloat3(m_pTangents));
+
 	// Create Buffer
-	if (m_meshData.m_bTangent) {
+	if (m_meshData.m_bTangent || isCalcTangent) {
 		m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 		m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 		m_pd3dTangentBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pTangents, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
@@ -92,7 +94,7 @@ void CFbxModelMesh::Initialize(ID3D11Device *pd3dDevice)
 
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
-	if (m_meshData.m_bTangent)
+	if (m_meshData.m_bTangent || isCalcTangent)
 		DXUT_SetDebugName(m_pd3dTangentBuffer, "Tangent");
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
 }
@@ -142,11 +144,11 @@ XMVECTOR CFbxModelMesh::CalculateTriAngleTangent(UINT nIndex0, UINT nIndex1, UIN
 	tvVector.x = m_pTexCoords[nIndex2].x - m_pTexCoords[nIndex0].x;
 	tvVector.y = m_pTexCoords[nIndex2].y - m_pTexCoords[nIndex0].y;
 
-	den = 1.0f / (tuVector.x * tvVector.y - tuVector.y * tvVector.x);
+	den = (tuVector.x * tvVector.y - tuVector.y * tvVector.x);
 
-	vTangent.x = (tuVector.x * vector2.x - tvVector.x * vector1.x) * den;
-	vTangent.y = (tuVector.x * vector2.y - tvVector.x * vector1.y) * den;
-	vTangent.z = (tuVector.x * vector2.z - tvVector.x * vector1.z) * den;
+	vTangent.x = ((tvVector.y * vector1.x) + (-tvVector.x * vector2.x)) / den;
+	vTangent.y = ((tvVector.y * vector1.y) + (-tvVector.x * vector2.y)) / den;
+	vTangent.z = ((tvVector.y * vector1.z) + (-tvVector.x * vector2.z)) / den;
 
-	return(XMVector3Normalize(XMLoadFloat3(&vTangent)));
+	return(XMVector3Normalize(XMLoadFloat3(&vTangent))); 
 }

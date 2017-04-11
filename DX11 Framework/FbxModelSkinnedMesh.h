@@ -27,7 +27,7 @@ public:
 	CFbxModelSkinnedMesh(ID3D11Device *pd3dDevice, const MeshTag meshTag, const XMFLOAT3 size = XMFLOAT3(1.f, 1.f, 1.f));
 	virtual ~CFbxModelSkinnedMesh();
 
-	virtual void Initialize(ID3D11Device *pd3dDevice);
+	virtual void Initialize(ID3D11Device *pd3dDevice, bool isCalcTangent = false);
 	
 	void CreateConstantBuffer(ID3D11Device *pd3dDevice);
 	void UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext);

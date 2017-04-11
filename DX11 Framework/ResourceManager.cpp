@@ -111,8 +111,7 @@ void CResourceManager::LoadMapData()
 	AddResourece(MeshTag::eBuilding33,			"../Assets/FBX Model/Building/33building/33building.model");
 	AddResourece(MeshTag::eBuilding34,			"../Assets/FBX Model/Building/34building/34building.model");
 	AddResourece(MeshTag::eBuilding50,			"../Assets/FBX Model/Building/50building/50building.model");
-
-
+	
 	// ============== Road ============== //
 	AddResourece(TextureTag::eRoad1D,			"../Assets/FBX Model/Road/Road1D.dds");
 	AddResourece(TextureTag::eRoad2D,			"../Assets/FBX Model/Road/Road2D.dds");
@@ -122,6 +121,18 @@ void CResourceManager::LoadMapData()
 	AddResourece(MeshTag::eRoad,				"../Assets/FBX Model/Road/road.model");
 	AddResourece(MeshTag::eCenterRoad,			"../Assets/FBX Model/Road/RoadCenter.model");
 	AddResourece(MeshTag::eCrossRoad,			"../Assets/FBX Model/Road/CrossRoad.model");
+
+	// Etc
+	AddResourece(TextureTag::eBenchD,			"../Assets/FBX Model/Bench/BenchD.jpg");
+	AddResourece(MeshTag::eBench,				"../Assets/FBX Model/Bench/Bench.model");
+
+	AddResourece(TextureTag::eBusStopD,			"../Assets/FBX Model/Busstop/bus_stop_sign.png");
+	AddResourece(MeshTag::eBusStop,				"../Assets/FBX Model/Busstop/BusStop.model");
+
+//	AddResourece(TextureTag::eStreetLampD,		"../Assets/FBX Model/StreetLamp/bus_stop_sign.png");
+	AddResourece(MeshTag::eStreetLamp,			"../Assets/FBX Model/StreetLamp/lamp.model");
+
+	AddResourece(TextureTag::eGrassD,			"../Assets/FBX Model/Etc/GrassD.jpg");
 
 }
 

@@ -20,7 +20,7 @@ public:
 	virtual ~CFbxModelMesh();
 
 public:
-	virtual void Initialize(ID3D11Device *pd3dDevice);
+	virtual void Initialize(ID3D11Device *pd3dDevice, bool isCalcTangent = false);
 	
 	XMFLOAT3 GetModelSize() const { return m_fModelSize; }
 	void CalculateVertexTangent(XMVECTOR *pd3dxvTangents);

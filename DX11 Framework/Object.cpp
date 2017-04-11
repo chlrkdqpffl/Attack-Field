@@ -172,7 +172,8 @@ void CGameObject::SetMaterial(int textureCount, TextureTag tag, ...)
 	va_end(ap);
 
 	CTexture* pTexture = new CTexture(textureCount, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
-	pTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
+//	pTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
+	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
 
 	for(int i = 0; i < textureCount; ++i) 
 		pTexture->SetTexture(i, vecTextureTag[i]);

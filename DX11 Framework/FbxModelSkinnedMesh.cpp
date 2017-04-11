@@ -16,7 +16,7 @@ CFbxModelSkinnedMesh::~CFbxModelSkinnedMesh()
 	SafeDeleteArray(m_pboneIndices);
 }
 
-void CFbxModelSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
+void CFbxModelSkinnedMesh::Initialize(ID3D11Device *pd3dDevice, bool isCalcTangent)
 {
 	m_meshData = RESOURCE_MGR->CloneFbxMeshData(m_tagMesh);
 
@@ -27,7 +27,7 @@ void CFbxModelSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 	
 	m_pPositions = new XMFLOAT3[m_nVertices];
 	m_pNormals = new XMFLOAT3[m_nVertices];
-	if (m_meshData.m_bTangent)
+	if (m_meshData.m_bTangent || isCalcTangent)
 		m_pTangents = new XMFLOAT3[m_nVertices];
 	m_pTexCoords = new XMFLOAT2[m_nVertices];
 	m_pnIndices = new UINT[m_nIndices];
@@ -72,30 +72,11 @@ void CFbxModelSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 
-
-	/*
-	// Tangent 수동 계산 보류중
-	if (m_meshData.m_bTangent) {
-		XMVECTOR* tangent = new XMVECTOR[m_nVertices];
-		CalculateVertexTangent(tangent);
-
-		for (int i = 0; i < m_nVertices; ++i) {
-//			cout << m_pTangents[i].x << ", " << m_pTangents[i].y << ", " << m_pTangents[i].z << endl;
-//			cout << XMVectorGetX(tangent[i]) << ", " << XMVectorGetY(tangent[i]) << ", " << XMVectorGetZ(tangent[i]) << endl;
-//			cout << endl;
-	//		XMStoreFloat3(&m_pTangents[i], tangent[i]);
-		}
-
-		delete[] tangent;
-
-		cout << endl << endl;
-	}
-	
-	*/
-
+	if (isCalcTangent)
+		CalculateVertexTangent(&XMLoadFloat3(m_pTangents));
 
 	// Create Buffer
-	if (m_meshData.m_bTangent) {
+	if (m_meshData.m_bTangent || isCalcTangent) {
 		m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 		m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 		m_pd3dTangentBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pTangents, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
@@ -124,7 +105,7 @@ void CFbxModelSkinnedMesh::Initialize(ID3D11Device *pd3dDevice)
 	
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
-	if (m_meshData.m_bTangent)
+	if (m_meshData.m_bTangent || isCalcTangent)
 		DXUT_SetDebugName(m_pd3dTangentBuffer, "Tangent");
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
 	DXUT_SetDebugName(m_pd3dBoneWeightBuffer, "BoneWeight");

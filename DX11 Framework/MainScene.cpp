@@ -513,17 +513,17 @@ void CMainScene::CreateMapDataObject()
 	CGameObject* pObject;
 	vector<MapData> vecMapData;
 
-	// ==============================   Plane   ============================== //
+#pragma region [Plane]
 	pObject = new CGameObject();
 	pMesh = new CCubeMeshIlluminated(m_pd3dDevice, 280, 1, 300);
 
-//	pObject->SetMaterial(1, TextureTag::eRoad1D);
 	pObject->SetMesh(pMesh);
 	pObject->SetPosition(XMFLOAT3(140, 0, 150));
-//	pObject->Rotate(XMFLOAT3(0, 180, 0));
 
 	m_vecShaderObjectContainer.AddObject(ShaderTag::eNormal, pObject);
+#pragma endregion
 
+	/*
 #pragma region [Road]
 	// ==============================   Road   ============================== //
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eRoad1);
@@ -773,6 +773,78 @@ void CMainScene::CreateMapDataObject()
 	}
 #pragma endregion
 
+#pragma region [Bench]
+	// ==============================   Road   ============================== //
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBench);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eBench, vecMapData[count].m_Scale);
+		pFbxMesh->Initialize(m_pd3dDevice);
+
+		pObject->SetMaterial(1, TextureTag::eBenchD);
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+
+		m_vecBBoxRenderContainer.push_back(pObject);
+		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+	}
+#pragma endregion
+
+#pragma region [Grass]
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eGrass);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+
+		pObject = new CGameObject();
+		pMesh = new CCubeMeshTexturedIlluminated(m_pd3dDevice, vecMapData[count].m_Scale.y, vecMapData[count].m_Scale.x, vecMapData[count].m_Scale.z);
+
+		pObject->SetMaterial(1, TextureTag::eGrassD);
+		pObject->SetMesh(pMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+//		pObject->Rotate(vecMapData[count].m_Rotation);
+
+		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+	}
+#pragma endregion
+
+#pragma region [Busstop]
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBusStop);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eBusStop, vecMapData[count].m_Scale);
+		pFbxMesh->Initialize(m_pd3dDevice);
+
+		pObject->SetMaterial(1, TextureTag::eBusStopD);
+		pObject->SetMesh(pFbxMesh);
+		//		pObject->CreateBoundingBox(m_pd3dDevice);
+		pObject->CreateAxisObject(m_pd3dDevice);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+
+		m_vecBBoxRenderContainer.push_back(pObject);
+		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+	}
+#pragma endregion
+
+#pragma region [Street Lamp]
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eStreetLamp, vecMapData[count].m_Scale);
+		pFbxMesh->Initialize(m_pd3dDevice);
+
+		pObject->SetMesh(pFbxMesh);
+		//		pObject->CreateBoundingBox(m_pd3dDevice);
+		pObject->CreateAxisObject(m_pd3dDevice);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Move(XMFLOAT3(0, 10, 0));
+		pObject->Rotate(vecMapData[count].m_Rotation);
+
+		m_vecBBoxRenderContainer.push_back(pObject);
+		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormal, pObject);
+	}
+#pragma endregion
+		*/
 }
 
 void CMainScene::CreateTweakBars()
