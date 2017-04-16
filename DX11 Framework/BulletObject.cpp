@@ -21,7 +21,7 @@ void CBulletObject::OnCollisionCheck()
 {
 	CollisionInfo info;
 
-	if (COLLISION_MGR->RayCastCollision(info, GetvPosition(), GetLook(), m_fRange)) {
+	if (COLLISION_MGR->RayCastCollision(info, GetvPosition(), GetLook())) {
 		SetActive(false);
 		info.m_pHitObject->SetCollision(true);
 	}

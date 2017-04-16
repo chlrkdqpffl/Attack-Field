@@ -44,8 +44,8 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(222);
-//	_CrtSetBreakAlloc(426291);
+//	_CrtSetBreakAlloc(275);
+//	_CrtSetBreakAlloc(286);
 
 //	_CrtSetBreakAlloc(205);		// 16
 //	_CrtSetBreakAlloc(206);		// 16
@@ -384,6 +384,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case VK_ESCAPE:
 			m_bMouseBindFlag = !m_bMouseBindFlag;
+			ReleaseCapture();
 			ShowCursor(true);
 			break;
 		case VK_RETURN:
@@ -701,12 +702,9 @@ void CGameFramework::ProcessInput()
 	}
 
 	// 플레이어 회전
-	if ((cxDelta != 0.0f) || (cyDelta != 0.0f))	{
-		if (pKeysBuffer[VK_RBUTTON] & 0xF0)
-			SCENE_MGR->g_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
-		else
-			SCENE_MGR->g_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
-	}
+	if ((cxDelta != 0.0f) || (cyDelta != 0.0f))
+		SCENE_MGR->g_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+
 }
 
 void CGameFramework::UpdateObjects()

@@ -131,7 +131,7 @@ enum class MeshTag
 
 	// Skinned
 	eTerrorist, 
-
+	eTest2,
 	// --------------------------------------------------------- // 
 	MaxSkinnedMesh = 100,
 	// --------------------------------------------------------- // 
@@ -153,7 +153,7 @@ enum class MeshTag
 	eBench, eBusStop, eStreetLamp,
 
 	// Etc 2
-	eTest, eTest2,
+	eTest,
 	eBox100m
 };
 

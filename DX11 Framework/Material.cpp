@@ -5,7 +5,6 @@
 
 CMaterialColors::CMaterialColors()
 {
-	m_nReferences = 0;
 	m_d3dxcAmbient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_d3dxcDiffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_d3dxcSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 32.0f);
@@ -18,28 +17,23 @@ CMaterialColors::~CMaterialColors()
 
 CMaterial::CMaterial(CMaterialColors *pColors)
 {
-	if (pColors == nullptr) {
+	if (pColors == nullptr) 
 		m_pColors = new CMaterialColors();
-		m_pColors->AddRef();
-	}
-	else {
+	else 
 		m_pColors = pColors;
-		pColors->AddRef();
-	}
 }
 
 CMaterial::~CMaterial()
 {
-	if (m_pColors) m_pColors->Release();
-	if (m_pTexture) m_pTexture->Release();
+	SafeDelete(m_pColors);
+	SafeDelete(m_pTexture);
 }
 
 void CMaterial::SetTexture(CTexture *pTexture)
 {
-	if (m_pTexture) m_pTexture->Release();
+	SafeDelete(m_pTexture);
 	m_tagTexture = pTexture->GetTextureTag();
 	m_pTexture = pTexture;
-	if (m_pTexture) m_pTexture->AddRef();
 }
 
 void CMaterial::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext)

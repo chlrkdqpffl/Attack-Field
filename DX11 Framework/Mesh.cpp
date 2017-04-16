@@ -30,8 +30,6 @@ CMesh::CMesh()
 
 	m_bcBoundingBox.Center = { 0.0f, 0.0f, 0.0f };
 	m_bcBoundingBox.Extents = { 0.0f, 0.0f, 0.0f};
-
-	m_nReferences = 0;
 }
 
 CMesh::~CMesh()

@@ -45,15 +45,8 @@ public:
 	CMesh();
 	virtual ~CMesh();
 
-private:
-	int								m_nReferences;
-
-public:
-	void AddRef() { m_nReferences++; }
-	void Release() { if (--m_nReferences <= 0) delete this; }
-
 protected:
-	MeshTag							m_tagMesh;
+	MeshTag							m_tagMesh = MeshTag::eNone;
 
 	BoundingBox						m_bcBoundingBox;
 	D3D11_PRIMITIVE_TOPOLOGY		m_d3dPrimitiveTopology;

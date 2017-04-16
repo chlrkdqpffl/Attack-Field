@@ -11,8 +11,6 @@
 
 CShader::CShader()
 {
-	m_nReferences = 0;
-
 	m_pd3dVertexShader = NULL;
 	m_pd3dVertexLayout = NULL;
 	m_pd3dPixelShader = NULL;
@@ -354,6 +352,7 @@ void CObjectsShader::AddObject(ShaderTag tag, CGameObject *pGameObject)
 		vector<CGameObject*> vecObjectContainer;
 		vecObjectContainer.reserve(100);
 		vecObjectContainer.push_back(pGameObject);
+		pGameObject->SetShaderTag(tag);
 
 		CShader *pShader = new CShader();
 		pShader->CreateShader(m_pd3dDevice, tag);
@@ -399,7 +398,7 @@ void CObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCa
 		findShader->second->OnPrepareRender(pd3dDeviceContext);
 
 		for (auto vecObject : shaderTag.second) {
-	//		if (vecObject->IsVisible(pCamera))
+			if (vecObject->IsVisible(pCamera))
 				vecObject->Render(pd3dDeviceContext, pCamera);
 		}
 		findShader->second->OnPostRender(pd3dDeviceContext);
@@ -443,21 +442,19 @@ CInstancedObjectsShader::CInstancedObjectsShader(int nObjects)
 
 CInstancedObjectsShader::~CInstancedObjectsShader()
 {
-	ReleaseCOM(m_pMaterial);
+	SafeDelete(m_pMaterial);
 }
 
 void CInstancedObjectsShader::SetMesh(CMesh *pMesh)
 {
-	if (m_pMesh) m_pMesh->Release();
+	SafeDelete(m_pMesh);
 	m_pMesh = pMesh;
-	if (m_pMesh) m_pMesh->AddRef();
 }
 
 void CInstancedObjectsShader::SetMaterial(CMaterial *pMaterial)
 {
-	if (pMaterial) pMaterial->Release();
+	SafeDelete(m_pMaterial);
 	m_pMaterial = pMaterial;
-	if (pMaterial) pMaterial->AddRef();
 }
 
 void CInstancedObjectsShader::CreateShader(ID3D11Device *pd3dDevice)
@@ -490,7 +487,7 @@ void CInstancedObjectsShader::ReleaseObjects()
 {
 	CObjectsShader::ReleaseObjects();
 
-	ReleaseCOM(m_pMesh);
+	SafeDelete(m_pMesh);
 	SafeDelete(m_pBoundingBoxMesh);
 	SafeDelete(m_pBoundingBoxShader);
 	ReleaseCOM(m_pd3dInstanceBuffer);

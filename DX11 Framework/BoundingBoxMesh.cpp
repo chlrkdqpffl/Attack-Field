@@ -10,7 +10,6 @@ CBoundingBoxMesh::CBoundingBoxMesh(ID3D11Device *pd3dDevice, BoundingBox bbox, f
 	float fy = bbox.Extents.y * fSize;
 	float fz = bbox.Extents.z * fSize;
 
-//	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
 	m_bcBoundingBox.Center = bbox.Center;
 	m_bcBoundingBox.Extents = { fx, fy, fz };
 

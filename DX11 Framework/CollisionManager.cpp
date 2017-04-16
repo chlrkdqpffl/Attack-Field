@@ -51,32 +51,50 @@ void CCollisionManager::UpdateManager()
 	}
 }
 
-bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction, float distance)
+bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
 {
 	// Dynamic to Dynamic
 
 	// Dynamic to Static
 	for (auto& staticObject : m_vecStaticMeshContainer) {
-		bool isCollision = staticObject->GetBoundingBox().Intersects(originPos, direction, distance);
+		const bool isCollision = staticObject->GetBoundingOBox().Intersects(originPos, direction, info.m_fDistance);
 	
 		if (isCollision) {
-			float fDist;
 			info.m_pHitObject = staticObject;
-			XMStoreFloat(&fDist, XMVector3LengthEst(staticObject->GetvPosition()- originPos));
-			info.m_fDistance = fDist;
-
 			return true;
 		}
 	}
 	return false;
 }
 
-void CCollisionManager::AABBCollision()
+bool CCollisionManager::AABBCollision(CollisionInfo& info, BoundingBox bcBox)
 {
+	// Dynamic to Dynamic
 
+	// Dynamic to Static
+	for (auto& staticObject : m_vecStaticMeshContainer) {
+		const bool isCollision = staticObject->GetBoundingBox().Intersects(bcBox);
+
+		if (isCollision) {
+			info.m_pHitObject = staticObject;
+			return true;
+		}
+	}
+	return false;
 }
 
-void CCollisionManager::OBBCollision()
+bool CCollisionManager::OBBCollision(CollisionInfo& info, BoundingOrientedBox bcObbox)
 {
+	// Dynamic to Dynamic
 
+	// Dynamic to Static
+	for (auto& staticObject : m_vecStaticMeshContainer) {
+		const bool isCollision = staticObject->GetBoundingOBox().Intersects(bcObbox);
+
+		if (isCollision) {
+			info.m_pHitObject = staticObject;
+			return true;
+		}
+	}
+	return false;
 }

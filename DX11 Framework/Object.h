@@ -6,7 +6,6 @@
 
 class CShader;
 class CBoundingBoxMesh;
-class CBoundingBoxShader;
 class CAxisObjects;
 class CGameObject;
 
@@ -21,16 +20,6 @@ protected:
 	virtual void CreateMesh(ID3D11Device *pd3dDevice)		{ cout << "No have Mesh" << endl; };
 	virtual void CreateShader(ID3D11Device *pd3dDevice)		{ cout << "No have Shader" << endl; };
 	virtual void CreateMaterial()							{ cout << "No have Material" << endl; };
-	
-private:
-	int								m_nReferences = 0;
-
-	bool							m_bActive = true;
-	bool							m_bIsVisible = true;
-
-public:
-	void AddRef() { m_nReferences++; }
-	void Release() { if (--m_nReferences <= 0) delete this; }
 
 public:
 	XMMATRIX						m_mtxLocal = XMMatrixIdentity();
@@ -39,18 +28,20 @@ public:
 
 protected:
 	// ----- Identity ----- //
-	static UINT						m_iObjectId;
+	UINT							m_nObjectId = 0;
 	MeshTag							m_tagMesh = MeshTag::eNone;
 	TextureTag						m_tagTexture = TextureTag::eNone;
 	ShaderTag						m_tagShader = ShaderTag::eNone;
 	TeamType						m_tagTeam = TeamType::eNone;		// 팀 종류 구별하여 충돌 처리시 사용하기. 현재는 아무것도 없음
+
+	bool							m_bActive = true;
+	bool							m_bIsVisible = true;
 
 	CMesh							**m_ppMeshes = nullptr;
 	int								m_nMeshes = 0;
 
 	CMaterial						*m_pMaterial = nullptr;
 	CShader							*m_pShader = nullptr;
-
 	CAxisObjects					*m_pAxisObject = nullptr;
 	
 	// Collision Info
@@ -60,9 +51,6 @@ protected:
 	BoundingOrientedBox				m_bcMeshBoundingOBox;		// 테스트용 OBB 박스
 
 	CBoundingBoxMesh				*m_pBoundingBoxMesh	= nullptr;
-	CBoundingBoxShader				*m_pBoundingBoxShader = nullptr;
-	
-
 
 public:
 	ID3D11DepthStencilState			*m_pd3dDepthStencilState = nullptr;
@@ -94,12 +82,10 @@ public:
 	void Rotate(XMFLOAT3 fAngle, bool isLocal = false);
 	void Rotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLocal = false);
 	// ---------- Get, Setter ---------- //
-	void SetMesh(CMesh *pMesh, int nIndex = 0);
-	CMesh *GetMesh(int nIndex = 0) { return(m_ppMeshes[nIndex]); }
+	void SetMesh(CMesh *pMesh, int nIndex = 0); CMesh *GetMesh(int nIndex = 0) { return(m_ppMeshes[nIndex]); }
 	UINT GetMeshType() { return((m_ppMeshes) ? m_ppMeshes[0]->GetType() : 0x00); }
 
-	void SetActive(bool bActive = false) { m_bActive = bActive; }
-	bool GetActive() const { return m_bActive; }
+	void SetActive(bool bActive = false) { m_bActive = bActive; }	bool GetActive() const { return m_bActive; }
 
 	void SetShader(CShader *pShader);
 	void SetShader(ID3D11Device *pd3dDevice, ShaderTag tag);
@@ -129,16 +115,18 @@ public:
 	void SetUp(XMFLOAT3 axis, bool bIsLocal = false);
 	void SetRight(XMFLOAT3 axis, bool bIsLocal = false);
 
-	void SetMeshTag(MeshTag tag) { m_tagMesh = tag; }
-	MeshTag GetMeshTag() const { return m_tagMesh; }
-	BoundingBox GetBoundingBox(bool isLocal = false);
+	void SetShaderTag(ShaderTag tag) { m_tagShader = tag; } ShaderTag GetShaderTag() const { return m_tagShader; }
+	void SetMeshTag(MeshTag tag) { m_tagMesh = tag; }		MeshTag GetMeshTag() const { return m_tagMesh; }
+	BoundingBox GetBoundingBox(bool isLocal = false) const;
+	BoundingOrientedBox GetBoundingOBox(bool isLocal = false) const;
 	bool GetCollisionCheck() const { return m_bIsCollision; }
 	void SetCollision(bool collision) { m_bIsCollision = collision; }
+	UINT GetObjectID()const { return m_nObjectId; }
 
 public:
 	static ID3D11Buffer				*m_pd3dcbWorldMatrix;
 	static ID3D11Buffer				*m_pd3dcbMaterialColors;
-
+	static UINT						g_nObjectId;
 public:
 	static void CreateConstantBuffers(ID3D11Device *pd3dDevice);
 	static void ReleaseConstantBuffers();

@@ -6,13 +6,6 @@ public:
 	CMaterialColors();
 	virtual ~CMaterialColors();
 
-private:
-	int								m_nReferences;
-
-public:
-	void AddRef() { m_nReferences++; }
-	void Release() { if (--m_nReferences <= 0) delete this; }
-
 public:
 	XMFLOAT4						m_d3dxcAmbient;
 	XMFLOAT4						m_d3dxcDiffuse;
@@ -28,8 +21,7 @@ public:
 
 private:
 	TextureTag						m_tagTexture = TextureTag::eNone;
-	int								m_nReferences = 0;
-
+	
 	int								m_nTextures = 0;
 	ID3D11ShaderResourceView		**m_ppd3dsrvTextures = nullptr;
 	int								m_nTextureStartSlot = 0;
@@ -39,8 +31,6 @@ private:
 	int								m_nSamplerStartSlot = 0;
 
 public:
-	void AddRef() { m_nReferences++; }
-	void Release() { if (--m_nReferences <= 0) delete this; }
 
 	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext);
 	void UpdateTextureShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, int nIndex = 0, int nSlot = 0);
@@ -66,16 +56,12 @@ public:
 	virtual ~CMaterial();
 
 private:
-	int								m_nReferences = 0;
 
 	TextureTag						m_tagTexture = TextureTag::eNone;
 	CMaterialColors					*m_pColors = nullptr;
 	CTexture						*m_pTexture = nullptr;
 
 public:
-	void AddRef() { m_nReferences++; }
-	void Release() { if (--m_nReferences <= 0) delete this; }
-
 	void SetTexture(CTexture *pTexture);
 	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext);
 	

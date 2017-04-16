@@ -114,6 +114,7 @@ void CScene::CreatePlayer()
 	m_pPlayer = new CTerrainPlayer(m_pPlayerCharacter);
 	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson, 0.0f);
 	m_pCamera = m_pPlayer->GetCamera();
+	m_pPlayerCharacter->SetPlayer(m_pPlayer);
 
 	SCENE_MGR->g_pPlayer = m_pPlayer;
 	m_pPlayer->SetPosition(XMVectorSet(60.0f, 5.0f, 0.0f, 0.0f));
@@ -121,20 +122,19 @@ void CScene::CreatePlayer()
 
 void CScene::ReleaseObjects()
 {
-	ReleaseCOM(m_pSkyBox);
-	ReleaseCOM(m_pTerrain);
+	SafeDelete(m_pSkyBox);
+	SafeDelete(m_pTerrain);
 	
 	SafeDelete(m_pWorldCenterAxis);
 
 	for (auto& object : m_vecObjectsContainer)
-		//ReleaseCOM(object)
 		SafeDelete(object);
 
 	m_vecObjectsContainer.clear();
 
 	for (auto& instancedShaderObject : m_vecInstancedObjectsShaderContainer) {
 		instancedShaderObject->ReleaseObjects();
-		instancedShaderObject->Release();
+		SafeDelete(instancedShaderObject);
 	}
 	m_vecInstancedObjectsShaderContainer.clear();
 

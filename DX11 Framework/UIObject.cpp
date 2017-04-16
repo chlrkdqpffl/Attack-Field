@@ -35,7 +35,6 @@ void CUIObject::Initialize(ID3D11Device* pDevice, POINT startPos, POINT endPos, 
 	m_ptEndPos = endPos;
 
 	m_pMesh = new CUIMesh(pDevice, m_ptStartPos, m_ptEndPos, zPos);
-	if (m_pMesh) m_pMesh->AddRef();
 }
 
 void CUIObject::Render(ID3D11DeviceContext* pDeviceContext)

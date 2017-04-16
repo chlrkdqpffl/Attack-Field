@@ -70,6 +70,9 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 					m_pCamera = m_pPlayer->GetCamera();
 				}
 				break;
+			case VK_F4:		// 중력 테스트용으로 넣음
+				m_pPlayer->SetPosition(XMVectorSet(60, 50, 30, 0));
+				break;
 			case VK_Z:
 				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eIdle);
 				static_cast<CCharacterObject*>(m_vecObjectsContainer.back())->SetAnimation(AnimationData::CharacterAnim::eIdle);
@@ -84,6 +87,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_V:
 				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
+				static_cast<CCharacterObject*>(m_vecObjectsContainer.back())->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
 				break;
 			}
 			break;
@@ -159,14 +163,14 @@ void CMainScene::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMa
 
 void CMainScene::Initialize()
 {
-//	CScene::Initialize();
-	m_vecShaderObjectContainer.BuildObjects(m_pd3dDevice);
-
 	cout << "=============================================================================================" << endl;
 	cout << "==================================== Scene Main Loading =====================================" << endl;
 
 	m_pWorldCenterAxis = new CAxisObjects();
 	m_pWorldCenterAxis->CreateAxis(m_pd3dDevice);
+	m_vecShaderObjectContainer.BuildObjects(m_pd3dDevice);
+	m_pBoundingBoxShader = new CBoundingBoxShader();
+	m_pBoundingBoxShader->CreateShader(m_pd3dDevice);
 
 #pragma region [Create SkyBox]
 #ifdef _WITH_SKYBOX_TEXTURE_ARRAY
@@ -263,6 +267,7 @@ void CMainScene::Initialize()
 	
 #pragma region [Create Character]
 	CScene::CreatePlayer();
+	m_vecBBoxRenderContainer.push_back(m_pPlayerCharacter);
 //	m_pPlayer->SetPlayerUpdatedContext(pTerrain);
 //	m_pPlayer->SetCameraUpdatedContext(pTerrain);
 	
@@ -305,6 +310,7 @@ void CMainScene::Initialize()
 	*/
 #pragma endregion 
 
+	
 	// ==== Test용 - 총 메쉬 오프셋 찾기용 ==== //
 	CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject();
 	pCharacter->CreateObjectData(m_pd3dDevice);
@@ -312,8 +318,12 @@ void CMainScene::Initialize()
 
 	pCharacter->SetPosition(XMVectorSet(0.0f, 10.0f, 0.0f, 0.0f));
 
+	m_vecBBoxRenderContainer.push_back(pCharacter);
 	m_vecObjectsContainer.push_back(pCharacter);
+	
 
+
+	
 
 
 
@@ -331,48 +341,21 @@ void CMainScene::Initialize()
 	pPlayerMesh->Initialize(pd3dDevice);
 
 	CObjectsShader* pModelShader = new CObjectsShader(10);
-	pModelShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0);
 	pModelShader->SetMaterial(pPlayerMaterial);																			
-	
-	CGameObject* pDarkFighter = new CGameObject();
-	pDarkFighter->SetPosition(200, 250, 200);
-	pDarkFighter->SetMesh(pPlayerMesh);
-	pDarkFighter->CreateBoundingBox(pd3dDevice);
-	pDarkFighter->CreateAxisObject(pd3dDevice);
-	pModelShader->AddObject(pDarkFighter);
-	m_vecObjectsShaderContainer.push_back(pModelShader);
 	*/
 
-
 	// ----- Test ----- //
-	/*
-	CFbxModelMesh* pTestMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eTest);
+	CFbxModelMesh* pTestMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eTest2);
 	pTestMesh->Initialize(m_pd3dDevice);
 
-	CObjectsShader* pModelShader = new CObjectsShader(1);
-	pModelShader->CreateShader(m_pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0);
-	pModelShader->SetMaterial(pPlayerMaterial);
 
 	CGameObject* pTestObject= new CGameObject();
-	pTestObject->SetPosition(100, 250, 200);
+	pTestObject->SetMaterial(1, TextureTag::eTerroristD);
 	pTestObject->SetMesh(pTestMesh);
 	pTestObject->CreateBoundingBox(m_pd3dDevice);
 	pTestObject->CreateAxisObject(m_pd3dDevice);
-
-	// ----- Test 2 ----- //
-	CFbxModelMesh* pTest2Mesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eTest2);
-	pTest2Mesh->Initialize(m_pd3dDevice);
-
-	CGameObject* pTest2Object = new CGameObject();
-	pTest2Object->SetPosition(100, 250, 300);
-	pTest2Object->SetMesh(pTest2Mesh);
-	pTest2Object->CreateBoundingBox(m_pd3dDevice);
-	pTest2Object->CreateAxisObject(m_pd3dDevice);
-
-	pModelShader->AddObject(pTestObject);
-	pModelShader->AddObject(pTest2Object);
-	m_vecObjectsShaderContainer.push_back(pModelShader);
-	*/
+	
+	AddShaderObject(ShaderTag::eNormalTangentTexture, pTestObject);
 #pragma endregion
 
 	/*
@@ -519,11 +502,12 @@ void CMainScene::CreateMapDataObject()
 
 	pObject->SetMesh(pMesh);
 	pObject->SetPosition(XMFLOAT3(140, 0, 150));
+	pObject->CreateBoundingBox(m_pd3dDevice);
 
-	m_vecShaderObjectContainer.AddObject(ShaderTag::eNormal, pObject);
+	AddShaderObject(ShaderTag::eNormal, pObject);
 #pragma endregion
 
-	/*
+	
 #pragma region [Road]
 	// ==============================   Road   ============================== //
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eRoad1);
@@ -537,8 +521,9 @@ void CMainScene::CreateMapDataObject()
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecBBoxRenderContainer.push_back(pObject);
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eRoad2);
@@ -552,7 +537,9 @@ void CMainScene::CreateMapDataObject()
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCrossRoad);
@@ -566,7 +553,9 @@ void CMainScene::CreateMapDataObject()
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTangentTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTangentTexture, pObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCenterRoad);
@@ -580,10 +569,13 @@ void CMainScene::CreateMapDataObject()
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTangentTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTangentTexture, pObject);
 	}
 #pragma endregion
-
+	/*
+	
 #pragma region [Building]
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBuilding16);
 	for (int count = 0; count < vecMapData.size(); ++count) {
@@ -593,13 +585,13 @@ void CMainScene::CreateMapDataObject()
 
 		pObject->SetMaterial(1, TextureTag::eBuilding16D);
 		pObject->SetMesh(pFbxMesh);
-//		pObject->CreateBoundingBox(m_pd3dDevice);
-		pObject->CreateAxisObject(m_pd3dDevice);
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecBBoxRenderContainer.push_back(pObject);
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateAxisObject(m_pd3dDevice);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBuilding19);
@@ -610,13 +602,12 @@ void CMainScene::CreateMapDataObject()
 
 		pObject->SetMaterial(1, TextureTag::eBuilding19D);
 		pObject->SetMesh(pFbxMesh);
-		pObject->CreateBoundingBox(m_pd3dDevice);
-
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecBBoxRenderContainer.push_back(pObject);
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBuilding20);
@@ -627,13 +618,12 @@ void CMainScene::CreateMapDataObject()
 
 		pObject->SetMaterial(1, TextureTag::eBuilding20D);
 		pObject->SetMesh(pFbxMesh);
-		pObject->CreateBoundingBox(m_pd3dDevice);
-
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecBBoxRenderContainer.push_back(pObject);
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBuilding21);
@@ -644,14 +634,13 @@ void CMainScene::CreateMapDataObject()
 
 		pObject->SetMaterial(1, TextureTag::eBuilding21D);
 		pObject->SetMesh(pFbxMesh);
-		pObject->CreateBoundingBox(m_pd3dDevice);
-		pObject->CreateAxisObject(m_pd3dDevice);
-
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecBBoxRenderContainer.push_back(pObject);
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+		pObject->CreateAxisObject(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBuilding22);
@@ -662,14 +651,13 @@ void CMainScene::CreateMapDataObject()
 
 		pObject->SetMaterial(1, TextureTag::eBuilding22D);
 		pObject->SetMesh(pFbxMesh);
-		pObject->CreateBoundingBox(m_pd3dDevice);
-		pObject->CreateAxisObject(m_pd3dDevice);
-
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecBBoxRenderContainer.push_back(pObject);
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateAxisObject(m_pd3dDevice);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBuilding26);
@@ -680,14 +668,13 @@ void CMainScene::CreateMapDataObject()
 
 		pObject->SetMaterial(1, TextureTag::eBuilding26D);
 		pObject->SetMesh(pFbxMesh);
-		pObject->CreateBoundingBox(m_pd3dDevice);
-		pObject->CreateAxisObject(m_pd3dDevice);
-
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecBBoxRenderContainer.push_back(pObject);
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+		pObject->CreateAxisObject(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBuilding29);
@@ -698,14 +685,13 @@ void CMainScene::CreateMapDataObject()
 
 		pObject->SetMaterial(1, TextureTag::eBuilding29D);
 		pObject->SetMesh(pFbxMesh);
-		pObject->CreateBoundingBox(m_pd3dDevice);
-		pObject->CreateAxisObject(m_pd3dDevice);
-
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecBBoxRenderContainer.push_back(pObject);
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+		pObject->CreateAxisObject(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBuilding30);
@@ -716,12 +702,12 @@ void CMainScene::CreateMapDataObject()
 
 		pObject->SetMaterial(1, TextureTag::eBuilding30D);
 		pObject->SetMesh(pFbxMesh);
-		pObject->CreateBoundingBox(m_pd3dDevice);
-
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBuilding33);
@@ -732,12 +718,12 @@ void CMainScene::CreateMapDataObject()
 
 		pObject->SetMaterial(1, TextureTag::eBuilding33D);
 		pObject->SetMesh(pFbxMesh);
-		pObject->CreateBoundingBox(m_pd3dDevice);
-
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBuilding34);
@@ -748,12 +734,12 @@ void CMainScene::CreateMapDataObject()
 
 		pObject->SetMaterial(1, TextureTag::eBuilding34D);
 		pObject->SetMesh(pFbxMesh);
-		pObject->CreateBoundingBox(m_pd3dDevice);
-
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBuilding50);
@@ -764,15 +750,15 @@ void CMainScene::CreateMapDataObject()
 
 		pObject->SetMaterial(1, TextureTag::eBuilding50D);
 		pObject->SetMesh(pFbxMesh);
-		pObject->CreateBoundingBox(m_pd3dDevice);
-
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 #pragma endregion
-
+	
 #pragma region [Bench]
 	// ==============================   Road   ============================== //
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBench);
@@ -786,24 +772,26 @@ void CMainScene::CreateMapDataObject()
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecBBoxRenderContainer.push_back(pObject);
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 #pragma endregion
 
 #pragma region [Grass]
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eGrass);
 	for (int count = 0; count < vecMapData.size(); ++count) {
-
 		pObject = new CGameObject();
-		pMesh = new CCubeMeshTexturedIlluminated(m_pd3dDevice, vecMapData[count].m_Scale.y, vecMapData[count].m_Scale.x, vecMapData[count].m_Scale.z);
+		pMesh = new CCubeMeshTexturedIlluminated(m_pd3dDevice, vecMapData[count].m_Scale.x, vecMapData[count].m_Scale.y, vecMapData[count].m_Scale.z);
 
 		pObject->SetMaterial(1, TextureTag::eGrassD);
 		pObject->SetMesh(pMesh);
 		pObject->SetPosition(vecMapData[count].m_Position);
-//		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 #pragma endregion
 
@@ -816,16 +804,16 @@ void CMainScene::CreateMapDataObject()
 
 		pObject->SetMaterial(1, TextureTag::eBusStopD);
 		pObject->SetMesh(pFbxMesh);
-		//		pObject->CreateBoundingBox(m_pd3dDevice);
-		pObject->CreateAxisObject(m_pd3dDevice);
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
+	
+		pObject->CreateAxisObject(m_pd3dDevice);
+		pObject->CreateBoundingBox(m_pd3dDevice);
 
-		m_vecBBoxRenderContainer.push_back(pObject);
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pObject);
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 #pragma endregion
-
+	*/
 #pragma region [Street Lamp]
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
 	for (int count = 0; count < vecMapData.size(); ++count) {
@@ -834,17 +822,16 @@ void CMainScene::CreateMapDataObject()
 		pFbxMesh->Initialize(m_pd3dDevice);
 
 		pObject->SetMesh(pFbxMesh);
-		//		pObject->CreateBoundingBox(m_pd3dDevice);
 		pObject->CreateAxisObject(m_pd3dDevice);
 		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Move(XMFLOAT3(0, 10, 0));
 		pObject->Rotate(vecMapData[count].m_Rotation);
 
-		m_vecBBoxRenderContainer.push_back(pObject);
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormal, pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormal, pObject);
 	}
 #pragma endregion
-		*/
+	
 }
 
 void CMainScene::CreateTweakBars()
@@ -874,8 +861,15 @@ void CMainScene::ReleaseObjects()
 	CScene::ReleaseObjects();
 	ReleaseConstantBuffers();
 
-	delete m_pParticleSystem;
-	m_pParticleSystem = nullptr;
+	SafeDelete(m_pParticleSystem);
+	SafeDelete(m_pBoundingBoxShader);
+}
+
+void CMainScene::AddShaderObject(ShaderTag tag, CGameObject* pObject)
+{
+	m_vecBBoxRenderContainer.push_back(pObject);
+	m_vecShaderObjectContainer.AddObject(tag, pObject);
+	COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
 }
 
 void CMainScene::CreateConstantBuffers()
@@ -988,18 +982,7 @@ void CMainScene::UpdateObjects(float fTimeElapsed)
 	if (m_pSelectedObject)
 		ModifiedSelectObject();
 
-	if (m_pPlayer) {
-		m_pPlayer->OnPrepareRender();
-		m_pPlayer->UpdateKeyInput(fTimeElapsed);
-		m_pPlayer->Update(fTimeElapsed);
-		m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
-
-		// Player 위치 강제 조정
-		XMFLOAT3 pos = m_pPlayer->GetPosition();
-	//	if (pos.y <= 6)
-	//		m_pPlayer->SetPosition(XMVectorSet(pos.x, 6, pos.z, 1));
-
-	}
+	m_pPlayerCharacter->Update(fTimeElapsed);
 
 	if (m_pLights && m_pd3dcbLights)
 	{
@@ -1031,9 +1014,7 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 		if (m_pTerrain->IsVisible(pCamera))
 			m_pTerrain->Render(pd3dDeviceContext, pCamera);
 
-
-	if (m_pPlayer)
-		m_pPlayer->Render(m_pd3dDeviceContext, m_pCamera);
+	m_pPlayerCharacter->Render(m_pd3dDeviceContext, m_pCamera);
 
 //	m_pParticleSystem->Render(pd3dDeviceContext);
 	m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
@@ -1044,27 +1025,19 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 
 void CMainScene::RenderBoundingBox()
 {
-	/*
+	m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
+	m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, false);
+
 	for (auto object : m_vecBBoxRenderContainer) {
-		if (m_pBoundingBoxMesh) {
-			pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
-
-			XMFLOAT4X4 mtxBoundingBoxWorld;
-			XMStoreFloat4x4(&mtxBoundingBoxWorld, m_mtxWorld);
-
-			mtxBoundingBoxWorld._41 += m_bcMeshBoundingBox.Center.x;
-			mtxBoundingBoxWorld._42 += m_bcMeshBoundingBox.Center.y;
-			mtxBoundingBoxWorld._43 += m_bcMeshBoundingBox.Center.z;
-
-			CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&mtxBoundingBoxWorld));
-
-			m_pBoundingBoxShader->OnPrepareSetting(pd3dDeviceContext, m_bIsCollision);
-			m_pBoundingBoxMesh->Render(pd3dDeviceContext);
-
-			pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
+		if (m_bIsPreCollisionCheck != object->GetCollisionCheck()) {
+			m_bIsPreCollisionCheck = object->GetCollisionCheck();
+			m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
+			cout << "충돌해서 한 번 바뀌었다." << endl;
 		}
+		object->BoundingBoxRender(m_pd3dDeviceContext);
 	}
-	*/
+
+	m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 }
 
 void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)

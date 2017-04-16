@@ -300,11 +300,11 @@
     <ClCompile Include="CollisionManager.cpp">
       <Filter>소스 파일\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="MapDataManager.cpp">
       <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>소스 파일\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -524,11 +524,11 @@
     <ClInclude Include="CollisionManager.h">
       <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="MapDataManager.h">
       <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>헤더 파일\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,7 +13,7 @@
 
 ID3D11Buffer*	CGameObject::m_pd3dcbWorldMatrix = NULL;
 ID3D11Buffer*	CGameObject::m_pd3dcbMaterialColors = NULL;
-UINT			CGameObject::m_iObjectId = 0;
+UINT			CGameObject::g_nObjectId = 0;
 
 CGameObject::CGameObject(int nMeshes)
 {
@@ -24,7 +24,7 @@ CGameObject::CGameObject(int nMeshes)
 	m_bcMeshBoundingBox.Center = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_bcMeshBoundingBox.Extents = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
-	m_iObjectId++;
+	m_nObjectId = ++g_nObjectId;
 }
 
 CGameObject::~CGameObject()
@@ -32,21 +32,20 @@ CGameObject::~CGameObject()
 	ReleaseCOM(m_pd3dDepthStencilState);
 	ReleaseCOM(m_pd3dBlendState);
 	
-	if (m_pShader) m_pShader->Release();
-	if (m_pMaterial) m_pMaterial->Release();
+	SafeDelete(m_pShader);
+	SafeDelete(m_pMaterial);
 
 	if (m_ppMeshes)
 	{
 		for (int i = 0; i < m_nMeshes; i++)
 		{
-			if (m_ppMeshes[i]) m_ppMeshes[i]->Release();
+			SafeDelete(m_ppMeshes[i]);
 			m_ppMeshes[i] = NULL;
-		}
+		} 
 		delete[] m_ppMeshes;
 	}
 
 	SafeDelete(m_pBoundingBoxMesh);
-	SafeDelete(m_pBoundingBoxShader);
 	SafeDelete(m_pAxisObject);
 }
 
@@ -55,15 +54,13 @@ void CGameObject::CreateObjectData(ID3D11Device *pd3dDevice)
 	CreateMesh(pd3dDevice);
 	CreateShader(pd3dDevice);
 	CreateMaterial();
-//	CreateBoundingBox(pd3dDevice);
+	CreateBoundingBox(pd3dDevice);
 }
 
 void CGameObject::CreateBoundingBox(ID3D11Device *pd3dDevice)
 {
 	m_pBoundingBoxMesh = new CBoundingBoxMesh(pd3dDevice, m_bcMeshBoundingBox);
 
-	m_pBoundingBoxShader = new CBoundingBoxShader();
-	m_pBoundingBoxShader->CreateShader(pd3dDevice);
 }
 
 void CGameObject::CreateAxisObject(ID3D11Device *pd3dDevice)
@@ -85,79 +82,49 @@ void CGameObject::SetMesh(CMesh *pMesh, int nIndex)
 			delete[] m_ppMeshes;
 		}
 		ppMeshes[nIndex] = pMesh;
-		if (pMesh) pMesh->AddRef();
 		m_nMeshes = nIndex + 1;
 		m_ppMeshes = ppMeshes;
 	}
 	else {
 		if (m_ppMeshes)
 		{
-			if (m_ppMeshes[nIndex]) m_ppMeshes[nIndex]->Release();
+			SafeDelete(m_ppMeshes[nIndex]);
 			m_ppMeshes[nIndex] = pMesh;
-			if (pMesh) pMesh->AddRef();
 		}
 	}
-
-	if (pMesh) {
-		/*
-		XMFLOAT3 xmMin, xmMax; // 기존값
-		XMFLOAT3 input_xmMin, input_xmMax;		//새로 들어온거
-		XMFLOAT3 fCenter, fExtern;
-
-		fCenter = pMesh->GetBoundingCube().Center; 
-		fExtern = pMesh->GetBoundingCube().Extents;
-
-		XMStoreFloat3(&input_xmMin, XMVectorSubtract(XMLoadFloat3(&fCenter), XMLoadFloat3(&fExtern)));
-		XMStoreFloat3(&input_xmMax, XMVectorAdd(XMLoadFloat3(&fCenter), XMLoadFloat3(&fExtern)));
-
-		XMStoreFloat3(&xmMin, XMVectorSubtract(XMLoadFloat3(&m_bcMeshBoundingBox.Center), XMLoadFloat3(&m_bcMeshBoundingBox.Extents)));
-		XMStoreFloat3(&xmMax, XMVectorAdd(XMLoadFloat3(&m_bcMeshBoundingBox.Center), XMLoadFloat3(&m_bcMeshBoundingBox.Extents)));
-		
-		if (input_xmMin.x < xmMin.x) xmMin.x = input_xmMin.x;
-		if (input_xmMin.y < xmMin.y) xmMin.y = input_xmMin.y;
-		if (input_xmMin.z < xmMin.z) xmMin.z = input_xmMin.z;
-		if (input_xmMax.x > xmMax.x) xmMax.x = input_xmMax.x;
-		if (input_xmMax.y > xmMax.y) xmMax.y = input_xmMax.y;
-		if (input_xmMax.z > xmMax.z) xmMax.z = input_xmMax.z;
-		
-		XMStoreFloat3(&m_bcBoundingBox.Center, XMVectorSubtract(XMLoadFloat3(&input_xmMax), XMLoadFloat3(&input_xmMin)) * 0.5f);
-		XMStoreFloat3(&m_bcBoundingBox.Extents, XMVectorAdd(XMLoadFloat3(&input_xmMax), XMLoadFloat3(&input_xmMin)) * 0.5f);
-		*/
-		
-		
-		BoundingBox::CreateMerged(m_bcMeshBoundingBox, m_bcMeshBoundingBox, pMesh->GetBoundingCube());
-	}
+	BoundingBox::CreateMerged(m_bcMeshBoundingBox, m_bcMeshBoundingBox, pMesh->GetBoundingCube());
+	BoundingOrientedBox::CreateFromBoundingBox(m_bcMeshBoundingOBox, m_bcMeshBoundingBox);
 }
 
 void CGameObject::SetShader(CShader *pShader)
 {
-	if (m_pShader) m_pShader->Release();
+	SafeDelete(m_pShader)
 	m_tagShader = pShader->GetShaderTag();
 	m_pShader = pShader;
-	if (m_pShader) m_pShader->AddRef();
+	
 }
 
 void CGameObject::SetShader(ID3D11Device *pd3dDevice, ShaderTag tag)
 {
-	if (m_pShader) m_pShader->Release();
+	SafeDelete(m_pShader)
 	CShader* pShader = new CShader();
 	pShader->CreateShader(pd3dDevice, tag);
 	m_tagShader = tag;
 	m_pShader = pShader;
-	if (m_pShader) m_pShader->AddRef();
+	
 }
 
 void CGameObject::SetMaterial(CMaterial *pMaterial)
 {
-	if (m_pMaterial) m_pMaterial->Release();
+	SafeDelete(m_pMaterial);
 	m_tagTexture = pMaterial->GetTextureTag();
 	m_pMaterial = pMaterial;
-	if (m_pMaterial) m_pMaterial->AddRef();
+	
 }
 
 void CGameObject::SetMaterial(int textureCount, TextureTag tag, ...)
 {
-	if (m_pMaterial) m_pMaterial->Release();
+	SafeDelete(m_pMaterial);
 	CMaterial* pMaterial = new CMaterial();
 	m_tagTexture = tag;
 
@@ -182,7 +149,7 @@ void CGameObject::SetMaterial(int textureCount, TextureTag tag, ...)
 
 	m_pMaterial = pMaterial;
 
-	if (m_pMaterial) m_pMaterial->AddRef();
+
 }
 
 void CGameObject::SetShadowMatrix(XMVECTOR d3dxvLight, XMVECTOR d3dxPlane)
@@ -445,19 +412,25 @@ XMVECTOR CGameObject::GetLook(bool isLocal) const
 	return d3dxvLookAt;
 }
 
-BoundingBox CGameObject::GetBoundingBox(bool isLocal)
+BoundingBox CGameObject::GetBoundingBox(bool isLocal) const
 {
 	if (isLocal) 
 		return m_bcMeshBoundingBox;
 	else {
-		BoundingBox bbox = m_bcMeshBoundingBox;
-		XMFLOAT3 world = GetPosition();
+		BoundingBox bcBox = m_bcMeshBoundingBox;
+		bcBox.Transform(bcBox, m_mtxWorld);
+		return bcBox;
+	}
+}
 
-		bbox.Center.x += world.x;
-		bbox.Center.y += world.y;
-		bbox.Center.z += world.z;
-
-		return bbox;
+BoundingOrientedBox CGameObject::GetBoundingOBox(bool isLocal) const
+{
+	if (isLocal)
+		return m_bcMeshBoundingOBox;
+	else {
+		BoundingOrientedBox bcObox = m_bcMeshBoundingOBox;
+		bcObox.Transform(bcObox, m_mtxWorld);
+		return bcObox;
 	}
 }
 
@@ -639,9 +612,6 @@ void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 	if (m_pd3dBlendState) pd3dDeviceContext->OMSetBlendState(m_pd3dBlendState, NULL, 0xffffffff);
 
 	RenderMesh(pd3dDeviceContext, pCamera);
-	
-	if (GLOBAL_MGR->g_vRenderOption.y)
-		BoundingBoxRender(pd3dDeviceContext);
 
 	if (m_pAxisObject) {
 		if (GLOBAL_MGR->g_bShowWorldAxis)
@@ -656,20 +626,14 @@ void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 void CGameObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	if (m_pBoundingBoxMesh) {
-		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
-	
-		XMFLOAT4X4 mtxBoundingBoxWorld;
-		XMStoreFloat4x4(&mtxBoundingBoxWorld, m_mtxWorld);
+		XMMATRIX mtxBoundingBoxWorld = m_mtxWorld;
+		BoundingOrientedBox bcObbox; m_bcMeshBoundingOBox.Transform(bcObbox, m_mtxWorld);
+	 
+		mtxBoundingBoxWorld = XMMatrixRotationQuaternion(XMLoadFloat4(&bcObbox.Orientation)) *
+			XMMatrixTranslation(bcObbox.Center.x, bcObbox.Center.y, bcObbox.Center.z);
 
-		mtxBoundingBoxWorld._41 += m_bcMeshBoundingBox.Center.x;
-		mtxBoundingBoxWorld._42 += m_bcMeshBoundingBox.Center.y;
-		mtxBoundingBoxWorld._43 += m_bcMeshBoundingBox.Center.z;
-		
-		CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&mtxBoundingBoxWorld));
+		CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &mtxBoundingBoxWorld);
 
-		m_pBoundingBoxShader->OnPrepareSetting(pd3dDeviceContext, m_bIsCollision);
 		m_pBoundingBoxMesh->Render(pd3dDeviceContext);
-
-		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 	}
 }

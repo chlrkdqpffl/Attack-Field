@@ -30,6 +30,7 @@ protected:
 	WORD						m_wKeyState = 0;
 	CameraTag					m_tagCamera = CameraTag::eNone;
 	CCharacterObject			*m_pCharacter = nullptr;
+	bool						m_bIsCollision = false;
 
 public:
 	CPlayer(CCharacterObject* pCharacter = nullptr);
@@ -41,10 +42,9 @@ public:
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
 	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag, float fTimeElapsed);
 	virtual void OnPrepareRender();
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 
-	CCamera *OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag);
-	void Move(const XMVECTOR d3dxvShift, bool bVelocity = false);
+	CCamera *OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag); 
+	void Move(const XMVECTOR d3dxvShift);
 	void Rotate(float x, float y, float z);
 	void Update(float fTimeElapsed);
 	void UpdateKeyInput(float fTimeElapsed);
@@ -61,7 +61,9 @@ public:
 	float GetRoll() const { return(m_fRoll); }
 	CCamera *GetCamera() { return(m_pCamera); }
 	float GetSpeed() const {return m_fSpeed; }
+	bool GetCollision() const { return m_bIsCollision; }
 
+	void SetCollision(bool isCollision) { m_bIsCollision = isCollision; }
 	void SetSpeed(float fSpeed) { m_fSpeed = fSpeed; }
 	void SetFriction(float fFriction) { m_fFriction = fFriction; }
 	void SetGravity(XMVECTOR d3dxvGravity) { XMStoreFloat3(&m_d3dxvGravity, d3dxvGravity); }
@@ -71,7 +73,7 @@ public:
 	void SetPosition(XMVECTOR d3dxvPosition)
 	{ 
 		XMVECTOR v = XMLoadFloat3(&m_d3dxvPosition);
-		Move((d3dxvPosition - v), false);
+		Move((d3dxvPosition - v));
 	}
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
 	void SetPlayerUpdatedContext(LPVOID pContext) { m_pPlayerUpdatedContext = pContext; }

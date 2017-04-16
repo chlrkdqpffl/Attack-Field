@@ -66,13 +66,13 @@ void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
-	if (m_wKeyState & static_cast<int>(KeyInput::eRight)) {
-		d3dxvShift += XMLoadFloat3(&m_d3dxvRight);
+	if (m_wKeyState & static_cast<int>(KeyInput::eLeft)) {
+		d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
-	if (m_wKeyState & static_cast<int>(KeyInput::eLeft)) {
-		d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
+	if (m_wKeyState & static_cast<int>(KeyInput::eRight)) {
+		d3dxvShift += XMLoadFloat3(&m_d3dxvRight);
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
@@ -81,7 +81,6 @@ void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계
 		d3dxvShift *= 10;		// m_fSpeed 로 변경해야함
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
 	}
-
 
 	// Mouse
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)) {
@@ -103,21 +102,11 @@ void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
 }
 
-void CPlayer::Move(XMVECTOR d3dxvShift, bool bUpdateVelocity)
-{
-	if (bUpdateVelocity)
-	{
-		cout << "여기를 안들어오는 것 같다. 추후 지우기";
-		cout << "무브";
-		ShowXMFloat3(m_d3dxvVelocity);
-		XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
-	}
-	else
-	{
-		XMVECTOR d3dxvPosition = XMLoadFloat3(&m_d3dxvPosition) + d3dxvShift;
-		XMStoreFloat3(&m_d3dxvPosition, d3dxvPosition);
-		m_pCamera->Move(d3dxvShift);
-	}
+void CPlayer::Move(XMVECTOR d3dxvShift)
+{	
+	XMVECTOR d3dxvPosition = XMLoadFloat3(&m_d3dxvPosition) + d3dxvShift;
+	XMStoreFloat3(&m_d3dxvPosition, d3dxvPosition);
+	m_pCamera->Move(d3dxvShift);
 }
 
 void CPlayer::Rotate(float x, float y, float z)
@@ -143,6 +132,8 @@ void CPlayer::Rotate(float x, float y, float z)
 			m_fRoll += z;
 			if (m_fRoll > +20.0f) { z -= (m_fRoll - 20.0f); m_fRoll = +20.0f; }
 			if (m_fRoll < -20.0f) { z -= (m_fRoll + 20.0f); m_fRoll = -20.0f; }
+		//	if (m_fRoll > +70.0f) { z -= (m_fRoll - 70.0f); m_fRoll = +70.0f; }
+		//	if (m_fRoll < -70.0f) { z -= (m_fRoll + 70.0f); m_fRoll = -70.0f; }
 		}
 		m_pCamera->Rotate(x, y, z);
 
@@ -200,21 +191,19 @@ void CPlayer::Update(float fTimeElapsed)
 	fLength = sqrtf(m_d3dxvVelocity.y * m_d3dxvVelocity.y);
 	if (fLength > fMaxVelocityY) m_d3dxvVelocity.y *= (fMaxVelocityY / fLength);
 
-	// Character Update
-	m_pCharacter->Update(fTimeElapsed);
-
-
-	Move(XMLoadFloat3(&m_d3dxvVelocity), false);
-	if (m_pPlayerUpdatedContext) OnPlayerUpdated(fTimeElapsed);
+//	if(!m_bIsCollision)
+	Move(XMLoadFloat3(&m_d3dxvVelocity));
+//	if (m_pPlayerUpdatedContext) OnPlayerUpdated(fTimeElapsed);
 
 	
-
+	 
 	CameraTag nCurrentCameraTag = m_pCamera->GetCameraTag();
 	if (nCurrentCameraTag == CameraTag::eThirdPerson) m_pCamera->Update(XMLoadFloat3(&m_d3dxvPosition), fTimeElapsed);
 	if (m_pCameraUpdatedContext) OnCameraUpdated(fTimeElapsed);
 	if (nCurrentCameraTag == CameraTag::eThirdPerson) m_pCamera->SetLookAt(XMLoadFloat3(&m_d3dxvPosition));
 	m_pCamera->RegenerateViewMatrix();
 
+	
 	// Apply Deceleration 
 	XMVECTOR d3dxvDeceleration = -XMLoadFloat3(&m_d3dxvVelocity);
 	d3dxvDeceleration = XMVector3Normalize(d3dxvDeceleration);
@@ -222,6 +211,7 @@ void CPlayer::Update(float fTimeElapsed)
 	float fDeceleration = (m_fFriction * fTimeElapsed);
 	if (fDeceleration > fLength) fDeceleration = fLength;
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvDeceleration * fDeceleration);
+
 }
 
 CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag)
@@ -292,10 +282,4 @@ void CPlayer::OnPrepareRender()
 	mtx._41 = m_d3dxvPosition.x;	mtx._42 = m_d3dxvPosition.y;	mtx._43 = m_d3dxvPosition.z;
 
 	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&mtx);
-}
-
-void CPlayer::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
-{
-//	if (m_pCamera->GetCameraTag() == CameraTag::eThirdPerson)
-		m_pCharacter->Render(pd3dDeviceContext, pCamera);
 }

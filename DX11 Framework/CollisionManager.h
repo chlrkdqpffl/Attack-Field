@@ -5,7 +5,7 @@
 struct CollisionInfo 
 {
 	CGameObject*	m_pHitObject = nullptr;
-	float			m_fDistance = 0.0f;
+	float			m_fDistance = FLT_MAX;
 	XMFLOAT3		m_f3HitNormal = XMFLOAT3(0,0,0);
 
 };
@@ -25,7 +25,7 @@ public:
 	virtual void UpdateManager() override;
 	virtual void ReleseManager() override;
 
-	bool RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction, float distance = FLT_MAX);
-	void AABBCollision();
-	void OBBCollision();
+	bool RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
+	bool AABBCollision(CollisionInfo& info, BoundingBox bcBox);
+	bool OBBCollision(CollisionInfo& info, BoundingOrientedBox bcObbox);
 };

@@ -34,13 +34,6 @@ public:
 	CShader();
 	virtual ~CShader();
 
-private:
-	int								m_nReferences = 0;
-
-public:
-	void AddRef() { m_nReferences++; }
-	void Release() { if (--m_nReferences <= 0) delete this; }
-
 protected:
 	ShaderTag						m_tagShader = ShaderTag::eNone;
 	UINT							m_nType = 0;

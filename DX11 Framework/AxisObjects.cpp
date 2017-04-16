@@ -16,9 +16,9 @@ void CAxisObjects::CreateAxis(ID3D11Device *pd3dDevice)
 		// Owner
 		XMFLOAT3 size = m_pOwnerObject->GetMesh()->GetBoundingCube().Extents;
 
-		CMesh* pOwnerWorldXAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(size.x + 15, 0, 0), XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
-		CMesh* pOwnerWorldYAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, size.y + 15, 0), XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
-		CMesh* pOwnerWorldZAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, size.z + 15), XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f));
+		CMesh* pOwnerWorldXAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(size.x + 3, 0, 0), XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
+		CMesh* pOwnerWorldYAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, size.y + 3, 0), XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f));
+		CMesh* pOwnerWorldZAxisMesh = new CLineMesh(pd3dDevice, XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, size.z + 3), XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f));
 
 		m_pWorldAxisObject = new CGameObject;
 		m_pWorldAxisObject->SetMesh(pOwnerWorldXAxisMesh, 0);

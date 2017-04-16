@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "BoundingBoxShader.h"
 
 class CMainScene : public CScene
 {
@@ -27,6 +28,7 @@ public:
 
 	void CreateMapDataObject();
 	void ModifiedSelectObject();
+	void AddShaderObject(ShaderTag tag, CGameObject* pObject);
 
 	void RenderBoundingBox();
 
@@ -34,6 +36,9 @@ private:
 	float							m_fGlobalAmbient;
 	ID3D11Buffer					*m_pd3dcbLights		= nullptr;
 
+
+	// Bounding Box Render
+	bool							m_bIsPreCollisionCheck = false;
+	CBoundingBoxShader				*m_pBoundingBoxShader = nullptr;
 	vector<CGameObject*>			m_vecBBoxRenderContainer;
 };
-

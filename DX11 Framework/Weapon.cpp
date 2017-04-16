@@ -5,8 +5,8 @@
 CWeapon::CWeapon(CCharacterObject* pOwner) 
 	: m_pOwner(pOwner)
 {
-//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.6f, 2.4f, 0.0f);
-//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(-35.f, 125.f, 85.f);	
+//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.0f, 1.4f, -0.05f);
+//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(-30.f, 125.f, 85.f);	
 }
 
 CWeapon::~CWeapon()

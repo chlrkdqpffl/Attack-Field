@@ -7,8 +7,8 @@ CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner) : CWeapon(pOwner)
 
 	if (pOwner->GetMeshTag() == MeshTag::eTerrorist) {
 		m_nBoneIndex = 22;
-		offsetPos		= XMFLOAT3(1.6f, 2.4f, 0.0f);
-		offsetRotate	= XMFLOAT3(-35.f, 125.f, 85.f);
+		offsetPos		= XMFLOAT3(1.0f, 1.4f, -0.05f);
+		offsetRotate	= XMFLOAT3(-30.f, 125.f, 85.f);
 	}
 	else if(pOwner->GetMeshTag() == MeshTag::ePolice)
 	{
@@ -46,8 +46,7 @@ void CRifleGunWeapon::CreateShader(ID3D11Device *pd3dDevice)
 {
 	m_pShader = new CShader();
 
-	m_pShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 );
-//	m_pShader->CreateShader(pd3dDevice, VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0);
+	m_pShader->CreateShader(pd3dDevice, ShaderTag::eNormalTexture);
 }
 
 void CRifleGunWeapon::CreateMaterial()
@@ -67,7 +66,6 @@ void CRifleGunWeapon::CreateBulletPool(ID3D11Device* pd3dDevice)
 		CRifleBullet* pBulletObject = new CRifleBullet(m_fRange, m_fBulletMovingSpeed);
 		pBulletObject->CreateObjectData(pd3dDevice);
 		pBulletObject->CreateAxisObject(pd3dDevice);
-		pBulletObject->CreateBoundingBox(pd3dDevice);
 		pBulletObject->SetActive(false);
 
 		m_vecBulletContainer.push_back(pBulletObject);
