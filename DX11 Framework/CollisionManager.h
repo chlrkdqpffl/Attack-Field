@@ -2,14 +2,6 @@
 #include "SingletonManager.h"
 #include "Object.h"
 
-struct CollisionInfo 
-{
-	CGameObject*	m_pHitObject = nullptr;
-	float			m_fDistance = FLT_MAX;
-	XMFLOAT3		m_f3HitNormal = XMFLOAT3(0,0,0);
-
-};
-
 class CCollisionManager : public CSingletonManager<CCollisionManager>
 {
 	DWORD								m_dwInitTime = 0;

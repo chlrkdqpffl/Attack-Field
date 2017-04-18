@@ -9,6 +9,14 @@ class CBoundingBoxMesh;
 class CAxisObjects;
 class CGameObject;
 
+struct CollisionInfo
+{
+	CGameObject*	m_pHitObject = nullptr;
+	float			m_fDistance = FLT_MAX;
+	XMFLOAT3		m_f3HitNormal = XMFLOAT3(0, 0, 0);
+
+};
+
 class CGameObject
 {
 public:
@@ -49,7 +57,7 @@ protected:
 //	BoundingBox						m_bcBoundingBox;			// 사용자가 정하는 바운딩 박스
 	BoundingBox						m_bcMeshBoundingBox;		// 실제 메쉬 바운딩 박스
 	BoundingOrientedBox				m_bcMeshBoundingOBox;		// 테스트용 OBB 박스
-
+	CollisionInfo					m_infoCollision;
 	CBoundingBoxMesh				*m_pBoundingBoxMesh	= nullptr;
 
 public:
@@ -122,6 +130,7 @@ public:
 	bool GetCollisionCheck() const { return m_bIsCollision; }
 	void SetCollision(bool collision) { m_bIsCollision = collision; }
 	UINT GetObjectID()const { return m_nObjectId; }
+	CollisionInfo GetCollisionInfo() const { return m_infoCollision; }
 
 public:
 	static ID3D11Buffer				*m_pd3dcbWorldMatrix;

@@ -43,8 +43,6 @@ void CScreenShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
 	pd3dDeviceContext->VSSetShader(m_pd3dVertexShader, nullptr, 0);
 	pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, nullptr, 0);
 	pd3dDeviceContext->GSSetShader(nullptr, nullptr, 0);
-
-	if (m_pTexture) m_pTexture->UpdateShaderVariable(pd3dDeviceContext);
 }
 
 void CScreenShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)

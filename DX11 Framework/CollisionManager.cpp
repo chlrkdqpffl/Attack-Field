@@ -25,13 +25,13 @@ void CCollisionManager::UpdateManager()
 			staticObject->SetCollision(false);
 	}
 
-	
+	/*
 	for (auto& dynamicObject : m_vecDynamicMeshContainer) {
 		if (dynamicObject->GetActive()) {
 			// Dynamic to Dynamic
 			for (auto& targetDynamicObject : m_vecDynamicMeshContainer) {
 				if (dynamicObject == targetDynamicObject)
-					continue;
+					continue; 
 
 				if (targetDynamicObject->GetActive()) {
 
@@ -49,21 +49,30 @@ void CCollisionManager::UpdateManager()
 			}
 		}
 	}
+	*/
 }
 
 bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
 {
+	bool isCollision = false;
+	float fNearestDistance = FLT_MAX;
 	// Dynamic to Dynamic
 
 	// Dynamic to Static
-	for (auto& staticObject : m_vecStaticMeshContainer) {
-		const bool isCollision = staticObject->GetBoundingOBox().Intersects(originPos, direction, info.m_fDistance);
-	
-		if (isCollision) {
-			info.m_pHitObject = staticObject;
-			return true;
+	for (auto& staticObject : m_vecStaticMeshContainer) {	
+		if (staticObject->GetBoundingOBox().Intersects(originPos, direction, info.m_fDistance)) {
+			if (fNearestDistance > info.m_fDistance) {
+				fNearestDistance = info.m_fDistance;
+				info.m_pHitObject = staticObject;
+				isCollision = true;
+			}
 		}
 	}
+	if (isCollision) {
+		info.m_fDistance = fNearestDistance;
+		return true;
+	}
+
 	return false;
 }
 
@@ -74,7 +83,7 @@ bool CCollisionManager::AABBCollision(CollisionInfo& info, BoundingBox bcBox)
 	// Dynamic to Static
 	for (auto& staticObject : m_vecStaticMeshContainer) {
 		const bool isCollision = staticObject->GetBoundingBox().Intersects(bcBox);
-
+	
 		if (isCollision) {
 			info.m_pHitObject = staticObject;
 			return true;

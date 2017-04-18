@@ -60,7 +60,6 @@ void CGameObject::CreateObjectData(ID3D11Device *pd3dDevice)
 void CGameObject::CreateBoundingBox(ID3D11Device *pd3dDevice)
 {
 	m_pBoundingBoxMesh = new CBoundingBoxMesh(pd3dDevice, m_bcMeshBoundingBox);
-
 }
 
 void CGameObject::CreateAxisObject(ID3D11Device *pd3dDevice)

@@ -18,12 +18,13 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 	{
 	case CameraTag::eFirstPerson:
 		SetFriction(250.0f);
-//		SetGravity(XMVectorSet(0.0f, -400.0f, 0.0f, 0.0f));
+		SetGravity(XMVectorSet(0.0f, -50.0f, 0.0f, 0.0f));
 
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFirstPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(XMVectorSet(0.0f, -2.0f, 6.0f, 0.0f));
+		m_pCamera->SetOffset(XMVectorSet(0.0f, -1.4f, 15.0f, 0.0f));
+		
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		break;
 	case CameraTag::eSpaceShip:
@@ -38,7 +39,7 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		break;
 	case CameraTag::eThirdPerson:
 		SetFriction(250.0f);
-		SetGravity(XMVectorSet(0.0f, -50.0f, 0.0f, 0.0f));
+//		SetGravity(XMVectorSet(0.0f, -50.0f, 0.0f, 0.0f));
 		
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eThirdPerson, nCurrentCameraTag);
@@ -57,26 +58,18 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 
 void CTerrainPlayer::OnPlayerUpdated(float fTimeElapsed)
 {
-	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)m_pPlayerUpdatedContext;
-	XMVECTOR d3dxvScale = pTerrain->GetScale();
-	XMFLOAT3 d3dxvPlayerPosition;
-	XMStoreFloat3(&d3dxvPlayerPosition, GetvPosition());
-	int z = (int)(d3dxvPlayerPosition.z / XMVectorGetZ(d3dxvScale));
-	bool bReverseQuad = ((z % 2) != 0);
+	XMFLOAT3 pos = GetPosition();
 
-	float fHeight = pTerrain->GetHeight(d3dxvPlayerPosition.x, d3dxvPlayerPosition.z, bReverseQuad) + 6.0f;
-	// 임시로 강제 캐릭터 위치 변경
-	fHeight += 25;
+	XMFLOAT3 velocity;
+	XMStoreFloat3(&velocity, GetVelocity());
+	velocity.y = 0.0f;
+	SetVelocity(XMLoadFloat3(&velocity));
 
-	if (d3dxvPlayerPosition.y < fHeight)
-	{
-		XMFLOAT3 d3dxvPlayerVelocity;
-		XMStoreFloat3(&d3dxvPlayerVelocity, GetVelocity());
-		d3dxvPlayerVelocity.y = 0.0f;
-		SetVelocity(XMLoadFloat3(&d3dxvPlayerVelocity));
-		d3dxvPlayerPosition.y = fHeight;
-		SetPosition(XMLoadFloat3(&d3dxvPlayerPosition));
-	}
+	float height = m_pCharacter->GetCollisionInfo().m_pHitObject->GetBoundingOBox().Center.y + m_pCharacter->GetCollisionInfo().m_pHitObject->GetBoundingOBox().Extents.y;
+
+	pos.y = m_pCharacter->GetBoundingOBox(true).Center.y + m_pCharacter->GetBoundingOBox().Extents.y + height;
+	SetPosition(XMLoadFloat3(&pos));
+	m_bIsFloorCollision = false;
 }
 
 void CTerrainPlayer::OnCameraUpdated(float fTimeElapsed)

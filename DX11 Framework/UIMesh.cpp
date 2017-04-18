@@ -26,6 +26,8 @@ CUIMesh::CUIMesh(ID3D11Device *pd3dDevice, POINT startPos, POINT endPos, float z
 
 	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, pd3dxvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
 
 	delete[] pd3dxvTexCoords;
 

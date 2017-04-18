@@ -18,9 +18,10 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 	case WM_LBUTTONDOWN:
 		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam) * m_fResizeRatioX, HIWORD(lParam) * m_fResizeRatioY);
 
-		if (m_pSelectedObject)
-			cout << m_pSelectedObject->GetPosition().x << ", " << m_pSelectedObject->GetPosition().y << ", " << m_pSelectedObject->GetPosition().z << endl;
-	
+		if (m_pSelectedObject) {
+			cout << "ID : " << m_pSelectedObject->GetObjectID() << endl;
+			cout << "Position : " << m_pSelectedObject->GetPosition().x << ", " << m_pSelectedObject->GetPosition().y << ", " << m_pSelectedObject->GetPosition().z << endl;
+		}
 		m_pPlayer->SetKeyDown(KeyInput::eLeftMouse);
 	//	((CCharacterObject*)m_vecObjectsContainer.back())->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
 		break;
@@ -322,28 +323,7 @@ void CMainScene::Initialize()
 	m_vecObjectsContainer.push_back(pCharacter);
 	
 
-
-	
-
-
-
 #pragma region [Create Shader Object]
-	/*
-	CMaterial *pPlayerMaterial = new CMaterial();
-
-	CTexture *pPlayerTexture = new CTexture(2, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
-	pPlayerTexture->SetTexture(0, TextureTag::eDarkFighterD);
-	pPlayerTexture->SetTexture(1, TextureTag::eDarkFighterN);
-	pPlayerTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
-	pPlayerMaterial->SetTexture(pPlayerTexture);
-
-	CFbxModelMesh* pPlayerMesh = new CFbxModelMesh(pd3dDevice, MeshTag::eDarkFighter);
-	pPlayerMesh->Initialize(pd3dDevice);
-
-	CObjectsShader* pModelShader = new CObjectsShader(10);
-	pModelShader->SetMaterial(pPlayerMaterial);																			
-	*/
-
 	// ----- Test ----- //
 	CFbxModelMesh* pTestMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eTest2);
 	pTestMesh->Initialize(m_pd3dDevice);
@@ -574,8 +554,8 @@ void CMainScene::CreateMapDataObject()
 		AddShaderObject(ShaderTag::eNormalTangentTexture, pObject);
 	}
 #pragma endregion
-	/*
 	
+	/*
 #pragma region [Building]
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBuilding16);
 	for (int count = 0; count < vecMapData.size(); ++count) {
@@ -813,7 +793,7 @@ void CMainScene::CreateMapDataObject()
 		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 #pragma endregion
-	*/
+	
 #pragma region [Street Lamp]
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
 	for (int count = 0; count < vecMapData.size(); ++count) {
@@ -831,7 +811,7 @@ void CMainScene::CreateMapDataObject()
 		AddShaderObject(ShaderTag::eNormal, pObject);
 	}
 #pragma endregion
-	
+	*/
 }
 
 void CMainScene::CreateTweakBars()

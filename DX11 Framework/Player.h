@@ -30,7 +30,7 @@ protected:
 	WORD						m_wKeyState = 0;
 	CameraTag					m_tagCamera = CameraTag::eNone;
 	CCharacterObject			*m_pCharacter = nullptr;
-	bool						m_bIsCollision = false;
+	bool						m_bIsFloorCollision = false;
 
 public:
 	CPlayer(CCharacterObject* pCharacter = nullptr);
@@ -61,9 +61,9 @@ public:
 	float GetRoll() const { return(m_fRoll); }
 	CCamera *GetCamera() { return(m_pCamera); }
 	float GetSpeed() const {return m_fSpeed; }
-	bool GetCollision() const { return m_bIsCollision; }
+	bool GetFloorCollision() const { return m_bIsFloorCollision; }
 
-	void SetCollision(bool isCollision) { m_bIsCollision = isCollision; }
+	void SetFloorCollision(bool isCollision) { m_bIsFloorCollision = isCollision; }
 	void SetSpeed(float fSpeed) { m_fSpeed = fSpeed; }
 	void SetFriction(float fFriction) { m_fFriction = fFriction; }
 	void SetGravity(XMVECTOR d3dxvGravity) { XMStoreFloat3(&m_d3dxvGravity, d3dxvGravity); }
@@ -80,4 +80,5 @@ public:
 	void SetCameraUpdatedContext(LPVOID pContext) { m_pCameraUpdatedContext = pContext; }
 	void SetKeyDown(KeyInput key) { m_wKeyState |= static_cast<int>(key); }
 	void SetKeyUp(KeyInput key) { m_wKeyState ^= static_cast<int>(key); }
+	WORD GetKeyState() const { return m_wKeyState; }
 };

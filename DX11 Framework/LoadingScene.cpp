@@ -15,7 +15,7 @@ void CLoadingScene::Initialize()
 	CreatePlayer();
 	CreateUIImage();
 
-
+	// Update를 상속받아서 1초 뒤에 로딩 시작하도록 만들어보기. -> Space Conquerer에서 사용한 방법
 	if (RESOURCE_MGR->LoadResourceAll()) {
 		if(SCENE_MGR->LoadSceneData())
 			SCENE_MGR->ChangeScene(SceneTag::eMainScene);

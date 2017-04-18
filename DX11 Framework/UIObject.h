@@ -3,7 +3,7 @@
 
 class CUIObject
 {
-	CMesh					*m_pMesh = nullptr;
+	CUIMesh					*m_pMesh = nullptr;
 	CMaterial				*m_pMaterial = nullptr;
 
 	POINT					m_ptStartPos;

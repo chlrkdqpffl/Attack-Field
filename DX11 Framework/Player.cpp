@@ -77,9 +77,10 @@ void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
-//		d3dxvShift *= 3;		// m_fSpeed 로 변경해야함
 		d3dxvShift *= 10;		// m_fSpeed 로 변경해야함
+//		d3dxvShift *= 3;		// m_fSpeed 로 변경해야함
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
+
 	}
 
 	// Mouse
@@ -191,18 +192,16 @@ void CPlayer::Update(float fTimeElapsed)
 	fLength = sqrtf(m_d3dxvVelocity.y * m_d3dxvVelocity.y);
 	if (fLength > fMaxVelocityY) m_d3dxvVelocity.y *= (fMaxVelocityY / fLength);
 
-//	if(!m_bIsCollision)
 	Move(XMLoadFloat3(&m_d3dxvVelocity));
-//	if (m_pPlayerUpdatedContext) OnPlayerUpdated(fTimeElapsed);
+	if (m_bIsFloorCollision) OnPlayerUpdated(fTimeElapsed);
 
-	
-	 
 	CameraTag nCurrentCameraTag = m_pCamera->GetCameraTag();
 	if (nCurrentCameraTag == CameraTag::eThirdPerson) m_pCamera->Update(XMLoadFloat3(&m_d3dxvPosition), fTimeElapsed);
 	if (m_pCameraUpdatedContext) OnCameraUpdated(fTimeElapsed);
 	if (nCurrentCameraTag == CameraTag::eThirdPerson) m_pCamera->SetLookAt(XMLoadFloat3(&m_d3dxvPosition));
 	m_pCamera->RegenerateViewMatrix();
 
+	
 	
 	// Apply Deceleration 
 	XMVECTOR d3dxvDeceleration = -XMLoadFloat3(&m_d3dxvVelocity);
@@ -211,7 +210,6 @@ void CPlayer::Update(float fTimeElapsed)
 	float fDeceleration = (m_fFriction * fTimeElapsed);
 	if (fDeceleration > fLength) fDeceleration = fLength;
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvDeceleration * fDeceleration);
-
 }
 
 CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag)
