@@ -3,6 +3,9 @@
 
 CGBuffer::CGBuffer()
 {
+	;;;
+	;
+
 }
 
 CGBuffer::~CGBuffer()
