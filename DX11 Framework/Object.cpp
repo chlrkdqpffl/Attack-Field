@@ -121,12 +121,10 @@ void CGameObject::SetMaterial(CMaterial *pMaterial)
 	
 }
 
-void CGameObject::SetMaterial(int textureCount, TextureTag tag, ...)
+void CGameObject::SetMaterial(int textureCount, ...)
 {
 	SafeDelete(m_pMaterial);
 	CMaterial* pMaterial = new CMaterial();
-	m_tagTexture = tag;
-
 	vector<TextureTag> vecTextureTag;
 
 	va_list ap;
@@ -137,10 +135,12 @@ void CGameObject::SetMaterial(int textureCount, TextureTag tag, ...)
 
 	va_end(ap);
 
+	m_tagTexture = vecTextureTag[0];
+
 	CTexture* pTexture = new CTexture(textureCount, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
 //	pTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
 	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
-
+	
 	for(int i = 0; i < textureCount; ++i) 
 		pTexture->SetTexture(i, vecTextureTag[i]);
 

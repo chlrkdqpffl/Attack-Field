@@ -39,7 +39,7 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		break;
 	case CameraTag::eThirdPerson:
 		SetFriction(250.0f);
-//		SetGravity(XMVectorSet(0.0f, -50.0f, 0.0f, 0.0f));
+		SetGravity(XMVectorSet(0.0f, -50.0f, 0.0f, 0.0f));
 		
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eThirdPerson, nCurrentCameraTag);

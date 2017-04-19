@@ -27,7 +27,6 @@ CPlayer::CPlayer(CCharacterObject* pCharacter)
 	m_fRoll = 0.0f;
 	m_fYaw = 0.0f;
 
-
 	// 임시
 	m_fSpeed = 50;
 //	m_fSpeed = 10;	// 자연스러운 속도
@@ -200,8 +199,6 @@ void CPlayer::Update(float fTimeElapsed)
 	if (m_pCameraUpdatedContext) OnCameraUpdated(fTimeElapsed);
 	if (nCurrentCameraTag == CameraTag::eThirdPerson) m_pCamera->SetLookAt(XMLoadFloat3(&m_d3dxvPosition));
 	m_pCamera->RegenerateViewMatrix();
-
-	
 	
 	// Apply Deceleration 
 	XMVECTOR d3dxvDeceleration = -XMLoadFloat3(&m_d3dxvVelocity);

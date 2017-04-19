@@ -596,5 +596,11 @@
       <Filter>HLSL</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
+    <None Include="Shader HLSL File\GBuffer.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\DeferredShading.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>
