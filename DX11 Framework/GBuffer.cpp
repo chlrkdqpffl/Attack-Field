@@ -3,8 +3,7 @@
 
 CGBuffer::CGBuffer()
 {
-	;;;
-	;
+	cout << "¸ÛÃ»¾Æ";
 
 }
 
