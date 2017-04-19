@@ -224,4 +224,6 @@ void CGBuffer::Render(ID3D11DeviceContext* pd3dImmediateContext)
 	pd3dImmediateContext->PSSetShader(nullptr, nullptr, 0);
 	ZeroMemory(arrViews, sizeof(arrViews));
 	pd3dImmediateContext->PSSetShaderResources(0, 4, arrViews);
+
+	// 뱅호 보이냐
 }
