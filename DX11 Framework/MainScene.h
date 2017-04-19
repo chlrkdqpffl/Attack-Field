@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "BoundingBoxShader.h"
+#include "GBuffer.h"
 
 class CMainScene : public CScene
 {
@@ -41,4 +42,6 @@ private:
 	bool							m_bIsPreCollisionCheck = false;
 	CBoundingBoxShader				*m_pBoundingBoxShader = nullptr;
 	vector<CGameObject*>			m_vecBBoxRenderContainer;
+
+	CGBuffer*						m_GBuffer = nullptr;
 };

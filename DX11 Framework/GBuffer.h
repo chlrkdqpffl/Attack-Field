@@ -18,9 +18,14 @@ public:
 
 	void Initialize(ID3D11Device* pDevice);
 	void OnPreRender(ID3D11DeviceContext* pd3dImmediateContext);
+	void OnPostRender(ID3D11DeviceContext* pd3dImmediateContext);
 	void OnPrepareForUnpack(ID3D11DeviceContext* pContext);
 
 	void Render(ID3D11DeviceContext* pContext);
+
+	// ------ Get, Setter ------ //
+	ID3D11DepthStencilView* GetDepthReadOnlyDSV() const { return m_DepthStencilReadOnlyDSV; }
+	ID3D11DepthStencilView* GetDepthDSV() const { return m_DepthStencilDSV; }
 
 private:
 	ID3D11Buffer*	m_pGBufferUnpackCB					= nullptr;

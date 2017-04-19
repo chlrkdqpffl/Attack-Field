@@ -8,6 +8,7 @@ CMainScene::CMainScene()
 
 CMainScene::~CMainScene()
 {
+	delete(m_GBuffer);
 }
 
 bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -172,6 +173,9 @@ void CMainScene::Initialize()
 	m_vecShaderObjectContainer.BuildObjects(m_pd3dDevice);
 	m_pBoundingBoxShader = new CBoundingBoxShader();
 	m_pBoundingBoxShader->CreateShader(m_pd3dDevice);
+
+	m_GBuffer = new CGBuffer();
+	m_GBuffer->Initialize(m_pd3dDevice);
 
 #pragma region [Create SkyBox]
 #ifdef _WITH_SKYBOX_TEXTURE_ARRAY
@@ -555,7 +559,7 @@ void CMainScene::CreateMapDataObject()
 	}
 #pragma endregion
 	
-	/*
+	
 #pragma region [Building]
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBuilding16);
 	for (int count = 0; count < vecMapData.size(); ++count) {
@@ -811,7 +815,7 @@ void CMainScene::CreateMapDataObject()
 		AddShaderObject(ShaderTag::eNormal, pObject);
 	}
 #pragma endregion
-	*/
+	
 }
 
 void CMainScene::CreateTweakBars()
@@ -985,6 +989,9 @@ void CMainScene::UpdateObjects(float fTimeElapsed)
 
 void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
+//	m_GBuffer->OnPreRender(pd3dDeviceContext);
+
+	// ===== Scene Rendering ===== //
 	CScene::Render(pd3dDeviceContext, pCamera);
 
 	if (GLOBAL_MGR->g_bShowWorldAxis)
@@ -996,11 +1003,21 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 
 	m_pPlayerCharacter->Render(m_pd3dDeviceContext, m_pCamera);
 
-//	m_pParticleSystem->Render(pd3dDeviceContext);
+	m_pParticleSystem->Render(pd3dDeviceContext);
 	m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 
 	if (GLOBAL_MGR->g_vRenderOption.y)
 		RenderBoundingBox();
+
+//	m_GBuffer->OnPostRender(pd3dDeviceContext);
+	m_GBuffer->OnPrepareForUnpack(pd3dDeviceContext);
+
+	// =============== Deferred Rendering ================== //
+//	pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, nullptr);
+
+//	m_GBuffer->Render(pd3dDeviceContext);
+
+//	pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthDSV());
 }
 
 void CMainScene::RenderBoundingBox()

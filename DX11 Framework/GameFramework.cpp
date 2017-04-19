@@ -44,7 +44,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(275);
+//	_CrtSetBreakAlloc(489265);
 //	_CrtSetBreakAlloc(286);
 
 //	_CrtSetBreakAlloc(205);		// 16
@@ -218,6 +218,7 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	if (pd3dBackBuffer) pd3dBackBuffer->Release();
 
 	DXUT_SetDebugName(m_pd3dRenderTargetView, "MainRenderTargetView");
+	SCENE_MGR->g_pd3dRenderTargetView = m_pd3dRenderTargetView;
 
 	// Create depth stencil texture
 	D3D11_TEXTURE2D_DESC d3dDepthStencilBufferDesc;
@@ -253,8 +254,8 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 #endif
 	d3dDepthStencilViewDesc.Texture2D.MipSlice = 0;
 	if (FAILED(hResult = m_pd3dDevice->CreateDepthStencilView(m_pd3dDepthStencilBuffer, &d3dDepthStencilViewDesc, &m_pd3dDepthStencilView))) return(false);
-
 	DXUT_SetDebugName(m_pd3dDepthStencilView, "DepthStencilView");
+	SCENE_MGR->g_pd3dDepthStencilView = m_pd3dDepthStencilView;
 
 	m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3dRenderTargetView, m_pd3dDepthStencilView);
 
