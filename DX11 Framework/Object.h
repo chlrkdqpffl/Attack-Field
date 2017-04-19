@@ -103,7 +103,6 @@ public:
 	void SetShadowMatrix(XMVECTOR d3dxvLight, XMVECTOR d3dxPlane);
 
 	void SetMaterial(CMaterial *pMaterial);
-//	void SetMaterial(int textureCount, TextureTag tag, ...);
 	void SetMaterial(int textureCount, ...);
 	CMaterial *GetMaterial() { return(m_pMaterial); }
 
