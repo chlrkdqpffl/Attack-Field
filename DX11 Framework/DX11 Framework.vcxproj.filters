@@ -309,6 +309,9 @@
     <ClCompile Include="GBuffer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="GBufferShader.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -536,6 +539,9 @@
     <ClInclude Include="GBuffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="GBufferShader.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -600,6 +606,12 @@
       <Filter>HLSL</Filter>
     </None>
     <None Include="Shader HLSL File\DeferredShading.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\common.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\PostProcessing.hlsli">
       <Filter>HLSL</Filter>
     </None>
   </ItemGroup>

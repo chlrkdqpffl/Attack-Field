@@ -45,9 +45,14 @@ void CTerrainShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCa
 {
 	OnPrepareRender(pd3dDeviceContext);
 
+	OnPostRender(pd3dDeviceContext);
+}
 
-
-	// 테셀레이션 제작 후 아래를 실행해서 차이 확인하기
-//	pd3dDeviceContext->HSSetShader(nullptr, nullptr, 0);
-//	pd3dDeviceContext->DSSetShader(nullptr, nullptr, 0);
+void CTerrainShader::OnPostRender(ID3D11DeviceContext *pd3dDeviceContext)
+{
+	pd3dDeviceContext->IASetInputLayout(nullptr);
+	pd3dDeviceContext->VSSetShader(nullptr, nullptr, 0);
+	pd3dDeviceContext->HSSetShader(nullptr, nullptr, 0);
+	pd3dDeviceContext->DSSetShader(nullptr, nullptr, 0);
+	pd3dDeviceContext->PSSetShader(nullptr, nullptr, 0);
 }
