@@ -989,11 +989,13 @@ void CMainScene::UpdateObjects(float fTimeElapsed)
 
 void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	// =============== Deferred Rendering ================== //
-	m_GBuffer->OnPreRender(pd3dDeviceContext);
+//	m_GBuffer->OnPreRender(pd3dDeviceContext);
 
-	// ------ Start Scene Rendering ------ //
+	// ===== Scene Rendering ===== //
 	CScene::Render(pd3dDeviceContext, pCamera);
+
+	if (GLOBAL_MGR->g_bShowWorldAxis)
+		m_pWorldCenterAxis->Render(pd3dDeviceContext, pCamera);
 
 	if (m_pTerrain)
 		if (m_pTerrain->IsVisible(pCamera))
@@ -1002,32 +1004,20 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	m_pPlayerCharacter->Render(m_pd3dDeviceContext, m_pCamera);
 
 	m_pParticleSystem->Render(pd3dDeviceContext);
-
-	// ------ End Scene Rendering ------ //
-
 	m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
-
-	m_GBuffer->OnPostRender(pd3dDeviceContext);
-	m_GBuffer->OnPrepareForUnpack(pd3dDeviceContext);
-
-//	pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthReadOnlyDSV());
-
-	// ------ Final Scene Rendering ------ //
-//	m_GBuffer->DeferredRender(pd3dDeviceContext);
-
-	// =============== Rendering Option =================== //
-
-	if (GLOBAL_MGR->g_bShowWorldAxis)
-		m_pWorldCenterAxis->Render(pd3dDeviceContext, pCamera);
 
 	if (GLOBAL_MGR->g_vRenderOption.y)
 		RenderBoundingBox();
 
-	if (GLOBAL_MGR->g_bShowGBuffer) {
-		pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, nullptr);
-		m_GBuffer->Render(pd3dDeviceContext);
-		pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthDSV());
-	}
+//	m_GBuffer->OnPostRender(pd3dDeviceContext);
+	m_GBuffer->OnPrepareForUnpack(pd3dDeviceContext);
+
+	// =============== Deferred Rendering ================== //
+//	pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, nullptr);
+
+//	m_GBuffer->Render(pd3dDeviceContext);
+
+//	pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthDSV());
 }
 
 void CMainScene::RenderBoundingBox()

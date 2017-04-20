@@ -169,7 +169,6 @@
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="FbxMeshData.cpp" />
     <ClCompile Include="GBuffer.cpp" />
-    <ClCompile Include="GBufferShader.cpp" />
     <ClCompile Include="GlobalVariableManager.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
     <ClCompile Include="MapDataManager.cpp" />
@@ -247,7 +246,6 @@
     <ClInclude Include="ConstantBuffer_Slot.h" />
     <ClInclude Include="FbxMeshData.h" />
     <ClInclude Include="GBuffer.h" />
-    <ClInclude Include="GBufferShader.h" />
     <ClInclude Include="GlobalVariableManager.h" />
     <ClInclude Include="LoadingScene.h" />
     <ClInclude Include="MapDataManager.h" />
@@ -340,7 +338,6 @@
     <None Include="Shader HLSL File\Blurring.hlsli" />
     <None Include="Shader HLSL File\BoundingBox.hlsli" />
     <None Include="Shader HLSL File\CharacterSkinnedNormal.hlsli" />
-    <None Include="Shader HLSL File\common.hlsli" />
     <None Include="Shader HLSL File\DeferredShading.hlsli" />
     <None Include="Shader HLSL File\DisplacementMap.hlsli" />
     <None Include="Shader HLSL File\CharacterSkinned.hlsli" />
@@ -349,7 +346,6 @@
     <None Include="Shader HLSL File\Light.hlsli" />
     <None Include="Shader HLSL File\Normal.hlsli" />
     <None Include="Shader HLSL File\NormalMap.hlsli" />
-    <None Include="Shader HLSL File\PostProcessing.hlsli" />
     <None Include="Shader HLSL File\Terrain.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </None>

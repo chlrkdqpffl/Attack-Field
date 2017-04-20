@@ -176,9 +176,3 @@ namespace Layer
 {
 
 }
-
-enum class GBufferType
-{
-	eNone,
-	eDepth, eDiffuse, eNormal, eSpec
-};

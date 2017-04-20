@@ -84,8 +84,7 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			}
 			case '5':
 			{
-				cout << "G-Buffer Option" << endl;
-				GLOBAL_MGR->g_bShowGBuffer= !GLOBAL_MGR->g_bShowGBuffer;
+				//	cout << "ºó ¼Ó¼º" << endl;
 				break;
 			}
 		

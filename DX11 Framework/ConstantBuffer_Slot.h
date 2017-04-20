@@ -71,7 +71,10 @@ Max Resource(Texture, Buffer)	: 128
 #define PS_TEXTURE_SLOT_PROJECTED_DEPTH		0x10
 #define PS_TEXTURE_SLOT_SHADOW				0x11
 #define PS_TEXTURE_SLOT_SCREEN				0x12
-#define PS_TEXTRUE_SLOT_GBUFFER				19
+#define PS_TEXTRUE_SLOT_GBUFFER				0x13
+//#define PS_TEXTURE_SLOT_DIFFUSE			18
+//		PS_TEXTURE_SLOT_NORMAL				19
+
 
 // Sampler
 #define PS_SAMPLER_SLOT						0x00

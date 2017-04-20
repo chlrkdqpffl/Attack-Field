@@ -1,6 +1,6 @@
 #pragma once
 #include "UIMesh.h"
-#include "GBufferShader.h"
+#include "ScreenShader.h"
 
 #pragma pack(push,1)
 struct CB_GBUFFER_UNPACK
@@ -19,10 +19,9 @@ public:
 	void Initialize(ID3D11Device* pDevice);
 	void OnPreRender(ID3D11DeviceContext* pd3dImmediateContext);
 	void OnPostRender(ID3D11DeviceContext* pd3dImmediateContext);
-	void OnPrepareForUnpack(ID3D11DeviceContext* pd3dImmediateContext);
+	void OnPrepareForUnpack(ID3D11DeviceContext* pContext);
 
-	void Render(ID3D11DeviceContext* pd3dImmediateContext);
-	void DeferredRender(ID3D11DeviceContext* pd3dImmediateContext);
+	void Render(ID3D11DeviceContext* pContext);
 
 	// ------ Get, Setter ------ //
 	ID3D11DepthStencilView* GetDepthReadOnlyDSV() const { return m_DepthStencilReadOnlyDSV; }
@@ -49,16 +48,11 @@ private:
 
 	ID3D11DepthStencilState *m_DepthStencilState		= nullptr;
 
-	CGBufferShader*	m_pDepthShader		= nullptr;
-	CGBufferShader*	m_pDiffuseShader	= nullptr;
-	CGBufferShader*	m_pNormalShader		= nullptr;
-	CGBufferShader*	m_pSpecShader		= nullptr;
 
+
+	CScreenShader*	m_pScreenShader		= nullptr;
 	CUIMesh* m_pDepthStencilMesh		= nullptr;
 	CUIMesh* m_pDiffuseMesh				= nullptr;
 	CUIMesh* m_pNormalMesh				= nullptr;
 	CUIMesh* m_pSpecPowerMesh			= nullptr;
-
-	ID3D11VertexShader* m_pDeferrdVertexShader = nullptr;
-	ID3D11PixelShader* m_pDeferrdPixelShader = nullptr;
 };

@@ -33,13 +33,7 @@ CGBuffer::~CGBuffer()
 	SafeDelete(m_pNormalMesh);
 	SafeDelete(m_pSpecPowerMesh);
 
-	SafeDelete(m_pDepthShader);
-	SafeDelete(m_pDiffuseShader);
-	SafeDelete(m_pNormalShader);
-	SafeDelete(m_pSpecShader);
-
-	ReleaseCOM(m_pDeferrdVertexShader);
-	ReleaseCOM(m_pDeferrdPixelShader);
+	SafeDelete(m_pScreenShader);
 }
 
 void CGBuffer::Initialize(ID3D11Device* pDevice)
@@ -109,7 +103,7 @@ void CGBuffer::Initialize(ID3D11Device* pDevice)
 	d3dRTVDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	d3dRTVDesc.Texture2D.MipSlice = 0;
 	d3dRTVDesc.Format = basicDiffuseRenderViewFormat;
-
+	
 	HR(pDevice->CreateRenderTargetView(m_DiffuseSpecIntensityRT, &d3dRTVDesc, &m_DiffuseSpecIntensityRTV));
 	DXUT_SetDebugName(m_DiffuseSpecIntensityRTV, "GBuffer - Color Spec Intensity RTV");
 
@@ -156,36 +150,13 @@ void CGBuffer::Initialize(ID3D11Device* pDevice)
 
 	// ================================= Create Texture Mesh ===================================== //
 	m_pDepthStencilMesh = new CUIMesh(pDevice, POINT{ 50, 650 }, POINT{ 350, 840 }, 0.1f);
-	m_pDiffuseMesh = new CUIMesh(pDevice, POINT{ 450, 650 }, POINT{ 750, 840 }, 0.1f);
-	m_pNormalMesh = new CUIMesh(pDevice, POINT{ 850, 650 }, POINT{ 1150, 840 }, 0.1f);
-	m_pSpecPowerMesh = new CUIMesh(pDevice, POINT{ 1250, 650 }, POINT{ 1550, 840 }, 0.1f);
+	m_pDiffuseMesh		= new CUIMesh(pDevice, POINT{ 450, 650 }, POINT{ 750, 840 }, 0.1f);
+	m_pNormalMesh		= new CUIMesh(pDevice, POINT{ 850, 650 }, POINT{ 1150, 840 }, 0.1f);
+	m_pSpecPowerMesh	= new CUIMesh(pDevice, POINT{ 1250, 650 }, POINT{ 1550, 840 }, 0.1f);
 
 	// =================================== Create Shader ========================================= //
-	m_pDepthShader = new CGBufferShader(GBufferType::eDepth);
-	m_pDepthShader->CreateShader(pDevice);
-
-	m_pDiffuseShader = new CGBufferShader(GBufferType::eDiffuse);
-	m_pDiffuseShader->CreateShader(pDevice);
-
-	m_pNormalShader = new CGBufferShader(GBufferType::eNormal);
-	m_pNormalShader->CreateShader(pDevice);
-
-	m_pSpecShader = new CGBufferShader(GBufferType::eSpec);
-	m_pSpecShader->CreateShader(pDevice);
-
-	/*
-	ID3D11InputLayout *pd3dVertexLayout;
-	D3D11_INPUT_ELEMENT_DESC d3dInputElements[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
-	UINT nElements = ARRAYSIZE(d3dInputElements);
-	
-	CShader::CreateVertexShaderFromFile(pDevice, L"Shader HLSL File/GBuffer.hlsli", "VSGBuffer", "vs_5_0", &m_pDeferrdVertexShader, d3dInputElements, nElements, &pd3dVertexLayout);
-	pd3dVertexLayout->Release();
-	
-	CShader::CreatePixelShaderFromFile(pDevice, L"Shader HLSL File/GBuffer.hlsli", "PSGBuffer", "ps_5_0", &m_pDeferrdPixelShader);
-	*/
+	m_pScreenShader = new CScreenShader();
+	m_pScreenShader->CreateShader(pDevice);
 }
 
 void CGBuffer::OnPreRender(ID3D11DeviceContext* pd3dImmediateContext)
@@ -202,10 +173,10 @@ void CGBuffer::OnPreRender(ID3D11DeviceContext* pd3dImmediateContext)
 	pd3dImmediateContext->OMSetDepthStencilState(m_DepthStencilState, 1);
 }
 
-void CGBuffer::OnPrepareForUnpack(ID3D11DeviceContext* pd3dImmediateContext)
+void CGBuffer::OnPrepareForUnpack(ID3D11DeviceContext* pContext)
 {
 	D3D11_MAPPED_SUBRESOURCE MappedResource;
-	HR(pd3dImmediateContext->Map(m_pGBufferUnpackCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource));
+	HR(pContext->Map(m_pGBufferUnpackCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource));
 	CB_GBUFFER_UNPACK* pGBufferUnpackCB = (CB_GBUFFER_UNPACK*)MappedResource.pData;
 	 
 	XMFLOAT4X4 pProj;
@@ -219,9 +190,9 @@ void CGBuffer::OnPrepareForUnpack(ID3D11DeviceContext* pd3dImmediateContext)
 	XMStoreFloat4x4(&matViewInv, XMMatrixInverse(nullptr, SCENE_MGR->g_pCamera->GetViewMatrix()));
 	XMStoreFloat4x4(&pGBufferUnpackCB->m_mtxViewInverse, XMMatrixTranspose(XMLoadFloat4x4(&matViewInv)));
 
-	pd3dImmediateContext->Unmap(m_pGBufferUnpackCB, 0);
+	pContext->Unmap(m_pGBufferUnpackCB, 0);
 
-	pd3dImmediateContext->PSSetConstantBuffers(PS_CB_SLOT_GBUFFER_UNPACK, 1, &m_pGBufferUnpackCB);
+	pContext->PSSetConstantBuffers(PS_CB_SLOT_GBUFFER_UNPACK, 1, &m_pGBufferUnpackCB);
 }
 
 void CGBuffer::OnPostRender(ID3D11DeviceContext* pd3dImmediateContext)
@@ -236,46 +207,18 @@ void CGBuffer::Render(ID3D11DeviceContext* pd3dImmediateContext)
 	pd3dImmediateContext->PSSetShaderResources(PS_TEXTRUE_SLOT_GBUFFER, 4, arrViews);
 	pd3dImmediateContext->PSSetSamplers(0, 1, &STATEOBJ_MGR->g_pPointClampSS);
 	
-	m_pDepthShader->OnPrepareRender(pd3dImmediateContext);
+	// Shader
+	m_pScreenShader->OnPrepareRender(pd3dImmediateContext);
+
+	// Mesh
 	m_pDepthStencilMesh->Render(pd3dImmediateContext);
-
-	m_pDiffuseShader->OnPrepareRender(pd3dImmediateContext);
 	m_pDiffuseMesh->Render(pd3dImmediateContext);
-
-	m_pNormalShader->OnPrepareRender(pd3dImmediateContext);
 	m_pNormalMesh->Render(pd3dImmediateContext);
-
-	m_pSpecShader->OnPrepareRender(pd3dImmediateContext);
 	m_pSpecPowerMesh->Render(pd3dImmediateContext);
 
 	// Clear
 	pd3dImmediateContext->VSSetShader(nullptr, nullptr, 0);
 	pd3dImmediateContext->PSSetShader(nullptr, nullptr, 0);
-	ZeroMemory(arrViews, sizeof(arrViews));
-	pd3dImmediateContext->PSSetShaderResources(0, 4, arrViews);
-}
-
-void CGBuffer::DeferredRender(ID3D11DeviceContext* pd3dImmediateContext)
-{
-	pd3dImmediateContext->IASetInputLayout(NULL);
-	pd3dImmediateContext->IASetVertexBuffers(0, 0, NULL, NULL, NULL);
-	pd3dImmediateContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-	pd3dImmediateContext->VSSetShader(m_pDeferrdVertexShader, NULL, 0);
-	pd3dImmediateContext->PSSetShader(m_pDeferrdPixelShader, NULL, 0);
-
-	ID3D11ShaderResourceView* arrViews[4] = { m_DepthStencilSRV, m_DiffuseSpecIntensitySRV, m_NormalSRV, m_SpecPowerSRV };
-	pd3dImmediateContext->PSSetShaderResources(PS_TEXTRUE_SLOT_GBUFFER, 4, arrViews);
-
-	pd3dImmediateContext->Draw(4, 0);
-	
-	// Clear
-	ID3D11ShaderResourceView *arrRV[1] = { NULL };
-	pd3dImmediateContext->PSSetShaderResources(4, 1, arrRV);
-	pd3dImmediateContext->VSSetShader(NULL, NULL, 0);
-	pd3dImmediateContext->PSSetShader(NULL, NULL, 0);
-	pd3dImmediateContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 	ZeroMemory(arrViews, sizeof(arrViews));
 	pd3dImmediateContext->PSSetShaderResources(0, 4, arrViews);
 }
