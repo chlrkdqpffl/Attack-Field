@@ -38,9 +38,9 @@ void CNormalDisplaceMapShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceCo
 
 void CNormalDisplaceMapShader::OnPostRender(ID3D11DeviceContext *pd3dDeviceContext)
 {
-//	pd3dDeviceContext->IASetInputLayout(nullptr);
-//	pd3dDeviceContext->VSSetShader(nullptr, nullptr, 0);
+	pd3dDeviceContext->IASetInputLayout(nullptr);
+	pd3dDeviceContext->VSSetShader(nullptr, nullptr, 0);
 	pd3dDeviceContext->HSSetShader(nullptr, nullptr, 0);
 	pd3dDeviceContext->DSSetShader(nullptr, nullptr, 0);
-//	pd3dDeviceContext->PSSetShader(nullptr, nullptr, 0);
+	pd3dDeviceContext->PSSetShader(nullptr, nullptr, 0);
 }

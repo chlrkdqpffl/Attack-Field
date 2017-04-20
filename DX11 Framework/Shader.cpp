@@ -47,7 +47,6 @@ void CShader::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFil
 		HR(pd3dDevice->CreateVertexShader(pd3dVertexShaderBlob->GetBufferPointer(), pd3dVertexShaderBlob->GetBufferSize(), NULL, ppd3dVertexShader));
 		HR(pd3dDevice->CreateInputLayout(pd3dInputElements, nElements, pd3dVertexShaderBlob->GetBufferPointer(), pd3dVertexShaderBlob->GetBufferSize(), ppd3dInputLayout));
 
-
 		pd3dVertexShaderBlob->Release();
 
 		DXUT_SetDebugName(*ppd3dInputLayout, pszShaderName);
@@ -213,7 +212,8 @@ void CShader::CreateShader(ID3D11Device *pd3dDevice, D3D11_INPUT_ELEMENT_DESC *p
 void CShader::CreateShader(ID3D11Device *pd3dDevice, ShaderTag shaderTag)
 {
 	LPCSTR pszVSShaderName = NULL, pszVSShaderModel = "vs_5_0", pszPSShaderName = NULL, pszPSShaderModel = "ps_5_0";
-	
+	bool isDeferredShader = false;
+
 	switch (shaderTag) {
 	case ShaderTag::eColor:
 		m_tagShader = ShaderTag::eColor;
@@ -230,6 +230,7 @@ void CShader::CreateShader(ID3D11Device *pd3dDevice, ShaderTag shaderTag)
 	case ShaderTag::eNormalTexture:
 		m_tagShader = ShaderTag::eNormalTexture;
 		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0;
+		isDeferredShader = true;
 		break;
 	case ShaderTag::eNormalTangentTexture:
 		m_tagShader = ShaderTag::eNormalTangentTexture;
@@ -243,7 +244,11 @@ void CShader::CreateShader(ID3D11Device *pd3dDevice, ShaderTag shaderTag)
 
 	GetInputElementDesc(m_nType);
 	GetShaderName(m_nType, &pszVSShaderName, &pszVSShaderModel, &pszPSShaderName, &pszPSShaderModel);
-	CreateShader(pd3dDevice, NULL, 0, L"Shader HLSL File/Effect.fx", pszVSShaderName, pszVSShaderModel, pszPSShaderName, pszPSShaderModel);
+
+	if(isDeferredShader)
+		CreateShader(pd3dDevice, NULL, 0, L"Shader HLSL File/DeferredShading.hlsli", pszVSShaderName, pszVSShaderModel, pszPSShaderName, pszPSShaderModel);
+	else
+		CreateShader(pd3dDevice, NULL, 0, L"Shader HLSL File/Effect.fx", pszVSShaderName, pszVSShaderModel, pszPSShaderName, pszPSShaderModel);
 }
 
 void CShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
@@ -292,7 +297,12 @@ void CShader::GetShaderName(UINT nVertexElementType, LPCSTR *ppszVSShaderName, L
 	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT)) { *ppszVSShaderName = "VSLightingColor", *ppszPSShaderName = "PSLightingColor"; }
 	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_TEXTURE_ELEMENT_0)) { *ppszVSShaderName = "VSTexturedColor", *ppszPSShaderName = "PSTexturedColor"; }
 	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_TEXTURE_ELEMENT_1)) { *ppszVSShaderName = "VSDetailTexturedColor", *ppszPSShaderName = "PSDetailTexturedColor"; }
-	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0)) { *ppszVSShaderName = "VSTexturedLightingColor", *ppszPSShaderName = "PSTexturedLightingColor"; }
+	//if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0)) { *ppszVSShaderName = "VSTexturedLightingColor", *ppszPSShaderName = "PSTexturedLightingColor"; }
+
+	// Deferrd Shader
+	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0)) { *ppszVSShaderName = "VSDeferrdNormalTexture", *ppszPSShaderName = "PSDeferrdNormalTexture"; }
+
+
 	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0)) { *ppszVSShaderName = "VSTexturedLightingTangent", *ppszPSShaderName = "PSTexturedLightingTangent"; }
 	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_TEXTURE_ELEMENT_1)) { *ppszVSShaderName = "VSDetailTexturedLightingColor", *ppszPSShaderName = "PSDetailTexturedLightingColor"; }
 	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_BONE_ID_ELEMENT | VERTEX_BONE_WEIGHT_ELEMENT)) { *ppszVSShaderName = "VSSkinnedLightingColor", *ppszPSShaderName = "PSLightingColor"; }
