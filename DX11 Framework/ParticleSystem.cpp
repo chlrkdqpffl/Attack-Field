@@ -181,14 +181,14 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 	m_pd3dDrawVertexBuffer = m_pd3dStreamOutVertexBuffer;
 	m_pd3dStreamOutVertexBuffer = pd3dBuffer;
 
-	ID3D11Buffer *pd3dBuffers[1] = { NULL };
+	ID3D11Buffer *pd3dBuffers[1] = { nullptr };
 	UINT pStreamOffSets[1] = { 0 };
 	pd3dDeviceContext->SOSetTargets(1, pd3dBuffers, pStreamOffSets);
-	pd3dDeviceContext->VSSetShader(m_pd3dVertexShader, NULL, 0);
-	pd3dDeviceContext->GSSetShader(m_pd3dGeometryShader, NULL, 0);
-	pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, NULL, 0);
+	pd3dDeviceContext->VSSetShader(m_pd3dVertexShader, nullptr, 0);
+	pd3dDeviceContext->GSSetShader(m_pd3dGeometryShader, nullptr, 0);
+	pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, nullptr, 0);
 	pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 0);
-	pd3dDeviceContext->OMSetBlendState(m_pd3dBlendState, NULL, 0xffffffff);
+	pd3dDeviceContext->OMSetBlendState(m_pd3dBlendState, nullptr, 0xffffffff);
 
 	pd3dDeviceContext->PSSetSamplers(0, 1, &STATEOBJ_MGR->g_pPointWarpSS);
 	pd3dDeviceContext->PSSetShaderResources(5, 1, &m_pd3dsrvTextureArray);
@@ -196,12 +196,19 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 	pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dDrawVertexBuffer, &m_nStride, &m_nOffset);
 	pd3dDeviceContext->DrawAuto();
 
-	pd3dDeviceContext->GSSetShader(NULL, NULL, 0);
+
+	// Clear
+	pd3dDeviceContext->GSSetShader(nullptr, nullptr, 0);
 	pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 //	pd3dDeviceContext->GSSetConstantBuffers(GS_CB_SLOT_PARTICLE, 1, nullptr);
 
-	pd3dDeviceContext->OMSetDepthStencilState(NULL, 0);
-	pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
+	ID3D11SamplerState* nullSampler[1] = { nullptr };
+	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+	pd3dDeviceContext->GSSetSamplers(0, 1, nullSampler);
+	pd3dDeviceContext->GSSetShaderResources(0, 1, nullSRV);
+
+	pd3dDeviceContext->OMSetDepthStencilState(nullptr, 0);
+	pd3dDeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 }
 
 ID3D11ShaderResourceView* CParticleSystem::CreateRandomTexture1DSRV(ID3D11Device *pd3dDevice)

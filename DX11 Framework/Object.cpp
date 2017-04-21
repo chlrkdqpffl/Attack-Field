@@ -92,7 +92,9 @@ void CGameObject::SetMesh(CMesh *pMesh, int nIndex)
 		}
 	}
 	BoundingBox::CreateMerged(m_bcMeshBoundingBox, m_bcMeshBoundingBox, pMesh->GetBoundingCube());
+	BoundingSphere::CreateFromBoundingBox(m_bsMeshBoundingSphere, m_bcMeshBoundingBox);
 	BoundingOrientedBox::CreateFromBoundingBox(m_bcMeshBoundingOBox, m_bcMeshBoundingBox);
+
 }
 
 void CGameObject::SetShader(CShader *pShader)
@@ -433,6 +435,17 @@ BoundingOrientedBox CGameObject::GetBoundingOBox(bool isLocal) const
 	}
 }
 
+BoundingSphere CGameObject::GetBoundingSphere(bool isLocal) const
+{
+	if (isLocal)
+		return m_bsMeshBoundingSphere;
+	else {
+		BoundingSphere bsSphere = m_bsMeshBoundingSphere;
+		bsSphere.Transform(bsSphere, m_mtxWorld);
+		return bsSphere;
+	}
+}
+
 void CGameObject::SetRight(XMFLOAT3 axis, bool isLocal)
 {
 	XMFLOAT4X4 mtx;
@@ -549,13 +562,32 @@ bool CGameObject::IsVisible(CCamera *pCamera)
 
 bool CGameObject::IsCollision(CGameObject* pObject)
 {
-	BoundingBox pTargetBBox = pObject->GetBoundingBox();
-	BoundingBox pSourceBBox = GetBoundingBox();
+	XMFLOAT3 corner[8];
 
-	if (pSourceBBox.Intersects(pTargetBBox))
-		return true;
-	else
-		return false;
+	pObject->GetBoundingOBox().GetCorners(corner);
+
+	/*
+	if (m_f3Velocity.x != 0) {
+		if (m_f3Velocity.x > 0) {
+			m_bcMeshBoundingOBox.GetCorners(corner);
+
+		}
+		else {
+
+
+		}
+		XMVECTOR forwardPos = XMLoadFloat3(&bcObox.Center) + XMVectorSet(0, bcObox.Extents.z, 0, 0);
+		if (COLLISION_MGR->RayCastCollision(m_infoCollision, forwardPos, GetLook())) {
+			if (m_infoCollision.m_fDistance <= 0.0f) {
+			
+			}
+		}
+	}
+
+	*/
+
+
+	return false;
 }
 
 void CGameObject::Update(float fTimeElapsed)

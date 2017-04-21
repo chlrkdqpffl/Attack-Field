@@ -51,12 +51,14 @@ protected:
 	CMaterial						*m_pMaterial = nullptr;
 	CShader							*m_pShader = nullptr;
 	CAxisObjects					*m_pAxisObject = nullptr;
-	
-	// Collision Info
+	XMFLOAT3						m_f3Velocity = XMFLOAT3(0, 0, 0);
+
+	// ----- Collision ------ //
 	bool							m_bIsCollision = false;
-//	BoundingBox						m_bcBoundingBox;			// 사용자가 정하는 바운딩 박스
-	BoundingBox						m_bcMeshBoundingBox;		// 실제 메쉬 바운딩 박스
-	BoundingOrientedBox				m_bcMeshBoundingOBox;		// 테스트용 OBB 박스
+
+	BoundingBox						m_bcMeshBoundingBox;		// 카메라 컬링용 Box
+	BoundingSphere					m_bsMeshBoundingSphere;
+	BoundingOrientedBox				m_bcMeshBoundingOBox;
 	CollisionInfo					m_infoCollision;
 	CBoundingBoxMesh				*m_pBoundingBoxMesh	= nullptr;
 
@@ -103,7 +105,6 @@ public:
 	void SetShadowMatrix(XMVECTOR d3dxvLight, XMVECTOR d3dxPlane);
 
 	void SetMaterial(CMaterial *pMaterial);
-//	void SetMaterial(int textureCount, TextureTag tag, ...);
 	void SetMaterial(int textureCount, ...);
 	CMaterial *GetMaterial() { return(m_pMaterial); }
 
@@ -127,6 +128,7 @@ public:
 	void SetShaderTag(ShaderTag tag) { m_tagShader = tag; } ShaderTag GetShaderTag() const { return m_tagShader; }
 	void SetMeshTag(MeshTag tag) { m_tagMesh = tag; }		MeshTag GetMeshTag() const { return m_tagMesh; }
 	BoundingBox GetBoundingBox(bool isLocal = false) const;
+	BoundingSphere GetBoundingSphere(bool isLocal = false) const;
 	BoundingOrientedBox GetBoundingOBox(bool isLocal = false) const;
 	bool GetCollisionCheck() const { return m_bIsCollision; }
 	void SetCollision(bool collision) { m_bIsCollision = collision; }

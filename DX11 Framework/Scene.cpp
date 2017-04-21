@@ -84,7 +84,8 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			}
 			case '5':
 			{
-				//	cout << "ºó ¼Ó¼º" << endl;
+				cout << "G-Buffer Option" << endl;
+				GLOBAL_MGR->g_bShowGBuffer= !GLOBAL_MGR->g_bShowGBuffer;
 				break;
 			}
 		
@@ -235,7 +236,7 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 			pNearestObject = pIntersectedObject;
 		}
 	}
-	
+
 	return(pNearestObject);
 }
 
@@ -289,4 +290,7 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 	
 	for (auto instancedShaderObject : m_vecInstancedObjectsShaderContainer)
 		instancedShaderObject->Render(pd3dDeviceContext, pCamera);	
+
+	if (m_pSphereObject)
+		m_pSphereObject->Render(pd3dDeviceContext, pCamera);
 }

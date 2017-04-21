@@ -169,6 +169,7 @@
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="FbxMeshData.cpp" />
     <ClCompile Include="GBuffer.cpp" />
+    <ClCompile Include="GBufferShader.cpp" />
     <ClCompile Include="GlobalVariableManager.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
     <ClCompile Include="MapDataManager.cpp" />
@@ -183,6 +184,7 @@
     </ClCompile>
     <ClCompile Include="SkinnedObject.cpp" />
     <ClCompile Include="SkyBoxShader.cpp" />
+    <ClCompile Include="SphereObject.cpp" />
     <ClCompile Include="TerrainShader.cpp" />
     <ClCompile Include="TerroristCharacterObject.cpp" />
     <ClCompile Include="TextureToScreenRectMesh.cpp" />
@@ -246,6 +248,7 @@
     <ClInclude Include="ConstantBuffer_Slot.h" />
     <ClInclude Include="FbxMeshData.h" />
     <ClInclude Include="GBuffer.h" />
+    <ClInclude Include="GBufferShader.h" />
     <ClInclude Include="GlobalVariableManager.h" />
     <ClInclude Include="LoadingScene.h" />
     <ClInclude Include="MapDataManager.h" />
@@ -287,6 +290,7 @@
     <ClInclude Include="SkyBoxMesh.h" />
     <ClInclude Include="SkyBoxShader.h" />
     <ClInclude Include="SpaceShipCamera.h" />
+    <ClInclude Include="SphereObject.h" />
     <ClInclude Include="StateObjectManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -338,6 +342,7 @@
     <None Include="Shader HLSL File\Blurring.hlsli" />
     <None Include="Shader HLSL File\BoundingBox.hlsli" />
     <None Include="Shader HLSL File\CharacterSkinnedNormal.hlsli" />
+    <None Include="Shader HLSL File\common.hlsli" />
     <None Include="Shader HLSL File\DeferredShading.hlsli" />
     <None Include="Shader HLSL File\DisplacementMap.hlsli" />
     <None Include="Shader HLSL File\CharacterSkinned.hlsli" />
@@ -346,6 +351,7 @@
     <None Include="Shader HLSL File\Light.hlsli" />
     <None Include="Shader HLSL File\Normal.hlsli" />
     <None Include="Shader HLSL File\NormalMap.hlsli" />
+    <None Include="Shader HLSL File\PostProcessing.hlsli" />
     <None Include="Shader HLSL File\Terrain.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </None>

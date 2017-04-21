@@ -100,6 +100,12 @@
     <Filter Include="Objects\Billboard">
       <UniqueIdentifier>{16748d53-bd13-4cb5-93ea-0ffd814ef231}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HLSL\Deferred">
+      <UniqueIdentifier>{b7912b48-bd30-4e80-b6bd-a96120c8225b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deferred">
+      <UniqueIdentifier>{181e45a1-6e7f-4dbd-9614-0bad023d9bed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -306,8 +312,14 @@
     <ClCompile Include="Material.cpp">
       <Filter>소스 파일\Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="GBufferShader.cpp">
+      <Filter>Deferred</Filter>
+    </ClCompile>
     <ClCompile Include="GBuffer.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Deferred</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereObject.cpp">
+      <Filter>소스 파일\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -533,8 +545,14 @@
     <ClInclude Include="Material.h">
       <Filter>헤더 파일\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="GBufferShader.h">
+      <Filter>Deferred</Filter>
+    </ClInclude>
     <ClInclude Include="GBuffer.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Deferred</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereObject.h">
+      <Filter>헤더 파일\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -571,9 +589,6 @@
     <None Include="Shader HLSL File\NormalMap.hlsli">
       <Filter>HLSL</Filter>
     </None>
-    <None Include="Shader HLSL File\Blurring.hlsli">
-      <Filter>HLSL</Filter>
-    </None>
     <None Include="Shader HLSL File\TextureToScreen.hlsli">
       <Filter>HLSL</Filter>
     </None>
@@ -596,11 +611,20 @@
       <Filter>HLSL</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
-    <None Include="Shader HLSL File\GBuffer.hlsli">
-      <Filter>HLSL</Filter>
+    <None Include="Shader HLSL File\Blurring.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\common.hlsli">
+      <Filter>HLSL\Deferred</Filter>
     </None>
     <None Include="Shader HLSL File\DeferredShading.hlsli">
-      <Filter>HLSL</Filter>
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\GBuffer.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\PostProcessing.hlsli">
+      <Filter>HLSL\Deferred</Filter>
     </None>
   </ItemGroup>
 </Project>

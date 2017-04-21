@@ -107,3 +107,19 @@ bool CCollisionManager::OBBCollision(CollisionInfo& info, BoundingOrientedBox bc
 	}
 	return false;
 }
+
+bool CCollisionManager::CheckCollision(CollisionInfo& info, CGameObject* pOriginObject, CGameObject* pTargetObject)
+{
+	// 1. Sphere
+	if (!pOriginObject->GetBoundingSphere().Intersects(pTargetObject->GetBoundingSphere()))
+		return false;
+
+	// 2. OBB			-> static Mesh에 대해서는 AABB 적용하기
+	if (!pOriginObject->GetBoundingOBox().Intersects(pTargetObject->GetBoundingOBox()))
+		return false;
+	
+	// 3. Primitive
+//	if (!p)
+
+	return true;
+}

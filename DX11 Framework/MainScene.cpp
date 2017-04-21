@@ -22,6 +22,9 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 		if (m_pSelectedObject) {
 			cout << "ID : " << m_pSelectedObject->GetObjectID() << endl;
 			cout << "Position : " << m_pSelectedObject->GetPosition().x << ", " << m_pSelectedObject->GetPosition().y << ", " << m_pSelectedObject->GetPosition().z << endl;
+			cout << "Bounding Center : " << m_pSelectedObject->GetBoundingSphere().Center.x << ", " << m_pSelectedObject->GetBoundingSphere().Center.y<< ", " << m_pSelectedObject->GetBoundingSphere().Center.z << endl;
+			cout << "Bounding Radius : " << m_pSelectedObject->GetBoundingSphere().Radius << endl;
+			cout << "Bounding Box Extent : " << m_pSelectedObject->GetBoundingOBox().Extents.x << ", " << m_pSelectedObject->GetBoundingOBox().Extents.y << ", " << m_pSelectedObject->GetBoundingOBox().Extents.z << endl;
 		}
 		m_pPlayer->SetKeyDown(KeyInput::eLeftMouse);
 	//	((CCharacterObject*)m_vecObjectsContainer.back())->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
@@ -176,6 +179,10 @@ void CMainScene::Initialize()
 
 	m_GBuffer = new CGBuffer();
 	m_GBuffer->Initialize(m_pd3dDevice);
+
+	m_pSphereObject = new CSphereObject();
+	m_pSphereObject->CreateObjectData(m_pd3dDevice);
+	m_vecObjectsContainer.push_back(m_pSphereObject);
 
 #pragma region [Create SkyBox]
 #ifdef _WITH_SKYBOX_TEXTURE_ARRAY
@@ -985,17 +992,27 @@ void CMainScene::UpdateObjects(float fTimeElapsed)
 	// Particle
 	m_fGametime += fTimeElapsed;
 	m_pParticleSystem->Update(fTimeElapsed, m_fGametime);
+
+
+
+	XMFLOAT3 corner[8];
+
+	if (m_pSelectedObject) {
+		m_pSelectedObject->GetBoundingOBox().GetCorners(corner);
+		m_pSphereObject->SetPosition(corner[TWBAR_MGR->g_nSelect]);
+
+		m_pSphereObject->SetSizeType(1);
+		ShowXMFloat3(m_pSphereObject->GetPosition());
+	}
 }
 
 void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-//	m_GBuffer->OnPreRender(pd3dDeviceContext);
+	// =============== Deferred Rendering ================== //
+	m_GBuffer->OnPreRender(pd3dDeviceContext);
 
-	// ===== Scene Rendering ===== //
+	// ------ Start Scene Rendering ------ //
 	CScene::Render(pd3dDeviceContext, pCamera);
-
-	if (GLOBAL_MGR->g_bShowWorldAxis)
-		m_pWorldCenterAxis->Render(pd3dDeviceContext, pCamera);
 
 	if (m_pTerrain)
 		if (m_pTerrain->IsVisible(pCamera))
@@ -1004,20 +1021,32 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	m_pPlayerCharacter->Render(m_pd3dDeviceContext, m_pCamera);
 
 	m_pParticleSystem->Render(pd3dDeviceContext);
+
+	// ------ End Scene Rendering ------ //
+
 	m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
+
+	m_GBuffer->OnPostRender(pd3dDeviceContext);
+	m_GBuffer->OnPrepareForUnpack(pd3dDeviceContext);
+
+	pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthReadOnlyDSV());
+
+	// ------ Final Scene Rendering ------ //
+	m_GBuffer->DeferredRender(pd3dDeviceContext);
+
+	// =============== Rendering Option =================== //
+
+	if (GLOBAL_MGR->g_bShowWorldAxis)
+		m_pWorldCenterAxis->Render(pd3dDeviceContext, pCamera);
 
 	if (GLOBAL_MGR->g_vRenderOption.y)
 		RenderBoundingBox();
 
-//	m_GBuffer->OnPostRender(pd3dDeviceContext);
-	m_GBuffer->OnPrepareForUnpack(pd3dDeviceContext);
-
-	// =============== Deferred Rendering ================== //
-//	pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, nullptr);
-
-//	m_GBuffer->Render(pd3dDeviceContext);
-
-//	pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthDSV());
+	if (GLOBAL_MGR->g_bShowGBuffer) {
+		pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, nullptr);
+		m_GBuffer->Render(pd3dDeviceContext);
+		pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthDSV());
+	}
 }
 
 void CMainScene::RenderBoundingBox()
