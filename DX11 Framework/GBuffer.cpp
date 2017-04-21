@@ -173,7 +173,7 @@ void CGBuffer::Initialize(ID3D11Device* pDevice)
 	m_pSpecShader = new CGBufferShader(GBufferType::eSpec);
 	m_pSpecShader->CreateShader(pDevice);
 
-	/*
+
 	ID3D11InputLayout *pd3dVertexLayout;
 	D3D11_INPUT_ELEMENT_DESC d3dInputElements[] =
 	{
@@ -181,11 +181,10 @@ void CGBuffer::Initialize(ID3D11Device* pDevice)
 	};
 	UINT nElements = ARRAYSIZE(d3dInputElements);
 	
-	CShader::CreateVertexShaderFromFile(pDevice, L"Shader HLSL File/GBuffer.hlsli", "VSGBuffer", "vs_5_0", &m_pDeferrdVertexShader, d3dInputElements, nElements, &pd3dVertexLayout);
+	CShader::CreateVertexShaderFromFile(pDevice, L"Shader HLSL File/PostProcessing.hlsli", "VSPostProcessing", "vs_5_0", &m_pDeferrdVertexShader, d3dInputElements, nElements, &pd3dVertexLayout);
 	pd3dVertexLayout->Release();
 	
-	CShader::CreatePixelShaderFromFile(pDevice, L"Shader HLSL File/GBuffer.hlsli", "PSGBuffer", "ps_5_0", &m_pDeferrdPixelShader);
-	*/
+	CShader::CreatePixelShaderFromFile(pDevice, L"Shader HLSL File/PostProcessing.hlsli", "PSPostProcessing", "ps_5_0", &m_pDeferrdPixelShader);
 }
 
 void CGBuffer::OnPreRender(ID3D11DeviceContext* pd3dImmediateContext)

@@ -23,6 +23,7 @@
 #include "AxisObjects.h"
 #include "UIObject.h"
 #include "BillboardObject.h"
+#include "SphereObject.h"
 
 // ----- Character -----
 #include "TerrainPlayer.h"
@@ -141,4 +142,6 @@ protected:
 	vector<CGameObject*>				m_vecObjectsContainer;
 	vector<CInstancedObjectsShader*>	m_vecInstancedObjectsShaderContainer;
 	CObjectsShader						m_vecShaderObjectContainer;
+
+	CSphereObject*						m_pSphereObject = nullptr;
 };

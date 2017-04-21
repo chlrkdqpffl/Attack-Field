@@ -26,6 +26,7 @@ struct MESHINTERSECTINFO {
 	float	m_fU;
 	float	m_fV;
 	float	m_fDistance;
+	XMFLOAT3 m_f3Normal;
 };
 
 //------------------------------------------------------------------------------------------------

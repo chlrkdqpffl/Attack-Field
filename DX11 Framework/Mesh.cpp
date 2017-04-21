@@ -161,7 +161,7 @@ int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRay
 	if (D3DXIntersectTri((D3DXVECTOR3 *)&v0, (D3DXVECTOR3 *)&v1, (D3DXVECTOR3 *)&v2, (D3DXVECTOR3 *)pd3dxvRayPosition, (D3DXVECTOR3 *)pd3dxvRayDirection, &fuHitBaryCentric, &fvHitBaryCentric, &fHitDistance))
 #else
 		if (::RayIntersectTriangle(pd3dxvRayPosition, pd3dxvRayDirection, &v0, &v1, &v2, &fuHitBaryCentric, &fvHitBaryCentric, &fHitDistance))
-#endif
+#endif 
 		{
 			if (fHitDistance < fNearHitDistance)
 			{
@@ -172,6 +172,12 @@ int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRay
 					pd3dxIntersectInfo->m_fU = fuHitBaryCentric;
 					pd3dxIntersectInfo->m_fV = fvHitBaryCentric;
 					pd3dxIntersectInfo->m_fDistance = fHitDistance;
+
+					XMVECTOR edge1 = v1 - v0;
+					XMVECTOR edge2 = v2 - v0;
+					XMVECTOR normal = XMVector3Cross(edge1, edge2);
+					normal = XMVector3Normalize(normal);
+					XMStoreFloat3(&pd3dxIntersectInfo->m_f3Normal, -1 * normal);		// -1을 해줘야 정확하던데 왜그런지 미확인
 				}
 			}
 			nIntersections++;

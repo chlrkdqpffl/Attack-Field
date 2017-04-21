@@ -20,4 +20,9 @@ public:
 	bool RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
 	bool AABBCollision(CollisionInfo& info, BoundingBox bcBox);
 	bool OBBCollision(CollisionInfo& info, BoundingOrientedBox bcObbox);
+
+
+
+	// User Define
+	bool CheckCollision(CollisionInfo& info, CGameObject* pObjectA, CGameObject* pObjectB);
 };

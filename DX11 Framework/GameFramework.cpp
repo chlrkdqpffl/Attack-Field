@@ -44,12 +44,13 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(489265);
-//	_CrtSetBreakAlloc(286);
+//	_CrtSetBreakAlloc(918);
+//	_CrtSetBreakAlloc(216);
 
 //	_CrtSetBreakAlloc(205);		// 16
 //	_CrtSetBreakAlloc(206);		// 16
 //	_CrtSetBreakAlloc(210);		// 64
+	
 #endif
 
 	m_hInstance = hInstance;

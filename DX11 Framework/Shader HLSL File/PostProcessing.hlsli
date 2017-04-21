@@ -1,5 +1,5 @@
 #include "common.hlsli"
-
+#include "Light.hlsli"
 //	fxc /E PSGBuffer /T ps_5_0 /Od /Zi /Fo CompiledShader.fxo GBuffer.hlsli
 
 static const float2 arrBasePos[4] =
@@ -28,39 +28,13 @@ VS_OUTPUT VSPostProcessing(uint VertexID : SV_VertexID)
     return Output;
 }
 
-VS_OUTPUT VSGBuffer(VS_INPUT input)
+float4 PSPostProcessing(VS_OUTPUT input) : SV_Target
 {
-    VS_OUTPUT output = (VS_OUTPUT) 0;
-    output.position = float4(input.position, 1.0f);
-    output.texCoord = input.texCoord;
-    return (output);
-}
+    SURFACE_DATA GBufferData = UnpackGBuffer_Loc(input.Position.xy);
 
-float4 PSGBuffer_LinearDepth(VS_OUTPUT input) : SV_Target
-{
-    SURFACE_DATA gbd = UnpackGBuffer(input.texCoord.xy);
+    float3 position = CalcWorldPos(input.texCoord, GBufferData.LinearDepth);
+    float4 cIllumination = Lighting(position, GBufferData.Normal * 2 - 1);
 
-    return float4(1.0 - saturate(gbd.LinearDepth / 75.0), 1.0 - saturate(gbd.LinearDepth / 125.0), 1.0 - saturate(gbd.LinearDepth / 200.0), 0.0);
-}
-
-float4 PSGBuffer_Diffuse(VS_OUTPUT input) : SV_Target
-{
-    SURFACE_DATA gbd = UnpackGBuffer(input.texCoord.xy);
-
-    return float4(gbd.Color.xyz, 0.0);
-}
-
-float4 PSGBuffer_Normal(VS_OUTPUT input) : SV_Target
-{
-    SURFACE_DATA gbd = UnpackGBuffer(input.texCoord.xy);
-
-    return float4(gbd.Normal.xyz * 0.5 + 0.5, 0.0);
- //   return float4(gbd.Normal.xyz, 0.0);
-}
-
-float4 PSGBuffer_Spec(VS_OUTPUT input) : SV_Target
-{
-    SURFACE_DATA gbd = UnpackGBuffer(input.texCoord.xy);
-
-    return float4(gbd.SpecIntensity, gbd.SpecPow, 0.0, 0.0);
+    //return float4((GBufferData.Color), 1) * cIllumination;
+    return float4((GBufferData.Color), 1);
 }

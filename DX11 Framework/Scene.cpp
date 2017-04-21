@@ -236,7 +236,7 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 			pNearestObject = pIntersectedObject;
 		}
 	}
-	
+
 	return(pNearestObject);
 }
 
@@ -290,4 +290,7 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 	
 	for (auto instancedShaderObject : m_vecInstancedObjectsShaderContainer)
 		instancedShaderObject->Render(pd3dDeviceContext, pCamera);	
+
+	if (m_pSphereObject)
+		m_pSphereObject->Render(pd3dDeviceContext, pCamera);
 }

@@ -45,6 +45,8 @@ void CAntTweakBarManager::InitializeManager()
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Rotate X", TW_TYPE_FLOAT, &g_xmf3SelectObjectRotate.x, "group = SelectObject step=5");
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Rotate Y", TW_TYPE_FLOAT, &g_xmf3SelectObjectRotate.y, "group = SelectObject step=5");
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Rotate Z", TW_TYPE_FLOAT, &g_xmf3SelectObjectRotate.z, "group = SelectObject step=5");
+
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Number", TW_TYPE_UINT32, &g_nSelect, "");
 }
 
 void CAntTweakBarManager::ReleseManager()
