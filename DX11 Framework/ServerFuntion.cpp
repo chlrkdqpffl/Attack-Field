@@ -1,0 +1,204 @@
+#pragma once
+
+#include "stdafx.h"
+#include "Protocol.h"
+#include "ServerFuntion.h"
+#include "GameFramework.h"
+
+
+
+#define ServerPort			9000
+#define BUF_SIZE			1024
+#define	WM_SOCKET			WM_USER + 1
+
+CGameFramework GameFramework;
+
+ServerFuntion::ServerFuntion()
+{
+}
+
+ServerFuntion::~ServerFuntion()
+{
+
+}
+void ServerFuntion::processpacket(char *ptr)
+{
+	static bool first_time = true;
+	sc_packet_pos*			my_Pos_packet;
+	sc_packet_put_player*	my_put_packet;
+	sc_rotate_vector*		my_put_rotate;
+	int id = 0;
+	switch (ptr[1])
+	{
+	case 1:	//계속 받을때
+		my_Pos_packet = reinterpret_cast<sc_packet_pos *>(ptr);
+		id = my_Pos_packet->id;
+
+		if (id == m_myid)
+		{
+			//memcpy(my_Pos_packet, my_Pos_packet, ptr[0]);
+			SCENE_MGR->g_nowScene->GetPlayer()->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 1.0f));
+		}
+		break;
+	case 2:	//처음 받았을때.
+	{
+		my_put_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
+		id = my_put_packet->id;
+		if (first_time)
+
+		{
+			m_myid = id;
+
+			first_time = false;
+		}
+		if (id == m_myid)
+		{
+			//memcpy(my_put_packet, my_put_packet, ptr[0]);
+			SCENE_MGR->g_nowScene->GetPlayer()->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 1.0f));
+		}
+		//else if (id<500)
+		//{
+		//	other[id].x = my_packet->x;
+		//	other[id].y = my_packet->y;
+		//	other[id].z = my_packet->z;
+		//}
+	}
+	break;
+
+	case 3:
+		break;
+	case 4:
+	{
+		sc_packet_remove_player *my_packet = reinterpret_cast<sc_packet_remove_player *>(ptr);
+		int other_id = my_packet->id;
+		if (other_id == m_myid) {
+			//상태를 없애준다.
+		}
+	}
+	break;
+	case 5:	//rotate된 값 처리
+
+		my_put_rotate = reinterpret_cast<sc_rotate_vector *>(ptr);
+		id = my_put_rotate->id;
+
+		if (id == m_myid)
+		{
+			//memcpy(my_put_packet, my_put_packet, ptr[0]);
+		}
+		//else if (id<500)
+		//{
+		//	other[id].x = my_packet->x;
+		//	other[id].y = my_packet->y;
+		//	other[id].z = my_packet->z;
+		//}
+		break;
+	default:
+		std::cout << "Unknown PACKET type :" << (int)ptr[1] << "\n";
+		break;
+
+
+
+	}
+
+
+
+	//cout << GameFramework.GetCamera().GetPlayer()->GetPosition().x<<" "<< GameFramework.GetCamera().GetPlayer()->GetPosition().y<<" "<< GameFramework.GetCamera().GetPlayer()->GetPosition().z <<endl;
+
+}
+void ServerFuntion::ReadPacket(SOCKET sock)
+{
+	DWORD iobyte, ioflag = 0;
+
+	int ret = WSARecv(sock, &recv_wsabuf, 1, &iobyte, &ioflag, NULL, NULL);
+	if (ret) {
+		int err_code = WSAGetLastError();
+		printf("Recv Error [%d]\n", err_code);
+	}
+
+	BYTE *ptr = reinterpret_cast<BYTE *>(recv_buffer);
+
+	while (0 != iobyte) {
+		if (0 == in_packet_size) in_packet_size = ptr[0];
+		if (iobyte + saved_packet_size >= in_packet_size) {
+			memcpy(packet_buffer + saved_packet_size, ptr, in_packet_size - saved_packet_size);
+			processpacket(packet_buffer);
+			ptr += in_packet_size - saved_packet_size;
+			iobyte -= in_packet_size - saved_packet_size;
+			in_packet_size = 0;
+			saved_packet_size = 0;
+		}
+		else {
+			memcpy(packet_buffer + saved_packet_size, ptr, iobyte);
+			saved_packet_size += iobyte;
+			iobyte = 0;
+		}
+	}
+}
+
+void ServerFuntion::error_display(char *msg, int err_num)
+{
+	LPVOID lpMsgBuf;
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL, err_num,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR)&lpMsgBuf, 0, NULL);
+	printf("[%s] %s", msg, (char *)lpMsgBuf);
+	LocalFree(lpMsgBuf);
+}
+
+void ServerFuntion::Server_init()
+{
+	std::cout << " ip 입력 : ";
+	char ip[20] = "127.0.0.1";
+	rewind(stdin);
+	//std::cin.clear();
+	//std::cin >> ip;
+
+	WSADATA wsa;
+	WSAStartup(MAKEWORD(2, 2), &wsa);
+	m_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, 0);
+
+	SOCKADDR_IN Serveraddr;
+	ZeroMemory(&Serveraddr, sizeof(SOCKADDR_IN));
+	Serveraddr.sin_family = AF_INET;
+	Serveraddr.sin_port = htons(ServerPort);
+	Serveraddr.sin_addr.s_addr = inet_addr(ip);
+
+	int Result = WSAConnect(m_socket, (sockaddr *)&Serveraddr, sizeof(Serveraddr), NULL, NULL, NULL, NULL);
+
+	if (Result == SOCKET_ERROR) {
+		cout << "연결안됨 !!";
+		Sleep(3000);
+		exit(1);
+	}
+
+	
+
+	WSAAsyncSelect(m_socket, m_handle, WM_SOCKET, FD_CLOSE | FD_READ);
+
+	send_wsabuf.buf = send_buffer;
+	send_wsabuf.len = BUF_SIZE;
+	recv_wsabuf.buf = recv_buffer;
+	recv_wsabuf.len = BUF_SIZE;
+
+
+}
+
+void ServerFuntion::Sendpacket(unsigned char* Data)
+{
+	DWORD iobyte;
+
+	send_wsabuf.len = Data[0];
+	send_wsabuf.buf = reinterpret_cast<char *>(send_buffer);
+	memcpy(send_buffer, Data, Data[0]);
+
+
+	int retval = WSASend(m_socket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+
+	if (retval) {
+		int error_code = WSAGetLastError();
+		printf("Error while sending packet [%d]", error_code);
+	}
+
+}

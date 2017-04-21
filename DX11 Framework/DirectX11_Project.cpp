@@ -6,12 +6,18 @@
 
 #include "GameFramework.h"
 
+//서버추가
+#include "protocol.h"
+#include "ServerFuntion.h"
+
 #define MAX_LOADSTRING 100
 
 TCHAR				szTitle[MAX_LOADSTRING];				// 제목 표시줄 텍스트입니다.
 TCHAR				szWindowClass[MAX_LOADSTRING];			// 기본 창 클래스 이름입니다.
 
 CGameFramework		gGameFramework;      
+
+
 
 BOOL InitInstance(HINSTANCE, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -76,6 +82,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	HWND hMainWnd = CreateWindow(szWindowClass, szTitle, dwStyle, 150, 30, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);	// 윈도우 창 시작 위치 조절 가능
 	if (!hMainWnd) return(FALSE);
 
+	gGameFramework.sethandle(hMainWnd);
+
+	gGameFramework.Server_init();
+
 	if (!gGameFramework.OnCreate(hInstance, hMainWnd)) return(FALSE);
 
 	ShowWindow(hMainWnd, nCmdShow);
@@ -117,6 +127,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			hdc = BeginPaint(hWnd, &ps);
 			EndPaint(hWnd, &ps);
 			break;
+
+		case WM_SOCKET:
+		{
+			if (WSAGETSELECTERROR(lParam)) {
+				closesocket((SOCKET)wParam);
+				exit(-1);
+				break;
+			}
+			switch (WSAGETSELECTEVENT(lParam)) {
+			case FD_READ:
+				gGameFramework.ReadPacket((SOCKET)wParam);
+				break;
+			case FD_CLOSE:
+				closesocket((SOCKET)wParam);
+				exit(-1);
+				break;
+			}
+
+		}
+		break;
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			break;

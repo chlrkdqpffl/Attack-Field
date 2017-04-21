@@ -29,6 +29,8 @@ CGameFramework::CGameFramework()
 	#ifdef USE_CONSOLE
 		AllocConsole();
 		freopen("CONOUT$", "wt", stdout);
+		freopen("CONIN$", "rt", stdin);
+		std::ios::sync_with_stdio();
 	#endif
 //#endif
 }
