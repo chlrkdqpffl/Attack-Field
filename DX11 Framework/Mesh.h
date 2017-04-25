@@ -21,12 +21,16 @@
 
 #define VERTEX_BLENDING_SHADER			0x1000
 
-struct MESHINTERSECTINFO {
-	DWORD	m_dwFaceIndex;
-	float	m_fU;
-	float	m_fV;
-	float	m_fDistance;
-	XMFLOAT3 m_f3Normal;
+class CGameObject;
+
+struct CollisionInfo
+{
+	CGameObject*	m_pHitObject = nullptr;
+	float			m_fDistance = FLT_MAX;
+	XMFLOAT3		m_f3HitNormal = XMFLOAT3(0, 0, 0);
+	DWORD			m_dwFaceIndex;
+	float			m_fU;
+	float			m_fV;
 };
 
 //------------------------------------------------------------------------------------------------
@@ -95,7 +99,7 @@ public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 	virtual void RenderInstanced(ID3D11DeviceContext *pd3dDeviceContext, int nInstances = 0, int nStartInstance = 0);
 
-	int CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRayDirection, MESHINTERSECTINFO *pd3dxIntersectInfo);
+	int CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRayDirection, CollisionInfo *pd3dxIntersectInfo);
 };
 
 //------------------------------------------------------------------------------------------------

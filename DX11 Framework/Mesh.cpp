@@ -141,7 +141,7 @@ bool RayIntersectTriangle(XMVECTOR *pd3dxvOrigin, XMVECTOR *pd3dxvDirection, XMV
 
 #define _WITH_D3DX_LIBRARY
 
-int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRayDirection, MESHINTERSECTINFO *pd3dxIntersectInfo)
+int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRayDirection, CollisionInfo *pd3dxIntersectInfo)
 {
 	int nIntersections = 0;
 	BYTE *pbPositions = (BYTE *)m_pPositions + m_pnVertexOffsets[0];
@@ -157,27 +157,27 @@ int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRay
 		v0 = *(XMVECTOR *)(pbPositions + ((m_pnIndices) ? (m_pnIndices[(i*nOffset) + 0]) : ((i*nOffset) + 0)) * m_pnVertexStrides[0]);
 		v1 = *(XMVECTOR *)(pbPositions + ((m_pnIndices) ? (m_pnIndices[(i*nOffset) + 1]) : ((i*nOffset) + 1)) * m_pnVertexStrides[0]);
 		v2 = *(XMVECTOR *)(pbPositions + ((m_pnIndices) ? (m_pnIndices[(i*nOffset) + 2]) : ((i*nOffset) + 2)) * m_pnVertexStrides[0]);
+
 #ifdef _WITH_D3DX_LIBRARY
 	if (D3DXIntersectTri((D3DXVECTOR3 *)&v0, (D3DXVECTOR3 *)&v1, (D3DXVECTOR3 *)&v2, (D3DXVECTOR3 *)pd3dxvRayPosition, (D3DXVECTOR3 *)pd3dxvRayDirection, &fuHitBaryCentric, &fvHitBaryCentric, &fHitDistance))
 #else
 		if (::RayIntersectTriangle(pd3dxvRayPosition, pd3dxvRayDirection, &v0, &v1, &v2, &fuHitBaryCentric, &fvHitBaryCentric, &fHitDistance))
 #endif 
-		{
-			if (fHitDistance < fNearHitDistance)
-			{
+		{ 
+			cout << "거리 : " << fHitDistance << endl;
+			if (fHitDistance < fNearHitDistance){
 				fNearHitDistance = fHitDistance;
-				if (pd3dxIntersectInfo)
-				{
+				if (pd3dxIntersectInfo)	{
 					pd3dxIntersectInfo->m_dwFaceIndex = i;
 					pd3dxIntersectInfo->m_fU = fuHitBaryCentric;
 					pd3dxIntersectInfo->m_fV = fvHitBaryCentric;
 					pd3dxIntersectInfo->m_fDistance = fHitDistance;
-
+				
 					XMVECTOR edge1 = v1 - v0;
 					XMVECTOR edge2 = v2 - v0;
 					XMVECTOR normal = XMVector3Cross(edge1, edge2);
 					normal = XMVector3Normalize(normal);
-					XMStoreFloat3(&pd3dxIntersectInfo->m_f3Normal, -1 * normal);		// -1을 해줘야 정확하던데 왜그런지 미확인
+					XMStoreFloat3(&pd3dxIntersectInfo->m_f3HitNormal, -1 * normal);		// -1을 해줘야 정확하던데 왜그런지 미확인
 				}
 			}
 			nIntersections++;

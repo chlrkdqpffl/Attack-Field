@@ -37,6 +37,11 @@ CPlayer::~CPlayer()
 	if (m_pCamera) delete m_pCamera;
 }
 
+bool CPlayer::IsMoving() const
+{
+	return (m_d3dxvVelocity.x != 0 || m_d3dxvVelocity.y != 0 || m_d3dxvVelocity.z != 0);
+}
+
 void CPlayer::CreateShaderVariables(ID3D11Device *pd3dDevice)
 {
 }
@@ -186,10 +191,12 @@ void CPlayer::Update(float fTimeElapsed)
 		m_d3dxvVelocity.z *= (fMaxVelocityXZ / fLength);
 	}
 	
+	
 	// Apply Gravity
 	float fMaxVelocityY = m_fMaxVelocityY * fTimeElapsed;
 	fLength = sqrtf(m_d3dxvVelocity.y * m_d3dxvVelocity.y);
 	if (fLength > fMaxVelocityY) m_d3dxvVelocity.y *= (fMaxVelocityY / fLength);
+	m_d3dxvVelocity.y = 0;		// 임시 고정
 
 	Move(XMLoadFloat3(&m_d3dxvVelocity));
 	if (m_bIsFloorCollision) OnPlayerUpdated(fTimeElapsed);

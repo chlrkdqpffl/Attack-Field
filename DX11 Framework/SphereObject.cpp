@@ -18,13 +18,13 @@ void CSphereObject::CreateObjectData(ID3D11Device *pd3dDevice)
 
 void CSphereObject::CreateMesh(ID3D11Device *pd3dDevice)
 {
-	CMesh* pMesh = new CSphereMeshDiffused(pd3dDevice, 1, 10, 10, XMVectorSet(1, 0, 0, 0));
+	CMesh* pMesh = new CSphereMeshDiffused(pd3dDevice, 0.2f, 10, 10, XMVectorSet(1, 0, 0, 0));
 	SetMesh(pMesh, 0);
 
-	pMesh = new CSphereMeshDiffused(pd3dDevice, 5, 10, 10, XMVectorSet(1, 0, 0, 0));
+	pMesh = new CSphereMeshDiffused(pd3dDevice, 1, 10, 10, XMVectorSet(1, 0, 0, 0));
 	SetMesh(pMesh, 1);
 
-	pMesh = new CSphereMeshDiffused(pd3dDevice, 10, 10, 10, XMVectorSet(1, 0, 0, 0));
+	pMesh = new CSphereMeshDiffused(pd3dDevice, 5, 10, 10, XMVectorSet(1, 0, 0, 0));
 	SetMesh(pMesh, 2);
 }
 

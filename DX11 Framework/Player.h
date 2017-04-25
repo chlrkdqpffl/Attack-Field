@@ -49,6 +49,7 @@ public:
 	void Update(float fTimeElapsed);
 	void UpdateKeyInput(float fTimeElapsed);
 
+	bool IsMoving() const;
 	// ----- Get, Setter ----- //
 	XMVECTOR GetvPosition() const { return(XMLoadFloat3(&m_d3dxvPosition)); }
 	XMFLOAT3 GetPosition() const {	return m_d3dxvPosition; }

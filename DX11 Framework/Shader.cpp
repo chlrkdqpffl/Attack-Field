@@ -415,12 +415,12 @@ void CObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCa
 	}
 }
 
-CGameObject *CObjectsShader::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, MESHINTERSECTINFO *pd3dxIntersectInfo)
+CGameObject *CObjectsShader::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, CollisionInfo *pd3dxIntersectInfo)
 {
 	int nIntersected = 0;
 	float fNearHitDistance = FLT_MAX;
 	CGameObject *pSelectedObject = NULL;
-	MESHINTERSECTINFO d3dxIntersectInfo;
+	CollisionInfo d3dxIntersectInfo;
 
 
 	for (auto shaderTag : m_vecObjectContainer) {

@@ -164,21 +164,14 @@ void CGameObject::GenerateRayForPicking(XMVECTOR *pd3dxvPickPosition, XMMATRIX *
 	XMMATRIX d3dxmtxWorldView = *pd3dxmtxView;
 	if (pd3dxmtxWorld) d3dxmtxWorldView = XMMatrixMultiply(*pd3dxmtxWorld, *pd3dxmtxView);
 	d3dxmtxInverse = XMMatrixInverse(NULL, d3dxmtxWorldView);
-	/*
-	pd3dxvPickRayDirection->x = pd3dxvPickPosition->x * d3dxmtxInverse._11 + pd3dxvPickPosition->y * d3dxmtxInverse._21 + pd3dxvPickPosition->z * d3dxmtxInverse._31;
-	pd3dxvPickRayDirection->y = pd3dxvPickPosition->x * d3dxmtxInverse._12 + pd3dxvPickPosition->y * d3dxmtxInverse._22 + pd3dxvPickPosition->z * d3dxmtxInverse._32;
-	pd3dxvPickRayDirection->z = pd3dxvPickPosition->x * d3dxmtxInverse._13 + pd3dxvPickPosition->y * d3dxmtxInverse._23 + pd3dxvPickPosition->z * d3dxmtxInverse._33;
-	pd3dxvPickRayPosition->x = d3dxmtxInverse._41;
-	pd3dxvPickRayPosition->y = d3dxmtxInverse._42;
-	pd3dxvPickRayPosition->z = d3dxmtxInverse._43;
-	*/
+	
 	XMVECTOR d3dxvCameraOrigin = XMVectorZero();
 	*pd3dxvPickRayPosition = XMVector3TransformCoord(d3dxvCameraOrigin, d3dxmtxInverse);
 	*pd3dxvPickRayDirection = XMVector3TransformCoord(*pd3dxvPickPosition, d3dxmtxInverse);
 	*pd3dxvPickRayDirection = *pd3dxvPickRayDirection - *pd3dxvPickRayPosition;
 }
 
-int CGameObject::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, MESHINTERSECTINFO *pd3dxIntersectInfo)
+int CGameObject::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, CollisionInfo *pd3dxIntersectInfo)
 {
 	XMVECTOR d3dxvPickRayPosition, d3dxvPickRayDirection;
 	int nIntersected = 0;
@@ -562,32 +555,8 @@ bool CGameObject::IsVisible(CCamera *pCamera)
 
 bool CGameObject::IsCollision(CGameObject* pObject)
 {
-	XMFLOAT3 corner[8];
-
-	pObject->GetBoundingOBox().GetCorners(corner);
-
-	/*
-	if (m_f3Velocity.x != 0) {
-		if (m_f3Velocity.x > 0) {
-			m_bcMeshBoundingOBox.GetCorners(corner);
-
-		}
-		else {
-
-
-		}
-		XMVECTOR forwardPos = XMLoadFloat3(&bcObox.Center) + XMVectorSet(0, bcObox.Extents.z, 0, 0);
-		if (COLLISION_MGR->RayCastCollision(m_infoCollision, forwardPos, GetLook())) {
-			if (m_infoCollision.m_fDistance <= 0.0f) {
-			
-			}
-		}
-	}
-
-	*/
-
-
-	return false;
+	cout << "안쓰고있다." << endl;
+	return true;
 }
 
 void CGameObject::Update(float fTimeElapsed)

@@ -56,6 +56,7 @@ bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos
 {
 	bool isCollision = false;
 	float fNearestDistance = FLT_MAX;
+	CGameObject* pNearestObject = nullptr;
 	// Dynamic to Dynamic
 
 	// Dynamic to Static
@@ -63,12 +64,14 @@ bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos
 		if (staticObject->GetBoundingOBox().Intersects(originPos, direction, info.m_fDistance)) {
 			if (fNearestDistance > info.m_fDistance) {
 				fNearestDistance = info.m_fDistance;
-				info.m_pHitObject = staticObject;
+				pNearestObject = staticObject;
 				isCollision = true;
 			}
 		}
 	}
+
 	if (isCollision) {
+		info.m_pHitObject = pNearestObject;
 		info.m_fDistance = fNearestDistance;
 		return true;
 	}
@@ -117,9 +120,10 @@ bool CCollisionManager::CheckCollision(CollisionInfo& info, CGameObject* pOrigin
 	// 2. OBB			-> static Mesh에 대해서는 AABB 적용하기
 	if (!pOriginObject->GetBoundingOBox().Intersects(pTargetObject->GetBoundingOBox()))
 		return false;
-	
+
 	// 3. Primitive
-//	if (!p)
+	if (!pOriginObject->IsCollision(pTargetObject))
+		return false;
 
 	return true;
 }

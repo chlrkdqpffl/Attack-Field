@@ -208,7 +208,7 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 
 	int nIntersected = 0;
 	float fNearHitDistance = FLT_MAX;
-	MESHINTERSECTINFO d3dxIntersectInfo;
+	CollisionInfo d3dxIntersectInfo;
 	CGameObject *pIntersectedObject = NULL, *pNearestObject = NULL;
 
 

@@ -19,6 +19,7 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 	case WM_LBUTTONDOWN:
 		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam) * m_fResizeRatioX, HIWORD(lParam) * m_fResizeRatioY);
 
+		/*
 		if (m_pSelectedObject) {
 			cout << "ID : " << m_pSelectedObject->GetObjectID() << endl;
 			cout << "Position : " << m_pSelectedObject->GetPosition().x << ", " << m_pSelectedObject->GetPosition().y << ", " << m_pSelectedObject->GetPosition().z << endl;
@@ -26,6 +27,7 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 			cout << "Bounding Radius : " << m_pSelectedObject->GetBoundingSphere().Radius << endl;
 			cout << "Bounding Box Extent : " << m_pSelectedObject->GetBoundingOBox().Extents.x << ", " << m_pSelectedObject->GetBoundingOBox().Extents.y << ", " << m_pSelectedObject->GetBoundingOBox().Extents.z << endl;
 		}
+		*/
 		m_pPlayer->SetKeyDown(KeyInput::eLeftMouse);
 	//	((CCharacterObject*)m_vecObjectsContainer.back())->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
 		break;
@@ -970,8 +972,8 @@ void CMainScene::UpdateObjects(float fTimeElapsed)
 	COLLISION_MGR->UpdateManager();
 	CScene::UpdateObjects(fTimeElapsed);
 
-	if (m_pSelectedObject)
-		ModifiedSelectObject();
+//	if (m_pSelectedObject)
+//		ModifiedSelectObject();
 
 	m_pPlayerCharacter->Update(fTimeElapsed);
 
@@ -992,18 +994,6 @@ void CMainScene::UpdateObjects(float fTimeElapsed)
 	// Particle
 	m_fGametime += fTimeElapsed;
 	m_pParticleSystem->Update(fTimeElapsed, m_fGametime);
-
-
-
-	XMFLOAT3 corner[8];
-
-	if (m_pSelectedObject) {
-		m_pSelectedObject->GetBoundingOBox().GetCorners(corner);
-		m_pSphereObject->SetPosition(corner[TWBAR_MGR->g_nSelect]);
-
-		m_pSphereObject->SetSizeType(1);
-		ShowXMFloat3(m_pSphereObject->GetPosition());
-	}
 }
 
 void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)

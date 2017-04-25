@@ -252,7 +252,7 @@ void CGBuffer::Render(ID3D11DeviceContext* pd3dImmediateContext)
 	pd3dImmediateContext->VSSetShader(nullptr, nullptr, 0);
 	pd3dImmediateContext->PSSetShader(nullptr, nullptr, 0);
 	ZeroMemory(arrViews, sizeof(arrViews));
-	pd3dImmediateContext->PSSetShaderResources(0, 4, arrViews);
+	pd3dImmediateContext->PSSetShaderResources(PS_TEXTRUE_SLOT_GBUFFER, 4, arrViews);
 }
 
 void CGBuffer::DeferredRender(ID3D11DeviceContext* pd3dImmediateContext)

@@ -24,96 +24,88 @@ void CCharacterObject::Fire()
 
 void CCharacterObject::OnCollisionCheck()
 {	
-	WORD wKeyState = m_pPlayer->GetKeyState();
 	BoundingOrientedBox bcObox = GetBoundingOBox();
 
-	if (wKeyState & static_cast<int>(KeyInput::eForward)) {
-		XMVECTOR forwardPos = XMLoadFloat3(&bcObox.Center) + XMVectorSet(0, bcObox.Extents.z, 0, 0);
-		if (COLLISION_MGR->RayCastCollision(m_infoCollision, forwardPos, GetLook())) {
-			if (m_infoCollision.m_fDistance <= 0.0f) {
-				XMVECTOR velocity = m_pPlayer->GetVelocity();
-				velocity -= m_pPlayer->GetLookVector();
-
-				m_pPlayer->SetVelocity(velocity);
-
-				XMFLOAT3 pos = GetPosition();
-				float fixPos = m_infoCollision.m_pHitObject->GetBoundingOBox().Center.z + m_infoCollision.m_pHitObject->GetBoundingOBox().Extents.z;
-
-				SetPosition(pos.x, pos.y, fixPos);
-			}	
-		}
+	CollisionInfo info;
+	/*
+	for (auto targetObject : COLLISION_MGR->m_vecStaticMeshContainer) {
+		if (COLLISION_MGR->CheckCollision(info, this, targetObject))
+			cout << "충돌 "<< endl;
 	}
-	
-	if (wKeyState & static_cast<int>(KeyInput::eLeft)) {
-		XMVECTOR leftPos = XMLoadFloat3(&bcObox.Center) - XMVectorSet(0, bcObox.Extents.x, 0, 0);
+	*/
 
-	//	if (COLLISION_MGR->RayCastCollision(m_infoCollision, leftPos, -1 * GetRight())) 
-		if (COLLISION_MGR->RayCastCollision(m_infoCollision, leftPos, XMVectorSet(-1, 0, 0, 0))) {
-			if (m_infoCollision.m_fDistance <= 0.0f) {
-				XMVECTOR velocity = m_pPlayer->GetVelocity();
-				velocity += m_pPlayer->GetRightVector();
+	XMVECTOR velocity = m_pPlayer->GetVelocity();
 
-				m_pPlayer->SetVelocity(velocity);
+	if(m_pPlayer->IsMoving()){
+		for (auto staticObject : COLLISION_MGR->m_vecStaticMeshContainer) {
 
-				XMFLOAT3 pos = GetPosition();
-				float fixPos = m_infoCollision.m_pHitObject->GetBoundingOBox().Center.x + m_infoCollision.m_pHitObject->GetBoundingOBox().Extents.x;
+			XMMATRIX d3dxmtxInverse;
+			d3dxmtxInverse = XMMatrixInverse(NULL, staticObject->m_mtxWorld);
 
-				SetPosition(fixPos, pos.y, pos.z);
+			XMVECTOR rayPosition;
+			rayPosition = XMVector3TransformCoord(XMLoadFloat3(&GetPosition()), d3dxmtxInverse);
+			
+			XMVECTOR rayDirection;
+			rayDirection = XMVector3TransformCoord(velocity, d3dxmtxInverse);
+			rayDirection = XMVector3Normalize(rayDirection);
+
+			int count = staticObject->GetMesh()->CheckRayIntersection(&rayPosition, &rayDirection, &info);
+
+			if (count) {
+				if (info.m_fDistance < 5) {
+					cout << "충돌체 정보 : " << endl;
+					cout << "거리 : " << info.m_fDistance << endl;
+//					cout << "법선 : "; ShowXMFloat3(info.m_f3HitNormal);
+//					cout << "메쉬 태그 : " << static_cast<int>(staticObject->GetMeshTag()) << endl;
+
+					XMVECTOR slidingVec = velocity - XMVector3Dot(velocity, XMLoadFloat3(&info.m_f3HitNormal)) * XMLoadFloat3(&info.m_f3HitNormal);
+//					cout << "슬라이딩 벡터 : "; ShowXMVector(slidingVec);
+
+					// 위치 보정코드 추가하기
+					m_pPlayer->SetVelocity(slidingVec);
+					// 노말벡터 방향으로 distance 만큼 밀어내기
+
+		//			XMVECTOR offsetPos = XMLoadFloat3(&info.m_f3HitNormal) * info.m_fDistance;
+		//			m_pPlayer->Move(offsetPos);
+				}
 			}
 		}
 	}
-	
-	if (wKeyState & static_cast<int>(KeyInput::eRight)) {
-		XMVECTOR rightPos = XMLoadFloat3(&bcObox.Center) + XMVectorSet(0, bcObox.Extents.x, 0, 0);
-	
-		//	if (COLLISION_MGR->RayCastCollision(m_infoCollision, leftPos, -1 * GetRight())) 
-		if (COLLISION_MGR->RayCastCollision(m_infoCollision, rightPos, XMVectorSet(1, 0, 0, 0))) {
-			if (m_infoCollision.m_fDistance <= 0.0f) {
-				XMVECTOR velocity = m_pPlayer->GetVelocity();
-				velocity -= m_pPlayer->GetRightVector();
-				
-				m_pPlayer->SetVelocity(velocity);
-
-				XMFLOAT3 pos = GetPosition();
-				float fixPos = m_infoCollision.m_pHitObject->GetBoundingOBox().Center.x + m_infoCollision.m_pHitObject->GetBoundingOBox().Extents.x;
-
-				SetPosition(fixPos, pos.y, pos.z);
-			}
-		}
-	}
-
-
-
+		
+	/*
 	// 아래 지형과의 충돌 - 현재는 높이에 맞춰서 위치를 그대로 set
 	// -> 추후 구해진 distance를 이용하여 높이를 정하고 중력값을 이용하여 낙하하도록 구현하기
-	
-	
-	XMVECTOR toePos = XMLoadFloat3(&bcObox.Center) - XMVectorSet(0, bcObox.Extents.y, 0, 0);
-	if (COLLISION_MGR->RayCastCollision(m_infoCollision, toePos, -1 * GetUp())) {
-		if (m_infoCollision.m_fDistance <= 0.0f) {
+	if (COLLISION_MGR->RayCastCollision(m_infoCollision, XMLoadFloat3(&bcObox.Center), -1 * GetUp())) {
+		if (m_infoCollision.m_fDistance <= bcObox.Extents.y) {
 			m_pPlayer->SetFloorCollision(true);
 		}
 	}
-	
+	*/
 
-	/* ------------------ 미리 다음 프레임으로 이동시켜서 충돌확인한다면 바닥도 항시 충돌되기 때문에 확인이 안된다. -----------
+
+
+	/*
+	// ------------------ 미리 다음 프레임으로 이동시켜서 충돌확인한다면 바닥도 항시 충돌되기 때문에 확인이 안된다. -----------
 	XMVECTOR nowPos = GetvPosition();
 	XMVECTOR nextPos = nowPos + m_pPlayer->GetVelocity();
-	XMMATRIX mtxWorld = m_mtxWorld;
-	XMFLOAT4X4 mtxf4World; XMStoreFloat4x4(&mtxf4World, mtxWorld);
+	XMMATRIX mtxNextWorld = m_mtxWorld;
+	XMFLOAT4X4 mtxf4World; XMStoreFloat4x4(&mtxf4World, mtxNextWorld);
 	XMFLOAT3 pos; XMStoreFloat3(&pos, nextPos);
 
 	mtxf4World._41 = pos.x;
 	mtxf4World._42 = pos.y;
 	mtxf4World._43 = pos.z;
-	mtxWorld = XMLoadFloat4x4(&mtxf4World);
+	mtxNextWorld = XMLoadFloat4x4(&mtxf4World);
 
-	BoundingOrientedBox bcObox; GetBoundingOBox(true).Transform(bcObox, mtxWorld);
+	BoundingOrientedBox bcObox2; GetBoundingOBox(true).Transform(bcObox2, mtxNextWorld);
 
 
 	for (auto staticObject : COLLISION_MGR->m_vecStaticMeshContainer) {
-		if (staticObject->GetBoundingOBox().Intersects(bcObox)) {
-			cout << "충돌했네 이전 위치로 돌리자" << endl;
+		if (pPlaneObject != staticObject) {
+			if (staticObject->GetBoundingOBox().Intersects(bcObox2)) {
+				ShowXMVector(m_pPlayer->GetVelocity());
+				m_pPlayer->SetVelocity(XMVectorSet(0,0,0,0));
+			}
 		}
 	}
 	*/

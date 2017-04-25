@@ -45,7 +45,8 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eThirdPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.25f);
 	//	m_pCamera->SetOffset(XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f));
-		m_pCamera->SetOffset(XMVectorSet(0.0f, 3.0f, -15.0f, 0.0f));
+	//	m_pCamera->SetOffset(XMVectorSet(0.0f, 3.0f, -15.0f, 0.0f));
+		m_pCamera->SetOffset(XMVectorSet(0.0f, 2.0f, -10.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		break;
 	default:

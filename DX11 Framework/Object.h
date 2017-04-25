@@ -9,14 +9,6 @@ class CBoundingBoxMesh;
 class CAxisObjects;
 class CGameObject;
 
-struct CollisionInfo
-{
-	CGameObject*	m_pHitObject = nullptr;
-	float			m_fDistance = FLT_MAX;
-	XMFLOAT3		m_f3HitNormal = XMFLOAT3(0, 0, 0);
-
-};
-
 class CGameObject
 {
 public:
@@ -51,8 +43,7 @@ protected:
 	CMaterial						*m_pMaterial = nullptr;
 	CShader							*m_pShader = nullptr;
 	CAxisObjects					*m_pAxisObject = nullptr;
-	XMFLOAT3						m_f3Velocity = XMFLOAT3(0, 0, 0);
-
+	
 	// ----- Collision ------ //
 	bool							m_bIsCollision = false;
 
@@ -82,7 +73,7 @@ public:
 	bool IsCollision(CGameObject* pObject);
 
 	void GenerateRayForPicking(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxWorld, XMMATRIX *pd3dxmtxView, XMVECTOR *pd3dxvPickRayPosition, XMVECTOR *pd3dxvPickRayDirection);
-	int PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, MESHINTERSECTINFO *pd3dxIntersectInfo);
+	int PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, CollisionInfo *pd3dxIntersectInfo);
 
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
