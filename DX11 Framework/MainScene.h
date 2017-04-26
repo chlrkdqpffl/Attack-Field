@@ -42,6 +42,7 @@ private:
 	bool							m_bIsPreCollisionCheck = false;
 	CBoundingBoxShader				*m_pBoundingBoxShader = nullptr;
 	vector<CGameObject*>			m_vecBBoxRenderContainer;
+	vector<CCharacterObject*>		m_vecCharacterContainer;
 
 	CGBuffer*						m_GBuffer = nullptr;
 };

@@ -19,7 +19,7 @@ CCamera::CCamera(CCamera *pCamera)
 		XMStoreFloat4x4(&m_d3dxmtxView, pCamera->GetViewMatrix());
 		XMStoreFloat4x4(&m_d3dxmtxProjection, pCamera->GetProjectionMatrix());
 		m_d3dViewport = pCamera->GetViewport();
-		XMStoreFloat3(&m_d3dxvOffset, pCamera->GetOffset());
+		m_d3dxvOffset = pCamera->GetOffset();
 		m_fTimeLag = pCamera->GetTimeLag();
 		m_pPlayer = pCamera->GetPlayer();
 	}
@@ -69,6 +69,17 @@ void CCamera::SetLookAt(XMVECTOR& d3dxvPosition, XMVECTOR& d3dxvLookAt, XMVECTOR
 	XMStoreFloat3(&m_d3dxvUp, XMVectorSet(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32, 0.0f));
 	XMStoreFloat3(&m_d3dxvLook, XMVectorSet(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33, 0.0f));
 }
+
+void CCamera::SetLookAt(XMVECTOR& d3dxvLookAt)
+{
+	XMFLOAT4X4 mtxLookAt;
+	XMStoreFloat4x4(&mtxLookAt, XMMatrixLookAtLH(XMLoadFloat3(&m_d3dxvPosition), d3dxvLookAt, m_pPlayer->GetUpVector()));
+
+	XMStoreFloat3(&m_d3dxvRight, XMVectorSet(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31, 0.0f));
+	XMStoreFloat3(&m_d3dxvUp, XMVectorSet(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32, 0.0f));
+	XMStoreFloat3(&m_d3dxvLook, XMVectorSet(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33, 0.0f));
+}
+
 
 void CCamera::GenerateProjectionMatrix(float fNearPlaneDistance, float fFarPlaneDistance, float fAspectRatio, float fFOVAngle)
 {

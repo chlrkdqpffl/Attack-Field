@@ -24,11 +24,9 @@ protected:
 	float           			m_fFriction;
 
 	LPVOID						m_pPlayerUpdatedContext = nullptr;
-	LPVOID						m_pCameraUpdatedContext = nullptr;
 
 	CCamera						*m_pCamera	= nullptr;
 	WORD						m_wKeyState = 0;
-	CameraTag					m_tagCamera = CameraTag::eNone;
 	CCharacterObject			*m_pCharacter = nullptr;
 	bool						m_bIsFloorCollision = false;
 
@@ -36,13 +34,12 @@ public:
 	CPlayer(CCharacterObject* pCharacter = nullptr);
 	virtual ~CPlayer();
 
-	virtual void OnPlayerUpdated(float fTimeElapsed);
-	virtual void OnCameraUpdated(float fTimeElapsed);
+	virtual void OnPlayerUpdated(float fTimeElapsed) {};
+	virtual void OnCameraUpdated(float fTimeElapsed) {};
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
 	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag, float fTimeElapsed);
-	virtual void OnPrepareRender();
-
+	
 	CCamera *OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag); 
 	void Move(const XMVECTOR d3dxvShift);
 	void Rotate(float x, float y, float z);
@@ -78,7 +75,6 @@ public:
 	}
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
 	void SetPlayerUpdatedContext(LPVOID pContext) { m_pPlayerUpdatedContext = pContext; }
-	void SetCameraUpdatedContext(LPVOID pContext) { m_pCameraUpdatedContext = pContext; }
 	void SetKeyDown(KeyInput key) { m_wKeyState |= static_cast<int>(key); }
 	void SetKeyUp(KeyInput key) { m_wKeyState ^= static_cast<int>(key); }
 	WORD GetKeyState() const { return m_wKeyState; }

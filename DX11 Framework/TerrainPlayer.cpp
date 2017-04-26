@@ -14,8 +14,8 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 {
 	CameraTag nCurrentCameraTag = (m_pCamera) ? m_pCamera->GetCameraTag() : CameraTag::eNone;
 	if (nCurrentCameraTag == nNewCameraTag) return;
-	switch (nNewCameraTag)
-	{
+
+	switch (nNewCameraTag){
 	case CameraTag::eFirstPerson:
 		SetFriction(250.0f);
 		SetGravity(XMVectorSet(0.0f, -50.0f, 0.0f, 0.0f));
@@ -23,9 +23,9 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFirstPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(XMVectorSet(0.0f, -1.4f, 15.0f, 0.0f));
-		
-		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
+		m_pCamera->SetPosition(GetPosition());
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 1.05f, 0.5f));	// 캐릭터 가슴보다 조금 앞
+		m_pCamera->GenerateProjectionMatrix(0.25f, 5000.0f, ASPECT_RATIO, 60.0f);
 		break;
 	case CameraTag::eSpaceShip:
 		SetFriction(125.0f);
@@ -34,7 +34,7 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eSpaceShip, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		break;
 	case CameraTag::eThirdPerson:
@@ -44,17 +44,25 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eThirdPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.25f);
-	//	m_pCamera->SetOffset(XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f));
-	//	m_pCamera->SetOffset(XMVectorSet(0.0f, 3.0f, -15.0f, 0.0f));
-		m_pCamera->SetOffset(XMVectorSet(0.0f, 2.0f, -10.0f, 0.0f));
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 2.0f, -10.0f));
+		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
+		break;
+	case CameraTag::eFreeCam:		// - 추후 구현하기, 
+		SetFriction(0);
+		SetGravity(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+
+		SetMaxVelocityY(0.0f);
+//		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFreeCam, nCurrentCameraTag);
+		m_pCamera->SetTimeLag(0.25f);
+		m_pCamera->SetPosition(XMFLOAT3(0, 0, 0));
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 2.0f, -10.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		break;
 	default:
-		break;
+		break; 
 	}
+
 	SetMaxVelocityXZ(500.0f);
-//	SetMaxVelocityXZ(300.0f);
-//	Update(fTimeElapsed);
 }
 
 void CTerrainPlayer::OnPlayerUpdated(float fTimeElapsed)
@@ -75,6 +83,10 @@ void CTerrainPlayer::OnPlayerUpdated(float fTimeElapsed)
 
 void CTerrainPlayer::OnCameraUpdated(float fTimeElapsed)
 {
+	// 해당 함수는 Terrain이 존재할 경우 카메라가 땅아래에 있지 않도록 하는 함수로 
+	// 이를 응용하여 카메라가 벽안으로 들어갈 경우 처리할 때 참조하도록 한다.
+
+	/*
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)m_pCameraUpdatedContext;
 	XMFLOAT3 d3dxvScale;
 	XMStoreFloat3(&d3dxvScale, pTerrain->GetScale());
@@ -86,11 +98,12 @@ void CTerrainPlayer::OnCameraUpdated(float fTimeElapsed)
 	if (d3dxvCameraPosition.y <= fHeight)
 	{
 		d3dxvCameraPosition.y = fHeight;
-		m_pCamera->SetPosition(XMLoadFloat3(&d3dxvCameraPosition));
+		m_pCamera->SetPosition(d3dxvCameraPosition);
 		if (m_pCamera->GetCameraTag() == CameraTag::eThirdPerson)
 		{
 			CThirdPersonCamera *p3rdPersonCamera = (CThirdPersonCamera *)m_pCamera;
 			p3rdPersonCamera->SetLookAt(GetvPosition());
 		}
 	}
+	*/
 }

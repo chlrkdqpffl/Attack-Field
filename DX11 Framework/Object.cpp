@@ -627,7 +627,8 @@ void CGameObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	if (m_pBoundingBoxMesh) {
 		XMMATRIX mtxBoundingBoxWorld = m_mtxWorld;
-		BoundingOrientedBox bcObbox; m_bcMeshBoundingOBox.Transform(bcObbox, m_mtxWorld);
+		BoundingOrientedBox bcObbox; 
+		m_bcMeshBoundingOBox.Transform(bcObbox, mtxBoundingBoxWorld);
 	 
 		mtxBoundingBoxWorld = XMMatrixRotationQuaternion(XMLoadFloat4(&bcObbox.Orientation)) *
 			XMMatrixTranslation(bcObbox.Center.x, bcObbox.Center.y, bcObbox.Center.z);

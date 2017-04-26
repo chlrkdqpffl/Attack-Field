@@ -15,7 +15,6 @@ protected:
 
 	UINT					m_nBoneIndex = 0;
 	XMMATRIX				m_mtxParent;
-	XMMATRIX				m_mtxOffset;
 
 	// 명중률, 총기 반동은 추후 구현
 	WeaponData::Type		m_Type = WeaponData::Type::eNone;	// 총기 타입

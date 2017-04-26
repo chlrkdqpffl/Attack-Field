@@ -11,11 +11,6 @@ CAirplanePlayer::~CAirplanePlayer()
 {
 }
 
-void CAirplanePlayer::OnPrepareRender()
-{
-	CPlayer::OnPrepareRender();
-}
-
 void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, float fTimeElapsed)
 {
 	CameraTag nCurrentCameraTag = (m_pCamera) ? m_pCamera->GetCameraTag() : CameraTag::eNone;
@@ -29,7 +24,7 @@ void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamer
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFirstPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(XMVectorSet(0.0f, 20.0f, 0.0f, 0.0f));
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 20.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 50000.0f, ASPECT_RATIO, 60.0f);
 		break;
 	case CameraTag::eSpaceShip:
@@ -39,7 +34,7 @@ void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamer
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eSpaceShip, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 50000.0f, ASPECT_RATIO, 60.0f);
 		break;
 	case CameraTag::eThirdPerson:
@@ -49,7 +44,7 @@ void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamer
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eThirdPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.25f);
-		m_pCamera->SetOffset(XMVectorSet(0.0f, 25.0f, -35.0f, 0.0f));
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 25.0f, -35.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 50000.0f, ASPECT_RATIO, 60.0f);
 		break;
 	default:

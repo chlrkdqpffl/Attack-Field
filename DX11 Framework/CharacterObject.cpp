@@ -3,11 +3,16 @@
 
 CCharacterObject::CCharacterObject()
 {
+	for (int i = 0; i < ePartsCount; ++i)
+		m_pPartsBoundingBoxMesh[i] = nullptr;
 }
 
 CCharacterObject::~CCharacterObject()
 {
 	SafeDelete(m_pWeapon);
+
+	for (int i = 0; i < ePartsCount; ++i)
+		SafeDelete(m_pPartsBoundingBoxMesh[i]);
 }
 
 void CCharacterObject::CreateObjectData(ID3D11Device *pd3dDevice)
@@ -114,7 +119,6 @@ void CCharacterObject::OnCollisionCheck()
 void CCharacterObject::Update(float fTimeElapsed)
 {
 	if (m_pPlayer) {
-		m_pPlayer->OnPrepareRender();
 		m_pPlayer->UpdateKeyInput(fTimeElapsed);
 		OnCollisionCheck();
 		m_pPlayer->Update(fTimeElapsed);
@@ -127,11 +131,26 @@ void CCharacterObject::Update(float fTimeElapsed)
 
 void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-//	if (m_pPlayer->GetCamera()->GetCameraTag() == CameraTag::eThirdPerson) {
-
 	if(m_pPlayer)
 		m_pPlayer->UpdateShaderVariables(pd3dDeviceContext);
 		CSkinnedObject::Render(pd3dDeviceContext, pCamera);
-//	}
+
 	m_pWeapon->Render(pd3dDeviceContext, pCamera);
+}
+
+void CCharacterObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
+{
+	for (int i = 0; i < ePartsCount; ++i) {
+		if (m_pPartsBoundingBoxMesh[i]) {
+			XMMATRIX mtxBoundingBoxWorld = m_mtxPartsBoundingWorld[i];
+			BoundingOrientedBox bcObbox; m_bcPartsBoundingOBox[i].Transform(bcObbox, mtxBoundingBoxWorld);
+
+			mtxBoundingBoxWorld = XMMatrixRotationQuaternion(XMLoadFloat4(&bcObbox.Orientation)) *
+				XMMatrixTranslation(bcObbox.Center.x, bcObbox.Center.y, bcObbox.Center.z);
+
+			CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &mtxBoundingBoxWorld);
+
+			m_pPartsBoundingBoxMesh[i]->Render(pd3dDeviceContext);
+		}
+	}
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Mesh.h"
-
 #define ASPECT_RATIO				(float(FRAME_BUFFER_WIDTH) / float(FRAME_BUFFER_HEIGHT))
 
 #define FIRST_PERSON_CAMERA			0x01
@@ -13,8 +11,6 @@ struct VS_CB_CAMERA
 	XMFLOAT4X4						m_d3dxmtxView;
 	XMFLOAT4X4						m_d3dxmtxProjection;
 };
-
-
 
 class CPlayer;
 
@@ -40,13 +36,11 @@ protected:
 
 	D3D11_VIEWPORT					m_d3dViewport;
 
-	static ID3D11Buffer				*m_pd3dcbCamera;
-	static ID3D11Buffer				*m_pd3dcbCameraPosition;
-
 	CPlayer							*m_pPlayer;
-
 	XMFLOAT4						m_pd3dxFrustumPlanes[6]; //World Coordinates          
 
+	static ID3D11Buffer				*m_pd3dcbCamera;
+	static ID3D11Buffer				*m_pd3dcbCameraPosition;
 public:
 	CCamera(CCamera *pCamera);
 	virtual ~CCamera();
@@ -77,7 +71,8 @@ public:
 	XMMATRIX GetProjectionMatrix() const { return(XMLoadFloat4x4(&m_d3dxmtxProjection)); }
 	ID3D11Buffer *GetCameraConstantBuffer() const { return(m_pd3dcbCamera); }
 
-	void SetPosition(XMVECTOR d3dxvPosition) { XMStoreFloat3(&m_d3dxvPosition, d3dxvPosition); }
+	void SetPosition(XMFLOAT3 vPosition) { m_d3dxvPosition = vPosition; }
+	void SetPosition(XMVECTOR vPosition) { XMStoreFloat3(&m_d3dxvPosition, vPosition); }
 	XMVECTOR GetvPosition() const { return(XMLoadFloat3(&m_d3dxvPosition)); }
 	XMFLOAT3 GetPosition() const { return m_d3dxvPosition; }
 	XMVECTOR GetRightVector() const { return(XMLoadFloat3(&m_d3dxvRight)); }
@@ -88,14 +83,15 @@ public:
 	float GetRoll() const { return(m_fRoll); }
 	float GetYaw() const { return(m_fYaw); }
 
-	void SetOffset(XMVECTOR d3dxvOffset) 
-	{
-		XMStoreFloat3(&m_d3dxvOffset, d3dxvOffset);
-		XMVECTOR v = XMLoadFloat3(&m_d3dxvPosition);
-		v += d3dxvOffset;
-		XMStoreFloat3(&m_d3dxvPosition, v);
+	void SetOffset(XMFLOAT3 d3dxvOffset) 
+	{	
+		// 캐릭터 위치 동기화해야함
+		m_d3dxvOffset = d3dxvOffset;
+		m_d3dxvPosition.x += d3dxvOffset.x;
+		m_d3dxvPosition.y += d3dxvOffset.y;
+		m_d3dxvPosition.z += d3dxvOffset.z;
 	}
-	XMVECTOR GetOffset() const { return(XMLoadFloat3(&m_d3dxvOffset)); }
+	XMFLOAT3 GetOffset() const { return m_d3dxvOffset; }
 
 	void SetTimeLag(float fTimeLag) { m_fTimeLag = fTimeLag; }
 	float GetTimeLag() const { return(m_fTimeLag); }
@@ -107,8 +103,8 @@ public:
 		XMStoreFloat3(&m_d3dxvPosition, v);
 	}
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) { }
-	virtual void Update(XMVECTOR& d3dxvLookAt, float fTimeElapsed) { }
-	virtual void SetLookAt(XMVECTOR& vLookAt) { }
+	virtual void Update(float fTimeElapsed) { }
+	virtual void SetLookAt(XMVECTOR& vLookAt);
 	virtual void SetLookAt(XMVECTOR& d3dxvPosition, XMVECTOR& d3dxvLookAt, XMVECTOR& vd3dxvUp);
 
 	void CalculateFrustumPlanes();
