@@ -52,44 +52,40 @@ public:
 
 protected:
 	MeshTag							m_tagMesh = MeshTag::eNone;
+	UINT							m_nType = 0;
 
 	BoundingBox						m_bcBoundingBox;
 	D3D11_PRIMITIVE_TOPOLOGY		m_d3dPrimitiveTopology;
-	UINT							m_nType;
-	ID3D11Buffer					*m_pd3dPositionBuffer;
-	ID3D11Buffer					**m_ppd3dVertexBuffers;
+	ID3D11Buffer					*m_pd3dPositionBuffer = nullptr;
+	ID3D11Buffer					**m_ppd3dVertexBuffers = nullptr;
+	ID3D11Buffer					*m_pd3dIndexBuffer = nullptr;
 
-	int								m_nBuffers;
-	int								m_nVertices;
-	UINT							m_nStartVertex;
-	UINT							m_nSlot;
+	int								m_nBuffers = 0;
+	int								m_nVertices = 0;
+	UINT							m_nStartVertex = 0;
+	UINT							m_nSlot = 0;
 
-	UINT							*m_pnVertexStrides;
-	UINT							*m_pnVertexOffsets;
+	UINT							*m_pnVertexStrides = 0;
+	UINT							*m_pnVertexOffsets  = 0 ;
 
-	ID3D11Buffer					*m_pd3dIndexBuffer;
 
-	UINT							m_nIndices;
-	UINT							m_nStartIndex;
-	int								m_nBaseVertex;
+	UINT							m_nIndices = 0;
+	UINT							m_nStartIndex = 0;
+	int								m_nBaseVertex = 0;
 
 	DXGI_FORMAT						m_dxgiIndexFormat;
-	UINT							m_nIndexOffset;
+	UINT							m_nIndexOffset = 0;
 
-	XMFLOAT3						*m_pPositions;
-	UINT							*m_pnIndices;
+	XMFLOAT3						*m_pPositions = nullptr;
+	UINT							*m_pnIndices = nullptr;
 
 	//------------------------------------------------------
-	UINT							m_nStride;
-	UINT							m_nOffset;
-	ID3D11Buffer					*m_pd3dVertexBuffer;
+	UINT							m_nStride = 0;
+	UINT							m_nOffset = 0;
+	ID3D11Buffer					*m_pd3dVertexBuffer = nullptr;
 	//------------------------------------------------------
 
-public:
-	MeshTag	GetMeshTag() const { return m_tagMesh; }
-	UINT GetType() { return(m_nType); }
-	BoundingBox GetBoundingCube() { return(m_bcBoundingBox); }
-	
+public:	
 	void CalculateBoundingCube();
 
 	ID3D11Buffer *CreateBuffer(ID3D11Device *pd3dDevice, UINT nStride, int nElements, void *pBufferData, UINT nBindFlags, D3D11_USAGE d3dUsage, UINT nCPUAccessFlags);
@@ -100,6 +96,13 @@ public:
 	virtual void RenderInstanced(ID3D11DeviceContext *pd3dDeviceContext, int nInstances = 0, int nStartInstance = 0);
 
 	int CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRayDirection, CollisionInfo *pd3dxIntersectInfo);
+
+	// ----- Get, Setter ----- //
+	MeshTag	GetMeshTag() const { return m_tagMesh; }
+	UINT GetType() { return(m_nType); }
+	BoundingBox GetBoundingCube() { return(m_bcBoundingBox); }
+	
+	void SetStartIndex(UINT index) { m_nStartIndex = index; }
 };
 
 //------------------------------------------------------------------------------------------------

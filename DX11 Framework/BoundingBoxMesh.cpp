@@ -60,6 +60,15 @@ CBoundingBoxMesh::CBoundingBoxMesh(ID3D11Device *pd3dDevice, BoundingBox bbox, f
 	DXUT_SetDebugName(m_pd3dIndexBuffer, "Bbox Index");
 }
 
+CBoundingBoxMesh::CBoundingBoxMesh(ID3D11Device *pd3dDevice, BoundingOrientedBox bbox, float fSize)
+{
+	BoundingBox bc;
+	bc.Center = bbox.Center;
+	bc.Extents = bbox.Extents;
+
+	CBoundingBoxMesh(pd3dDevice, bc, fSize);
+}
+
 CBoundingBoxMesh::~CBoundingBoxMesh()
 {
 }

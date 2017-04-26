@@ -708,7 +708,6 @@ void CGameFramework::ProcessInput()
 	// 플레이어 회전
 	if ((cxDelta != 0.0f) || (cyDelta != 0.0f))
 		SCENE_MGR->g_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
-
 }
 
 void CGameFramework::UpdateObjects()

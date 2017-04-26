@@ -64,10 +64,9 @@ public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 	virtual void OnCollisionCheck() {};
 
-	void BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext);
-
+	virtual void CreateBoundingBox(ID3D11Device *pd3dDevice);
+	virtual void BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext);
 	void CreateAxisObject(ID3D11Device *pd3dDevice);
-	void CreateBoundingBox(ID3D11Device *pd3dDevice);
 
 	bool IsVisible(CCamera *pCamera = NULL);
 	bool IsCollision(CGameObject* pObject);

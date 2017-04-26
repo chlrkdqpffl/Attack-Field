@@ -15,7 +15,6 @@ void CTerroristCharacterObject::CreateMesh(ID3D11Device *pd3dDevice)
 {
 	CFbxModelSkinnedMesh* pCharacterMesh = new CFbxModelSkinnedMesh(pd3dDevice, MeshTag::eTerrorist);
 	pCharacterMesh->Initialize(pd3dDevice);
-
 	SetMesh(pCharacterMesh);
 }
 
@@ -58,4 +57,28 @@ void CTerroristCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)
 
 	m_pWeapon->CreateObjectData(pd3dDevice);
 	m_pWeapon->CreateAxisObject(pd3dDevice);
+}
+
+void CTerroristCharacterObject::CreateBoundingBox(ID3D11Device *pd3dDevice)
+{
+	// ----- Bounding Box Size ----- //
+//	m_bcPartsBoundingOBox[BoundingBoxParts::eBody].Extents = XMFLOAT3(0.3f, 0.8f, 0.35f);
+	m_bcPartsBoundingOBox[BoundingBoxParts::eBody].Extents = XMFLOAT3(10, 1, 1);
+	m_bcPartsBoundingOBox[BoundingBoxParts::eHead].Extents = XMFLOAT3(0.15f, 0.2f, 0.35f);
+//	m_bcPartsBoundingOBox[BoundingBoxParts::eLeftArm].Extents = XMFLOAT3();
+//	m_bcPartsBoundingOBox[BoundingBoxParts::eRightArm].Extents = XMFLOAT3();
+//	m_bcPartsBoundingOBox[BoundingBoxParts::eLeftLeg].Extents = XMFLOAT3();
+//	m_bcPartsBoundingOBox[BoundingBoxParts::eRightLeg].Extents = XMFLOAT3();
+
+	// ----- Bounding Box Mesh ----- //
+	m_pPartsBoundingBoxMesh[BoundingBoxParts::eBody] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eBody]);
+	m_pPartsBoundingBoxMesh[BoundingBoxParts::eHead] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eHead]);
+//	m_pPartsBoundingBoxMesh[BoundingBoxParts::eLeftArm] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eLeftArm]);
+//	m_pPartsBoundingBoxMesh[BoundingBoxParts::eRightArm] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eRightArm]);
+//	m_pPartsBoundingBoxMesh[BoundingBoxParts::eLeftLeg] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eLeftLeg]);
+//	m_pPartsBoundingBoxMesh[BoundingBoxParts::eRightLeg] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eRightLeg]);
+
+	// ----- Matrix ----- //
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eBody] = XMLoadFloat4x4(&GetSkinnedMesh()->GetOffsetMtx(3)) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eHead] = XMLoadFloat4x4(&GetSkinnedMesh()->GetOffsetMtx(5)) * m_mtxWorld;
 }

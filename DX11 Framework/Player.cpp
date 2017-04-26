@@ -1,13 +1,8 @@
-//-----------------------------------------------------------------------------
-// File: CPlayer.cpp
-//-----------------------------------------------------------------------------
-
 #include "stdafx.h"
 #include "Player.h"
 #include "FirstPersonCamera.h"
 #include "SpaceShipCamera.h"
 #include "ThirdPersonCamera.h"
-
 
 CPlayer::CPlayer(CCharacterObject* pCharacter) 
 	: m_pCharacter(pCharacter)
@@ -48,8 +43,6 @@ void CPlayer::CreateShaderVariables(ID3D11Device *pd3dDevice)
 
 void CPlayer::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 {
-//	GetMaterial()->UpdateShaderVariable(pd3dDeviceContext);
-	 //UpdateShaderVariable
 	if (m_pCamera) m_pCamera->UpdateShaderVariables(pd3dDeviceContext);
 }
 
@@ -137,11 +130,7 @@ void CPlayer::Rotate(float x, float y, float z)
 			m_fRoll += z;
 			if (m_fRoll > +20.0f) { z -= (m_fRoll - 20.0f); m_fRoll = +20.0f; }
 			if (m_fRoll < -20.0f) { z -= (m_fRoll + 20.0f); m_fRoll = -20.0f; }
-		//	if (m_fRoll > +70.0f) { z -= (m_fRoll - 70.0f); m_fRoll = +70.0f; }
-		//	if (m_fRoll < -70.0f) { z -= (m_fRoll + 70.0f); m_fRoll = -70.0f; }
 		}
-		m_pCamera->Rotate(x, y, z);
-
 		if (y != 0.0f)
 		{
 			mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_d3dxvUp), XMConvertToRadians(y));
@@ -191,7 +180,6 @@ void CPlayer::Update(float fTimeElapsed)
 		m_d3dxvVelocity.z *= (fMaxVelocityXZ / fLength);
 	}
 	
-	
 	// Apply Gravity
 	float fMaxVelocityY = m_fMaxVelocityY * fTimeElapsed;
 	fLength = sqrtf(m_d3dxvVelocity.y * m_d3dxvVelocity.y);
@@ -200,12 +188,6 @@ void CPlayer::Update(float fTimeElapsed)
 
 	Move(XMLoadFloat3(&m_d3dxvVelocity));
 	if (m_bIsFloorCollision) OnPlayerUpdated(fTimeElapsed);
-
-	CameraTag nCurrentCameraTag = m_pCamera->GetCameraTag();
-	if (nCurrentCameraTag == CameraTag::eThirdPerson) m_pCamera->Update(XMLoadFloat3(&m_d3dxvPosition), fTimeElapsed);
-	if (m_pCameraUpdatedContext) OnCameraUpdated(fTimeElapsed);
-	if (nCurrentCameraTag == CameraTag::eThirdPerson) m_pCamera->SetLookAt(XMLoadFloat3(&m_d3dxvPosition));
-	m_pCamera->RegenerateViewMatrix();
 	
 	// Apply Deceleration 
 	XMVECTOR d3dxvDeceleration = -XMLoadFloat3(&m_d3dxvVelocity);
@@ -214,6 +196,20 @@ void CPlayer::Update(float fTimeElapsed)
 	float fDeceleration = (m_fFriction * fTimeElapsed);
 	if (fDeceleration > fLength) fDeceleration = fLength;
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvDeceleration * fDeceleration);
+
+	// Camera Update
+	m_pCamera->Update(fTimeElapsed);
+	m_pCamera->RegenerateViewMatrix();
+
+	// Character Update
+	XMFLOAT4X4 mtx;	XMStoreFloat4x4(&mtx, m_pCharacter->m_mtxWorld);
+
+	mtx._11 = m_d3dxvRight.x;		mtx._12 = m_d3dxvRight.y;		mtx._13 = m_d3dxvRight.z;
+	mtx._21 = m_d3dxvUp.x;			mtx._22 = m_d3dxvUp.y;			mtx._23 = m_d3dxvUp.z;
+	mtx._31 = m_d3dxvLook.x;		mtx._32 = m_d3dxvLook.y;		mtx._33 = m_d3dxvLook.z;
+	mtx._41 = m_d3dxvPosition.x;	mtx._42 = m_d3dxvPosition.y;	mtx._43 = m_d3dxvPosition.z;
+
+	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&mtx);
 }
 
 CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag)
@@ -262,26 +258,4 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 
 void CPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag, float fTimeElapsed)
 {
-}
-
-void CPlayer::OnPlayerUpdated(float fTimeElapsed)
-{
-}
-
-void CPlayer::OnCameraUpdated(float fTimeElapsed)
-{
-}
-
-void CPlayer::OnPrepareRender()
-{
-	XMFLOAT4X4 mtx;
-
-	XMStoreFloat4x4(&mtx, m_pCharacter->m_mtxWorld);
-
-	mtx._11 = m_d3dxvRight.x;		mtx._12 = m_d3dxvRight.y;		mtx._13 = m_d3dxvRight.z;
-	mtx._21 = m_d3dxvUp.x;			mtx._22 = m_d3dxvUp.y;			mtx._23 = m_d3dxvUp.z;
-	mtx._31 = m_d3dxvLook.x;		mtx._32 = m_d3dxvLook.y;		mtx._33 = m_d3dxvLook.z;
-	mtx._41 = m_d3dxvPosition.x;	mtx._42 = m_d3dxvPosition.y;	mtx._43 = m_d3dxvPosition.z;
-
-	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&mtx);
 }

@@ -282,9 +282,10 @@ void CMainScene::Initialize()
 #pragma region [Create Character]
 	CScene::CreatePlayer();
 	m_vecBBoxRenderContainer.push_back(m_pPlayerCharacter);
+	m_vecCharacterContainer.push_back(m_pPlayerCharacter);
 //	m_pPlayer->SetPlayerUpdatedContext(pTerrain);
 //	m_pPlayer->SetCameraUpdatedContext(pTerrain);
-	
+
 
 #pragma endregion 
 
@@ -330,10 +331,10 @@ void CMainScene::Initialize()
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
 
-	pCharacter->SetPosition(XMVectorSet(0.0f, 10.0f, 0.0f, 0.0f));
+	pCharacter->SetPosition(0.0f, 10.0f, 0.0f);
 
 	m_vecBBoxRenderContainer.push_back(pCharacter);
-	m_vecObjectsContainer.push_back(pCharacter);
+	m_vecCharacterContainer.push_back(pCharacter);
 	
 
 #pragma region [Create Shader Object]
@@ -856,6 +857,9 @@ void CMainScene::ReleaseObjects()
 
 	SafeDelete(m_pParticleSystem);
 	SafeDelete(m_pBoundingBoxShader);
+
+	for (auto& object : m_vecCharacterContainer)
+		SafeDelete(object);
 }
 
 void CMainScene::AddShaderObject(ShaderTag tag, CGameObject* pObject)
@@ -975,7 +979,8 @@ void CMainScene::UpdateObjects(float fTimeElapsed)
 //	if (m_pSelectedObject)
 //		ModifiedSelectObject();
 
-	m_pPlayerCharacter->Update(fTimeElapsed);
+	for (auto& object : m_vecCharacterContainer)
+		object->Update(fTimeElapsed);
 
 	if (m_pLights && m_pd3dcbLights)
 	{
@@ -1008,12 +1013,12 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 		if (m_pTerrain->IsVisible(pCamera))
 			m_pTerrain->Render(pd3dDeviceContext, pCamera);
 
-	m_pPlayerCharacter->Render(m_pd3dDeviceContext, m_pCamera);
-
 	m_pParticleSystem->Render(pd3dDeviceContext);
 
-	// ------ End Scene Rendering ------ //
+	for (auto& object : m_vecCharacterContainer)
+		object->Render(m_pd3dDeviceContext, m_pCamera);
 
+	// ------ End Scene Rendering ------ //
 	m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 
 	m_GBuffer->OnPostRender(pd3dDeviceContext);

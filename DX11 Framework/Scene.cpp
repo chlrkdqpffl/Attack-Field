@@ -118,7 +118,7 @@ void CScene::CreatePlayer()
 	m_pPlayerCharacter->SetPlayer(m_pPlayer);
 
 	SCENE_MGR->g_pPlayer = m_pPlayer;
-	m_pPlayer->SetPosition(XMVectorSet(60.0f, 5.0f, 0.0f, 0.0f));
+	m_pPlayer->SetPosition(XMVectorSet(60.0f, 2.5f, 0.0f, 0.0f));
 }
 
 void CScene::ReleaseObjects()
@@ -142,7 +142,6 @@ void CScene::ReleaseObjects()
 	CScene::ReleaseConstantBuffers();
 
 	SafeDelete(m_pPlayer);
-	SafeDelete(m_pPlayerCharacter);
 	SafeDelete(m_pUIManager);
 
 	m_vecShaderObjectContainer.ReleaseObjects();
@@ -228,7 +227,7 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 		pNearestObject = pIntersectedObject;
 	}
 
-	for (auto instancedShaderObject : m_vecInstancedObjectsShaderContainer) {
+	for (auto& instancedShaderObject : m_vecInstancedObjectsShaderContainer) {
 		pIntersectedObject = instancedShaderObject->PickObjectByRayIntersection(&d3dxvPickPosition, &d3dxmtxView, &d3dxIntersectInfo);
 		if (pIntersectedObject && (d3dxIntersectInfo.m_fDistance < fNearHitDistance))
 		{
@@ -248,23 +247,23 @@ void CScene::UpdateObjects(float fTimeElapsed)
 	if(m_pTerrain) m_pTerrain->Update(fTimeElapsed);
 	if(GLOBAL_MGR->g_bShowWorldAxis) m_pWorldCenterAxis->Update(fTimeElapsed);
 
-	for (auto object : m_vecObjectsContainer) {
+	for (auto& object : m_vecObjectsContainer) {
 		if(object->GetActive())
 			object->Update(fTimeElapsed);
 	}
 
 	m_vecShaderObjectContainer.UpdateObjects(fTimeElapsed);
 
-	for (auto instancedShaderObject : m_vecInstancedObjectsShaderContainer)
+	for (auto& instancedShaderObject : m_vecInstancedObjectsShaderContainer)
 		instancedShaderObject->UpdateObjects(fTimeElapsed);
 
 
 	/*
 	// Collision
-	for (auto staticMeshObject : m_vecStaticMeshContainer)
+	for (auto& staticMeshObject : m_vecStaticMeshContainer)
 		staticMeshObject->Update(fTimeElapsed);
 	
-	for (auto dynamicMeshObject : m_vecDynamicMeshContainer)
+	for (auto& dynamicMeshObject : m_vecDynamicMeshContainer)
 		dynamicMeshObject->Update(fTimeElapsed);
 	*/
 }
@@ -282,13 +281,13 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 	if (GLOBAL_MGR->g_bShowWireFrame)
 		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
 
-	for (auto object : m_vecObjectsContainer)
+	for (auto& object : m_vecObjectsContainer)
 		if(object->IsVisible(pCamera))
 			object->Render(pd3dDeviceContext, pCamera);
 
 	m_vecShaderObjectContainer.Render(pd3dDeviceContext, pCamera);
 	
-	for (auto instancedShaderObject : m_vecInstancedObjectsShaderContainer)
+	for (auto& instancedShaderObject : m_vecInstancedObjectsShaderContainer)
 		instancedShaderObject->Render(pd3dDeviceContext, pCamera);	
 
 	if (m_pSphereObject)

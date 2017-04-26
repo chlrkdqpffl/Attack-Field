@@ -17,8 +17,6 @@ CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner) : CWeapon(pOwner)
 
 	SetRotate(offsetRotate, true);
 	SetPosition(offsetPos, true);
-	m_mtxOffset = XMLoadFloat4x4(&m_pOwner->GetSkinnedMesh()->GetOffsetMtx(m_nBoneIndex));
-
 
 	// Data Initialize
 	m_Type = WeaponData::Type::eRifle;
