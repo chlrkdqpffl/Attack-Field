@@ -325,7 +325,7 @@ void CMainScene::Initialize()
 #pragma endregion 
 
 	
-	// ==== Test용 - 총 메쉬 오프셋 찾기용 ==== //
+	// ==== Test용 - 총 메쉬 오프셋 찾기용 ==== //		//다른 캐릭터
 	CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject();
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);

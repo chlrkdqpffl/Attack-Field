@@ -37,7 +37,11 @@ void ServerFuntion::processpacket(char *ptr)
 		if (id == m_myid)
 		{
 			//memcpy(my_Pos_packet, my_Pos_packet, ptr[0]);
-			SCENE_MGR->g_nowScene->GetPlayer()->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 1.0f));
+			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 1.0f));
+		}
+		else
+		{
+			SCENE_MGR->g_pMainScene->
 		}
 		break;
 	case 2:	//처음 받았을때.
@@ -53,15 +57,16 @@ void ServerFuntion::processpacket(char *ptr)
 		}
 		if (id == m_myid)
 		{
-			//memcpy(my_put_packet, my_put_packet, ptr[0]);
-			SCENE_MGR->g_nowScene->GetPlayer()->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 1.0f));
+			
+			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 1.0f));
+		
+			
 		}
-		//else if (id<500)
-		//{
-		//	other[id].x = my_packet->x;
-		//	other[id].y = my_packet->y;
-		//	other[id].z = my_packet->z;
-		//}
+		else if (id<500)
+		{
+			//SCENE_MGR->g_nowScene->GetPlayer()->
+			
+		}
 	}
 	break;
 
