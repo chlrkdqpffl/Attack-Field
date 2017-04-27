@@ -34,6 +34,7 @@ void CResourceManager::LoadResourceTitleScene()
 	AddResourece(TextureTag::eStartButtonOff,		"../Assets/Image/UI/StartOff.png");
 	AddResourece(TextureTag::eExitButtonOn,			"../Assets/Image/UI/ExitOn.png");
 	AddResourece(TextureTag::eExitButtonOff,		"../Assets/Image/UI/ExitOff.png");
+	AddResourece(TextureTag::eAim,					"../Assets/Image/UI/Aim.png");
 }
 
 bool CResourceManager::LoadResourceAll()

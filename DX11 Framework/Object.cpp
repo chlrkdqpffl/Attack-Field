@@ -162,7 +162,8 @@ void CGameObject::GenerateRayForPicking(XMVECTOR *pd3dxvPickPosition, XMMATRIX *
 {
 	XMMATRIX d3dxmtxInverse;
 	XMMATRIX d3dxmtxWorldView = *pd3dxmtxView;
-	if (pd3dxmtxWorld) d3dxmtxWorldView = XMMatrixMultiply(*pd3dxmtxWorld, *pd3dxmtxView);
+	if (pd3dxmtxWorld) 
+		d3dxmtxWorldView = XMMatrixMultiply(*pd3dxmtxWorld, *pd3dxmtxView);
 	d3dxmtxInverse = XMMatrixInverse(NULL, d3dxmtxWorldView);
 	
 	XMVECTOR d3dxvCameraOrigin = XMVectorZero();

@@ -90,13 +90,14 @@ void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)
 	m_pUIShader->OnPrepareRender(pDeviceContext);
 
 	pDeviceContext->OMSetBlendState(STATEOBJ_MGR->g_pTransparentBS, NULL, 0xffffffff);
-
-	m_pBackGroundUI->Render(pDeviceContext);
+	pDeviceContext->RSSetState(STATEOBJ_MGR->g_pNoCullRS);
+	if(m_pBackGroundUI) 
+		m_pBackGroundUI->Render(pDeviceContext);
 
 	for (auto& uiObj : m_vecUIObject) {
 		if (uiObj->GetActive())
 			uiObj->Render(pDeviceContext);
 	}
-
+	pDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 	pDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
 }

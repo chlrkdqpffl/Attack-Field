@@ -8,6 +8,7 @@ class CCollisionManager : public CSingletonManager<CCollisionManager>
 public:
 	vector<CGameObject*>				m_vecStaticMeshContainer;
 	vector<CGameObject*>				m_vecDynamicMeshContainer;
+	vector<CCharacterObject*>			m_vecCharacterContainer;
 
 public:
 	CCollisionManager();
@@ -18,6 +19,7 @@ public:
 	virtual void ReleseManager() override;
 
 	bool RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
+	bool RayCastCollisionToCharacterParts(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
 	bool AABBCollision(CollisionInfo& info, BoundingBox bcBox);
 	bool OBBCollision(CollisionInfo& info, BoundingOrientedBox bcObbox);
 

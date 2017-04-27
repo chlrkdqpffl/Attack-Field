@@ -24,6 +24,15 @@ void CWeapon::CreateObjectData(ID3D11Device *pd3dDevice)
 void CWeapon::Fire()
 {
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed) {
+		m_dwLastAttackTime = GetTickCount();
+
+		CollisionInfo info;
+		if (COLLISION_MGR->RayCastCollisionToCharacterParts(info, GetvPosition(), m_pOwner->GetLook())) {
+			ShowXMVector(GetvPosition());
+		}
+
+
+		/*
 		for (auto bullet : m_vecBulletContainer) {
 			if (false == bullet->GetActive()) {
 				bullet->SetActive(true);
@@ -35,6 +44,7 @@ void CWeapon::Fire()
 				break;
 			}
 		}
+		*/
 	}
 }
 

@@ -43,7 +43,6 @@ public:
 	float GetClipEndTime(const string& clipName) const;
 	const string& GetClipName() const { return m_strClipName; }
 	const map<string, CAnimationClip>& GetAnimMap() const { return m_meshData.m_mapAnimationClip; }
-	XMFLOAT4X4 GetOffsetMtx(UINT index) const { return m_meshData.m_vecBoneOffsets[index]; }
 	XMMATRIX GetFinalBoneMtx(UINT index) const { return m_vecFinalBone[index]; }
 
 	void SetClipName(string name) { m_strClipName = name; }

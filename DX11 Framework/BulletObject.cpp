@@ -20,10 +20,11 @@ void CBulletObject::InitializeData()
 void CBulletObject::OnCollisionCheck()
 {
 	CollisionInfo info;
-
-	if (COLLISION_MGR->RayCastCollision(info, GetvPosition(), GetLook())) {
-		SetActive(false);
-		info.m_pHitObject->SetCollision(true);
+	
+	if (COLLISION_MGR->RayCastCollisionToCharacterParts(info, GetvPosition(), GetLook())) {
+		//SetActive(false);
+		//info.m_pHitObject->SetCollision(true);
+		cout << "CBulletObject::OnCollisionCheck() Ãæµ¹ÇÔ" << endl;
 	}
 }
 
@@ -37,5 +38,5 @@ void CBulletObject::Update(float fTimeElapsed)
 		InitializeData();
 	}
 
-//	OnCollisionCheck();
+	OnCollisionCheck();
 }

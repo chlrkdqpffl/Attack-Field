@@ -12,7 +12,7 @@ protected:
 	CPlayer*				m_pPlayer = nullptr;
 	CWeapon*				m_pWeapon = nullptr;
 
-	enum BoundingBoxParts { eBody, eHead, eLeftArm, eRightArm, eLeftLeg, eRightLeg, ePartsCount };
+	enum BoundingBoxParts { eBody, eHead, ePartsCount };
 	BoundingOrientedBox		m_bcPartsBoundingOBox[ePartsCount];
 	XMMATRIX				m_mtxPartsBoundingWorld[ePartsCount];
 	CBoundingBoxMesh		*m_pPartsBoundingBoxMesh[ePartsCount];
@@ -30,4 +30,5 @@ public:
 	virtual void BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext) override;
 
 	void SetPlayer(CPlayer* pPlayer) { m_pPlayer = pPlayer; }
+	BoundingOrientedBox GetPartsBoundingOBox(UINT index) const;
 };

@@ -66,7 +66,7 @@ CBoundingBoxMesh::CBoundingBoxMesh(ID3D11Device *pd3dDevice, BoundingOrientedBox
 	bc.Center = bbox.Center;
 	bc.Extents = bbox.Extents;
 
-	CBoundingBoxMesh(pd3dDevice, bc, fSize);
+	this->CBoundingBoxMesh::CBoundingBoxMesh(pd3dDevice, bc, fSize);
 }
 
 CBoundingBoxMesh::~CBoundingBoxMesh()

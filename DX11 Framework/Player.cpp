@@ -184,7 +184,7 @@ void CPlayer::Update(float fTimeElapsed)
 	float fMaxVelocityY = m_fMaxVelocityY * fTimeElapsed;
 	fLength = sqrtf(m_d3dxvVelocity.y * m_d3dxvVelocity.y);
 	if (fLength > fMaxVelocityY) m_d3dxvVelocity.y *= (fMaxVelocityY / fLength);
-	m_d3dxvVelocity.y = 0;		// 임시 고정
+//	m_d3dxvVelocity.y = 0;		// 임시 고정
 
 	Move(XMLoadFloat3(&m_d3dxvVelocity));
 	if (m_bIsFloorCollision) OnPlayerUpdated(fTimeElapsed);

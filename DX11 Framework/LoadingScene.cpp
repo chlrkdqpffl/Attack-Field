@@ -38,7 +38,7 @@ void CLoadingScene::CreateUIImage()
 
 	// BackGround
 	CUIObject* pBackGroundUI = new CUIObject(TextureTag::eLoadingBackGroundD);
-	pBackGroundUI->Initialize(m_pd3dDevice, POINT{ 0,0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.99f);
+	pBackGroundUI->Initialize(m_pd3dDevice, POINT{ 0,0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.0f);
 	m_pUIManager->SetBackGroundUI(pBackGroundUI);
 }
 

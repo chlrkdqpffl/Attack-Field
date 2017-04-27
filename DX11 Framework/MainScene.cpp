@@ -71,30 +71,32 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			case VK_F1:
 			case VK_F2:
 			case VK_F3:
-				if (m_pPlayer)
-				{
 					m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag(wParam - VK_F1 + 1), m_fTimeElapsed);
 					m_pCamera = m_pPlayer->GetCamera();
-				}
+
+					if (wParam - VK_F1 == 2)
+						m_pUIManager->GetUIObject(TextureTag::eAim)->SetActive(false);
+					else 
+						m_pUIManager->GetUIObject(TextureTag::eAim)->SetActive(true);
 				break;
 			case VK_F4:		// 중력 테스트용으로 넣음
 				m_pPlayer->SetPosition(XMVectorSet(60, 50, 30, 0));
 				break;
 			case VK_Z:
-				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eIdle);
-				static_cast<CCharacterObject*>(m_vecObjectsContainer.back())->SetAnimation(AnimationData::CharacterAnim::eIdle);
+				for(auto& object : m_vecCharacterContainer)
+					object->SetAnimation(AnimationData::CharacterAnim::eIdle);
 				break;
 			case VK_X:
-				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
-				static_cast<CCharacterObject*>(m_vecObjectsContainer.back())->SetAnimation(AnimationData::CharacterAnim::eWalk);
+				for (auto& object : m_vecCharacterContainer)
+					object->SetAnimation(AnimationData::CharacterAnim::eWalk);
 				break;
 			case VK_C:
-				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
-				static_cast<CCharacterObject*>(m_vecObjectsContainer.back())->SetAnimation(AnimationData::CharacterAnim::eRun);
+				for (auto& object : m_vecCharacterContainer)
+					object->SetAnimation(AnimationData::CharacterAnim::eRun);
 				break;
 			case VK_V:
-				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
-				static_cast<CCharacterObject*>(m_vecObjectsContainer.back())->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
+				for (auto& object : m_vecCharacterContainer)
+					object->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
 				break;
 			}
 			break;
@@ -114,7 +116,6 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_SHIFT:
 				m_pPlayer->SetKeyUp(KeyInput::eRun);
-//				m_pPlayerCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 				break;
 			}
 			break;
@@ -331,11 +332,12 @@ void CMainScene::Initialize()
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
 
-	pCharacter->SetPosition(0.0f, 10.0f, 0.0f);
+	pCharacter->SetPosition(10.0f, 2.0f, 0.0f);
 
 	m_vecBBoxRenderContainer.push_back(pCharacter);
 	m_vecCharacterContainer.push_back(pCharacter);
-	
+
+	COLLISION_MGR->m_vecCharacterContainer.push_back(pCharacter);
 
 #pragma region [Create Shader Object]
 	// ----- Test ----- //
@@ -475,6 +477,7 @@ void CMainScene::Initialize()
 	CreateLights();
 	CreateConstantBuffers();
 	CreateTweakBars();
+	CreateUIImage();
 
 	cout << "================================== Scene Loading Complete ===================================" << endl;
 	cout << "=============================================================================================" << endl << endl;
@@ -850,6 +853,18 @@ void CMainScene::CreateTweakBars()
 	*/
 }
 
+void CMainScene::CreateUIImage()
+{
+	m_pUIManager = new CUIManager();
+	m_pUIManager->Initialize(m_pd3dDevice);
+
+	// Aim
+	CUIObject* pAimUI = new CUIObject(TextureTag::eAim);
+	pAimUI->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20, FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20, FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
+	m_pUIManager->AddUIObject(pAimUI); 
+	pAimUI->SetActive(false);
+}
+
 void CMainScene::ReleaseObjects()
 {
 	CScene::ReleaseObjects();
@@ -1021,6 +1036,8 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	// ------ End Scene Rendering ------ //
 	m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 
+	
+
 	m_GBuffer->OnPostRender(pd3dDeviceContext);
 	m_GBuffer->OnPrepareForUnpack(pd3dDeviceContext);
 
@@ -1028,7 +1045,7 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 
 	// ------ Final Scene Rendering ------ //
 	m_GBuffer->DeferredRender(pd3dDeviceContext);
-
+	m_pUIManager->RenderAll(pd3dDeviceContext);
 	// =============== Rendering Option =================== //
 
 	if (GLOBAL_MGR->g_bShowWorldAxis)
