@@ -615,7 +615,8 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers(); 
 	
-	CScene* m_pScene = new CMainScene();
+	CScene* m_pScene = SCENE_MGR->g_pMainScene;
+//	CScene* m_pScene = new CMainScene();
 //	CScene* m_pScene = new CTitleScene();
 	RESOURCE_MGR->LoadResourceAll();
 
