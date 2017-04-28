@@ -161,32 +161,6 @@ void CCamera::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 	UpdateConstantBuffer_CameraPos(pd3dDeviceContext, &XMLoadFloat3(&m_d3dxvPosition));
 }
 
-void CCamera::SetInitRotate()
-{
-	XMMATRIX mtxRotate;
-	XMFLOAT3 xmPosition;
-	
-	mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_d3dxvRight), XMConvertToRadians(0));
-	XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
-	XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
-	XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
-	
-
-	mtxRotate = XMMatrixRotationAxis(m_pPlayer->GetUpVector(), XMConvertToRadians(0));
-	XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
-	XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
-	XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
-
-	XMStoreFloat3(&xmPosition, m_pPlayer->GetvPosition());
-	m_d3dxvPosition.x -= xmPosition.x;
-	m_d3dxvPosition.y -= xmPosition.y;
-	m_d3dxvPosition.z -= xmPosition.z;
-	XMStoreFloat3(&m_d3dxvPosition, XMVector3TransformCoord(XMLoadFloat3(&m_d3dxvPosition), mtxRotate));
-	m_d3dxvPosition.x += xmPosition.x;
-	m_d3dxvPosition.y += xmPosition.y;
-	m_d3dxvPosition.z += xmPosition.z;
-}
-
 void CCamera::CalculateFrustumPlanes()
 {
 	XMMATRIX mtxViewProjection = XMLoadFloat4x4(&m_d3dxmtxView) * XMLoadFloat4x4(&m_d3dxmtxProjection);

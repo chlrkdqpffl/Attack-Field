@@ -82,6 +82,11 @@ using namespace std;
 #include "MapDataManager.h"
 // ------------------------------- //
 
+template <typename T>
+T clamp(const T& n, const T& lower, const T& upper) {
+	return max(lower, min(n, upper));
+}
+
 inline char* ConvertWCtoC(const WCHAR* str)
 {
 	char* pStr;

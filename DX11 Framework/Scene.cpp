@@ -113,7 +113,7 @@ void CScene::CreatePlayer()
 	m_pPlayerCharacter->CreateAxisObject(m_pd3dDevice);
 
 	m_pPlayer = new CTerrainPlayer(m_pPlayerCharacter);
-	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson, 0.0f);
+	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson);
 	m_pCamera = m_pPlayer->GetCamera();
 	m_pPlayerCharacter->SetPlayer(m_pPlayer);
 

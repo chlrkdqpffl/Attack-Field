@@ -12,7 +12,7 @@ class CFbxModelSkinnedMesh : public CFbxModelMesh
 {
 protected:
 	vector<XMMATRIX>			m_vecFinalBone;
-
+	float						m_fPitch = 0;
 	XMFLOAT4					*m_pboneIndices = nullptr;
 	XMFLOAT4					*m_pboneWeights = nullptr;
 
@@ -46,4 +46,5 @@ public:
 	XMMATRIX GetFinalBoneMtx(UINT index) const { return m_vecFinalBone[index]; }
 
 	void SetClipName(string name) { m_strClipName = name; }
+	void SetPitch(float pitch) { m_fPitch = pitch; }
 };

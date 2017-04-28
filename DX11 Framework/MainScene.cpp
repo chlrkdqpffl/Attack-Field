@@ -71,7 +71,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			case VK_F1:
 			case VK_F2:
 			case VK_F3:
-					m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag(wParam - VK_F1 + 1), m_fTimeElapsed);
+					m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag(wParam - VK_F1 + 1));
 					m_pCamera = m_pPlayer->GetCamera();
 
 					if (wParam - VK_F1 == 2)
@@ -841,6 +841,7 @@ void CMainScene::CreateTweakBars()
 	// Option
 	TwAddVarRW(tweakBar, "RGB Axis Option", TW_TYPE_BOOLCPP, &GLOBAL_MGR->g_bShowWorldAxis, "group = Option");
 	
+	TwDefine("TweakBar/Light opened=false ");
 	/*
 	// Add variables to the tweak bar
 	TwAddVarCB(tweakBar, "Level", TW_TYPE_INT32, SetSpongeLevelCB, GetSpongeLevelCB, NULL, "min=0 max=3 group=Sponge keyincr=l keydecr=L");

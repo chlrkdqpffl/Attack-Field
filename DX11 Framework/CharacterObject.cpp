@@ -123,8 +123,8 @@ void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *p
 
 void CCharacterObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
 {
-	m_mtxPartsBoundingWorld[BoundingBoxParts::eBody] = GetSkinnedMesh()->GetFinalBoneMtx(2) * m_mtxWorld;
-	m_mtxPartsBoundingWorld[BoundingBoxParts::eHead] = GetSkinnedMesh()->GetFinalBoneMtx(5) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eBody] = GetSkinnedMesh()->GetFinalBoneMtx(2) * m_mtxWorld;		// ∏ˆ≈Î ¿Œµ¶Ω∫ 2
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eHead] = GetSkinnedMesh()->GetFinalBoneMtx(5) * m_mtxWorld;		// ∏”∏Æ ¿Œµ¶Ω∫ 5
 
 	for (int i = 0; i < ePartsCount; ++i) {
 		if (m_pPartsBoundingBoxMesh[i]) {

@@ -10,7 +10,7 @@ CTerrainPlayer::~CTerrainPlayer()
 {
 }
 
-void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, float fTimeElapsed)
+void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag)
 {
 	CameraTag nCurrentCameraTag = (m_pCamera) ? m_pCamera->GetCameraTag() : CameraTag::eNone;
 	if (nCurrentCameraTag == nNewCameraTag) return;
@@ -25,7 +25,7 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		m_pCamera->SetTimeLag(0.0f);
 		m_pCamera->SetPosition(GetPosition());
 		m_pCamera->SetOffset(m_d3dxvLook, 0.5f);	// 캐릭터 가슴보다 조금 앞
-		m_pCamera->SetOffset(m_d3dxvUp, 1.05f);
+		m_pCamera->SetOffset(m_d3dxvUp, 0.95f);
 		m_pCamera->GenerateProjectionMatrix(0.15f, 5000.0f, ASPECT_RATIO, 60.0f);
 
 		break;
@@ -66,7 +66,6 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 	default:
 		break; 
 	}
-
 	SetMaxVelocityXZ(500.0f);
 }
 

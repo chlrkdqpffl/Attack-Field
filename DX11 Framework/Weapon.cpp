@@ -29,12 +29,9 @@ void CWeapon::Fire()
 		CollisionInfo info;
 		if (COLLISION_MGR->RayCastCollisionToCharacterParts(info, GetvPosition(), m_pOwner->GetLook())) {
 			
-			ShowXMVector(GetvPosition());
+			cout << "레이 시작 점 : "; ShowXMVector(GetvPosition());
 
 		}
-
-
-		/*
 		for (auto bullet : m_vecBulletContainer) {
 			if (false == bullet->GetActive()) {
 				bullet->SetActive(true);
@@ -42,11 +39,9 @@ void CWeapon::Fire()
 
 				XMFLOAT3 look; XMStoreFloat3(&look, m_pOwner->GetLook());
 				bullet->SetLook(look);
-				m_dwLastAttackTime = GetTickCount();
 				break;
 			}
 		}
-		*/
 	}
 }
 

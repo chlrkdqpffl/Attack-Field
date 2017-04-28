@@ -37,13 +37,14 @@ public:
 	virtual void OnCameraUpdated(float fTimeElapsed) {};
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
-	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag, float fTimeElapsed);
+	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag) {};
 	
 	CCamera *OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag); 
 	void Move(const XMVECTOR d3dxvShift);
 	void Rotate(float x, float y, float z);
 	void Update(float fTimeElapsed);
 	void UpdateKeyInput(float fTimeElapsed);
+	void RotateToCharacter();
 
 	bool IsMoving() const;
 	// ----- Get, Setter ----- //

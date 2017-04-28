@@ -115,7 +115,6 @@ public:
 	virtual void SetLookAt(XMVECTOR& d3dxvPosition, XMVECTOR& d3dxvLookAt, XMVECTOR& vd3dxvUp);
 
 	void CalculateFrustumPlanes();
-	void SetInitRotate();
 	bool IsInFrustum(XMVECTOR& xCenter, XMVECTOR& xExtern);
 	bool IsInFrustum(BoundingBox *boundingbox);
 };

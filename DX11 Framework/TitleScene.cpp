@@ -20,7 +20,7 @@ void CTitleScene::Initialize()
 void CTitleScene::CreatePlayer()
 {
 	m_pPlayer = new CTerrainPlayer();
-	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson, 0.0f);
+	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson);
 	m_pCamera = m_pPlayer->GetCamera();
 
 	SCENE_MGR->g_pPlayer = m_pPlayer;

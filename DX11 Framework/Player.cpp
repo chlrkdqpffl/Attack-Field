@@ -112,16 +112,19 @@ void CPlayer::Rotate(float x, float y, float z)
 	CameraTag nCurrentCameraTag = m_pCamera->GetCameraTag();
 	if ((nCurrentCameraTag == CameraTag::eFirstPerson) || (nCurrentCameraTag == CameraTag::eThirdPerson))
 	{
-		if (x != 0.0f)
-		{
-			m_fPitch += x;
-			if (m_fPitch > 70.0f) { 
-				x -= (m_fPitch - 70); 
-				m_fPitch = 70;
-			}
-			if (m_fPitch < -85.0f) { 
-				x -= (m_fPitch + 85); 
-				m_fPitch = -85;
+		if (nCurrentCameraTag == CameraTag::eFirstPerson) {
+			if (x != 0.0f)
+			{
+				m_fPitch += x;
+				if (m_fPitch > 50.0f) {
+					x -= (m_fPitch - 50);
+					m_fPitch = 50;
+				}
+				if (m_fPitch < -40.0f) {
+					x -= (m_fPitch + 40);
+					m_fPitch = -40;
+				}
+				RotateToCharacter();
 			}
 		}
 		if (y != 0.0f)
@@ -164,6 +167,11 @@ void CPlayer::Rotate(float x, float y, float z)
 	XMStoreFloat3(&m_d3dxvRight, XMVector3Normalize(XMLoadFloat3(&m_d3dxvRight)));
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Cross(XMLoadFloat3(&m_d3dxvLook), XMLoadFloat3(&m_d3dxvRight)));
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
+}
+
+void CPlayer::RotateToCharacter()
+{
+	m_pCharacter->GetSkinnedMesh()->SetPitch(m_fPitch);
 }
 
 void CPlayer::Update(float fTimeElapsed)
@@ -227,7 +235,8 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 		break;
 	}
 
-	m_fPitch = 0.0f;
+	m_fPitch = 10.0f;		// 이는 1인칭으로 했을 때 바라보는 방향 각도가 살짝 아래에 있기 때문에 offset으로 넣은 값
+	RotateToCharacter();
 
 	if (nCurrentCameraTag == CameraTag::eSpaceShip)
 	{
@@ -238,10 +247,6 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 		XMStoreFloat3(&m_d3dxvLook, XMVector3Normalize(XMLoadFloat3(&m_d3dxvLook)));
 		m_fYaw = XMConvertToDegrees(acosf(XMVectorGetX(XMVector3Dot(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), XMLoadFloat3(&m_d3dxvLook)))));
 		if (m_d3dxvLook.x < 0.0f) m_fYaw = -m_fYaw;
-
-		if (m_pCamera) {
-
-		}
 	}
 	else if ((nNewCameraTag == CameraTag::eSpaceShip) && m_pCamera)
 	{
@@ -259,8 +264,4 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 	if (m_pCamera) delete m_pCamera;
 
 	return(pNewCamera);
-}
-
-void CPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag, float fTimeElapsed)
-{
 }

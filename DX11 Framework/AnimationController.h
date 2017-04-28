@@ -37,7 +37,7 @@ public:
 	AnimationData::CharacterAnim GetAnimEnum() const {return get<0>(m_currAnimState); }
 	AnimationData::Type GetAnimType() const { return get<2>(m_currAnimState); }
 
-	void SetMesh(CFbxModelSkinnedMesh* mesh);
+	void SetMesh(CFbxModelSkinnedMesh* mesh) { m_pSkinnedMesh = mesh; }
 	void SetAnimation(AnimationData::CharacterAnim anim, float speed = 1.0f);
 };
 

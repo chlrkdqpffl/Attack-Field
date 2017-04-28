@@ -693,8 +693,7 @@ void CGameFramework::ProcessInput()
 		if (m_bMouseBindFlag == false) {
 			SetCursor(NULL);
 			GetCursorPos(&ptCursorPos);
-//			cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
-//			cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
+
 			cxDelta = (float)(ptCursorPos.x - (FRAME_BUFFER_WIDTH / 2)) / 20;
 			cyDelta = (float)(ptCursorPos.y - (FRAME_BUFFER_HEIGHT / 2)) / 20;
 			SetCursorPos(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2);
