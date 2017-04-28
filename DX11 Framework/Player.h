@@ -14,8 +14,7 @@ protected:
 
 	float           			m_fPitch;
 	float           			m_fYaw;
-	float           			m_fRoll;
-
+	
 	float						m_fSpeed = 0;
 	XMFLOAT3					m_d3dxvVelocity;
 	XMFLOAT3     				m_d3dxvGravity;
@@ -56,7 +55,6 @@ public:
 	const XMVECTOR GetVelocity() const { return(XMLoadFloat3(&m_d3dxvVelocity)); }
 	float GetYaw() const { return(m_fYaw); }
 	float GetPitch() const { return(m_fPitch); }
-	float GetRoll() const { return(m_fRoll); }
 	CCamera *GetCamera() { return(m_pCamera); }
 	float GetSpeed() const {return m_fSpeed; }
 	bool GetFloorCollision() const { return m_bIsFloorCollision; }

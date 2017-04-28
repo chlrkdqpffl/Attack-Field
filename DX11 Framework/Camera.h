@@ -22,10 +22,6 @@ protected:
 	XMFLOAT3						m_d3dxvUp;
 	XMFLOAT3						m_d3dxvLook;
 
-	float           				m_fPitch;
-	float           				m_fRoll;
-	float           				m_fYaw;
-
 	CameraTag						m_tagCamera = CameraTag::eNone;
 
 	XMFLOAT3						m_d3dxvOffset;
@@ -75,22 +71,33 @@ public:
 	void SetPosition(XMVECTOR vPosition) { XMStoreFloat3(&m_d3dxvPosition, vPosition); }
 	XMVECTOR GetvPosition() const { return(XMLoadFloat3(&m_d3dxvPosition)); }
 	XMFLOAT3 GetPosition() const { return m_d3dxvPosition; }
-	XMVECTOR GetRightVector() const { return(XMLoadFloat3(&m_d3dxvRight)); }
-	XMVECTOR GetUpVector() const { return(XMLoadFloat3(&m_d3dxvUp)); }
-	XMVECTOR GetLookVector() const { return(XMLoadFloat3(&m_d3dxvLook)); }
+	XMFLOAT3 GetRight() const { return m_d3dxvRight; }
+	XMFLOAT3 GetUp() const { return m_d3dxvUp; }
+	XMFLOAT3 GetLook() const { return m_d3dxvLook; }
+	XMVECTOR GetvRight() const { return(XMLoadFloat3(&m_d3dxvRight)); }
+	XMVECTOR GetvUp() const { return(XMLoadFloat3(&m_d3dxvUp)); }
+	XMVECTOR GetvLook() const { return(XMLoadFloat3(&m_d3dxvLook)); }
+	
+	void SetOffset(XMFLOAT3 offset)
+	{
+		m_d3dxvOffset = offset;
 
-	float GetPitch() const { return(m_fPitch); }
-	float GetRoll() const { return(m_fRoll); }
-	float GetYaw() const { return(m_fYaw); }
-
-	void SetOffset(XMFLOAT3 d3dxvOffset) 
-	{	
-		// 캐릭터 위치 동기화해야함
-		m_d3dxvOffset = d3dxvOffset;
-		m_d3dxvPosition.x += d3dxvOffset.x;
-		m_d3dxvPosition.y += d3dxvOffset.y;
-		m_d3dxvPosition.z += d3dxvOffset.z;
+		m_d3dxvPosition.x += offset.x;
+		m_d3dxvPosition.y += offset.y;
+		m_d3dxvPosition.z += offset.z;
 	}
+
+	void SetOffset(XMFLOAT3 direction, float distance) 
+	{	
+		m_d3dxvOffset.x = direction.x * distance;
+		m_d3dxvOffset.y = direction.y * distance;
+		m_d3dxvOffset.z = direction.z * distance;
+
+		m_d3dxvPosition.x += m_d3dxvOffset.x;
+		m_d3dxvPosition.y += m_d3dxvOffset.y;
+		m_d3dxvPosition.z += m_d3dxvOffset.z;
+	}
+
 	XMFLOAT3 GetOffset() const { return m_d3dxvOffset; }
 
 	void SetTimeLag(float fTimeLag) { m_fTimeLag = fTimeLag; }
@@ -108,7 +115,7 @@ public:
 	virtual void SetLookAt(XMVECTOR& d3dxvPosition, XMVECTOR& d3dxvLookAt, XMVECTOR& vd3dxvUp);
 
 	void CalculateFrustumPlanes();
-
+	void SetInitRotate();
 	bool IsInFrustum(XMVECTOR& xCenter, XMVECTOR& xExtern);
 	bool IsInFrustum(BoundingBox *boundingbox);
 };

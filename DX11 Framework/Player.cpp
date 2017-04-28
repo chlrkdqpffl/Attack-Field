@@ -19,7 +19,6 @@ CPlayer::CPlayer(CCharacterObject* pCharacter)
 	m_fFriction = 0.0f;
 
 	m_fPitch = 0.0f;
-	m_fRoll = 0.0f;
 	m_fYaw = 0.0f;
 
 	// юс╫ц
@@ -116,27 +115,26 @@ void CPlayer::Rotate(float x, float y, float z)
 		if (x != 0.0f)
 		{
 			m_fPitch += x;
-			if (m_fPitch > +89.0f) { x -= (m_fPitch - 89.0f); m_fPitch = +89.0f; }
-			if (m_fPitch < -89.0f) { x -= (m_fPitch + 89.0f); m_fPitch = -89.0f; }
+			if (m_fPitch > 70.0f) { 
+				x -= (m_fPitch - 70); 
+				m_fPitch = 70;
+			}
+			if (m_fPitch < -85.0f) { 
+				x -= (m_fPitch + 85); 
+				m_fPitch = -85;
+			}
 		}
 		if (y != 0.0f)
 		{
 			m_fYaw += y;
 			if (m_fYaw > 360.0f) m_fYaw -= 360.0f;
 			if (m_fYaw < 0.0f) m_fYaw += 360.0f;
-		}
-		if (z != 0.0f)
-		{
-			m_fRoll += z;
-			if (m_fRoll > +20.0f) { z -= (m_fRoll - 20.0f); m_fRoll = +20.0f; }
-			if (m_fRoll < -20.0f) { z -= (m_fRoll + 20.0f); m_fRoll = -20.0f; }
-		}
-		if (y != 0.0f)
-		{
+
 			mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_d3dxvUp), XMConvertToRadians(y));
 			XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
 			XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
 		}
+		m_pCamera->Rotate(x, y, z);
 	}
 	else if (nCurrentCameraTag == CameraTag::eSpaceShip)
 	{
@@ -198,7 +196,9 @@ void CPlayer::Update(float fTimeElapsed)
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvDeceleration * fDeceleration);
 
 	// Camera Update
-	m_pCamera->Update(fTimeElapsed);
+	if(m_pCamera->GetCameraTag() == CameraTag::eThirdPerson)
+		m_pCamera->Update(fTimeElapsed);
+	
 	m_pCamera->RegenerateViewMatrix();
 
 	// Character Update
@@ -226,6 +226,9 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 		pNewCamera = new CThirdPersonCamera(m_pCamera);
 		break;
 	}
+
+	m_fPitch = 0.0f;
+
 	if (nCurrentCameraTag == CameraTag::eSpaceShip)
 	{
 		m_d3dxvUp = XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -233,16 +236,18 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 		m_d3dxvLook.y = 0.0f;
 		XMStoreFloat3(&m_d3dxvRight, XMVector3Normalize(XMLoadFloat3(&m_d3dxvRight)));
 		XMStoreFloat3(&m_d3dxvLook, XMVector3Normalize(XMLoadFloat3(&m_d3dxvLook)));
-		m_fPitch = 0.0f;
-		m_fRoll = 0.0f;
 		m_fYaw = XMConvertToDegrees(acosf(XMVectorGetX(XMVector3Dot(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), XMLoadFloat3(&m_d3dxvLook)))));
 		if (m_d3dxvLook.x < 0.0f) m_fYaw = -m_fYaw;
+
+		if (m_pCamera) {
+
+		}
 	}
 	else if ((nNewCameraTag == CameraTag::eSpaceShip) && m_pCamera)
 	{
-		XMStoreFloat3(&m_d3dxvRight, m_pCamera->GetRightVector());
-		XMStoreFloat3(&m_d3dxvUp, m_pCamera->GetUpVector());
-		XMStoreFloat3(&m_d3dxvLook, m_pCamera->GetLookVector());
+		m_d3dxvRight = m_pCamera->GetRight();
+		m_d3dxvUp = m_pCamera->GetUp();
+		m_d3dxvLook = m_pCamera->GetLook();
 	}
 
 	if (pNewCamera)

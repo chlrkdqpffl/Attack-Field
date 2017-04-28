@@ -28,7 +28,9 @@ void CWeapon::Fire()
 
 		CollisionInfo info;
 		if (COLLISION_MGR->RayCastCollisionToCharacterParts(info, GetvPosition(), m_pOwner->GetLook())) {
+			
 			ShowXMVector(GetvPosition());
+
 		}
 
 

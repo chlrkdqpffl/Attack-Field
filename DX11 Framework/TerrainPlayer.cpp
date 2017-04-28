@@ -24,8 +24,10 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFirstPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
 		m_pCamera->SetPosition(GetPosition());
-		m_pCamera->SetOffset(XMFLOAT3(0.0f, 1.05f, 0.5f));	// 캐릭터 가슴보다 조금 앞
-		m_pCamera->GenerateProjectionMatrix(0.25f, 5000.0f, ASPECT_RATIO, 60.0f);
+		m_pCamera->SetOffset(m_d3dxvLook, 0.5f);	// 캐릭터 가슴보다 조금 앞
+		m_pCamera->SetOffset(m_d3dxvUp, 1.05f);
+		m_pCamera->GenerateProjectionMatrix(0.15f, 5000.0f, ASPECT_RATIO, 60.0f);
+
 		break;
 	case CameraTag::eSpaceShip:
 		SetFriction(125.0f);
@@ -44,9 +46,11 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eThirdPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.25f);
+		m_pCamera->SetPosition(GetPosition());
 		m_pCamera->SetOffset(XMFLOAT3(0.0f, 2.0f, -10.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		break;
+		/*
 	case CameraTag::eFreeCam:		// - 추후 구현하기, 
 		SetFriction(0);
 		SetGravity(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
@@ -58,6 +62,7 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		m_pCamera->SetOffset(XMFLOAT3(0.0f, 2.0f, -10.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		break;
+		*/
 	default:
 		break; 
 	}

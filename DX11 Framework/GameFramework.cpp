@@ -388,16 +388,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case VK_ESCAPE:
 			m_bMouseBindFlag = !m_bMouseBindFlag;
-			ReleaseCapture();
 			ShowCursor(true);
+			ReleaseCapture();
 			break;
 		case VK_RETURN:
 			break;
 		case VK_F5:
-		{
 			ScreenCapture(m_pd3dRenderTargetView);
-		}
-		break;
+			break;
 		case VK_F9:
 		{
 			BOOL bFullScreenState = FALSE;
@@ -620,8 +618,6 @@ void CGameFramework::BuildObjects()
 	CScene* m_pScene = new CMainScene();
 //	CScene* m_pScene = new CTitleScene();
 	RESOURCE_MGR->LoadResourceAll();
-
-
 
 	SCENE_MGR->g_nowScene = m_pScene;
 	m_pScene->SetDevice(m_pd3dDevice);
