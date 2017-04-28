@@ -69,10 +69,44 @@ bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos
 			}
 		}
 	}
-
+	
 	if (isCollision) {
 		info.m_pHitObject = pNearestObject;
 		info.m_fDistance = fNearestDistance;
+		return true;
+	}
+
+	return false;
+}
+
+bool CCollisionManager::RayCastCollisionToCharacterParts(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
+{
+	bool isCollision = false;
+	float fNearestDistance = FLT_MAX;
+	CGameObject* pNearestObject = nullptr;
+
+	for (auto& character : m_vecCharacterContainer) {
+		if (character->GetPartsBoundingOBox(0).Intersects(originPos, direction, info.m_fDistance)) {
+			if (fNearestDistance > info.m_fDistance) {
+				fNearestDistance = info.m_fDistance;
+				isCollision = true;
+				pNearestObject = character;
+				cout << "몸통 충돌 " << endl;
+			}
+		}
+		if (character->GetPartsBoundingOBox(1).Intersects(originPos, direction, info.m_fDistance)) {
+			if (fNearestDistance > info.m_fDistance) {
+				fNearestDistance = info.m_fDistance;
+				isCollision = true;
+				pNearestObject = character;
+				cout << "머리 충돌 " << endl;
+			}
+		}
+	}
+
+	if (isCollision) {
+		info.m_fDistance = fNearestDistance;
+		info.m_pHitObject = pNearestObject;
 		return true;
 	}
 
@@ -121,6 +155,8 @@ bool CCollisionManager::CheckCollision(CollisionInfo& info, CGameObject* pOrigin
 	if (!pOriginObject->GetBoundingOBox().Intersects(pTargetObject->GetBoundingOBox()))
 		return false;
 
+
+	//if (pOriginObject->GetMeshTag()) 필요한 객체들만 확인하기
 	// 3. Primitive
 	if (!pOriginObject->IsCollision(pTargetObject))
 		return false;

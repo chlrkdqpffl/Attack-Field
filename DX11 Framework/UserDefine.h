@@ -96,15 +96,3 @@
 		#define HR(x) (x)
 	#endif
 #endif
-
-/*
-// 가변인자
-va_list ap;
-va_start(ap, textureCount);
-
-for (int i = 0; i < textureCount; ++i)
-vecTextureTag.push_back(va_arg(ap, TextureTag));
-
-va_end(ap);
-
-*/

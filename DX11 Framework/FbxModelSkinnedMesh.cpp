@@ -88,7 +88,6 @@ void CFbxModelSkinnedMesh::Initialize(ID3D11Device *pd3dDevice, bool isCalcTange
 		UINT pnBufferStrides[6] = { sizeof(XMFLOAT3), sizeof(XMFLOAT3), sizeof(XMFLOAT3), sizeof(XMFLOAT2), sizeof(XMFLOAT4), sizeof(XMFLOAT4) };
 		UINT pnBufferOffsets[6] = { 0, 0, 0, 0, 0, 0 };
 		AssembleToVertexBuffer(6, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
-	
 	}
 	else {
 		m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
@@ -301,14 +300,21 @@ void CFbxModelSkinnedMesh::GetFinalTransformsBlending(AnimationTrack& prevAnim, 
 	else
 		currClip->second.Interpolate(fTimePos, toRootTransforms);
 
-
 	m_vecFinalBone.resize(m_meshData.m_nBoneCount);
-
+	
+	// 아래의 코드는 Terrorist Character에만 적용되므로 다른 캐릭터를 사용한다면 해당 본을 찾아서 범위를 조절해야함
 	for (UINT i = 0; i < m_meshData.m_nBoneCount; ++i)
 	{
+		XMMATRIX mtxRotate = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch));
+		XMMATRIX mtxRotateHalf = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch / 2));	// 유연하게 회전하기 위해 추가 생성
 		XMMATRIX mtxOffset = XMLoadFloat4x4(&m_meshData.m_vecBoneOffsets[i]);
 		XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
 
-		m_vecFinalBone[i] = mtxOffset * mtxToRoot;
+		if(i < 2)
+			m_vecFinalBone[i] = mtxOffset * mtxToRoot * mtxRotateHalf;
+		else if (2 <= i && i <= 31)
+			m_vecFinalBone[i] = mtxOffset * mtxToRoot * mtxRotate;
+		else 
+			m_vecFinalBone[i] = mtxOffset * mtxToRoot;
 	}
 }

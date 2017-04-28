@@ -17,6 +17,7 @@ public:
 
 	virtual void Initialize();
 	virtual void CreateTweakBars();
+	virtual void CreateUIImage() override;
 	virtual void ReleaseObjects();
 
 	virtual void CreateConstantBuffers();

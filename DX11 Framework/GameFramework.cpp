@@ -388,16 +388,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case VK_ESCAPE:
 			m_bMouseBindFlag = !m_bMouseBindFlag;
-			ReleaseCapture();
 			ShowCursor(true);
+			ReleaseCapture();
 			break;
 		case VK_RETURN:
 			break;
 		case VK_F5:
-		{
 			ScreenCapture(m_pd3dRenderTargetView);
-		}
-		break;
+			break;
 		case VK_F9:
 		{
 			BOOL bFullScreenState = FALSE;
@@ -487,7 +485,6 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	case WM_KEYUP:
 		OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 		break;
-
 	}
 	return(0);
 }
@@ -618,17 +615,9 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers(); 
 	
-	//'17.04.28 KYT
-	/*
-		new CMainScene()을 두번 합니다.
-	*/
-	CScene* m_pScene = SCENE_MGR->g_pMainScene;
-	//new CMainScene();
-
-
+	CScene* m_pScene = new CMainScene();
 //	CScene* m_pScene = new CTitleScene();
 	RESOURCE_MGR->LoadResourceAll();
-
 
 	SCENE_MGR->g_nowScene = m_pScene;
 	m_pScene->SetDevice(m_pd3dDevice);
@@ -704,8 +693,7 @@ void CGameFramework::ProcessInput()
 		if (m_bMouseBindFlag == false) {
 			SetCursor(NULL);
 			GetCursorPos(&ptCursorPos);
-//			cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
-//			cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
+
 			cxDelta = (float)(ptCursorPos.x - (FRAME_BUFFER_WIDTH / 2)) / 20;
 			cyDelta = (float)(ptCursorPos.y - (FRAME_BUFFER_HEIGHT / 2)) / 20;
 			SetCursorPos(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2);

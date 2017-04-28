@@ -2,17 +2,9 @@
 //#include "SkinnedObject.h"
 #include "Object.h"
 #include "Camera.h"
-#include"ServerFuntion.h"
-
-#include <D3DX10Math.h>
-
-
-#include <DirectXMath.h>
-#include <DirectXPackedVector.h>
-#include <DirectXCollision.h>
 
 class CCharacterObject;
-class CPlayer : public ServerFuntion
+class CPlayer
 {
 protected:
 	XMFLOAT3					m_d3dxvPosition;
@@ -22,8 +14,7 @@ protected:
 
 	float           			m_fPitch;
 	float           			m_fYaw;
-	float           			m_fRoll;
-
+	
 	float						m_fSpeed = 0;
 	XMFLOAT3					m_d3dxvVelocity;
 	XMFLOAT3     				m_d3dxvGravity;
@@ -38,13 +29,6 @@ protected:
 	CCharacterObject			*m_pCharacter = nullptr;
 	bool						m_bIsFloorCollision = false;
 
-
-	///이전 로테이드 xyz값을 저장
-	float						m_prev_x;
-	float						m_prev_y;
-	float						m_prev_z;
-
-
 public:
 	CPlayer(CCharacterObject* pCharacter = nullptr);
 	virtual ~CPlayer();
@@ -53,14 +37,14 @@ public:
 	virtual void OnCameraUpdated(float fTimeElapsed) {};
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
-	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag, float fTimeElapsed);
+	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag) {};
 	
 	CCamera *OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag); 
 	void Move(const XMVECTOR d3dxvShift);
 	void Rotate(float x, float y, float z);
 	void Update(float fTimeElapsed);
 	void UpdateKeyInput(float fTimeElapsed);
-	void SetWorldMatrix(DirectX::XMMATRIX world);
+	void RotateToCharacter();
 
 	bool IsMoving() const;
 	// ----- Get, Setter ----- //
@@ -72,7 +56,6 @@ public:
 	const XMVECTOR GetVelocity() const { return(XMLoadFloat3(&m_d3dxvVelocity)); }
 	float GetYaw() const { return(m_fYaw); }
 	float GetPitch() const { return(m_fPitch); }
-	float GetRoll() const { return(m_fRoll); }
 	CCamera *GetCamera() { return(m_pCamera); }
 	float GetSpeed() const {return m_fSpeed; }
 	bool GetFloorCollision() const { return m_bIsFloorCollision; }
@@ -91,7 +74,7 @@ public:
 	}
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
 	void SetPlayerUpdatedContext(LPVOID pContext) { m_pPlayerUpdatedContext = pContext; }
-	void SetKeyDown(KeyInput key) ; 
-	void SetKeyUp(KeyInput key);
+	void SetKeyDown(KeyInput key) { m_wKeyState |= static_cast<int>(key); }
+	void SetKeyUp(KeyInput key) { m_wKeyState ^= static_cast<int>(key); }
 	WORD GetKeyState() const { return m_wKeyState; }
 };

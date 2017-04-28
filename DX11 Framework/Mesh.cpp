@@ -164,7 +164,6 @@ int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRay
 		if (::RayIntersectTriangle(pd3dxvRayPosition, pd3dxvRayDirection, &v0, &v1, &v2, &fuHitBaryCentric, &fvHitBaryCentric, &fHitDistance))
 #endif 
 		{ 
-			cout << "°Å¸® : " << fHitDistance << endl;
 			if (fHitDistance < fNearHitDistance){
 				fNearHitDistance = fHitDistance;
 				if (pd3dxIntersectInfo)	{

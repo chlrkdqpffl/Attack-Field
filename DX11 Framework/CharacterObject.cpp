@@ -21,6 +21,13 @@ void CCharacterObject::CreateObjectData(ID3D11Device *pd3dDevice)
 	CreateWeapon(pd3dDevice);
 }
 
+BoundingOrientedBox CCharacterObject::GetPartsBoundingOBox(UINT index) const
+{
+	BoundingOrientedBox bcObox = m_bcPartsBoundingOBox[index];
+	bcObox.Transform(bcObox, m_mtxPartsBoundingWorld[index]);
+	return bcObox;
+}
+
 void CCharacterObject::Fire()
 {
 	SetAnimation(AnimationData::CharacterAnim::eStandingFire);
@@ -48,7 +55,7 @@ void CCharacterObject::OnCollisionCheck()
 			d3dxmtxInverse = XMMatrixInverse(NULL, staticObject->m_mtxWorld);
 
 			XMVECTOR rayPosition;
-			rayPosition = XMVector3TransformCoord(XMLoadFloat3(&GetPosition()), d3dxmtxInverse);
+			rayPosition = XMVector3TransformCoord(GetvPosition(), d3dxmtxInverse);
 			
 			XMVECTOR rayDirection;
 			rayDirection = XMVector3TransformCoord(velocity, d3dxmtxInverse);
@@ -77,7 +84,7 @@ void CCharacterObject::OnCollisionCheck()
 		}
 	}
 		
-	/*
+	
 	// 아래 지형과의 충돌 - 현재는 높이에 맞춰서 위치를 그대로 set
 	// -> 추후 구해진 distance를 이용하여 높이를 정하고 중력값을 이용하여 낙하하도록 구현하기
 	if (COLLISION_MGR->RayCastCollision(m_infoCollision, XMLoadFloat3(&bcObox.Center), -1 * GetUp())) {
@@ -85,35 +92,11 @@ void CCharacterObject::OnCollisionCheck()
 			m_pPlayer->SetFloorCollision(true);
 		}
 	}
-	*/
+	
+		
 
-
-
-	/*
-	// ------------------ 미리 다음 프레임으로 이동시켜서 충돌확인한다면 바닥도 항시 충돌되기 때문에 확인이 안된다. -----------
-	XMVECTOR nowPos = GetvPosition();
-	XMVECTOR nextPos = nowPos + m_pPlayer->GetVelocity();
-	XMMATRIX mtxNextWorld = m_mtxWorld;
-	XMFLOAT4X4 mtxf4World; XMStoreFloat4x4(&mtxf4World, mtxNextWorld);
-	XMFLOAT3 pos; XMStoreFloat3(&pos, nextPos);
-
-	mtxf4World._41 = pos.x;
-	mtxf4World._42 = pos.y;
-	mtxf4World._43 = pos.z;
-	mtxNextWorld = XMLoadFloat4x4(&mtxf4World);
-
-	BoundingOrientedBox bcObox2; GetBoundingOBox(true).Transform(bcObox2, mtxNextWorld);
-
-
-	for (auto staticObject : COLLISION_MGR->m_vecStaticMeshContainer) {
-		if (pPlaneObject != staticObject) {
-			if (staticObject->GetBoundingOBox().Intersects(bcObox2)) {
-				ShowXMVector(m_pPlayer->GetVelocity());
-				m_pPlayer->SetVelocity(XMVectorSet(0,0,0,0));
-			}
-		}
-	}
-	*/
+	// 충돌 구현하기 전에 픽킹 코드 보고 다시 수정해보기
+	// 레이 방향이 잘못된 듯
 } 
 
 void CCharacterObject::Update(float fTimeElapsed)
@@ -140,14 +123,19 @@ void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *p
 
 void CCharacterObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
 {
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eBody] = GetSkinnedMesh()->GetFinalBoneMtx(2) * m_mtxWorld;		// 몸통 인덱스 2
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eHead] = GetSkinnedMesh()->GetFinalBoneMtx(5) * m_mtxWorld;		// 머리 인덱스 5
+
 	for (int i = 0; i < ePartsCount; ++i) {
 		if (m_pPartsBoundingBoxMesh[i]) {
+			BoundingOrientedBox bcObbox;
 			XMMATRIX mtxBoundingBoxWorld = m_mtxPartsBoundingWorld[i];
-			BoundingOrientedBox bcObbox; m_bcPartsBoundingOBox[i].Transform(bcObbox, mtxBoundingBoxWorld);
 
-			mtxBoundingBoxWorld = XMMatrixRotationQuaternion(XMLoadFloat4(&bcObbox.Orientation)) *
+			m_bcPartsBoundingOBox[i].Transform(bcObbox, mtxBoundingBoxWorld);
+			
+			mtxBoundingBoxWorld = XMMatrixRotationQuaternion(XMLoadFloat4(&bcObbox.Orientation)) * 
 				XMMatrixTranslation(bcObbox.Center.x, bcObbox.Center.y, bcObbox.Center.z);
-
+			
 			CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &mtxBoundingBoxWorld);
 
 			m_pPartsBoundingBoxMesh[i]->Render(pd3dDeviceContext);

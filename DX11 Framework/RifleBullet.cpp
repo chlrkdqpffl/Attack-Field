@@ -13,7 +13,7 @@ CRifleBullet::~CRifleBullet()
 
 void CRifleBullet::CreateMesh(ID3D11Device *pd3dDevice)
 {
-	CSphereMeshDiffused* pMesh = new CSphereMeshDiffused(pd3dDevice, 0.4f, 3, 3);
+	CSphereMeshDiffused* pMesh = new CSphereMeshDiffused(pd3dDevice, 0.5f, 3, 3);
 
 	SetMesh(pMesh);
 }
@@ -28,14 +28,6 @@ void CRifleBullet::CreateShader(ID3D11Device *pd3dDevice)
 void CRifleBullet::CreateMaterial()
 {
 	m_pMaterial = new CMaterial();
-
-	/*
-	CTexture *pTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	pTexture->SetTexture(0, TextureTag::eRifleD);
-	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
-
-	m_pMaterial->SetTexture(pTexture);
-	*/
 }
 
 void CRifleBullet::Update(float fTimeElapsed)

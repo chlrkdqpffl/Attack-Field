@@ -10,11 +10,6 @@ CAnimationController::~CAnimationController()
 {
 }
 
-void CAnimationController::SetMesh(CFbxModelSkinnedMesh* mesh)
-{
-	m_pSkinnedMesh = mesh; 
-}
-
 void CAnimationController::SetAnimation(AnimationData::CharacterAnim anim, float speed)
 {
 	if (get<0>(m_currAnimState) == anim)

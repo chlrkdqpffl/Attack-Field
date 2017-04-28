@@ -9,7 +9,7 @@ public:
 	CTerrainPlayer(CCharacterObject* pCharacter = nullptr);
 	virtual ~CTerrainPlayer();
 
-	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag, float fTimeElapsed);
+	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag);
 
 	virtual void OnPlayerUpdated(float fTimeElapsed);
 	virtual void OnCameraUpdated(float fTimeElapsed);

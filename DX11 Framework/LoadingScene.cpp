@@ -25,7 +25,7 @@ void CLoadingScene::Initialize()
 void CLoadingScene::CreatePlayer()
 {
 	m_pPlayer = new CTerrainPlayer();
-	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson, 0.0f);
+	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson);
 	m_pCamera = m_pPlayer->GetCamera();
 
 	SCENE_MGR->g_pPlayer = m_pPlayer;
@@ -38,7 +38,7 @@ void CLoadingScene::CreateUIImage()
 
 	// BackGround
 	CUIObject* pBackGroundUI = new CUIObject(TextureTag::eLoadingBackGroundD);
-	pBackGroundUI->Initialize(m_pd3dDevice, POINT{ 0,0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.99f);
+	pBackGroundUI->Initialize(m_pd3dDevice, POINT{ 0,0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.0f);
 	m_pUIManager->SetBackGroundUI(pBackGroundUI);
 }
 
