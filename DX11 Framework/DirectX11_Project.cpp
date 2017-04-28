@@ -17,6 +17,8 @@ TCHAR				szWindowClass[MAX_LOADSTRING];			// 기본 창 클래스 이름입니다.
 
 CGameFramework		gGameFramework;      
 
+SOCKET g_socket;
+
 
 
 BOOL InitInstance(HINSTANCE, int);
@@ -84,7 +86,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	gGameFramework.sethandle(hMainWnd);
 
-	//gGameFramework.Server_init();
+	gGameFramework.Server_init();
 
 	if (!gGameFramework.OnCreate(hInstance, hMainWnd)) return(FALSE);
 

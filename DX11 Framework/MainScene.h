@@ -1,9 +1,11 @@
 #pragma once
 #include "Scene.h"
 #include "BoundingBoxShader.h"
+#include "ServerFuntion.h"
 #include "GBuffer.h"
 
-class CMainScene : public CScene
+
+class CMainScene : public CScene 
 {
 public:
 	CMainScene();
@@ -33,6 +35,8 @@ public:
 
 	void RenderBoundingBox();
 
+	vector<CCharacterObject*> &GetCharcontainer() { return m_vecCharacterContainer; }
+
 private:
 	float							m_fGlobalAmbient;
 	ID3D11Buffer					*m_pd3dcbLights		= nullptr;
@@ -41,6 +45,7 @@ private:
 	// Bounding Box Render
 	bool							m_bIsPreCollisionCheck = false;
 	CBoundingBoxShader				*m_pBoundingBoxShader = nullptr;
+
 	vector<CGameObject*>			m_vecBBoxRenderContainer;
 	vector<CCharacterObject*>		m_vecCharacterContainer;
 

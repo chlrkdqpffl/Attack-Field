@@ -1,12 +1,11 @@
 #pragma once
 
-
 #define ServerPort			9000
 #define BUF_SIZE			1024
 #define	WM_SOCKET			WM_USER + 1
 
 
-class ServerFuntion
+class ServerFuntion 
 {
 private:
 
@@ -25,12 +24,14 @@ private:
 
 	int					m_myid = 0;
 
+
+
+
+
 public:
 	ServerFuntion();
 	~ServerFuntion();
 
-
-	
 	void sethandle(HWND handle) { m_handle = handle; }
 	void Server_init();
 	void Sendpacket(unsigned char* Data);

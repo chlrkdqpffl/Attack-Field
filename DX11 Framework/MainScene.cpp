@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "MainScene.h"
+#include "protocol.h"
+#include "ServerFuntion.h"
+
 
 CMainScene::CMainScene()
 {
@@ -42,6 +45,7 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 		break;
 	default:
 		break;
+
 	}
 	return(false);
 }
@@ -97,6 +101,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				static_cast<CCharacterObject*>(m_vecObjectsContainer.back())->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
 				break;
 			}
+
 			break;
 		case WM_KEYUP:
 			switch (wParam) {
@@ -330,6 +335,7 @@ void CMainScene::Initialize()
 	CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject();
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
+
 
 	pCharacter->SetPosition(0.0f, 10.0f, 0.0f);
 

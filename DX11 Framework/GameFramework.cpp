@@ -487,6 +487,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	case WM_KEYUP:
 		OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 		break;
+
 	}
 	return(0);
 }
@@ -617,10 +618,16 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers(); 
 	
-	CScene* m_pScene = new CMainScene();
+	//'17.04.28 KYT
+	/*
+		new CMainScene()을 두번 합니다.
+	*/
+	CScene* m_pScene = SCENE_MGR->g_pMainScene;
+	//new CMainScene();
+
+
 //	CScene* m_pScene = new CTitleScene();
 	RESOURCE_MGR->LoadResourceAll();
-
 
 
 	SCENE_MGR->g_nowScene = m_pScene;

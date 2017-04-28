@@ -2,9 +2,17 @@
 //#include "SkinnedObject.h"
 #include "Object.h"
 #include "Camera.h"
+#include"ServerFuntion.h"
+
+#include <D3DX10Math.h>
+
+
+#include <DirectXMath.h>
+#include <DirectXPackedVector.h>
+#include <DirectXCollision.h>
 
 class CCharacterObject;
-class CPlayer
+class CPlayer : public ServerFuntion
 {
 protected:
 	XMFLOAT3					m_d3dxvPosition;
@@ -31,6 +39,11 @@ protected:
 	bool						m_bIsFloorCollision = false;
 
 
+	///이전 로테이드 xyz값을 저장
+	float						m_prev_x;
+	float						m_prev_y;
+	float						m_prev_z;
+
 
 public:
 	CPlayer(CCharacterObject* pCharacter = nullptr);
@@ -47,6 +60,7 @@ public:
 	void Rotate(float x, float y, float z);
 	void Update(float fTimeElapsed);
 	void UpdateKeyInput(float fTimeElapsed);
+	void SetWorldMatrix(DirectX::XMMATRIX world);
 
 	bool IsMoving() const;
 	// ----- Get, Setter ----- //
@@ -77,7 +91,7 @@ public:
 	}
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
 	void SetPlayerUpdatedContext(LPVOID pContext) { m_pPlayerUpdatedContext = pContext; }
-	void SetKeyDown(KeyInput key) { m_wKeyState |= static_cast<int>(key); }
-	void SetKeyUp(KeyInput key) { m_wKeyState ^= static_cast<int>(key); }
+	void SetKeyDown(KeyInput key) ; 
+	void SetKeyUp(KeyInput key);
 	WORD GetKeyState() const { return m_wKeyState; }
 };

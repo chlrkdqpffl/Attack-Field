@@ -1,8 +1,8 @@
 #pragma once
 
 
-#define CS_KEYTYPE		0
-#define CS_ROTATE		1
+#define CS_KEYTYPE		1
+#define CS_ROTATE		2
 
 #define RemovePlayer	4
 
@@ -63,9 +63,7 @@ struct sc_rotate_vector	//처리된 lookvector를 보낸다.
 	BYTE type;
 	WORD id;
 
-	float x;
-	float y;
-	float z;
+	XMMATRIX matrix;
 
 };
 
