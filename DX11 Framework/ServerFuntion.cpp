@@ -40,11 +40,11 @@ void ServerFuntion::processpacket(char *ptr)
 			//memcpy(my_Pos_packet, my_Pos_packet, ptr[0]);
 			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));;
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
+			
 		}
 		else
 		{
-
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
 		}
 		break;
 	case 2:	//처음 받았을때.
@@ -67,7 +67,7 @@ void ServerFuntion::processpacket(char *ptr)
 		}
 		else if (id<500)
 		{
-			
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 		}
 	}
 	break;
@@ -90,7 +90,7 @@ void ServerFuntion::processpacket(char *ptr)
 
 		if (id == m_myid)
 		{
-			SCENE_MGR->g_pPlayer->SetWorldMatrix(my_put_rotate->matrix);
+		//	SCENE_MGR->g_pPlayer->SetWorldMatrix(my_put_rotate->matrix);
 		}
 		else if (id<500)
 		{

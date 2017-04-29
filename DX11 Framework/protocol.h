@@ -57,7 +57,7 @@ struct sc_packet_pos	//서버에서 처리된 값을 클라에게 보낸다.
 	float z;
 };
 
-struct sc_rotate_vector	//처리된 lookvector를 보낸다.
+struct sc_rotate_vector	
 {
 	BYTE size;
 	BYTE type;
