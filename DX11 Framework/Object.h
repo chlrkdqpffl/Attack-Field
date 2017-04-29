@@ -101,10 +101,10 @@ public:
 	void SetPosition(float x, float y, float z, bool isLocal = false);
 	void SetPosition(XMVECTOR d3dxvPosition, bool isLocal = false);
 	void SetPosition(XMFLOAT3 d3dxvPosition, bool isLocal = false);
-	void SetRotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f, bool isLocal = false);
-	void SetRotate(XMFLOAT3 fAngle, bool isLocal = false);
-	void SetRotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLocal = false);
-	
+	virtual void SetRotate(float fPitch, float fYaw, float fRoll, bool isLocal = false);
+	virtual void SetRotate(XMFLOAT3 fAngle, bool isLocal = false);
+	virtual void SetRotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLocal = false);
+
 	XMVECTOR GetvPosition(bool bIsLocal = false) const;
 	XMFLOAT3 GetPosition(bool isLocal = false) const;
 	XMVECTOR GetLook(bool bIsLocal = false) const;

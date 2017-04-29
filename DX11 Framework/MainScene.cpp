@@ -82,6 +82,11 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			case VK_F4:		// 중력 테스트용으로 넣음
 				m_pPlayer->SetPosition(XMVectorSet(60, 50, 30, 0));
 				break;
+			case VK_F6:		// 회전 테스트용으로 넣음
+			//	m_vecCharacterContainer[1]->SetRotate(TWBAR_MGR->g_xmf3Rotate.x, TWBAR_MGR->g_xmf3Rotate.y, TWBAR_MGR->g_xmf3Rotate.z);
+			
+				//m_pPlayer
+				break;
 			case VK_Z:
 				for(auto& object : m_vecCharacterContainer)
 					object->SetAnimation(AnimationData::CharacterAnim::eIdle);
@@ -786,7 +791,7 @@ void CMainScene::CreateMapDataObject()
 		pObject->SetMaterial(1, TextureTag::eGrassD);
 		pObject->SetMesh(pMesh);
 		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation);
+		//pObject->Rotate(vecMapData[count].m_Rotation);
 
 		pObject->CreateBoundingBox(m_pd3dDevice);
 

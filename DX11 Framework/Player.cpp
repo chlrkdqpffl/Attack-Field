@@ -105,29 +105,23 @@ void CPlayer::Move(XMVECTOR d3dxvShift)
 	m_pCamera->Move(d3dxvShift);
 }
 
-void CPlayer::Rotate(float x, float y, float z)
+void CPlayer::Rotate(float x, float y)
 {
 	XMMATRIX mtxRotate;
 	CameraTag nCurrentCameraTag = m_pCamera->GetCameraTag();
-	if ((nCurrentCameraTag == CameraTag::eFirstPerson) || (nCurrentCameraTag == CameraTag::eThirdPerson))
-	{
-		if (nCurrentCameraTag == CameraTag::eFirstPerson) {
-			if (x != 0.0f)
-			{
-				m_fPitch += x;
-				if (m_fPitch > 50.0f) {
-					x -= (m_fPitch - 50);
-					m_fPitch = 50;
-				}
-				if (m_fPitch < -40.0f) {
-					x -= (m_fPitch + 40);
-					m_fPitch = -40;
-				}
-				RotateToCharacter();
+	if ((nCurrentCameraTag == CameraTag::eFirstPerson) || (nCurrentCameraTag == CameraTag::eThirdPerson)) {
+		if (x != 0.0f) {
+			m_fPitch += x;
+			if (50.0f < m_fPitch) {
+				x -= (m_fPitch - 50);
+				m_fPitch = 50;
+			}
+			if (m_fPitch < -40.0f) {
+				x -= (m_fPitch + 40);
+				m_fPitch = -40;
 			}
 		}
-		if (y != 0.0f)
-		{
+		if (y != 0.0f) {
 			m_fYaw += y;
 			if (m_fYaw > 360.0f) m_fYaw -= 360.0f;
 			if (m_fYaw < 0.0f) m_fYaw += 360.0f;
@@ -136,27 +130,19 @@ void CPlayer::Rotate(float x, float y, float z)
 			XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
 			XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
 		}
-		m_pCamera->Rotate(x, y, z);
+		m_pCamera->Rotate(x, y, 0);
 	}
 	else if (nCurrentCameraTag == CameraTag::eSpaceShip)
 	{
-		m_pCamera->Rotate(x, y, z);
-		if (x != 0.0f)
-		{
+		m_pCamera->Rotate(x, y, 0);
+		if (x != 0.0f) {
 			mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_d3dxvRight), XMConvertToRadians(x));
 			XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
 			XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
 		}
-		if (y != 0.0f)
-		{
+		if (y != 0.0f) {
 			mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_d3dxvUp), XMConvertToRadians(y));
 			XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
-			XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
-		}
-		if (z != 0.0f)
-		{
-			mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_d3dxvLook), XMConvertToRadians(z));
-			XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
 			XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
 		}
 	}
@@ -166,12 +152,6 @@ void CPlayer::Rotate(float x, float y, float z)
 	XMStoreFloat3(&m_d3dxvRight, XMVector3Normalize(XMLoadFloat3(&m_d3dxvRight)));
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Cross(XMLoadFloat3(&m_d3dxvLook), XMLoadFloat3(&m_d3dxvRight)));
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
-}
-
-void CPlayer::RotateToCharacter()
-{
-	if(m_pCharacter)
-		m_pCharacter->GetSkinnedMesh()->SetPitch(m_fPitch);
 }
 
 void CPlayer::Update(float fTimeElapsed)
@@ -204,8 +184,10 @@ void CPlayer::Update(float fTimeElapsed)
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvDeceleration * fDeceleration);
 
 	// Camera Update
-	if(m_pCamera->GetCameraTag() == CameraTag::eThirdPerson)
+	if (m_pCamera->GetCameraTag() == CameraTag::eThirdPerson) {
+		m_fPitch = 10.0f;
 		m_pCamera->Update(fTimeElapsed);
+	}
 	
 	m_pCamera->RegenerateViewMatrix();
 
@@ -236,7 +218,6 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 	}
 
 	m_fPitch = 10.0f;		// 이는 1인칭으로 했을 때 바라보는 방향 각도가 살짝 아래에 있기 때문에 offset으로 넣은 값
-	RotateToCharacter();
 
 	if (nCurrentCameraTag == CameraTag::eSpaceShip)
 	{

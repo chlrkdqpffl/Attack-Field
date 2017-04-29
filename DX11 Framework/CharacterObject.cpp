@@ -105,17 +105,46 @@ void CCharacterObject::OnCollisionCheck()
 	// 레이 방향이 잘못된 듯
 } 
 
+void CCharacterObject::SetRotate(float fPitch, float fYaw, float fRoll, bool isLocal)
+{
+	CGameObject::SetRotate(0, fYaw, fRoll, isLocal);
+
+	m_fPitch = fPitch;
+}
+
+void CCharacterObject::SetRotate(XMFLOAT3 fAngle, bool isLocal)
+{
+	CGameObject::SetRotate(0, fAngle.y, fAngle.z, isLocal);
+
+	m_fPitch = fAngle.x;
+}
+
+void CCharacterObject::SetRotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLocal)
+{
+	XMFLOAT3 axis; XMStoreFloat3(&axis, *pd3dxvAxis);
+
+	CGameObject::SetRotate(0, axis.y, axis.z, isLocal);
+
+	m_fPitch = axis.x;
+}
+
 void CCharacterObject::RotateFiringPos()
 {
-	m_f3FiringDirection = m_pPlayer->GetLook();	
+	if (m_pPlayer) {
+		m_f3FiringDirection = m_pPlayer->GetLook();		// 수정이 필요한 부분임
+		m_fPitch = m_pPlayer->GetPitch();
+	}
+
+	m_fPitch = clamp(m_fPitch, -40.0f, 50.0f);		// 이 각도는 캐릭터마다 다르지만 현재는 여기에서 clamp하도록 만듦
+	GetSkinnedMesh()->SetPitch(m_fPitch);
 	// 회전 적용하고 총알 메쉬가 왜 찌그러지는지 그래픽 디버깅 해놓기
 	 // XMMATRIX mtxRotate = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch)
 }
 
 void CCharacterObject::Update(float fTimeElapsed)
 {
+	RotateFiringPos();
 	if (m_pPlayer) {
-		RotateFiringPos();
 		m_pPlayer->UpdateKeyInput(fTimeElapsed);
 		OnCollisionCheck();
 		m_pPlayer->Update(fTimeElapsed);

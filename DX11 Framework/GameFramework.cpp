@@ -615,9 +615,8 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers(); 
 	
-	CScene* m_pScene;
-//	SceneTag startTag = SceneTag::eTitleScene;
-	SceneTag startTag = SceneTag::eMainScene;
+//	SceneTag startTag = SceneTag::eTitleScene;		// Title Scene 시작
+	SceneTag startTag = SceneTag::eMainScene;		// Main Scene 시작
 	switch (startTag) {
 		case SceneTag::eTitleScene:
 			SCENE_MGR->ChangeScene(SceneTag::eTitleScene);
@@ -628,16 +627,11 @@ void CGameFramework::BuildObjects()
 			SCENE_MGR->ChangeScene(SceneTag::eMainScene);
 		break;
 	}
-	m_pScene = SCENE_MGR->g_nowScene;
-
-	m_pCamera = m_pScene->GetPlayer()->GetCamera();
+	m_pCamera = SCENE_MGR->g_nowScene->GetPlayer()->GetCamera();
 	m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	m_pCamera->GenerateViewMatrix();
 
-	m_pScene->SetCamera(m_pCamera);
-
-
-	SCENE_MGR->g_nowScene = m_pScene;
+	SCENE_MGR->g_nowScene->SetCamera(m_pCamera);
 	SCENE_MGR->g_pCamera = m_pCamera;
 
 	// Screen Shader
@@ -710,7 +704,7 @@ void CGameFramework::ProcessInput()
 
 	// 플레이어 회전
 	if ((cxDelta != 0.0f) || (cyDelta != 0.0f))
-		SCENE_MGR->g_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+		SCENE_MGR->g_pPlayer->Rotate(cyDelta, cxDelta);
 }
 
 void CGameFramework::UpdateObjects()

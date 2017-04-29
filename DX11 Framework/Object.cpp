@@ -311,10 +311,17 @@ void CGameObject::SetRotate(float fPitch, float fYaw, float fRoll, bool isLocal)
 	mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fPitch),
 		XMConvertToRadians(fYaw), XMConvertToRadians(fRoll));
 
+	XMFLOAT4X4 mtx; XMStoreFloat4x4(&mtx, mtxRotate);
+	XMFLOAT3 position = GetPosition(isLocal);
+	
+	mtx._41 = position.x;
+	mtx._42 = position.y;
+	mtx._43 = position.z;
+
 	if (isLocal)
-		m_mtxLocal = mtxRotate;
+		m_mtxLocal = XMLoadFloat4x4(&mtx);
 	else
-		m_mtxWorld = mtxRotate;
+		m_mtxWorld = XMLoadFloat4x4(&mtx);
 }
 
 void CGameObject::SetRotate(XMFLOAT3 fAngle, bool isLocal)
@@ -323,10 +330,17 @@ void CGameObject::SetRotate(XMFLOAT3 fAngle, bool isLocal)
 	mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fAngle.x),
 		XMConvertToRadians(fAngle.y), XMConvertToRadians(fAngle.z));
 
+	XMFLOAT4X4 mtx; XMStoreFloat4x4(&mtx, mtxRotate);
+	XMFLOAT3 position = GetPosition(isLocal);
+
+	mtx._41 = position.x;
+	mtx._42 = position.y;
+	mtx._43 = position.z;
+
 	if (isLocal)
-		m_mtxLocal = mtxRotate;
+		m_mtxLocal = XMLoadFloat4x4(&mtx);
 	else
-		m_mtxWorld = mtxRotate;
+		m_mtxWorld = XMLoadFloat4x4(&mtx);
 }
 
 void CGameObject::SetRotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLocal)
@@ -334,10 +348,17 @@ void CGameObject::SetRotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLocal)
 	XMMATRIX mtxRotate;
 	mtxRotate = XMMatrixRotationAxis(*pd3dxvAxis, XMConvertToRadians(fAngle));
 
+	XMFLOAT4X4 mtx; XMStoreFloat4x4(&mtx, mtxRotate);
+	XMFLOAT3 position = GetPosition(isLocal);
+
+	mtx._41 = position.x;
+	mtx._42 = position.y;
+	mtx._43 = position.z;
+
 	if (isLocal)
-		m_mtxLocal = mtxRotate;
+		m_mtxLocal = XMLoadFloat4x4(&mtx);
 	else
-		m_mtxWorld = mtxRotate;
+		m_mtxWorld = XMLoadFloat4x4(&mtx);
 }
 
 XMVECTOR CGameObject::GetvPosition(bool isLocal) const

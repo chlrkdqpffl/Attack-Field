@@ -41,10 +41,12 @@ public:
 	
 	CCamera *OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag); 
 	void Move(const XMVECTOR d3dxvShift);
-	void Rotate(float x, float y, float z);
+	void Rotate(float x, float y);
 	void Update(float fTimeElapsed);
 	void UpdateKeyInput(float fTimeElapsed);
-	void RotateToCharacter();
+
+	// 캐릭터의 총구 방향(Pitch)을 이용하여 캐릭터 애니메이션이 회전하도록 만들기 위해 Skinned Mesh에 넘겨주는 함수
+	//void RotateToCharacter();
 
 	bool IsMoving() const;
 	// ----- Get, Setter ----- //
