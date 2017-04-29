@@ -27,7 +27,7 @@ struct cs_rotate {	//클라에서 화면을 움직였을때
 
 	float cx;
 	float cy;
-	float cz;
+	
 
 
 };

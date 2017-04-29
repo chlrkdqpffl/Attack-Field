@@ -153,6 +153,15 @@ void CPlayer::Rotate(float x, float y)
 	XMStoreFloat3(&m_d3dxvRight, XMVector3Normalize(XMLoadFloat3(&m_d3dxvRight)));
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Cross(XMLoadFloat3(&m_d3dxvLook), XMLoadFloat3(&m_d3dxvRight)));
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
+
+	cs_rotate rotate;
+	rotate.cx = x;
+	rotate.cy = y;
+	rotate.size = sizeof(cs_rotate);
+	rotate.type = CS_ROTATE;
+
+	Sendpacket(reinterpret_cast<unsigned char *>(&rotate));
+
 }
 
 void CPlayer::Update(float fTimeElapsed)
