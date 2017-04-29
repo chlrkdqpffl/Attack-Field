@@ -5,7 +5,8 @@
 class CLoadingScene : public CScene
 {
 	DWORD		m_dwLoadingStartTime = 0;
-	bool		m_bIsLoadingStart = false;
+	bool		m_bIsLoadingComplete = false;
+
 public:
 	CLoadingScene();
 	virtual ~CLoadingScene();
@@ -14,5 +15,6 @@ public:
 	virtual void CreateUIImage() override;
 	virtual void CreatePlayer() override;
 
+	virtual void Update(float fTimeElapsed) override;
 	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera) override;
 };

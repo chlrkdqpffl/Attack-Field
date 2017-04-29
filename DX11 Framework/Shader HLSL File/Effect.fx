@@ -305,7 +305,8 @@ struct VS_SKINNED_OUTPUT
 VS_DIFFUSED_OUTPUT VSDiffusedColor(VS_DIFFUSED_INPUT input)
 {
 	VS_DIFFUSED_OUTPUT output = (VS_DIFFUSED_OUTPUT)0;
-	output.position = mul(float4(input.position, 1.0f), mul(mul(gmtxWorld, gmtxView), gmtxProjection));
+	//output.position = mul(float4(input.position, 1.0f), mul(mul(gmtxWorld, gmtxView), gmtxProjection));
+    output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxWorld), gmtxView), gmtxProjection);
 	output.color = input.color;
 
 	return(output);

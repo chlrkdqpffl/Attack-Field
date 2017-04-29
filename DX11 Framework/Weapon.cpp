@@ -21,13 +21,13 @@ void CWeapon::CreateObjectData(ID3D11Device *pd3dDevice)
 	CreateBulletPool(pd3dDevice);
 }
 
-void CWeapon::Fire()
+void CWeapon::Firing(XMVECTOR direction)
 {
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed) {
 		m_dwLastAttackTime = GetTickCount();
 
 		CollisionInfo info;
-		if (COLLISION_MGR->RayCastCollisionToCharacterParts(info, GetvPosition(), m_pOwner->GetLook())) {
+		if (COLLISION_MGR->RayCastCollisionToCharacterParts(info, GetvPosition(), direction)) {
 			
 			cout << "레이 시작 점 : "; ShowXMVector(GetvPosition());
 
@@ -37,8 +37,7 @@ void CWeapon::Fire()
 				bullet->SetActive(true);
 				bullet->SetPosition(GetPosition());
 
-				XMFLOAT3 look; XMStoreFloat3(&look, m_pOwner->GetLook());
-				bullet->SetLook(look);
+				bullet->SetvLook(direction);
 				break;
 			}
 		}

@@ -16,7 +16,7 @@ void CSpaceShipCamera::Rotate(float x, float y, float z)
 	XMFLOAT3 xmPosition;
 	if (m_pPlayer && (x != 0.0f))
 	{
-		mtxRotate = XMMatrixRotationAxis(m_pPlayer->GetRightVector(), XMConvertToRadians(x));
+		mtxRotate = XMMatrixRotationAxis(m_pPlayer->GetvRight(), XMConvertToRadians(x));
 		XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
 		XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
 		XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
@@ -32,7 +32,7 @@ void CSpaceShipCamera::Rotate(float x, float y, float z)
 	}
 	if (m_pPlayer && (y != 0.0f))
 	{
-		mtxRotate = XMMatrixRotationAxis(m_pPlayer->GetUpVector(), XMConvertToRadians(y));
+		mtxRotate = XMMatrixRotationAxis(m_pPlayer->GetvUp(), XMConvertToRadians(y));
 		XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
 		XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
 		XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
@@ -48,7 +48,7 @@ void CSpaceShipCamera::Rotate(float x, float y, float z)
 	}
 	if (m_pPlayer && (z != 0.0f))
 	{
-		mtxRotate = XMMatrixRotationAxis(m_pPlayer->GetLookVector(), XMConvertToRadians(z));
+		mtxRotate = XMMatrixRotationAxis(m_pPlayer->GetvLook(), XMConvertToRadians(z));
 		XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
 		XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
 		XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));

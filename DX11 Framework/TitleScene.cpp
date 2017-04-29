@@ -19,6 +19,11 @@ void CTitleScene::Initialize()
 
 void CTitleScene::CreatePlayer()
 {
+	/*
+		카메라만 필요하지만 캐릭터까지 만들어 주는데 이는 수정이 필요한 부분
+		현재는 무조건 플레이어를 거쳐서 카메라를 만들어 준다.
+	*/
+
 	m_pPlayer = new CTerrainPlayer();
 	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson);
 	m_pCamera = m_pPlayer->GetCamera();

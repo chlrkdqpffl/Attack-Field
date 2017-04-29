@@ -82,6 +82,11 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			case VK_F4:		// 중력 테스트용으로 넣음
 				m_pPlayer->SetPosition(XMVectorSet(60, 50, 30, 0));
 				break;
+			case VK_F6:		// 회전 테스트용으로 넣음
+			//	m_vecCharacterContainer[1]->SetRotate(TWBAR_MGR->g_xmf3Rotate.x, TWBAR_MGR->g_xmf3Rotate.y, TWBAR_MGR->g_xmf3Rotate.z);
+			
+				//m_pPlayer
+				break;
 			case VK_Z:
 				for(auto& object : m_vecCharacterContainer)
 					object->SetAnimation(AnimationData::CharacterAnim::eIdle);
@@ -173,6 +178,8 @@ void CMainScene::Initialize()
 {
 	cout << "=============================================================================================" << endl;
 	cout << "==================================== Scene Main Loading =====================================" << endl;
+
+	ShowCursor(false);
 
 	m_pWorldCenterAxis = new CAxisObjects();
 	m_pWorldCenterAxis->CreateAxis(m_pd3dDevice);
@@ -784,7 +791,7 @@ void CMainScene::CreateMapDataObject()
 		pObject->SetMaterial(1, TextureTag::eGrassD);
 		pObject->SetMesh(pMesh);
 		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation);
+		//pObject->Rotate(vecMapData[count].m_Rotation);
 
 		pObject->CreateBoundingBox(m_pd3dDevice);
 
@@ -987,10 +994,10 @@ void CMainScene::ModifiedSelectObject()
 //	ShowXMFloat3(TWBAR_MGR->g_xmf3SelectObjectRotate);
 }
 
-void CMainScene::UpdateObjects(float fTimeElapsed)
+void CMainScene::Update(float fTimeElapsed)
 {
 	COLLISION_MGR->UpdateManager();
-	CScene::UpdateObjects(fTimeElapsed);
+	CScene::Update(fTimeElapsed);
 
 //	if (m_pSelectedObject)
 //		ModifiedSelectObject();
@@ -1004,7 +1011,7 @@ void CMainScene::UpdateObjects(float fTimeElapsed)
 //		XMStoreFloat4(&m_pLights->m_d3dxvCameraPosition, XMVectorSet(f4vCameraPosition.x, f4vCameraPosition.y, f4vCameraPosition.z, 1.0f));
 		
 		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvPosition, m_pPlayer->GetvPosition());
-		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvDirection, m_pPlayer->GetLookVector());
+		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvDirection, m_pPlayer->GetvLook());
 
 		XMStoreFloat3(&m_pLights->m_pLights[3].m_d3dxvPosition, m_pPlayer->GetvPosition() + XMVectorSet(0.0f, 80.0f, 0.0f, 0.0f));
 	}

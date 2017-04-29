@@ -10,10 +10,6 @@ CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner) : CWeapon(pOwner)
 		offsetPos		= XMFLOAT3(1.0f, 1.4f, -0.05f);
 		offsetRotate	= XMFLOAT3(-30.f, 125.f, 85.f);
 	}
-	else if(pOwner->GetMeshTag() == MeshTag::ePolice)
-	{
-
-	}
 
 	SetRotate(offsetRotate, true);
 	SetPosition(offsetPos, true);

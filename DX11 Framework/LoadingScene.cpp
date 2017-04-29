@@ -15,11 +15,7 @@ void CLoadingScene::Initialize()
 	CreatePlayer();
 	CreateUIImage();
 
-	// Update를 상속받아서 1초 뒤에 로딩 시작하도록 만들어보기. -> Space Conquerer에서 사용한 방법
-	if (RESOURCE_MGR->LoadResourceAll()) {
-		if(SCENE_MGR->LoadSceneData())
-			SCENE_MGR->ChangeScene(SceneTag::eMainScene);
-	}
+	m_dwLoadingStartTime = GetTickCount();
 }
 
 void CLoadingScene::CreatePlayer()
@@ -42,7 +38,19 @@ void CLoadingScene::CreateUIImage()
 	m_pUIManager->SetBackGroundUI(pBackGroundUI);
 }
 
+void CLoadingScene::Update(float fTimeElapsed)
+{
+	// 0.5초 후 로딩
+	if (GetTickCount() - m_dwLoadingStartTime > 500)
+		m_bIsLoadingComplete = true;		
+}
+
 void CLoadingScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 {
 	m_pUIManager->RenderAll(pd3dDeviceContext);
+
+	if (m_bIsLoadingComplete) {
+		RESOURCE_MGR->LoadResourceAll();
+		SCENE_MGR->ChangeScene(SceneTag::eMainScene);
+	}
 }
