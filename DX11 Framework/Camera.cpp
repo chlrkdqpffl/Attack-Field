@@ -67,7 +67,7 @@ void CCamera::SetLookAt(XMVECTOR& d3dxvPosition, XMVECTOR& d3dxvLookAt, XMVECTOR
 void CCamera::SetLookAt(XMVECTOR& d3dxvLookAt)
 {
 	XMFLOAT4X4 mtxLookAt;
-	XMStoreFloat4x4(&mtxLookAt, XMMatrixLookAtLH(XMLoadFloat3(&m_d3dxvPosition), d3dxvLookAt, m_pPlayer->GetUpVector()));
+	XMStoreFloat4x4(&mtxLookAt, XMMatrixLookAtLH(XMLoadFloat3(&m_d3dxvPosition), d3dxvLookAt, m_pPlayer->GetvUp()));
 
 	XMStoreFloat3(&m_d3dxvRight, XMVectorSet(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31, 0.0f));
 	XMStoreFloat3(&m_d3dxvUp, XMVectorSet(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32, 0.0f));

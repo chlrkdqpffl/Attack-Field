@@ -28,10 +28,16 @@ BoundingOrientedBox CCharacterObject::GetPartsBoundingOBox(UINT index) const
 	return bcObox;
 }
 
-void CCharacterObject::Fire()
+void CCharacterObject::Firing()
 {
 	SetAnimation(AnimationData::CharacterAnim::eStandingFire);
-	m_pWeapon->Fire();
+	m_pWeapon->Firing(XMLoadFloat3(&m_f3FiringDirection));
+}
+
+void CCharacterObject::Running()
+{
+	SetAnimation(AnimationData::CharacterAnim::eRun);
+//	m_pPlayer->GetCamera()->Move(GetLook() * 1);			// 추후 구현
 }
 
 void CCharacterObject::OnCollisionCheck()
@@ -99,9 +105,17 @@ void CCharacterObject::OnCollisionCheck()
 	// 레이 방향이 잘못된 듯
 } 
 
+void CCharacterObject::RotateFiringPos()
+{
+	m_f3FiringDirection = m_pPlayer->GetLook();	
+	// 회전 적용하고 총알 메쉬가 왜 찌그러지는지 그래픽 디버깅 해놓기
+	 // XMMATRIX mtxRotate = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch)
+}
+
 void CCharacterObject::Update(float fTimeElapsed)
 {
 	if (m_pPlayer) {
+		RotateFiringPos();
 		m_pPlayer->UpdateKeyInput(fTimeElapsed);
 		OnCollisionCheck();
 		m_pPlayer->Update(fTimeElapsed);

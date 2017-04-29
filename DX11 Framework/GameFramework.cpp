@@ -19,7 +19,7 @@ CGameFramework::CGameFramework()
 	srand(timeGetTime());
 	
 	// 마우스 정보
-	ShowCursor(false);
+	ShowCursor(true);
 	m_ptOldCursorPos.x = m_nWndClientSize.x / 2;
 	m_ptOldCursorPos.y = m_nWndClientSize.y / 2;
 	SetCursorPos(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2);	// 정중앙
@@ -46,9 +46,9 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(918);
-//	_CrtSetBreakAlloc(216);
-
+//	_CrtSetBreakAlloc(281);
+//	_CrtSetBreakAlloc(282);
+//	_CrtSetBreakAlloc(289);
 //	_CrtSetBreakAlloc(205);		// 16
 //	_CrtSetBreakAlloc(206);		// 16
 //	_CrtSetBreakAlloc(210);		// 64
@@ -615,14 +615,21 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers(); 
 	
-	CScene* m_pScene = new CMainScene();
-//	CScene* m_pScene = new CTitleScene();
-	RESOURCE_MGR->LoadResourceAll();
+	CScene* m_pScene;
+//	SceneTag startTag = SceneTag::eTitleScene;
+	SceneTag startTag = SceneTag::eMainScene;
+	switch (startTag) {
+		case SceneTag::eTitleScene:
+			SCENE_MGR->ChangeScene(SceneTag::eTitleScene);
+			m_bMouseBindFlag = true;
+		break;
+		case SceneTag::eMainScene:
+			RESOURCE_MGR->LoadResourceAll();
+			SCENE_MGR->ChangeScene(SceneTag::eMainScene);
+		break;
+	}
+	m_pScene = SCENE_MGR->g_nowScene;
 
-	SCENE_MGR->g_nowScene = m_pScene;
-	m_pScene->SetDevice(m_pd3dDevice);
-	m_pScene->SetDeviceContext(m_pd3dDeviceContext);
-	m_pScene->Initialize();
 	m_pCamera = m_pScene->GetPlayer()->GetCamera();
 	m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	m_pCamera->GenerateViewMatrix();
@@ -630,6 +637,7 @@ void CGameFramework::BuildObjects()
 	m_pScene->SetCamera(m_pCamera);
 
 
+	SCENE_MGR->g_nowScene = m_pScene;
 	SCENE_MGR->g_pCamera = m_pCamera;
 
 	// Screen Shader
@@ -711,7 +719,7 @@ void CGameFramework::UpdateObjects()
 	m_nFrameRate = m_GameTimer.GetFrameRate();
 
 	SCENE_MGR->g_fTimeElapsed = m_fTimeElapsed;
-	SCENE_MGR->g_nowScene->UpdateObjects(m_fTimeElapsed);
+	SCENE_MGR->g_nowScene->Update(m_fTimeElapsed);
 }
 
 //#define _WITH_PLAYER_TOP
@@ -819,4 +827,6 @@ void CGameFramework::RenderAllText()
 	// Graphic Crad Info
 	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_wsGraphicBrandName, 30, 20, 830, 0xFF41FF3A, FW1_LEFT);
 	TEXT_MGR->RenderText(m_pd3dDeviceContext, "Video Memory : " + to_string(m_ui64VideoMemory / 1048576) + "MB", 30, 20, 860, 0xFF0000FF, FW1_LEFT);
+
+	m_pd3dDeviceContext->GSSetShader(nullptr, nullptr, 0);
 }

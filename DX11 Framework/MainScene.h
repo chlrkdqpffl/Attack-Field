@@ -9,11 +9,11 @@ public:
 	CMainScene();
 	virtual ~CMainScene();
 
-	virtual bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	virtual bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	virtual bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) override;
+	virtual bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) override;
 	virtual void OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMaterial, int nIndex = 0);
 
-	virtual void Initialize();
+	virtual void Initialize() override;
 	virtual void CreateTweakBars();
 	virtual void CreateUIImage() override;
 	virtual void ReleaseObjects();
@@ -24,9 +24,9 @@ public:
 
 	virtual void CreateLights();
 
-	virtual void UpdateObjects(float fTimeElapsed);
-	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera);
-	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext);
+	virtual void Update(float fTimeElapsed) override;
+	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera) override;
+	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext) override;
 
 	void CreateMapDataObject();
 	void ModifiedSelectObject();
@@ -35,7 +35,7 @@ public:
 	void RenderBoundingBox();
 
 private:
-	float							m_fGlobalAmbient;
+	float							m_fGlobalAmbient	= 0.0f;
 	ID3D11Buffer					*m_pd3dcbLights		= nullptr;
 
 

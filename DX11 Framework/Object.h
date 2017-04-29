@@ -112,6 +112,7 @@ public:
 	XMVECTOR GetRight(bool bIsLocal = false) const;
 
 	void SetLook(XMFLOAT3 axis, bool bIsLocal = false);
+	void SetvLook(XMVECTOR axis, bool bIsLocal = false);
 	void SetUp(XMFLOAT3 axis, bool bIsLocal = false);
 	void SetRight(XMFLOAT3 axis, bool bIsLocal = false);
 

@@ -50,9 +50,13 @@ public:
 	// ----- Get, Setter ----- //
 	XMVECTOR GetvPosition() const { return(XMLoadFloat3(&m_d3dxvPosition)); }
 	XMFLOAT3 GetPosition() const {	return m_d3dxvPosition; }
-	XMVECTOR GetLookVector() { return(XMLoadFloat3(&m_d3dxvLook)); }
-	XMVECTOR GetUpVector() { return(XMLoadFloat3(&m_d3dxvUp)); }
-	XMVECTOR GetRightVector() { return(XMLoadFloat3(&m_d3dxvRight)); }
+	XMFLOAT3 GetLook() const { return m_d3dxvLook; }
+	XMFLOAT3 GetUp() const { return m_d3dxvUp; }
+	XMFLOAT3 GetRight() const { return m_d3dxvRight; }
+	XMVECTOR GetvLook() const { return(XMLoadFloat3(&m_d3dxvLook)); }
+	XMVECTOR GetvUp() const { return(XMLoadFloat3(&m_d3dxvUp)); }
+	XMVECTOR GetvRight() const { return(XMLoadFloat3(&m_d3dxvRight)); }
+
 	const XMVECTOR GetVelocity() const { return(XMLoadFloat3(&m_d3dxvVelocity)); }
 	float GetYaw() const { return(m_fYaw); }
 	float GetPitch() const { return(m_fPitch); }

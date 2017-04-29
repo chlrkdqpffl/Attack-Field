@@ -86,7 +86,7 @@ public:
 	virtual void CreatePlayer();
 	virtual void IsCollisionUI(POINT mousePos) {};
 
-	virtual void UpdateObjects(float fTimeElapsed);
+	virtual void Update(float fTimeElapsed);
 
 	virtual void OnPreRender(ID3D11DeviceContext *pd3dDeviceContext);
 	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera);
@@ -106,14 +106,15 @@ public:
 	void SetDevice(ID3D11Device* pDevice) { m_pd3dDevice = pDevice; }
 	void SetDeviceContext(ID3D11DeviceContext* pDeviceContext) { m_pd3dDeviceContext = pDeviceContext; }
 	void SetTag(SceneTag tag) { m_tagScene = tag; }
+	SceneTag GetSceneTag() const { return m_tagScene; }
 
 protected:
 	SceneTag							m_tagScene = SceneTag::eNone;
 	ID3D11Device						*m_pd3dDevice = nullptr;
 	ID3D11DeviceContext					*m_pd3dDeviceContext = nullptr;
-	CCamera								*m_pCamera;
+	CCamera								*m_pCamera = nullptr;
 
-	CGameObject							*m_pSelectedObject;
+	CGameObject							*m_pSelectedObject = nullptr;
 	CAxisObjects						*m_pWorldCenterAxis = nullptr;
 
 	// ResizeRatio
@@ -121,15 +122,15 @@ protected:
 	float								m_fResizeRatioY = 1.0f;
 
 	// Light
-	LIGHTS								*m_pLights;
+	LIGHTS								*m_pLights		= nullptr;
 
 	// Environment
-	CSkyBox								*m_pSkyBox			= nullptr;
-	CHeightMapTerrain					*m_pTerrain			= nullptr;
+	CSkyBox								*m_pSkyBox		= nullptr;
+	CHeightMapTerrain					*m_pTerrain		= nullptr;
 
 	// Particle
-	float								m_fGametime;
-	CParticleSystem						*m_pParticleSystem;
+	float								m_fGametime		= 0.0f;
+	CParticleSystem						*m_pParticleSystem = nullptr;
 
 
 	float								m_fTimeElapsed = 0.0f;

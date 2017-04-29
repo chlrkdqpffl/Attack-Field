@@ -75,13 +75,12 @@ void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
 		d3dxvShift *= 10;		// m_fSpeed 로 변경해야함
 //		d3dxvShift *= 3;		// m_fSpeed 로 변경해야함
-		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
-
+		m_pCharacter->Running();
 	}
 
 	// Mouse
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)) {
-		m_pCharacter->Fire();
+		m_pCharacter->Firing();
 	}
 	if (m_wKeyState & static_cast<int>(KeyInput::eRightMouse)) {
 	
@@ -171,7 +170,8 @@ void CPlayer::Rotate(float x, float y, float z)
 
 void CPlayer::RotateToCharacter()
 {
-	m_pCharacter->GetSkinnedMesh()->SetPitch(m_fPitch);
+	if(m_pCharacter)
+		m_pCharacter->GetSkinnedMesh()->SetPitch(m_fPitch);
 }
 
 void CPlayer::Update(float fTimeElapsed)

@@ -21,9 +21,9 @@ void CThirdPersonCamera::Update(float fTimeElapsed)
 {
 	XMFLOAT4X4 mtxRotate;
 	XMStoreFloat4x4(&mtxRotate, XMMatrixIdentity());
-	XMFLOAT3 d3dxvRight; XMStoreFloat3(&d3dxvRight, m_pPlayer->GetRightVector());
-	XMFLOAT3 d3dxvUp; XMStoreFloat3(&d3dxvUp, m_pPlayer->GetUpVector());
-	XMFLOAT3 d3dxvLook; XMStoreFloat3(&d3dxvLook, m_pPlayer->GetLookVector());
+	XMFLOAT3 d3dxvRight = m_pPlayer->GetRight();
+	XMFLOAT3 d3dxvUp = m_pPlayer->GetUp();
+	XMFLOAT3 d3dxvLook = m_pPlayer->GetLook();
 	mtxRotate._11 = d3dxvRight.x; mtxRotate._21 = d3dxvUp.x; mtxRotate._31 = d3dxvLook.x;
 	mtxRotate._12 = d3dxvRight.y; mtxRotate._22 = d3dxvUp.y; mtxRotate._32 = d3dxvLook.y;
 	mtxRotate._13 = d3dxvRight.z; mtxRotate._23 = d3dxvUp.z; mtxRotate._33 = d3dxvLook.z;

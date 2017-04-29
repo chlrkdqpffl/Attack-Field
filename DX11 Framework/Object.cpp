@@ -491,6 +491,23 @@ void CGameObject::SetLook(XMFLOAT3 axis, bool isLocal)
 	}
 }
 
+void CGameObject::SetvLook(XMVECTOR axis, bool bIsLocal)
+{
+	XMFLOAT4X4 mtx;
+	XMFLOAT3 look; XMStoreFloat3(&look, axis);
+
+	if (bIsLocal) {
+		XMStoreFloat4x4(&mtx, m_mtxLocal);
+		mtx._31 = look.x, mtx._32 = look.y, mtx._33 = look.z;
+		m_mtxLocal = XMLoadFloat4x4(&mtx);
+	}
+	else {
+		XMStoreFloat4x4(&mtx, m_mtxWorld);
+		mtx._31 = look.x, mtx._32 = look.y, mtx._33 = look.z;
+		m_mtxWorld = XMLoadFloat4x4(&mtx);
+	}
+}
+
 void CGameObject::CreateConstantBuffers(ID3D11Device *pd3dDevice)
 {
 	D3D11_BUFFER_DESC d3dBufferDesc;

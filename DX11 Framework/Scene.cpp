@@ -7,19 +7,6 @@
 
 CScene::CScene()
 {
-	m_pLights = NULL;
-
-	m_pCamera = NULL;
-	m_pSelectedObject = NULL;
-
-	m_pSkyBox = nullptr;
-	m_pTerrain = nullptr;
-
-	m_vecObjectsContainer.clear();
-	m_vecInstancedObjectsShaderContainer.clear();
-
-	m_pParticleSystem = nullptr;
-	m_fGametime = 0.0f;
 }
 
 CScene::~CScene()
@@ -239,7 +226,7 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 	return(pNearestObject);
 }
 
-void CScene::UpdateObjects(float fTimeElapsed)
+void CScene::Update(float fTimeElapsed)
 {
 	m_fTimeElapsed = fTimeElapsed;
 
