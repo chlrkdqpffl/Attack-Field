@@ -3,6 +3,7 @@
 #include "FirstPersonCamera.h"
 #include "SpaceShipCamera.h"
 #include "ThirdPersonCamera.h"
+#include "protocol.h"
 
 CPlayer::CPlayer(CCharacterObject* pCharacter) 
 	: m_pCharacter(pCharacter)
@@ -51,24 +52,24 @@ void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계
 	XMVECTOR d3dxvShift = XMVectorZero();
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eForward)) {
-		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
+//		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
 
 		if(m_pCharacter->GetAnimation() != AnimationData::CharacterAnim::eRun)
 			m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eBackward)) {
-		d3dxvShift -= XMLoadFloat3(&m_d3dxvLook);
+	//	d3dxvShift -= XMLoadFloat3(&m_d3dxvLook);
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeft)) {
-		d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
+		//d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRight)) {
-		d3dxvShift += XMLoadFloat3(&m_d3dxvRight);
+		//d3dxvShift += XMLoadFloat3(&m_d3dxvRight);
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
@@ -245,4 +246,35 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 	if (m_pCamera) delete m_pCamera;
 
 	return(pNewCamera);
+}void CPlayer::SetKeyDown(KeyInput key)
+{
+	m_wKeyState |= static_cast<int>(key);
+
+
+	cs_key_input Key_button;
+	Key_button.type = CS_KEYTYPE;
+	Key_button.size = sizeof(cs_key_input);
+	Key_button.key_button = m_wKeyState;
+	Key_button.fDistance = 50.0f;
+
+	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
+
+}
+
+void CPlayer::SetKeyUp(KeyInput key)
+{
+	m_wKeyState ^= static_cast<int>(key);
+
+
+	cs_key_input Key_button;
+	Key_button.type = CS_KEYTYPE;
+	Key_button.size = sizeof(cs_key_input);
+	Key_button.key_button = m_wKeyState;
+	Key_button.fDistance = 5.0f;
+
+	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
+}
+void CPlayer::SetWorldMatrix(XMMATRIX world)
+{
+	m_pCharacter->m_mtxWorld = world;
 }
