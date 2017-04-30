@@ -17,7 +17,7 @@ CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner) : CWeapon(pOwner)
 	// Data Initialize
 	m_Type = WeaponData::Type::eRifle;
 	m_fDamage = 100.f;
-	m_fBulletMovingSpeed = 300.f;
+	m_fBulletMovingSpeed = 100.f;
 //	m_fBulletMovingSpeed = 0.f;
 	m_fRange = 1000.f;
 	m_uiFireSpeed = 200;
@@ -56,7 +56,7 @@ void CRifleGunWeapon::CreateMaterial()
 
 void CRifleGunWeapon::CreateBulletPool(ID3D11Device* pd3dDevice)
 {
-	for (int i = 0; i < 10; ++i) {
+	for (int i = 0; i < 20; ++i) {
 		CRifleBullet* pBulletObject = new CRifleBullet(m_fRange, m_fBulletMovingSpeed);
 		pBulletObject->CreateObjectData(pd3dDevice);
 		pBulletObject->CreateAxisObject(pd3dDevice);

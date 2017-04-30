@@ -113,6 +113,11 @@ bool CCollisionManager::RayCastCollisionToCharacterParts(CollisionInfo& info, XM
 	return false;
 }
 
+bool CCollisionManager::RayCastCollisionInPolygon(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
+{
+
+}
+
 bool CCollisionManager::AABBCollision(CollisionInfo& info, BoundingBox bcBox)
 {
 	// Dynamic to Dynamic

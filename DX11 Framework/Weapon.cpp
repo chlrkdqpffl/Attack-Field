@@ -28,9 +28,7 @@ void CWeapon::Firing(XMVECTOR direction)
 
 		CollisionInfo info;
 		if (COLLISION_MGR->RayCastCollisionToCharacterParts(info, GetvPosition(), direction)) {
-			
-			cout << "레이 시작 점 : "; ShowXMVector(GetvPosition());
-
+			cout << "CWeapon::Firing - 충돌" << endl;
 		}
 		for (auto bullet : m_vecBulletContainer) {
 			if (false == bullet->GetActive()) {

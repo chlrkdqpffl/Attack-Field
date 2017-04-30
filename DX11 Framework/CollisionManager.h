@@ -20,6 +20,7 @@ public:
 
 	bool RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
 	bool RayCastCollisionToCharacterParts(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
+	bool RayCastCollisionInPolygon(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
 	bool AABBCollision(CollisionInfo& info, BoundingBox bcBox);
 	bool OBBCollision(CollisionInfo& info, BoundingOrientedBox bcObbox);
 

@@ -38,5 +38,5 @@ void CBulletObject::Update(float fTimeElapsed)
 		InitializeData();
 	}
 
-	OnCollisionCheck();
+//	OnCollisionCheck(); - 레이 충돌하므로 제외함
 }
