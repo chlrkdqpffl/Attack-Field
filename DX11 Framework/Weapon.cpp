@@ -27,8 +27,8 @@ void CWeapon::Firing(XMVECTOR direction)
 		m_dwLastAttackTime = GetTickCount();
 
 		CollisionInfo info;
-		if (COLLISION_MGR->RayCastCollisionToCharacterParts(info, GetvPosition(), direction)) {
-			cout << "CWeapon::Firing - 충돌" << endl;
+		if (COLLISION_MGR->RayCastCollisionToCharacter(info, GetvPosition(), direction)) {
+			cout << "CWeapon::Firing - 최종적인 충돌 확인" << endl;
 		}
 		for (auto bullet : m_vecBulletContainer) {
 			if (false == bullet->GetActive()) {

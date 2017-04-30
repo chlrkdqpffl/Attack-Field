@@ -62,8 +62,8 @@ void CTerroristCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)
 void CTerroristCharacterObject::CreateBoundingBox(ID3D11Device *pd3dDevice)
 {
 	// ----- Bounding Box Size ----- //
-	m_bcPartsBoundingOBox[BoundingBoxParts::eBody].Center = XMFLOAT3(0, 2.05f, 0);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eBody].Extents = XMFLOAT3(0.3f, 0.5f, 0.3f);
+	m_bcPartsBoundingOBox[BoundingBoxParts::eBody].Center = XMFLOAT3(0.05f, 1.35f, 0.1f);
+	m_bcPartsBoundingOBox[BoundingBoxParts::eBody].Extents = XMFLOAT3(0.3f, 1.2f, 0.3f);
 
 	m_bcPartsBoundingOBox[BoundingBoxParts::eHead].Center = XMFLOAT3(0, 2.75f, 0);
 	m_bcPartsBoundingOBox[BoundingBoxParts::eHead].Extents = XMFLOAT3(0.15f, 0.18f, 0.15f);
@@ -71,4 +71,6 @@ void CTerroristCharacterObject::CreateBoundingBox(ID3D11Device *pd3dDevice)
 	// ----- Bounding Box Mesh ----- //
 	m_pPartsBoundingBoxMesh[BoundingBoxParts::eBody] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eBody]);
 	m_pPartsBoundingBoxMesh[BoundingBoxParts::eHead] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eHead]);
+
+	m_pBoundingBoxMesh = new CBoundingBoxMesh(pd3dDevice, m_bcMeshBoundingBox);
 }

@@ -185,4 +185,17 @@ void CCharacterObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
 			m_pPartsBoundingBoxMesh[i]->Render(pd3dDeviceContext);
 		}
 	}
+
+	if (m_pBoundingBoxMesh) {
+		XMMATRIX mtxBoundingBoxWorld = m_mtxWorld;
+		BoundingOrientedBox bcObbox;
+		m_bcMeshBoundingOBox.Transform(bcObbox, mtxBoundingBoxWorld);
+
+		mtxBoundingBoxWorld = XMMatrixRotationQuaternion(XMLoadFloat4(&bcObbox.Orientation)) *
+			XMMatrixTranslation(bcObbox.Center.x, bcObbox.Center.y, bcObbox.Center.z);
+
+		CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &mtxBoundingBoxWorld);
+
+		m_pBoundingBoxMesh->Render(pd3dDeviceContext);
+	}
 }

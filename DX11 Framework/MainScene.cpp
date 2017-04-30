@@ -868,7 +868,8 @@ void CMainScene::CreateUIImage()
 
 	// Aim
 	CUIObject* pAimUI = new CUIObject(TextureTag::eAim);
-	pAimUI->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20, FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20, FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
+	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 1, FRAME_BUFFER_HEIGHT / 2 - 10};		// ¿ÀÇÁ¼Â (1, -10)
+	pAimUI->Initialize(m_pd3dDevice, POINT{ aimingPos.x - 20, aimingPos.y - 20 }, POINT{ aimingPos.x + 20, aimingPos.y + 20 }, 0.0f);
 	m_pUIManager->AddUIObject(pAimUI); 
 	pAimUI->SetActive(false);
 }

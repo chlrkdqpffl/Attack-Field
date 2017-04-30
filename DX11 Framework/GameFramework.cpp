@@ -464,7 +464,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 //		m_pd3dDeviceContext->OMSetRenderTargets(0, NULL, NULL);
 
 		if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();		// 왜 최소화 하면 안만들어지는가 ?
-		if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
+//		if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();			// 해제할 경우 디퍼드 렌더링 시 문제됨
 		if (m_pd3dDepthStencilView) m_pd3dDepthStencilView->Release();
 
 		m_pDXGISwapChain->ResizeBuffers(1, m_nWndClientSize.x, m_nWndClientSize.y, DXGI_FORMAT_R8G8B8A8_UNORM, 0);

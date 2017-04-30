@@ -79,12 +79,25 @@ bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos
 	return false;
 }
 
-bool CCollisionManager::RayCastCollisionToCharacterParts(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
+bool CCollisionManager::RayCastCollisionToCharacter(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
 {
 	bool isCollision = false;
 	float fNearestDistance = FLT_MAX;
 	CGameObject* pNearestObject = nullptr;
 
+	// 1차 AABB
+	for (auto& character : m_vecCharacterContainer) {
+		if (character->GetBoundingBox(0).Intersects(originPos, direction, info.m_fDistance)) {
+			if (fNearestDistance > info.m_fDistance) {
+				fNearestDistance = info.m_fDistance;
+				isCollision = true;
+				pNearestObject = character;
+				cout << "1차 충돌 " << endl;
+			}
+		}
+
+	}
+	// 2차 Parts
 	for (auto& character : m_vecCharacterContainer) {
 		if (character->GetPartsBoundingOBox(0).Intersects(originPos, direction, info.m_fDistance)) {
 			if (fNearestDistance > info.m_fDistance) {
@@ -104,10 +117,14 @@ bool CCollisionManager::RayCastCollisionToCharacterParts(CollisionInfo& info, XM
 		}
 	}
 
+	// 3차 Polygon
 	if (isCollision) {
-		info.m_fDistance = fNearestDistance;
 		info.m_pHitObject = pNearestObject;
-		return true;
+		if (RayCastCollisionInPolygon(info, originPos, direction)) {
+			//	info.m_fDistance = fNearestDistance;
+
+			return true;
+		}
 	}
 
 	return false;
@@ -115,7 +132,20 @@ bool CCollisionManager::RayCastCollisionToCharacterParts(CollisionInfo& info, XM
 
 bool CCollisionManager::RayCastCollisionInPolygon(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
 {
+	XMMATRIX d3dxmtxInverse;
+	d3dxmtxInverse = XMMatrixInverse(NULL, info.m_pHitObject->m_mtxWorld);
 
+	XMVECTOR rayPosition;
+	rayPosition = XMVector3TransformCoord(originPos, d3dxmtxInverse);
+
+	XMVECTOR rayDirection;
+	rayDirection = XMVector3TransformCoord(direction, d3dxmtxInverse);
+	rayDirection = XMVector3Normalize(rayDirection);
+
+	int count = info.m_pHitObject->GetMesh()->CheckRayIntersection(&rayPosition, &rayDirection, &info);
+	cout << count << "여기까지 잘되는지 확인하자 " << endl;
+
+	return true;
 }
 
 bool CCollisionManager::AABBCollision(CollisionInfo& info, BoundingBox bcBox)
