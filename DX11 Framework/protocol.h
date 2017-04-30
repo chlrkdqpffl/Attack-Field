@@ -63,7 +63,9 @@ struct sc_rotate_vector
 	BYTE type;
 	WORD id;
 
-	XMMATRIX matrix;
+	float x;
+	float y;
+	float z;
 
 };
 

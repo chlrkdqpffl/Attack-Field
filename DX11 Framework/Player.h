@@ -91,4 +91,7 @@ public:
 	void SetKeyUp(KeyInput key);
 	WORD GetKeyState() const { return m_wKeyState; }
 	void SetWorldMatrix(XMMATRIX world);
+
+	void SetLook(float x, float y, float z);
+
 };

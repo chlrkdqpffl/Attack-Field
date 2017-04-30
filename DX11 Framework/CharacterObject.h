@@ -12,6 +12,7 @@ protected:
 	CPlayer*				m_pPlayer = nullptr;
 	CWeapon*				m_pWeapon = nullptr;
 	XMFLOAT3				m_f3FiringDirection = XMFLOAT3(0, 0, 1);
+	CGameObject				Object;
 	float					m_fPitch = 0.0f;
 
 

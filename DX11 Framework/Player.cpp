@@ -287,3 +287,19 @@ void CPlayer::SetWorldMatrix(XMMATRIX world)
 {
 	m_pCharacter->m_mtxWorld = world;
 }
+
+void CPlayer::SetLook(float x, float y, float z)
+{
+	XMMATRIX mtxRotate;
+	mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(x),
+		XMConvertToRadians(y), XMConvertToRadians(z));
+
+	XMFLOAT4X4 mtx; XMStoreFloat4x4(&mtx, mtxRotate);
+	XMFLOAT3 position = GetPosition();
+
+	mtx._41 = position.x;
+	mtx._42 = position.y;
+	mtx._43 = position.z;
+
+	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&mtx);
+}

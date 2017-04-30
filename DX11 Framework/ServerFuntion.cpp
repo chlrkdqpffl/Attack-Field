@@ -90,11 +90,11 @@ void ServerFuntion::processpacket(char *ptr)
 
 		if (id == m_myid)
 		{
-			SCENE_MGR->g_pPlayer->SetWorldMatrix(my_put_rotate->matrix);
+			SCENE_MGR->g_pPlayer->SetLook(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
 		}
-		else if (id<500)
+		else
 		{
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetLook(;
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
 		}
 		break;
 	default:
