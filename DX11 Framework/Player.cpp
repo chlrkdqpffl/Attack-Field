@@ -52,24 +52,24 @@ void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계
 	XMVECTOR d3dxvShift = XMVectorZero();
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eForward)) {
-//		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
+		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
 
 		if(m_pCharacter->GetAnimation() != AnimationData::CharacterAnim::eRun)
 			m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eBackward)) {
-	//	d3dxvShift -= XMLoadFloat3(&m_d3dxvLook);
+		d3dxvShift -= XMLoadFloat3(&m_d3dxvLook);
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeft)) {
-		//d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
+		d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRight)) {
-		//d3dxvShift += XMLoadFloat3(&m_d3dxvRight);
+		d3dxvShift += XMLoadFloat3(&m_d3dxvRight);
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
