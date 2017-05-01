@@ -105,16 +105,29 @@ void CCharacterObject::OnCollisionCheck()
 	// 레이 방향이 잘못된 듯
 } 
 
-void CCharacterObject::SetRotate(float fPitch, float fYaw, float fRoll, bool isLocal)
+void CCharacterObject::SetRotate(float fPitch, float fYaw, float fRoll, bool isLocal)	//이부분 내가 고침.
 {
-	CGameObject::SetRotate(0, fYaw, fRoll, isLocal);
+
+	XMMATRIX mtxRotate;
+	mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fPitch),
+		XMConvertToRadians(fYaw), XMConvertToRadians(fRoll));
+
+	XMFLOAT4X4 mtx; XMStoreFloat4x4(&mtx, mtxRotate);
+	XMFLOAT3 position = GetPosition();
+
+	mtx._41 = position.x;
+	mtx._42 = position.y;
+	mtx._43 = position.z;
+
+	this->m_mtxWorld = XMLoadFloat4x4(&mtx);
+	//Object.SetRotate(fPitch, fYaw, fRoll, isLocal);
 
 	m_fPitch = fPitch;
 }
 
 void CCharacterObject::SetRotate(XMFLOAT3 fAngle, bool isLocal)
 {
-	CGameObject::SetRotate(0, fAngle.y, fAngle.z, isLocal);
+	Object.SetRotate(0, fAngle.y, fAngle.z, isLocal);
 
 	m_fPitch = fAngle.x;
 }
@@ -123,7 +136,7 @@ void CCharacterObject::SetRotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLoca
 {
 	XMFLOAT3 axis; XMStoreFloat3(&axis, *pd3dxvAxis);
 
-	CGameObject::SetRotate(0, axis.y, axis.z, isLocal);
+	Object.SetRotate(0, axis.y, axis.z, isLocal);
 
 	m_fPitch = axis.x;
 }

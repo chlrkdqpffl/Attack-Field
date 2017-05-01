@@ -1,8 +1,8 @@
 #pragma once
 
 
-#define CS_KEYTYPE		0
-#define CS_ROTATE		1
+#define CS_KEYTYPE		1
+#define CS_ROTATE		2
 
 #define RemovePlayer	4
 
@@ -27,7 +27,7 @@ struct cs_rotate {	//클라에서 화면을 움직였을때
 
 	float cx;
 	float cy;
-	float cz;
+	
 
 
 };
@@ -57,7 +57,7 @@ struct sc_packet_pos	//서버에서 처리된 값을 클라에게 보낸다.
 	float z;
 };
 
-struct sc_rotate_vector	//처리된 lookvector를 보낸다.
+struct sc_rotate_vector	
 {
 	BYTE size;
 	BYTE type;

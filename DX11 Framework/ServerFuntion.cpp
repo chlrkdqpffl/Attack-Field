@@ -15,6 +15,7 @@ CGameFramework GameFramework;
 
 ServerFuntion::ServerFuntion()
 {
+
 }
 
 ServerFuntion::~ServerFuntion()
@@ -37,7 +38,13 @@ void ServerFuntion::processpacket(char *ptr)
 		if (id == m_myid)
 		{
 			//memcpy(my_Pos_packet, my_Pos_packet, ptr[0]);
-			SCENE_MGR->g_nowScene->GetPlayer()->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 1.0f));
+			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
+			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));;
+			
+		}
+		else
+		{
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
 		}
 		break;
 	case 2:	//처음 받았을때.
@@ -53,15 +60,15 @@ void ServerFuntion::processpacket(char *ptr)
 		}
 		if (id == m_myid)
 		{
-			//memcpy(my_put_packet, my_put_packet, ptr[0]);
-			SCENE_MGR->g_nowScene->GetPlayer()->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 1.0f));
+			//SCENE_MGR->g_pMainScene->GetCharcontainer()[id]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
+
+			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
+			
 		}
-		//else if (id<500)
-		//{
-		//	other[id].x = my_packet->x;
-		//	other[id].y = my_packet->y;
-		//	other[id].z = my_packet->z;
-		//}
+		else if (id<500)
+		{
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
+		}
 	}
 	break;
 
@@ -77,20 +84,18 @@ void ServerFuntion::processpacket(char *ptr)
 	}
 	break;
 	case 5:	//rotate된 값 처리
-
+		
 		my_put_rotate = reinterpret_cast<sc_rotate_vector *>(ptr);
 		id = my_put_rotate->id;
 
 		if (id == m_myid)
 		{
-			//memcpy(my_put_packet, my_put_packet, ptr[0]);
+			SCENE_MGR->g_pPlayer->SetLook(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
 		}
-		//else if (id<500)
-		//{
-		//	other[id].x = my_packet->x;
-		//	other[id].y = my_packet->y;
-		//	other[id].z = my_packet->z;
-		//}
+		else
+		{
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
+		}
 		break;
 	default:
 		std::cout << "Unknown PACKET type :" << (int)ptr[1] << "\n";
@@ -157,7 +162,7 @@ void ServerFuntion::Server_init()
 
 	WSADATA wsa;
 	WSAStartup(MAKEWORD(2, 2), &wsa);
-	m_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, 0);
+	g_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, 0);
 
 	SOCKADDR_IN Serveraddr;
 	ZeroMemory(&Serveraddr, sizeof(SOCKADDR_IN));
@@ -165,7 +170,7 @@ void ServerFuntion::Server_init()
 	Serveraddr.sin_port = htons(ServerPort);
 	Serveraddr.sin_addr.s_addr = inet_addr(ip);
 
-	int Result = WSAConnect(m_socket, (sockaddr *)&Serveraddr, sizeof(Serveraddr), NULL, NULL, NULL, NULL);
+	int Result = WSAConnect(g_socket, (sockaddr *)&Serveraddr, sizeof(Serveraddr), NULL, NULL, NULL, NULL);
 
 	if (Result == SOCKET_ERROR) {
 		cout << "연결안됨 !!";
@@ -175,7 +180,8 @@ void ServerFuntion::Server_init()
 
 	
 
-	WSAAsyncSelect(m_socket, m_handle, WM_SOCKET, FD_CLOSE | FD_READ);
+	WSAAsyncSelect(g_socket, m_handle, WM_SOCKET, FD_CLOSE | FD_READ);
+
 
 	send_wsabuf.buf = send_buffer;
 	send_wsabuf.len = BUF_SIZE;
@@ -194,7 +200,7 @@ void ServerFuntion::Sendpacket(unsigned char* Data)
 	memcpy(send_buffer, Data, Data[0]);
 
 
-	int retval = WSASend(m_socket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+	int retval = WSASend(g_socket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
 	if (retval) {
 		int error_code = WSAGetLastError();
@@ -202,3 +208,4 @@ void ServerFuntion::Sendpacket(unsigned char* Data)
 	}
 
 }
+

@@ -2,9 +2,10 @@
 //#include "SkinnedObject.h"
 #include "Object.h"
 #include "Camera.h"
+#include "ServerFuntion.h"
 
 class CCharacterObject;
-class CPlayer
+class CPlayer : public ServerFuntion
 {
 protected:
 	XMFLOAT3					m_d3dxvPosition;
@@ -28,6 +29,12 @@ protected:
 	WORD						m_wKeyState = 0;
 	CCharacterObject			*m_pCharacter = nullptr;
 	bool						m_bIsFloorCollision = false;
+
+
+	////////////////이전 로테이션값들/////////////////
+	float						m_prev_x;
+	float						m_prev_y;
+	float						m_prev_z;
 
 public:
 	CPlayer(CCharacterObject* pCharacter = nullptr);
@@ -80,7 +87,11 @@ public:
 	}
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
 	void SetPlayerUpdatedContext(LPVOID pContext) { m_pPlayerUpdatedContext = pContext; }
-	void SetKeyDown(KeyInput key) { m_wKeyState |= static_cast<int>(key); }
-	void SetKeyUp(KeyInput key) { m_wKeyState ^= static_cast<int>(key); }
+	void SetKeyDown(KeyInput key);
+	void SetKeyUp(KeyInput key);
 	WORD GetKeyState() const { return m_wKeyState; }
+	void SetWorldMatrix(XMMATRIX world);
+
+	void SetLook(float x, float y, float z);
+
 };

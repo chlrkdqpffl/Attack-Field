@@ -429,3 +429,4 @@ extern void TRACE(_TCHAR *pString, UINT uValue);
 extern void TRACE(_TCHAR *pString, int nValue);
 extern void TRACE(_TCHAR *pString, int nValue0, int nValue1);
 extern void TRACE(_TCHAR *pString, float fValue);
+extern SOCKET g_socket;
