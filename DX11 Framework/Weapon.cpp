@@ -26,6 +26,8 @@ void CWeapon::Firing(XMVECTOR direction)
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed) {
 		m_dwLastAttackTime = GetTickCount();
 
+
+
 		CollisionInfo info;
 		if (COLLISION_MGR->RayCastCollisionToCharacter(info, GetvPosition(), direction)) {
 			cout << "CWeapon::Firing - 최종적인 충돌 확인" << endl;

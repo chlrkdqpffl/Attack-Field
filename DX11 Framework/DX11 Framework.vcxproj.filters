@@ -40,9 +40,6 @@
     <Filter Include="소스 파일\Manager">
       <UniqueIdentifier>{89fe9380-576c-45a3-b9dd-88e14d821bde}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Particle">
-      <UniqueIdentifier>{212ba4fb-c602-4b82-bf63-ababc9048f83}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\Mesh\NormalMap">
       <UniqueIdentifier>{3337359f-fdc1-4be3-8786-e06ef93680cf}</UniqueIdentifier>
     </Filter>
@@ -63,9 +60,6 @@
     </Filter>
     <Filter Include="Objects\SkyBox">
       <UniqueIdentifier>{a046322d-a3d1-41f4-8894-cd50ad5354ac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Objects\Terrain">
-      <UniqueIdentifier>{519f8bc8-9ccd-42e2-94d7-69e470d6b63a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Objects\Character">
       <UniqueIdentifier>{f38c5697-509f-4dcb-9183-19185c1ca890}</UniqueIdentifier>
@@ -105,6 +99,15 @@
     </Filter>
     <Filter Include="Deferred">
       <UniqueIdentifier>{181e45a1-6e7f-4dbd-9614-0bad023d9bed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FSM">
+      <UniqueIdentifier>{f61dec7d-4f4f-4f69-a22b-bf7216a35b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Terrain">
+      <UniqueIdentifier>{519f8bc8-9ccd-42e2-94d7-69e470d6b63a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Particle">
+      <UniqueIdentifier>{212ba4fb-c602-4b82-bf63-ababc9048f83}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -323,6 +326,15 @@
     </ClCompile>
     <ClCompile Include="CharacterObject.cpp">
       <Filter>Objects\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterState.cpp">
+      <Filter>FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterStateMachine.cpp">
+      <Filter>FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="LineObject.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -562,6 +574,21 @@
     </ClInclude>
     <ClInclude Include="CharacterObject.h">
       <Filter>Objects\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="StateMachine.h">
+      <Filter>FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="FSM_State.h">
+      <Filter>FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterState.h">
+      <Filter>FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterStateMachine.h">
+      <Filter>FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="LineObject.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
