@@ -11,7 +11,7 @@ CAirplanePlayer::~CAirplanePlayer()
 {
 }
 
-void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, float fTimeElapsed)
+void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag)
 {
 	CameraTag nCurrentCameraTag = (m_pCamera) ? m_pCamera->GetCameraTag() : CameraTag::eNone;
 	if (nCurrentCameraTag == nNewCameraTag) return;
@@ -50,10 +50,9 @@ void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamer
 	default:
 		break;
 	}
-	Update(fTimeElapsed);
 }
 
-void CAirplanePlayer::OnPlayerUpdated(float fTimeElapsed)
+void CAirplanePlayer::OnApplyGravity(float fDeltaTime)
 {
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)m_pPlayerUpdatedContext;
 	XMVECTOR d3dxvScale = pTerrain->GetScale();
@@ -64,9 +63,7 @@ void CAirplanePlayer::OnPlayerUpdated(float fTimeElapsed)
 	float fHeight = pTerrain->GetHeight(d3dxvPlayerPosition.x, d3dxvPlayerPosition.z, bReverseQuad) + 30.0f;
 	if (d3dxvPlayerPosition.y < fHeight)
 	{
-		XMVECTOR d3dxvPlayerVelocity = GetVelocity();
-		d3dxvPlayerVelocity = XMVectorSetY(d3dxvPlayerVelocity, 0.0f);
-		SetVelocity(d3dxvPlayerVelocity);
+		m_d3dxvVelocity.y = 0.0f;
 		d3dxvPlayerPosition.y = fHeight;
 		SetPosition(XMLoadFloat3(&d3dxvPlayerPosition));
 	}

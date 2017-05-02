@@ -8,6 +8,7 @@ class CCharacterObject;
 class CPlayer : public ServerFuntion
 {
 protected:
+	XMFLOAT3					m_vPrevPosition = XMFLOAT3(0,0,0);
 	XMFLOAT3					m_d3dxvPosition;
 	XMFLOAT3					m_d3dxvRight;
 	XMFLOAT3					m_d3dxvUp;
@@ -29,6 +30,7 @@ protected:
 	WORD						m_wKeyState = 0;
 	CCharacterObject			*m_pCharacter = nullptr;
 	bool						m_bIsFloorCollision = false;
+	float						m_fTimeElapsed = 0.0f;
 
 
 	////////////////이전 로테이션값들/////////////////
@@ -40,8 +42,8 @@ public:
 	CPlayer(CCharacterObject* pCharacter = nullptr);
 	virtual ~CPlayer();
 
-	virtual void OnPlayerUpdated(float fTimeElapsed) {};
-	virtual void OnCameraUpdated(float fTimeElapsed) {};
+	virtual void OnApplyGravity(float fDeltaTime) {};
+	virtual void OnCameraUpdated(float fDeltaTime) {};
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
 	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag) {};
@@ -49,14 +51,16 @@ public:
 	CCamera *OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag); 
 	void Move(const XMVECTOR d3dxvShift);
 	void Rotate(float x, float y);
-	void Update(float fTimeElapsed);
-	void UpdateKeyInput(float fTimeElapsed);
+	void Update(float fDeltaTime);
+	void UpdateKeyInput(float fDeltaTime);
 
 	// 캐릭터의 총구 방향(Pitch)을 이용하여 캐릭터 애니메이션이 회전하도록 만들기 위해 Skinned Mesh에 넘겨주는 함수
 	//void RotateToCharacter();
 
 	bool IsMoving() const;
 	// ----- Get, Setter ----- //
+	XMFLOAT3 GetPrevPosition() const { return m_vPrevPosition; }
+	XMVECTOR GetvPrevPosition() const { return XMLoadFloat3(&m_vPrevPosition); }
 	XMVECTOR GetvPosition() const { return(XMLoadFloat3(&m_d3dxvPosition)); }
 	XMFLOAT3 GetPosition() const {	return m_d3dxvPosition; }
 	XMFLOAT3 GetLook() const { return m_d3dxvLook; }
@@ -66,7 +70,8 @@ public:
 	XMVECTOR GetvUp() const { return(XMLoadFloat3(&m_d3dxvUp)); }
 	XMVECTOR GetvRight() const { return(XMLoadFloat3(&m_d3dxvRight)); }
 
-	const XMVECTOR GetVelocity() const { return(XMLoadFloat3(&m_d3dxvVelocity)); }
+	XMVECTOR GetvVelocity() const { return(XMLoadFloat3(&m_d3dxvVelocity)); }
+	XMFLOAT3 GetVelocity() const { return m_d3dxvVelocity; }
 	float GetYaw() const { return(m_fYaw); }
 	float GetPitch() const { return(m_fPitch); }
 	CCamera *GetCamera() { return(m_pCamera); }
@@ -79,12 +84,14 @@ public:
 	void SetGravity(XMVECTOR d3dxvGravity) { XMStoreFloat3(&m_d3dxvGravity, d3dxvGravity); }
 	void SetMaxVelocityXZ(float fMaxVelocity) { m_fMaxVelocityXZ = fMaxVelocity; }
 	void SetMaxVelocityY(float fMaxVelocity) { m_fMaxVelocityY = fMaxVelocity; }
-	void SetVelocity(XMVECTOR d3dxvVelocity) { XMStoreFloat3(&m_d3dxvVelocity, d3dxvVelocity); }
+	void SetvVelocity(XMVECTOR d3dxvVelocity) { XMStoreFloat3(&m_d3dxvVelocity, d3dxvVelocity); }
+	void SetVelocity(XMFLOAT3 d3dxvVelocity) { m_d3dxvVelocity = d3dxvVelocity; }
 	void SetPosition(XMVECTOR d3dxvPosition)
 	{ 
 		XMVECTOR v = XMLoadFloat3(&m_d3dxvPosition);
 		Move((d3dxvPosition - v));
 	}
+	void SetTimeElpased(float time) { m_fTimeElapsed = time; }
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
 	void SetPlayerUpdatedContext(LPVOID pContext) { m_pPlayerUpdatedContext = pContext; }
 	void SetKeyDown(KeyInput key);

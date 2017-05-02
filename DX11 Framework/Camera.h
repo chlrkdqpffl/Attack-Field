@@ -110,7 +110,7 @@ public:
 		XMStoreFloat3(&m_d3dxvPosition, v);
 	}
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) { }
-	virtual void Update(float fTimeElapsed) { }
+	virtual void Update(float fDeltaTime) { }
 	virtual void SetLookAt(XMVECTOR& vLookAt);
 	virtual void SetLookAt(XMVECTOR& d3dxvPosition, XMVECTOR& d3dxvLookAt, XMVECTOR& vd3dxvUp);
 

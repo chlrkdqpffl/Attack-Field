@@ -69,23 +69,27 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 	SetMaxVelocityXZ(500.0f);
 }
 
-void CTerrainPlayer::OnPlayerUpdated(float fTimeElapsed)
+void CTerrainPlayer::OnApplyGravity(float fDeltaTime)
 {
-	XMFLOAT3 pos = GetPosition();
+	m_fTimeElapsed += fDeltaTime;
+	float gravityAcceleration = -100.0f;
+//	float gravityAcceleration = -0.0f;
+	m_d3dxvVelocity.y = m_d3dxvVelocity.y + gravityAcceleration * m_fTimeElapsed  * fDeltaTime;
 
-	XMFLOAT3 velocity;
-	XMStoreFloat3(&velocity, GetVelocity());
-	velocity.y = 0.0f;
-	SetVelocity(XMLoadFloat3(&velocity));
+	if (m_bIsFloorCollision) {
+		float groundHeight = m_pCharacter->GetCollisionInfo().m_pHitObject->GetBoundingOBox().Center.y + m_pCharacter->GetCollisionInfo().m_pHitObject->GetBoundingOBox().Extents.y;
+		m_fTimeElapsed = 0.0f;
+		m_d3dxvVelocity.y = 0.0f;
 
-	float height = m_pCharacter->GetCollisionInfo().m_pHitObject->GetBoundingOBox().Center.y + m_pCharacter->GetCollisionInfo().m_pHitObject->GetBoundingOBox().Extents.y;
+		XMFLOAT3 pos = GetPosition();
+		pos.y = m_pCharacter->GetBoundingOBox(true).Center.y + m_pCharacter->GetBoundingOBox().Extents.y + groundHeight;
+		SetPosition(XMLoadFloat3(&pos));
 
-	pos.y = m_pCharacter->GetBoundingOBox(true).Center.y + m_pCharacter->GetBoundingOBox().Extents.y + height;
-	SetPosition(XMLoadFloat3(&pos));
-	m_bIsFloorCollision = false;
+		m_bIsFloorCollision = false;
+	}
 }
 
-void CTerrainPlayer::OnCameraUpdated(float fTimeElapsed)
+void CTerrainPlayer::OnCameraUpdated(float fDeltaTime)
 {
 	// 해당 함수는 Terrain이 존재할 경우 카메라가 땅아래에 있지 않도록 하는 함수로 
 	// 이를 응용하여 카메라가 벽안으로 들어갈 경우 처리할 때 참조하도록 한다.

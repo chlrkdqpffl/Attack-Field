@@ -32,9 +32,9 @@ void CBillboardObject::SetLookAt(XMFLOAT3 cameraPos)
 	SetLook(temp, false);
 }
 
-void CBillboardObject::Update(float fTimeElapsed)
+void CBillboardObject::Update(float fDeltaTime)
 {
-	CGameObject::Update(fTimeElapsed);
+	CGameObject::Update(fDeltaTime);
 
 	SetLookAt(m_pPlayer->GetCamera()->GetPosition());
 }

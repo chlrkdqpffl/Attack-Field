@@ -39,10 +39,10 @@ void CAnimationController::AddAnimation(tuple<AnimationData::CharacterAnim, Anim
 		ShowTaskFail("Animation Mapping Error!! < " + get<1>(anim).m_strClipName + " > \t 애니메이션 이름 확인이 필요!");
 }
 
-void CAnimationController::UpdateTime(float fTimeElapsed)
+void CAnimationController::UpdateTime(float fDeltaTime)
 {
 	float endTime = m_pSkinnedMesh->GetClipEndTime(m_pSkinnedMesh->GetClipName());
-	float timeElapse = get<1>(m_currAnimState).m_fSpeed * fTimeElapsed * TWBAR_MGR->g_fAnimationSpeed;
+	float timeElapse = get<1>(m_currAnimState).m_fSpeed * fDeltaTime * TWBAR_MGR->g_fAnimationSpeed;
 
 	switch (GetAnimType()) {
 	case AnimationData::Type::eLoop:
@@ -84,9 +84,9 @@ void CAnimationController::UpdateTime(float fTimeElapsed)
 	}
 }
 
-void CAnimationController::Update(float fTimeElapsed)
+void CAnimationController::Update(float fDeltaTime)
 {
-	UpdateTime(fTimeElapsed);
+	UpdateTime(fDeltaTime);
 	m_pSkinnedMesh->GetFinalTransformsBlending(get<1>(m_prevAnimState), get<1>(m_currAnimState), m_fTimePos);
 }
 

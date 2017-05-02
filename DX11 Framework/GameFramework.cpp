@@ -709,11 +709,11 @@ void CGameFramework::ProcessInput()
 
 void CGameFramework::UpdateObjects()
 {
-	m_fTimeElapsed = m_GameTimer.GetTimeElapsed();
+	m_fDeltaTime = m_GameTimer.GetTimeElapsed();
 	m_nFrameRate = m_GameTimer.GetFrameRate();
 
-	SCENE_MGR->g_fTimeElapsed = m_fTimeElapsed;
-	SCENE_MGR->g_nowScene->Update(m_fTimeElapsed);
+	SCENE_MGR->g_fDeltaTime = m_fDeltaTime;
+	SCENE_MGR->g_nowScene->Update(m_fDeltaTime);
 }
 
 //#define _WITH_PLAYER_TOP

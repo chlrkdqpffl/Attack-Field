@@ -226,32 +226,32 @@ CGameObject *CScene::PickObjectPointedByCursor(int xClient, int yClient)
 	return(pNearestObject);
 }
 
-void CScene::Update(float fTimeElapsed)
+void CScene::Update(float fDeltaTime)
 {
-	m_fTimeElapsed = fTimeElapsed;
+	m_fDeltaTime = fDeltaTime;
 
-	if(m_pSkyBox) m_pSkyBox->Update(fTimeElapsed);
-	if(m_pTerrain) m_pTerrain->Update(fTimeElapsed);
-	if(GLOBAL_MGR->g_bShowWorldAxis) m_pWorldCenterAxis->Update(fTimeElapsed);
+	if(m_pSkyBox) m_pSkyBox->Update(fDeltaTime);
+	if(m_pTerrain) m_pTerrain->Update(fDeltaTime);
+	if(GLOBAL_MGR->g_bShowWorldAxis) m_pWorldCenterAxis->Update(fDeltaTime);
 
 	for (auto& object : m_vecObjectsContainer) {
 		if(object->GetActive())
-			object->Update(fTimeElapsed);
+			object->Update(fDeltaTime);
 	}
 
-	m_vecShaderObjectContainer.UpdateObjects(fTimeElapsed);
+	m_vecShaderObjectContainer.UpdateObjects(fDeltaTime);
 
 	for (auto& instancedShaderObject : m_vecInstancedObjectsShaderContainer)
-		instancedShaderObject->UpdateObjects(fTimeElapsed);
+		instancedShaderObject->UpdateObjects(fDeltaTime);
 
 
 	/*
 	// Collision
 	for (auto& staticMeshObject : m_vecStaticMeshContainer)
-		staticMeshObject->Update(fTimeElapsed);
+		staticMeshObject->Update(fDeltaTime);
 	
 	for (auto& dynamicMeshObject : m_vecDynamicMeshContainer)
-		dynamicMeshObject->Update(fTimeElapsed);
+		dynamicMeshObject->Update(fDeltaTime);
 	*/
 }
 

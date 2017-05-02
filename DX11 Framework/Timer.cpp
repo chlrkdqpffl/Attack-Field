@@ -32,7 +32,7 @@ CGameTimer::~CGameTimer()
 
 void CGameTimer::Tick(float fLockFPS)
 {
-    float fTimeElapsed, fRealTimeElapsed;
+    float fDeltaTime, fRealTimeElapsed;
 
 	if (m_bHardwareHasPerformanceCounter) 
     {
@@ -45,12 +45,12 @@ void CGameTimer::Tick(float fLockFPS)
 		m_nRealCurrentTime = m_nCurrentTime;
 	} 
 
-	fTimeElapsed = (m_nCurrentTime - m_nLastTime) * m_fTimeScale;
+	fDeltaTime = (m_nCurrentTime - m_nLastTime) * m_fTimeScale;
 	fRealTimeElapsed = (m_nRealCurrentTime - m_nLastTime) *m_fTimeScale;
 
     if (fLockFPS > 0.0f)
     {
-        while (fTimeElapsed < (1.0f / fLockFPS))
+        while (fDeltaTime < (1.0f / fLockFPS))
         {
 	        if (m_bHardwareHasPerformanceCounter) 
             {
@@ -61,17 +61,17 @@ void CGameTimer::Tick(float fLockFPS)
 				m_nCurrentTime = ::timeGetTime();
 	        } 
 	        // Calculate elapsed time in seconds
-	        fTimeElapsed = (m_nCurrentTime - m_nLastTime) * m_fTimeScale;
+	        fDeltaTime = (m_nCurrentTime - m_nLastTime) * m_fTimeScale;
         }
     } 
 
 	m_nLastTime = m_nCurrentTime;
 
-    if (fabsf(fTimeElapsed - m_fTimeElapsed) < 1.0f)
+    if (fabsf(fDeltaTime - m_fDeltaTime) < 1.0f)
     {
         // Wrap FIFO frame time buffer.
         memmove(&m_fFrameTime[1], m_fFrameTime, (MAX_SAMPLE_COUNT - 1) * sizeof(float));
-        m_fFrameTime[0] = fTimeElapsed;
+        m_fFrameTime[0] = fDeltaTime;
         if (m_nSampleCount < MAX_SAMPLE_COUNT) m_nSampleCount++;
     }
 
@@ -79,7 +79,7 @@ void CGameTimer::Tick(float fLockFPS)
 	m_nFramePerSecond++;
 	m_nRealFramePerSecond++;
 
-	m_fFPSTimeElapsed += fTimeElapsed;
+	m_fFPSTimeElapsed += fDeltaTime;
 	m_fRealFPSTimeElapsed += fRealTimeElapsed;
 
 	if (m_fFPSTimeElapsed > 1.0f) 
@@ -97,7 +97,7 @@ void CGameTimer::Tick(float fLockFPS)
 	}
 
     // Count up the new average elapsed time
-    m_fTimeElapsed = 0.0f;
-    for (ULONG i = 0; i < m_nSampleCount; i++) m_fTimeElapsed += m_fFrameTime[i];
-    if (m_nSampleCount > 0) m_fTimeElapsed /= m_nSampleCount;
+    m_fDeltaTime = 0.0f;
+    for (ULONG i = 0; i < m_nSampleCount; i++) m_fDeltaTime += m_fFrameTime[i];
+    if (m_nSampleCount > 0) m_fDeltaTime /= m_nSampleCount;
 }

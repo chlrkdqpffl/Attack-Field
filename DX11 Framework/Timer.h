@@ -13,12 +13,12 @@ public:
 	unsigned long GetFrameRate() const { return m_nCurrentFrameRate; }
 	unsigned long GetRealFrameRate() const { return m_nRealFrameRate; }
 
-	float GetTimeElapsed() const { return m_fTimeElapsed; }
+	float GetTimeElapsed() const { return m_fDeltaTime; }
 
 private:
     bool							m_bHardwareHasPerformanceCounter;   // Has Performance Counter
 	float							m_fTimeScale;						// Amount to scale counter
-	float							m_fTimeElapsed;						// Time elapsed since previous frame
+	float							m_fDeltaTime;						// Time elapsed since previous frame
     __int64							m_nCurrentTime;						// Current Performance Counter
     __int64							m_nLastTime;						// Performance Counter last frame
 	__int64							m_PerformanceFrequency;				// Performance Frequency

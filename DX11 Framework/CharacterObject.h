@@ -12,9 +12,8 @@ protected:
 	CPlayer*				m_pPlayer = nullptr;
 	CWeapon*				m_pWeapon = nullptr;
 	XMFLOAT3				m_f3FiringDirection = XMFLOAT3(0, 0, 1);
-	CGameObject				Object;
 	float					m_fPitch = 0.0f;
-
+	float					m_fYaw = 0.0f;
 
 	// ----- Parts Collision Variable ----- // 
 	enum BoundingBoxParts { eBody, eHead, ePartsCount };
@@ -29,7 +28,7 @@ public:
 	virtual void CreateObjectData(ID3D11Device *pd3dDevice) override;
 	virtual void OnCollisionCheck();
 
-	virtual void Update(float fTimeElapsed) override;
+	virtual void Update(float fDeltaTime) override;
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 	virtual void BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext) override;
 

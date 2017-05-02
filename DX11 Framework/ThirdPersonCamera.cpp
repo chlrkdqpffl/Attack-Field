@@ -17,7 +17,7 @@ CThirdPersonCamera::CThirdPersonCamera(CCamera *pCamera) : CCamera(pCamera)
 	}
 }
 
-void CThirdPersonCamera::Update(float fTimeElapsed)
+void CThirdPersonCamera::Update(float fDeltaTime)
 {
 	XMFLOAT4X4 mtxRotate;
 	XMStoreFloat4x4(&mtxRotate, XMMatrixIdentity());
@@ -34,7 +34,7 @@ void CThirdPersonCamera::Update(float fTimeElapsed)
 	XMVECTOR d3dxvDirection = d3dxvPosition - XMLoadFloat3(&m_d3dxvPosition);
 	float fLength = XMVectorGetX(XMVector3Length(d3dxvDirection));
 	d3dxvDirection = XMVector3Normalize(d3dxvDirection);
-	float fTimeLagScale = (m_fTimeLag) ? fTimeElapsed * (1.0f / m_fTimeLag) : 1.0f;
+	float fTimeLagScale = (m_fTimeLag) ? fDeltaTime * (1.0f / m_fTimeLag) : 1.0f;
 	float fDistance = fLength * fTimeLagScale;
 	if (fDistance > fLength) fDistance = fLength;
 	if (fLength < 0.01f) fDistance = fLength;

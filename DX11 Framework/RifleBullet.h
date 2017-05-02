@@ -11,5 +11,5 @@ public:
 	virtual void CreateShader(ID3D11Device *pd3dDevice);
 	virtual void CreateMaterial();
 
-	virtual void Update(float fTimeElapsed) override;
+	virtual void Update(float fDeltaTime) override;
 };

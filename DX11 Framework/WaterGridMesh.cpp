@@ -72,9 +72,9 @@ void CWaterGridMesh::SetDisturbingForce(int i, int j, float fMagnitude)
 	}
 }
 
-void CWaterGridMesh::Update(float fTimeElapsed)
+void CWaterGridMesh::Update(float fDeltaTime)
 {
-	m_fAccumulatedTime += fTimeElapsed;
+	m_fAccumulatedTime += fDeltaTime;
 	if (m_fAccumulatedTime >= m_fTimeDelta)
 	{
 	

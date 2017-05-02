@@ -29,8 +29,8 @@ public:
 
 	void AddAnimation(tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> anim);
 
-	void Update(float fTimeElapsed);
-	void UpdateTime(float fTimeElapsed);
+	void Update(float fDeltaTime);
+	void UpdateTime(float fDeltaTime);
 	void UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext);
 
 	// ------ Get, Setter ------ //

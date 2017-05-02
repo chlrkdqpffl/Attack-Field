@@ -20,12 +20,15 @@ public:
 
 	bool RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
 	bool RayCastCollisionToCharacter(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
-	bool RayCastCollisionInPolygon(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
 	bool AABBCollision(CollisionInfo& info, BoundingBox bcBox);
 	bool OBBCollision(CollisionInfo& info, BoundingOrientedBox bcObbox);
 
-
-
 	// User Define
 	bool CheckCollision(CollisionInfo& info, CGameObject* pObjectA, CGameObject* pObjectB);
+
+private:
+	bool RayCastCollision_AABB(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
+	bool RayCastCollisionToCharacter_AABB(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
+	bool RayCastCollisionToCharacter_Parts(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
+	bool RayCastCollisionInPolygon(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
 };

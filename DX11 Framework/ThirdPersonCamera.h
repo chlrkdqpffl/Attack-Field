@@ -8,5 +8,5 @@ public:
 	CThirdPersonCamera(CCamera *pCamera);
 	virtual ~CThirdPersonCamera() { }
 
-	virtual void Update(float fTimeElapsed) override;
+	virtual void Update(float fDeltaTime) override;
 };

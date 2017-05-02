@@ -9,6 +9,6 @@ public:
 	CAirplanePlayer(CCharacterObject* pCharacter = nullptr);
 	virtual ~CAirplanePlayer();
 
-	virtual void OnPlayerUpdated(float fTimeElapsed);
-	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, float fTimeElapsed);
+	virtual void OnApplyGravity(float fDeltaTime) override;
+	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag) override;
 };

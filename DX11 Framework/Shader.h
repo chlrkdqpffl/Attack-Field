@@ -95,7 +95,7 @@ protected:
 public:
 	virtual void BuildObjects(ID3D11Device *pd3dDevice, void *pContext = NULL);
 	virtual void ReleaseObjects();
-	virtual void UpdateObjects(float fTimeElapsed);
+	virtual void UpdateObjects(float fDeltaTime);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 
 	void AddObject(ShaderTag tag, CGameObject *pGameObject);

@@ -28,11 +28,11 @@ void CBulletObject::OnCollisionCheck()
 	}
 }
 
-void CBulletObject::Update(float fTimeElapsed)
+void CBulletObject::Update(float fDeltaTime)
 { 
 	if (m_fMovingDistance < m_fRange) {
-		m_fMovingDistance += m_fSpeed * fTimeElapsed;
-		MoveForward(m_fSpeed * fTimeElapsed);
+		m_fMovingDistance += m_fSpeed * fDeltaTime;
+		MoveForward(m_fSpeed * fDeltaTime);
 	}
 	else {
 		InitializeData();

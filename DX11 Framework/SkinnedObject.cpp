@@ -33,9 +33,9 @@ void CSkinnedObject::SetAnimation(AnimationData::CharacterAnim anim, float speed
 	m_pAnimController->SetAnimation(anim, speed);
 }
 
-void CSkinnedObject::Update(float fTimeElapsed)
+void CSkinnedObject::Update(float fDeltaTime)
 {
-	m_pAnimController->Update(fTimeElapsed);
+	m_pAnimController->Update(fDeltaTime);
 }
 
 void CSkinnedObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)

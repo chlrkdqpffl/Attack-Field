@@ -30,7 +30,7 @@ void CRifleBullet::CreateMaterial()
 	m_pMaterial = new CMaterial();
 }
 
-void CRifleBullet::Update(float fTimeElapsed)
+void CRifleBullet::Update(float fDeltaTime)
 {
-	CBulletObject::Update(fTimeElapsed);
+	CBulletObject::Update(fDeltaTime);
 }

@@ -173,7 +173,7 @@ void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData,
 	static float changeTime = 0.2f;		// 애니메이션 전환 시간 0.2초
 	float blendFactor = addTime / changeTime;
 	
-	addTime += SCENE_MGR->g_fTimeElapsed;
+	addTime += SCENE_MGR->g_fDeltaTime;
 
 	if (blendFactor > 1) 		// 애니메이션 전환 시점
 	{

@@ -38,6 +38,9 @@ void CGlobalVariableManager::InitializeManager()
 void CGlobalVariableManager::ReleseManager()
 {
 	ReleaseCOM(g_pd3dcbRenderOption);
+
+	for (auto& object : g_vecLineContainer)
+		SafeDelete(object);
 }
 
 bool CGlobalVariableManager::SetTimer(DWORD& timeVar, int time)

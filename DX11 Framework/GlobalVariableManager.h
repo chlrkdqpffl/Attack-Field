@@ -1,5 +1,6 @@
 #pragma once
 #include "SingletonManager.h"
+#include "LineObject.h"
 
 class CGlobalVariableManager : public CSingletonManager<CGlobalVariableManager>
 {
@@ -26,4 +27,6 @@ public:
 	static bool								g_bShowGBuffer;
 	static bool								g_bShowWorldAxis;
 	static bool								g_bShowWireFrame;
+
+	vector<CLineObject*>					g_vecLineContainer;
 };
