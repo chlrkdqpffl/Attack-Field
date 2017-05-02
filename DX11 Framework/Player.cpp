@@ -147,12 +147,12 @@ void CPlayer::Rotate(float x, float y)
 			XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
 		}
 	}
-
+/*
 	XMStoreFloat3(&m_d3dxvLook, XMVector3Normalize(XMLoadFloat3(&m_d3dxvLook)));
 	XMStoreFloat3(&m_d3dxvRight, XMVector3Cross(XMLoadFloat3(&m_d3dxvUp), XMLoadFloat3(&m_d3dxvLook)));
 	XMStoreFloat3(&m_d3dxvRight, XMVector3Normalize(XMLoadFloat3(&m_d3dxvRight)));
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Cross(XMLoadFloat3(&m_d3dxvLook), XMLoadFloat3(&m_d3dxvRight)));
-	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
+	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));*/
 
 	cs_rotate rotate;
 	rotate.cx = x;
@@ -182,7 +182,7 @@ void CPlayer::Update(float fTimeElapsed)
 	if (fLength > fMaxVelocityY) m_d3dxvVelocity.y *= (fMaxVelocityY / fLength);
 //	m_d3dxvVelocity.y = 0;		// 임시 고정
 
-	Move(XMLoadFloat3(&m_d3dxvVelocity));
+	//Move(XMLoadFloat3(&m_d3dxvVelocity));
 	if (m_bIsFloorCollision) OnPlayerUpdated(fTimeElapsed);
 	
 	// Apply Deceleration 

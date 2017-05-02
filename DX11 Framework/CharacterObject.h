@@ -37,6 +37,8 @@ public:
 	virtual void SetRotate(XMFLOAT3 fAngle, bool isLocal = false) override;
 	virtual void SetRotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLocal = false) override;
 
+
+
 	void RotateFiringPos();
 	void Firing();
 	void Running();

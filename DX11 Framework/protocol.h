@@ -74,4 +74,16 @@ struct sc_packet_remove_player {	//접속이 종료되면 보내는 패킷이다.
 	BYTE type;
 	WORD id;
 };
+
+
+struct sc_bullet_fire
+{
+	BYTE size;
+	BYTE type;
+
+	WORD id;
+
+	bool fire;
+
+};
 #pragma pack(pop)
