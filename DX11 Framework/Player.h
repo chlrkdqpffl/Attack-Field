@@ -95,5 +95,5 @@ public:
 	void SetWorldMatrix(XMMATRIX world);
 
 	void SetLook(float x, float y, float z);
-
+	void SetAnimation(BYTE Animation);
 };

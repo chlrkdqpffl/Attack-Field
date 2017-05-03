@@ -41,12 +41,14 @@ void ServerFuntion::processpacket(char *ptr)
 		{
 			//memcpy(my_Pos_packet, my_Pos_packet, ptr[0]);
 			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
+			SCENE_MGR->g_pPlayer->SetAnimation(my_Pos_packet->Animation);
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));;
 			
 		}
 		else
 		{
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetAnimation(static_cast<AnimationData::CharacterAnim>(my_Pos_packet->Animation));
 		}
 		break;
 	case 2:	//처음 받았을때.
@@ -65,11 +67,13 @@ void ServerFuntion::processpacket(char *ptr)
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[id]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 
 			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
-			
+			SCENE_MGR->g_pPlayer->SetAnimation(my_put_packet->Animation);
 		}
 		else 
 		{
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetAnimation(static_cast<AnimationData::CharacterAnim>(my_put_packet->Animation));
+
 		}
 	}
 	break;
@@ -227,5 +231,6 @@ void ServerFuntion::Sendpacket(unsigned char* Data)
 		printf("Error while sending packet [%d]", error_code);
 	}
 
+	cout<<"packet type : " << (int)Data[1] << endl;
 }
 

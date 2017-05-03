@@ -264,7 +264,7 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 	Key_button.type = CS_KEYTYPE;
 	Key_button.size = sizeof(cs_key_input);
 	Key_button.key_button = m_wKeyState;
-	Key_button.fDistance = 50.0f;
+	Key_button.Animation = static_cast<BYTE>(m_pCharacter->GetAnimation());
 
 	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
 
@@ -279,7 +279,7 @@ void CPlayer::SetKeyUp(KeyInput key)
 	Key_button.type = CS_KEYTYPE;
 	Key_button.size = sizeof(cs_key_input);
 	Key_button.key_button = m_wKeyState;
-	Key_button.fDistance = 5.0f;
+	Key_button.Animation = static_cast<BYTE>(m_pCharacter->GetAnimation());
 
 	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
 }
@@ -302,4 +302,9 @@ void CPlayer::SetLook(float x, float y, float z)
 	mtx._43 = position.z;
 
 	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&mtx);
+}
+
+void CPlayer::SetAnimation(BYTE Animation)
+{
+	m_pCharacter->SetAnimation(static_cast<AnimationData::CharacterAnim>(Animation));
 }
