@@ -16,7 +16,8 @@ protected:
 	float					m_fYaw = 0.0f;
 
 	// ----- Parts Collision Variable ----- // 
-	enum BoundingBoxParts { eBody, eHead, ePartsCount };
+	enum BoundingBoxParts { eBody, eHead, eLeftUpArm, eLeftDownArm, eRightUpArm, eRightDownArm, 
+		eLeftUpLeg, eLeftDownLeg, eRightUpLeg, eRightDownLeg, ePartsCount };
 	BoundingOrientedBox		m_bcPartsBoundingOBox[ePartsCount];
 	XMMATRIX				m_mtxPartsBoundingWorld[ePartsCount];
 	CBoundingBoxMesh		*m_pPartsBoundingBoxMesh[ePartsCount];

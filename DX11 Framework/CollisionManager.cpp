@@ -23,6 +23,9 @@ void CCollisionManager::UpdateManager()
 	if (GLOBAL_MGR->SetTimer(m_dwInitTime, 500)) {
 		for (auto& staticObject : m_vecStaticMeshContainer)
 			staticObject->SetCollision(false);
+
+		for (auto& character : m_vecCharacterContainer)
+			character->SetCollision(false);
 	}
 
 	/*
@@ -62,14 +65,14 @@ bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos
 	// Dynamic to Static
 	for (auto& staticObject : m_vecStaticMeshContainer) {	
 		if (staticObject->GetBoundingOBox().Intersects(originPos, direction, info.m_fDistance)) {
-			if (fNearestDistance > info.m_fDistance) {
+			if (0 < info.m_fDistance && info.m_fDistance < fNearestDistance) {
 				fNearestDistance = info.m_fDistance;
 				pNearestObject = staticObject;
 				isCollision = true;
 			}
 		}
 	}
-	
+
 	if (isCollision) {
 		info.m_pHitObject = pNearestObject;
 		info.m_fDistance = fNearestDistance;
@@ -81,20 +84,19 @@ bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos
 
 bool CCollisionManager::RayCastCollisionToCharacter(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
 {
-	// 1차 AABB
+	
+	// 1차 Sphere
+	if (!RayCastCollisionToCharacter_Sphere(info, originPos, direction))
+		return false;
+		
+	// 2차 AABB
 	if (!RayCastCollisionToCharacter_AABB(info, originPos, direction))
 		return false;
 
-	// 2차 Polygon
-	if (!RayCastCollisionInPolygon(info, originPos, direction))
-		return false;
-
 	// 3차 Parts
-	// 폴리곤 인덱스를 알 수 있다면 해당 인덱스를 통하여 어느 부위에 충돌했는지 확인할 수 있으나 현재는 바운딩 박스로 확인해야함
 	if (!RayCastCollisionToCharacter_Parts(info, originPos, direction))
 		return false;
-
-
+	
 	return true;
 }
 
@@ -110,7 +112,7 @@ bool CCollisionManager::RayCastCollisionInPolygon(CollisionInfo& info, XMVECTOR 
 	rayDirection = XMVector3TransformNormal(direction, d3dxmtxInverse);
 	rayDirection = XMVector3Normalize(rayDirection);
 
-	/*
+	
 	// ----- Rendering Ray Cast ----- // 
 	float lineLength = 200;
 	XMVECTOR endPos = rayPosition + (rayDirection * lineLength);
@@ -119,7 +121,7 @@ bool CCollisionManager::RayCastCollisionInPolygon(CollisionInfo& info, XMVECTOR 
 
 	GLOBAL_MGR->g_vecLineContainer.push_back(pRayObject);
 	// ------------------------------ //
-	*/
+	
 	int count = info.m_pHitObject->GetMesh()->CheckRayIntersection(&rayPosition, &rayDirection, &info);
 
 	if (count) {
@@ -156,7 +158,7 @@ bool CCollisionManager::RayCastCollision_AABB(CollisionInfo& info, XMVECTOR orig
 	return false;
 }
 
-bool CCollisionManager::RayCastCollisionToCharacter_AABB(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
+bool CCollisionManager::RayCastCollisionToCharacter_Sphere(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
 {
 	CGameObject* pNearestObject = nullptr;
 	float fNearestDistance = FLT_MAX;
@@ -164,12 +166,11 @@ bool CCollisionManager::RayCastCollisionToCharacter_AABB(CollisionInfo& info, XM
 	bool isCollision = false;
 
 	for (auto& character : m_vecCharacterContainer) {
-		if (character->GetBoundingBox(0).Intersects(originPos, direction, info.m_fDistance)) {
+		if (character->GetBoundingSphere(0).Intersects(originPos, direction, info.m_fDistance)) {
 			if (fNearestDistance > info.m_fDistance) {
 				fNearestDistance = info.m_fDistance;
 				pNearestObject = character;
 				isCollision = true;
-				cout << "1차 충돌 " << endl;
 			}
 		}
 	}
@@ -181,27 +182,76 @@ bool CCollisionManager::RayCastCollisionToCharacter_AABB(CollisionInfo& info, XM
 	return false;
 }
 
+bool CCollisionManager::RayCastCollisionToCharacter_AABB(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
+{
+	if (info.m_pHitObject->GetBoundingBox(0).Intersects(originPos, direction, info.m_fDistance))
+		return true;
+
+	return false;
+}
+
 bool CCollisionManager::RayCastCollisionToCharacter_Parts(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
 {
 	CCharacterObject* pCollisionObject = static_cast<CCharacterObject*>(info.m_pHitObject);
 
-	if (pCollisionObject->GetPartsBoundingOBox(1).Intersects(originPos, direction, info.m_fDistance)) {
-		cout << "머리 충돌 " << endl;
-		
+
+	for (int i = 0; i < 10; ++i) {
+		if (pCollisionObject->GetPartsBoundingOBox(i).Intersects(originPos, direction, info.m_fDistance)) {
+			
+			if (i == 1) {
+			//	cout << "머리 충돌" << endl;
+			}
+			return true;
+		}
 	}
-	else {
-		cout << "몸통 충돌 " << endl;
-		
-	}
+	return false;
+
+	
 
 	/*
 	if (pCollisionObject->GetPartsBoundingOBox(0).Intersects(originPos, direction, info.m_fDistance)) {
 		cout << "몸통 충돌 " << endl;
-		return true;
+		
 	}
-	*/
+	else if (pCollisionObject->GetPartsBoundingOBox(1).Intersects(originPos, direction, info.m_fDistance)) {
+		cout << "머리 충돌 " << endl;
+		
+	}
+	else if (pCollisionObject->GetPartsBoundingOBox(2).Intersects(originPos, direction, info.m_fDistance)) {
+		cout << "왼쪽 윗팔 충돌 " << endl;
 
+	}
+	else if (pCollisionObject->GetPartsBoundingOBox(3).Intersects(originPos, direction, info.m_fDistance)) {
+		cout << "왼쪽 아랫팔 충돌 " << endl;
+
+	}
+	else if (pCollisionObject->GetPartsBoundingOBox(4).Intersects(originPos, direction, info.m_fDistance)) {
+		cout << "오른쪽 윗팔 충돌 " << endl;
+
+	}
+	else if (pCollisionObject->GetPartsBoundingOBox(5).Intersects(originPos, direction, info.m_fDistance)) {
+		cout << "오른쪽 아랫팔 충돌 " << endl;
+
+	}
+
+	else if (pCollisionObject->GetPartsBoundingOBox(6).Intersects(originPos, direction, info.m_fDistance)) {
+		cout << "왼쪽 윗다리 충돌 " << endl;
+
+	}
+	else if (pCollisionObject->GetPartsBoundingOBox(7).Intersects(originPos, direction, info.m_fDistance)) {
+		cout << "왼쪽 아랫다리 충돌 " << endl;
+
+	}
+	else if (pCollisionObject->GetPartsBoundingOBox(8).Intersects(originPos, direction, info.m_fDistance)) {
+		cout << "오른쪽 윗다리 충돌 " << endl;
+
+	}
+	else if (pCollisionObject->GetPartsBoundingOBox(9).Intersects(originPos, direction, info.m_fDistance)) {
+		cout << "오른쪽 아랫다리 충돌 " << endl;
+
+	}
 	return true;
+	*/
 }
 
 bool CCollisionManager::AABBCollision(CollisionInfo& info, BoundingBox bcBox)

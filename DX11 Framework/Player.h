@@ -31,7 +31,7 @@ protected:
 	CCharacterObject			*m_pCharacter = nullptr;
 	bool						m_bIsFloorCollision = false;
 	float						m_fTimeElapsed = 0.0f;
-
+	float						m_fGravityAcceleration = 0.0f;
 
 	////////////////이전 로테이션값들/////////////////
 	float						m_prev_x;
@@ -81,7 +81,6 @@ public:
 	void SetFloorCollision(bool isCollision) { m_bIsFloorCollision = isCollision; }
 	void SetSpeed(float fSpeed) { m_fSpeed = fSpeed; }
 	void SetFriction(float fFriction) { m_fFriction = fFriction; }
-	void SetGravity(XMVECTOR d3dxvGravity) { XMStoreFloat3(&m_d3dxvGravity, d3dxvGravity); }
 	void SetMaxVelocityXZ(float fMaxVelocity) { m_fMaxVelocityXZ = fMaxVelocity; }
 	void SetMaxVelocityY(float fMaxVelocity) { m_fMaxVelocityY = fMaxVelocity; }
 	void SetvVelocity(XMVECTOR d3dxvVelocity) { XMStoreFloat3(&m_d3dxvVelocity, d3dxvVelocity); }

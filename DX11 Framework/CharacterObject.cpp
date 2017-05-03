@@ -42,20 +42,10 @@ void CCharacterObject::Running()
 
 void CCharacterObject::OnCollisionCheck()
 {	
-	BoundingOrientedBox bcObox = GetBoundingOBox();
-
-	CollisionInfo info;
-	/*
-	for (auto targetObject : COLLISION_MGR->m_vecStaticMeshContainer) {
-		if (COLLISION_MGR->CheckCollision(info, this, targetObject))
-			cout << "충돌 "<< endl;
-	}
-	*/
-
-	XMVECTOR velocity = m_pPlayer->GetvVelocity();
-
 	if(m_pPlayer->IsMoving()){
 		for (auto staticObject : COLLISION_MGR->m_vecStaticMeshContainer) {
+			CollisionInfo info;
+			XMVECTOR velocity = m_pPlayer->GetvVelocity();
 
 			XMMATRIX d3dxmtxInverse;
 			d3dxmtxInverse = XMMatrixInverse(NULL, staticObject->m_mtxWorld);
@@ -64,39 +54,51 @@ void CCharacterObject::OnCollisionCheck()
 			rayPosition = XMVector3TransformCoord(GetvPosition(), d3dxmtxInverse);
 			
 			XMVECTOR rayDirection;
-//			rayDirection = XMVector3TransformCoord(velocity, d3dxmtxInverse);
 			rayDirection = XMVector3TransformNormal(velocity, d3dxmtxInverse);
 			rayDirection = XMVector3Normalize(rayDirection);
 
-			int count = staticObject->GetMesh()->CheckRayIntersection(&rayPosition, &rayDirection, &info);
+			int collisionObjectCount = staticObject->GetMesh()->CheckRayIntersection(&rayPosition, &rayDirection, &info);
 
-			if (count) {
+			if (collisionObjectCount) {
 				if (info.m_fDistance < 4) {
-					cout << "충돌체 정보 : " << endl;
-					cout << "거리 : " << info.m_fDistance << endl;
-//					cout << "법선 : "; ShowXMFloat3(info.m_f3HitNormal);
-//					cout << "메쉬 태그 : " << static_cast<int>(staticObject->GetMeshTag()) << endl;
-
 					XMVECTOR slidingVec = velocity - XMVector3Dot(velocity, XMLoadFloat3(&info.m_f3HitNormal)) * XMLoadFloat3(&info.m_f3HitNormal);
-//					cout << "슬라이딩 벡터 : "; ShowXMVector(slidingVec);
 
-					// 위치 보정코드 추가하기
-					m_pPlayer->SetvVelocity(slidingVec);
-					// 노말벡터 방향으로 distance 만큼 밀어내기
+					// ----- 슬라이딩 벡터 충돌 ----- //
+					XMVECTOR rayDirection;
+					rayDirection = XMVector3TransformNormal(slidingVec, d3dxmtxInverse);
+					rayDirection = XMVector3Normalize(rayDirection);
+					
+					CollisionInfo slidingVecInfo;
 
-		//			XMVECTOR offsetPos = XMLoadFloat3(&info.m_f3HitNormal) * info.m_fDistance;
-		//			m_pPlayer->Move(offsetPos);
+					int collisionSlidingObjectCount = staticObject->GetMesh()->CheckRayIntersection(&rayPosition, &rayDirection, &slidingVecInfo);
+					if (collisionSlidingObjectCount) {
+						if (slidingVecInfo.m_fDistance < 2) {
+							XMVECTOR normal1 = XMLoadFloat3(&info.m_f3HitNormal);
+							XMVECTOR normal2 = XMLoadFloat3(&slidingVecInfo.m_f3HitNormal);
+							float fDot = XMVectorGetX(XMVector3Dot(normal1, normal2));
+
+							if (fDot == 0) {			// 직각
+								slidingVec = XMVectorSet(0, 0, 0, 0);
+							}
+							else if (fDot < 0) {		// 예각
+								slidingVec = velocity - XMVector3Dot(velocity, XMLoadFloat3(&slidingVecInfo.m_f3HitNormal)) * XMLoadFloat3(&slidingVecInfo.m_f3HitNormal);
+							}
+							else {						// 둔각
+								slidingVec = XMVectorSet(0, 0, 0, 0);
+							}
+						}
+					}
+					m_pPlayer->SetvVelocity(slidingVec);	
 				}
 			}
 		}
 	}
 
 	// Ground Collision
-	XMVECTOR centerPos = m_pPlayer->GetvPrevPosition();
-//	centerPos + m_pPlayer->GetvVelocity();
+	XMVECTOR centerPos = m_pPlayer->GetvPrevPosition();			// 혹시 몰라서 이전 프레임의 위치로 설정
+	BoundingOrientedBox bcObox = GetBoundingOBox();
 
 	if (COLLISION_MGR->RayCastCollision(m_infoCollision, centerPos, -1 * GetUp())) {
-//		cout << "바닥 레이 충돌 거리 : " << m_infoCollision.m_fDistance << endl;
 		if (m_infoCollision.m_fDistance <= bcObox.Extents.y) {
 			m_pPlayer->SetFloorCollision(true);
 		}
@@ -111,12 +113,9 @@ void CCharacterObject::OnCollisionCheck()
 	GLOBAL_MGR->g_vecLineContainer.push_back(pRayObject);
 	// ------------------------------ //
 	*/
-
-	// 충돌 구현하기 전에 픽킹 코드 보고 다시 수정해보기
-	// 레이 방향이 잘못된 듯
 } 
 
-void CCharacterObject::SetRotate(float fPitch, float fYaw, float fRoll, bool isLocal)	//이부분 내가 고침.
+void CCharacterObject::SetRotate(float fPitch, float fYaw, float fRoll, bool isLocal)
 {
 	CGameObject::SetRotate(0, fYaw, fRoll, isLocal);
 	m_fPitch = fPitch;
@@ -175,9 +174,23 @@ void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *p
 
 void CCharacterObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
 {
-	m_mtxPartsBoundingWorld[BoundingBoxParts::eBody] = GetSkinnedMesh()->GetFinalBoneMtx(2) * m_mtxWorld;		// 몸통 인덱스 2
-	m_mtxPartsBoundingWorld[BoundingBoxParts::eHead] = GetSkinnedMesh()->GetFinalBoneMtx(5) * m_mtxWorld;		// 머리 인덱스 5
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eBody] = GetSkinnedMesh()->GetFinalBoneMtx(2) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eHead] = GetSkinnedMesh()->GetFinalBoneMtx(5) * m_mtxWorld;
 
+	// --- Arm --- //
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eLeftUpArm] = GetSkinnedMesh()->GetFinalBoneMtx(7) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eLeftDownArm] = GetSkinnedMesh()->GetFinalBoneMtx(8) * m_mtxWorld;
+
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eRightUpArm] = GetSkinnedMesh()->GetFinalBoneMtx(20) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eRightDownArm] = GetSkinnedMesh()->GetFinalBoneMtx(21) * m_mtxWorld;
+
+	// --- Leg --- //
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eLeftUpLeg] = GetSkinnedMesh()->GetFinalBoneMtx(32) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eLeftDownLeg] = GetSkinnedMesh()->GetFinalBoneMtx(33) * m_mtxWorld;
+
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eRightUpLeg] = GetSkinnedMesh()->GetFinalBoneMtx(36) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[BoundingBoxParts::eRightDownLeg] = GetSkinnedMesh()->GetFinalBoneMtx(37) * m_mtxWorld;
+	
 	for (int i = 0; i < ePartsCount; ++i) {
 		if (m_pPartsBoundingBoxMesh[i]) {
 			BoundingOrientedBox bcObbox;

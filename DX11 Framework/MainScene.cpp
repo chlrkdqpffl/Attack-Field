@@ -29,7 +29,6 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 		}
 		*/
 		m_pPlayer->SetKeyDown(KeyInput::eLeftMouse);
-	//	((CCharacterObject*)m_vecObjectsContainer.back())->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
 		break;
 	case WM_LBUTTONUP:
 		m_pPlayer->SetKeyUp(KeyInput::eLeftMouse);
@@ -80,7 +79,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 						m_pUIManager->GetUIObject(TextureTag::eAim)->SetActive(true);
 				break;
 			case VK_F4:		// 중력 테스트용으로 넣음
-				m_pPlayer->SetPosition(XMVectorSet(60, 100, 30, 0));
+				m_pPlayer->SetPosition(XMVectorSet(60, 50, 30, 0));
 				m_pPlayer->SetTimeElpased(0.0f);
 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
@@ -871,7 +870,7 @@ void CMainScene::CreateUIImage()
 
 	// Aim
 	CUIObject* pAimUI = new CUIObject(TextureTag::eAim);
-	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 13, FRAME_BUFFER_HEIGHT / 2 - 5};		// 오프셋 (1, -10)
+	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 5, FRAME_BUFFER_HEIGHT / 2 - 15};		// 오프셋 (1, -10)
 	pAimUI->Initialize(m_pd3dDevice, POINT{ aimingPos.x - 20, aimingPos.y - 20 }, POINT{ aimingPos.x + 20, aimingPos.y + 20 }, 0.0f);
 	m_pUIManager->AddUIObject(pAimUI); 
 	pAimUI->SetActive(false);
@@ -1084,11 +1083,12 @@ void CMainScene::RenderBoundingBox()
 	m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, false);
 
 	for (auto object : m_vecBBoxRenderContainer) {
-		if (m_bIsPreCollisionCheck != object->GetCollisionCheck()) {
-			m_bIsPreCollisionCheck = object->GetCollisionCheck();
-			m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
-			cout << "충돌해서 한 번 바뀌었다." << endl;
-		}
+//		if (m_bIsPreCollisionCheck != object->GetCollisionCheck()) {
+//			m_bIsPreCollisionCheck = object->GetCollisionCheck();
+//			m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
+//			cout << "충돌해서 한 번 바뀌었다." << endl;
+//		}
+		m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
 		object->BoundingBoxRender(m_pd3dDeviceContext);
 	}
 

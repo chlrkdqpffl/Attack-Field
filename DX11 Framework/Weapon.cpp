@@ -36,12 +36,11 @@ void CWeapon::Firing(XMVECTOR direction)
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed) {
 		m_dwLastAttackTime = GetTickCount();
 
-
 		CollisionInfo info;
 		if (COLLISION_MGR->RayCastCollisionToCharacter(info, GetvPosition(), direction)) {
-			cout << "CWeapon::Firing - 최종적인 충돌 확인" << endl;
+			info.m_pHitObject->SetCollision(true);
 		}
-
+	
 		CreateFireDirectionLine(direction);
 		/*
 		// 아래는 총알 렌더링시 필요한 코드

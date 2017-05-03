@@ -23,8 +23,8 @@ CPlayer::CPlayer(CCharacterObject* pCharacter)
 	m_fYaw = 0.0f;
 
 	// 임시
-	m_fSpeed = 50;
-//	m_fSpeed = 10;	// 자연스러운 속도
+//	m_fSpeed = 50;
+	m_fSpeed = 30;	// 자연스러운 속도
 }
 
 CPlayer::~CPlayer()

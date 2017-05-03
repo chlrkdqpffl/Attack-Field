@@ -29,13 +29,19 @@ void CAntTweakBarManager::InitializeManager()
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Bone Index", TW_TYPE_UINT32, &g_nBoneIndex, "group = AnimationOption");
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Animation Speed", TW_TYPE_FLOAT, &g_fAnimationSpeed, "group = AnimationOption step = 0.1");
 
-	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Offset X", TW_TYPE_FLOAT, &g_xmf3Offset.x, "group = AnimationOption step=0.05");
-	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Offset Y", TW_TYPE_FLOAT, &g_xmf3Offset.y, "group = AnimationOption step=0.05");
-	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Offset Z", TW_TYPE_FLOAT, &g_xmf3Offset.z, "group = AnimationOption step=0.05");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Offset X", TW_TYPE_FLOAT, &g_xmf3Offset.x, "group = AnimationOption step=0.025");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Offset Y", TW_TYPE_FLOAT, &g_xmf3Offset.y, "group = AnimationOption step=0.025");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Offset Z", TW_TYPE_FLOAT, &g_xmf3Offset.z, "group = AnimationOption step=0.025");
 
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Rotate X", TW_TYPE_FLOAT, &g_xmf3Rotate.x, "group = AnimationOption step=5");
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Rotate Y", TW_TYPE_FLOAT, &g_xmf3Rotate.y, "group = AnimationOption step=5");
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Rotate Z", TW_TYPE_FLOAT, &g_xmf3Rotate.z, "group = AnimationOption step=5");
+
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Quaternion X", TW_TYPE_FLOAT, &g_xmf3Quaternion.x, "group = AnimationOption step=0.1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Quaternion Y", TW_TYPE_FLOAT, &g_xmf3Quaternion.y, "group = AnimationOption step=0.1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Quaternion Z", TW_TYPE_FLOAT, &g_xmf3Quaternion.z, "group = AnimationOption step=0.1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Quaternion W", TW_TYPE_FLOAT, &g_xmf3Quaternion.w, "group = AnimationOption step=0.1");
+	
 
 	// Select Object
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Position X", TW_TYPE_FLOAT, &g_xmf3SelectObjectPosition.x, "group = SelectObject step=5");

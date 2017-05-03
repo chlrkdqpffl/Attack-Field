@@ -18,7 +18,7 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 	switch (nNewCameraTag){
 	case CameraTag::eFirstPerson:
 		SetFriction(250.0f);
-		SetGravity(XMVectorSet(0.0f, -50.0f, 0.0f, 0.0f));
+		m_fGravityAcceleration = -100.0f;
 
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFirstPerson, nCurrentCameraTag);
@@ -31,7 +31,7 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		break;
 	case CameraTag::eSpaceShip:
 		SetFriction(125.0f);
-		SetGravity(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+		m_fGravityAcceleration = 0.0f;
 
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eSpaceShip, nCurrentCameraTag);
@@ -41,8 +41,8 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		break;
 	case CameraTag::eThirdPerson:
 		SetFriction(250.0f);
-		SetGravity(XMVectorSet(0.0f, -50.0f, 0.0f, 0.0f));
-		
+		m_fGravityAcceleration = -100.0f;
+
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eThirdPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.25f);
@@ -72,21 +72,25 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 void CTerrainPlayer::OnApplyGravity(float fDeltaTime)
 {
 	m_fTimeElapsed += fDeltaTime;
-	float gravityAcceleration = -100.0f;
-//	float gravityAcceleration = -0.0f;
-	m_d3dxvVelocity.y = m_d3dxvVelocity.y + gravityAcceleration * m_fTimeElapsed  * fDeltaTime;
-
+	m_d3dxvVelocity.y = m_d3dxvVelocity.y + m_fGravityAcceleration * m_fTimeElapsed  * fDeltaTime;
+	float groundHeight = 0.0f;
 	if (m_bIsFloorCollision) {
-		float groundHeight = m_pCharacter->GetCollisionInfo().m_pHitObject->GetBoundingOBox().Center.y + m_pCharacter->GetCollisionInfo().m_pHitObject->GetBoundingOBox().Extents.y;
+		groundHeight = m_pCharacter->GetCollisionInfo().m_pHitObject->GetBoundingOBox().Center.y + m_pCharacter->GetCollisionInfo().m_pHitObject->GetBoundingOBox().Extents.y;
 		m_fTimeElapsed = 0.0f;
 		m_d3dxvVelocity.y = 0.0f;
 
 		XMFLOAT3 pos = GetPosition();
-		pos.y = m_pCharacter->GetBoundingOBox(true).Center.y + m_pCharacter->GetBoundingOBox().Extents.y + groundHeight;
+
+		if (pos.y > groundHeight)
+			pos.y = m_pCharacter->GetBoundingOBox(true).Center.y + m_pCharacter->GetBoundingOBox().Extents.y + groundHeight;
+		else
+			pos.y = m_pCharacter->GetBoundingOBox(true).Center.y + m_pCharacter->GetBoundingOBox().Extents.y;
+		
 		SetPosition(XMLoadFloat3(&pos));
 
 		m_bIsFloorCollision = false;
 	}
+
 }
 
 void CTerrainPlayer::OnCameraUpdated(float fDeltaTime)

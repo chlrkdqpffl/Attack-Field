@@ -19,7 +19,7 @@ void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamer
 	{
 	case CameraTag::eFirstPerson:
 		SetFriction(200.0f);
-		SetGravity(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+		m_fGravityAcceleration = 0.0f;
 		SetMaxVelocityXZ(125.0f);
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFirstPerson, nCurrentCameraTag);
@@ -29,7 +29,7 @@ void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamer
 		break;
 	case CameraTag::eSpaceShip:
 		SetFriction(125.0f);
-		SetGravity(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+		m_fGravityAcceleration = 0.0f;
 		SetMaxVelocityXZ(400.0f);
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eSpaceShip, nCurrentCameraTag);
@@ -39,7 +39,7 @@ void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamer
 		break;
 	case CameraTag::eThirdPerson:
 		SetFriction(250.0f);
-		SetGravity(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+		m_fGravityAcceleration = 0.0f;
 		SetMaxVelocityXZ(125.0f);
 		SetMaxVelocityY(400.0f);
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eThirdPerson, nCurrentCameraTag);
