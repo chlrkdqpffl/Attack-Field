@@ -306,5 +306,5 @@ void CPlayer::SetLook(float x, float y, float z)
 
 void CPlayer::SetAnimation(BYTE Animation)
 {
-	m_pCharacter->SetAnimation(static_cast<AnimationData::CharacterAnim>(Animation));
+	m_pCharacter->SetAnimation(static_cast<AnimationData::CharacterAnim>());
 }
