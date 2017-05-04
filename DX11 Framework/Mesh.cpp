@@ -120,27 +120,6 @@ void CMesh::RenderInstanced(ID3D11DeviceContext *pd3dDeviceContext, int nInstanc
 		pd3dDeviceContext->DrawInstanced(m_nVertices, nInstances, m_nStartVertex, nStartInstance);
 }
 
-bool RayIntersectTriangle(XMVECTOR *pd3dxvOrigin, XMVECTOR *pd3dxvDirection, XMVECTOR *pd3dxvP0, XMVECTOR *pd3dxvP1, XMVECTOR *pd3dxvP2, float *pfU, float *pfV, float *pfRayToTriangle)
-{
-	XMVECTOR d3dxvEdge1 = *pd3dxvP1 - *pd3dxvP0;
-	XMVECTOR d3dxvEdge2 = *pd3dxvP2 - *pd3dxvP0;
-	XMVECTOR d3dxvP, d3dxvQ;
-	d3dxvP = XMVector3Cross(*pd3dxvDirection, d3dxvEdge2);
-	float a = XMVectorGetX(XMVector3Dot(d3dxvEdge1, d3dxvP));
-	if (::IsZero(a)) return(false);
-	float f = 1.0f / a;
-	XMVECTOR d3dxvP0ToOrigin = *pd3dxvOrigin - *pd3dxvP0;
-	*pfU = f * XMVectorGetX(XMVector3Dot(d3dxvP0ToOrigin, d3dxvP));
-	if ((*pfU < 0.0f) || (*pfU > 1.0f)) return(false);
-	d3dxvQ = XMVector3Cross(d3dxvP0ToOrigin, d3dxvEdge1);
-	*pfV = f * XMVectorGetX(XMVector3Dot(*pd3dxvDirection, d3dxvQ));
-	if ((*pfV < 0.0f) || ((*pfU + *pfV) > 1.0f)) return(false);
-	*pfRayToTriangle = f * XMVectorGetX(XMVector3Dot(d3dxvEdge2, d3dxvQ));
-	return(*pfRayToTriangle >= 0.0f);
-}
-
-#define _WITH_D3DX_LIBRARY
-
 int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRayDirection, CollisionInfo *pd3dxIntersectInfo)
 {
 	int nIntersections = 0;
@@ -158,12 +137,7 @@ int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRay
 		v1 = *(XMVECTOR *)(pbPositions + ((m_pnIndices) ? (m_pnIndices[(i*nOffset) + 1]) : ((i*nOffset) + 1)) * m_pnVertexStrides[0]);
 		v2 = *(XMVECTOR *)(pbPositions + ((m_pnIndices) ? (m_pnIndices[(i*nOffset) + 2]) : ((i*nOffset) + 2)) * m_pnVertexStrides[0]);
 
-#ifdef _WITH_D3DX_LIBRARY
-	if (D3DXIntersectTri((D3DXVECTOR3 *)&v0, (D3DXVECTOR3 *)&v1, (D3DXVECTOR3 *)&v2, (D3DXVECTOR3 *)pd3dxvRayPosition, (D3DXVECTOR3 *)pd3dxvRayDirection, &fuHitBaryCentric, &fvHitBaryCentric, &fHitDistance))
-#else
-		if (::RayIntersectTriangle(pd3dxvRayPosition, pd3dxvRayDirection, &v0, &v1, &v2, &fuHitBaryCentric, &fvHitBaryCentric, &fHitDistance))
-#endif 
-		{ 
+	if (D3DXIntersectTri((D3DXVECTOR3 *)&v0, (D3DXVECTOR3 *)&v1, (D3DXVECTOR3 *)&v2, (D3DXVECTOR3 *)pd3dxvRayPosition, (D3DXVECTOR3 *)pd3dxvRayDirection, &fuHitBaryCentric, &fvHitBaryCentric, &fHitDistance))	{ 
 			if (fHitDistance < fNearHitDistance){
 				fNearHitDistance = fHitDistance;
 				if (pd3dxIntersectInfo)	{

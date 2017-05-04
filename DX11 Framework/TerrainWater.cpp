@@ -54,10 +54,10 @@ CTerrainWater::~CTerrainWater()
 {
 }
 
-void CTerrainWater::Update(float fTimeElapsed)
+void CTerrainWater::Update(float fDeltaTime)
 {
 	// Update Wave Position
-	m_pWaterGridMesh->Update(fTimeElapsed);
+	m_pWaterGridMesh->Update(fDeltaTime);
 
 	// Animate Texture Mtx
 	static XMFLOAT2 d3dxOffset(0.0f, 0.0f);

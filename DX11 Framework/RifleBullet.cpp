@@ -13,7 +13,7 @@ CRifleBullet::~CRifleBullet()
 
 void CRifleBullet::CreateMesh(ID3D11Device *pd3dDevice)
 {
-	CSphereMeshDiffused* pMesh = new CSphereMeshDiffused(pd3dDevice, 0.5f, 3, 3);
+	CSphereMeshDiffused* pMesh = new CSphereMeshDiffused(pd3dDevice, 0.2f, 3, 3);
 
 	SetMesh(pMesh);
 }
@@ -30,7 +30,7 @@ void CRifleBullet::CreateMaterial()
 	m_pMaterial = new CMaterial();
 }
 
-void CRifleBullet::Update(float fTimeElapsed)
+void CRifleBullet::Update(float fDeltaTime)
 {
-	CBulletObject::Update(fTimeElapsed);
+	CBulletObject::Update(fDeltaTime);
 }

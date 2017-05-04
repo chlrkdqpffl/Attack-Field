@@ -598,11 +598,11 @@ bool CGameObject::IsCollision(CGameObject* pObject)
 	return true;
 }
 
-void CGameObject::Update(float fTimeElapsed)
+void CGameObject::Update(float fDeltaTime)
 {
 	if (m_pAxisObject) {
 		if (GLOBAL_MGR->g_bShowWorldAxis)
-			m_pAxisObject->Update(fTimeElapsed);
+			m_pAxisObject->Update(fDeltaTime);
 	}
 
 	if (!XMMatrixIsIdentity(m_mtxLocal))

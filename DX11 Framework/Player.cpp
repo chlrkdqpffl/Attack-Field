@@ -23,8 +23,8 @@ CPlayer::CPlayer(CCharacterObject* pCharacter)
 	m_fYaw = 0.0f;
 
 	// 임시
-	m_fSpeed = 50;
-//	m_fSpeed = 10;	// 자연스러운 속도
+//	m_fSpeed = 50;
+	m_fSpeed = 30;	// 자연스러운 속도
 }
 
 CPlayer::~CPlayer()
@@ -46,30 +46,30 @@ void CPlayer::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 	if (m_pCamera) m_pCamera->UpdateShaderVariables(pd3dDeviceContext);
 }
 
-void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계를 확실히 해야함. 일단 임시로 제작
+void CPlayer::UpdateKeyInput(float fDeltaTime)			// FSM으로 제작하여 상호 관계를 확실히 해야함. 일단 임시로 제작
 {
 	// Keyboard
 	XMVECTOR d3dxvShift = XMVectorZero();
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eForward)) {
-//		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
+		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
 
 		if(m_pCharacter->GetAnimation() != AnimationData::CharacterAnim::eRun)
 			m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eBackward)) {
-	//	d3dxvShift -= XMLoadFloat3(&m_d3dxvLook);
+		d3dxvShift -= XMLoadFloat3(&m_d3dxvLook);
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeft)) {
-		//d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
+		d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRight)) {
-		//d3dxvShift += XMLoadFloat3(&m_d3dxvRight);
+		d3dxvShift += XMLoadFloat3(&m_d3dxvRight);
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk);
 	}
 
@@ -95,16 +95,8 @@ void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eIdle);
 	}
 
-	d3dxvShift *= m_fSpeed * fTimeElapsed;
+	d3dxvShift *= m_fSpeed * fDeltaTime;
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
-
-	cs_key_input Key_button;
-	Key_button.type = CS_KEYTYPE;
-	Key_button.size = sizeof(cs_key_input);
-	Key_button.key_button = m_wKeyState;
-	Key_button.Animation = (static_cast<BYTE>(m_pCharacter->GetAnimation()));
-
-	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
 }
 
 void CPlayer::Move(XMVECTOR d3dxvShift)
@@ -155,13 +147,14 @@ void CPlayer::Rotate(float x, float y)
 			XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
 		}
 	}
-/*
+
 	XMStoreFloat3(&m_d3dxvLook, XMVector3Normalize(XMLoadFloat3(&m_d3dxvLook)));
 	XMStoreFloat3(&m_d3dxvRight, XMVector3Cross(XMLoadFloat3(&m_d3dxvUp), XMLoadFloat3(&m_d3dxvLook)));
 	XMStoreFloat3(&m_d3dxvRight, XMVector3Normalize(XMLoadFloat3(&m_d3dxvRight)));
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Cross(XMLoadFloat3(&m_d3dxvLook), XMLoadFloat3(&m_d3dxvRight)));
-	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));*/
+	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
 
+	/*
 	cs_rotate rotate;
 	rotate.cx = x;
 	rotate.cy = y;
@@ -169,42 +162,36 @@ void CPlayer::Rotate(float x, float y)
 	rotate.type = CS_ROTATE;
 
 	Sendpacket(reinterpret_cast<unsigned char *>(&rotate));
-
+	*/
 }
 
-void CPlayer::Update(float fTimeElapsed)
+void CPlayer::Update(float fDeltaTime)
 {
-	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + XMLoadFloat3(&m_d3dxvGravity) * fTimeElapsed);
 	float fLength = sqrtf(m_d3dxvVelocity.x * m_d3dxvVelocity.x + m_d3dxvVelocity.z * m_d3dxvVelocity.z);
-	float fMaxVelocityXZ = m_fMaxVelocityXZ * fTimeElapsed;
+	float fMaxVelocityXZ = m_fMaxVelocityXZ * fDeltaTime;
 
 	if (fLength > fMaxVelocityXZ)
 	{
 		m_d3dxvVelocity.x *= (fMaxVelocityXZ / fLength);
 		m_d3dxvVelocity.z *= (fMaxVelocityXZ / fLength);
 	}
-	
-	// Apply Gravity
-	float fMaxVelocityY = m_fMaxVelocityY * fTimeElapsed;
-	fLength = sqrtf(m_d3dxvVelocity.y * m_d3dxvVelocity.y);
-	if (fLength > fMaxVelocityY) m_d3dxvVelocity.y *= (fMaxVelocityY / fLength);
-//	m_d3dxvVelocity.y = 0;		// 임시 고정
 
-	//Move(XMLoadFloat3(&m_d3dxvVelocity));
-	if (m_bIsFloorCollision) OnPlayerUpdated(fTimeElapsed);
-	
+	OnApplyGravity(fDeltaTime);
+	m_vPrevPosition = GetPosition();
+	Move(XMLoadFloat3(&m_d3dxvVelocity));
+
 	// Apply Deceleration 
 	XMVECTOR d3dxvDeceleration = -XMLoadFloat3(&m_d3dxvVelocity);
 	d3dxvDeceleration = XMVector3Normalize(d3dxvDeceleration);
 	fLength = XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_d3dxvVelocity)));
-	float fDeceleration = (m_fFriction * fTimeElapsed);
+	float fDeceleration = (m_fFriction * fDeltaTime);
 	if (fDeceleration > fLength) fDeceleration = fLength;
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvDeceleration * fDeceleration);
 
 	// Camera Update
 	if (m_pCamera->GetCameraTag() == CameraTag::eThirdPerson) {
 		m_fPitch = 10.0f;
-		m_pCamera->Update(fTimeElapsed);
+		m_pCamera->Update(fDeltaTime);
 	}
 	
 	m_pCamera->RegenerateViewMatrix();
@@ -267,13 +254,32 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 {
 	m_wKeyState |= static_cast<int>(key);
 
+	/*
+	cs_key_input Key_button;
+	Key_button.type = CS_KEYTYPE;
+	Key_button.size = sizeof(cs_key_input);
+	Key_button.key_button = m_wKeyState;
+	Key_button.fDistance = 50.0f;
+
+	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
+	*/
 }
 
 void CPlayer::SetKeyUp(KeyInput key)
 {
 	m_wKeyState ^= static_cast<int>(key);
 
+	/*
+	cs_key_input Key_button;
+	Key_button.type = CS_KEYTYPE;
+	Key_button.size = sizeof(cs_key_input);
+	Key_button.key_button = m_wKeyState;
+	Key_button.fDistance = 5.0f;
+
+	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
+	*/
 }
+
 void CPlayer::SetWorldMatrix(XMMATRIX world)
 {
 	m_pCharacter->m_mtxWorld = world;
@@ -293,9 +299,4 @@ void CPlayer::SetLook(float x, float y, float z)
 	mtx._43 = position.z;
 
 	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&mtx);
-}
-
-void CPlayer::SetAnimation(BYTE Animation)
-{
-	m_pCharacter->SetAnimation(static_cast<AnimationData::CharacterAnim>(Animation));
 }

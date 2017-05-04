@@ -26,6 +26,6 @@ public:
 	void SetDisturbingForce(int i, int j, float fMagnitude);
 	void OnPrepareAnimation(float fTimeDelta, float fSpatialDelta, float fSpeed, float fDamping);
 
-	virtual void Update(float fTimeElapsed);
+	virtual void Update(float fDeltaTime);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };

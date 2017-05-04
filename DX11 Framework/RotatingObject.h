@@ -15,5 +15,5 @@ public:
 	void SetRotationSpeed(float fRotationSpeed) { m_fRotationSpeed = fRotationSpeed; }
 	void SetRotationAxis(XMVECTOR d3dxvRotationAxis) { XMStoreFloat3(&m_d3dxvRotationAxis, d3dxvRotationAxis); }
 
-	virtual void Update(float fTimeElapsed);
+	virtual void Update(float fDeltaTime);
 };

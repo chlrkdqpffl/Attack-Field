@@ -86,7 +86,7 @@ public:
 	virtual void CreatePlayer();
 	virtual void IsCollisionUI(POINT mousePos) {};
 
-	virtual void Update(float fTimeElapsed);
+	virtual void Update(float fDeltaTime);
 
 	virtual void OnPreRender(ID3D11DeviceContext *pd3dDeviceContext);
 	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera);
@@ -133,7 +133,7 @@ protected:
 	CParticleSystem						*m_pParticleSystem = nullptr;
 
 
-	float								m_fTimeElapsed = 0.0f;
+	float								m_fDeltaTime = 0.0f;
 	CPlayer								*m_pPlayer = nullptr;
 	CCharacterObject					*m_pPlayerCharacter = nullptr;
 

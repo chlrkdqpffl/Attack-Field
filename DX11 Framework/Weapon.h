@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "BulletObject.h"
+#include "LineObject.h"
 
 class CCharacterObject;
 
@@ -32,11 +33,10 @@ protected:
 public:
 	virtual void CreateObjectData(ID3D11Device *pd3dDevice) override;
 	virtual void Firing(XMVECTOR direction);
-	virtual void Update(float fTimeElapsed) override;
+	virtual void Update(float fDeltaTime) override;
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 
 	virtual void CreateBulletPool(ID3D11Device* pd3dDevice) = 0;
-
-	// ----- Get, Setter ----- //
-
+	
+	void CreateFireDirectionLine(XMVECTOR direction);
 };

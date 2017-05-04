@@ -18,6 +18,6 @@ private:
 	XMFLOAT4X4					m_d3dxmtxTexture;
 public:
 
-	virtual void Update(float fTimeElapsed);
+	virtual void Update(float fDeltaTime);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 };

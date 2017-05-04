@@ -21,17 +21,29 @@ void CWeapon::CreateObjectData(ID3D11Device *pd3dDevice)
 	CreateBulletPool(pd3dDevice);
 }
 
+void CWeapon::CreateFireDirectionLine(XMVECTOR direction)
+{
+	float lineLength = 10;
+	XMVECTOR endPos = GetvPosition() + (direction * lineLength);
+	CLineObject* pRayObject = new CLineObject(GetvPosition(), endPos, 3000);
+	pRayObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
+
+	GLOBAL_MGR->g_vecLineContainer.push_back(pRayObject);
+}
+
 void CWeapon::Firing(XMVECTOR direction)
 {
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed) {
 		m_dwLastAttackTime = GetTickCount();
 
 		CollisionInfo info;
-		if (COLLISION_MGR->RayCastCollisionToCharacterParts(info, GetvPosition(), direction)) {
-			
-			cout << "레이 시작 점 : "; ShowXMVector(GetvPosition());
-
+		if (COLLISION_MGR->RayCastCollisionToCharacter(info, GetvPosition(), direction)) {
+			info.m_pHitObject->SetCollision(true);
 		}
+	
+		CreateFireDirectionLine(direction);
+		/*
+		// 아래는 총알 렌더링시 필요한 코드
 		for (auto bullet : m_vecBulletContainer) {
 			if (false == bullet->GetActive()) {
 				bullet->SetActive(true);
@@ -41,16 +53,17 @@ void CWeapon::Firing(XMVECTOR direction)
 				break;
 			}
 		}
+		*/
 	}
 }
 
-void CWeapon::Update(float fTimeElapsed)
+void CWeapon::Update(float fDeltaTime)
 {
-	CGameObject::Update(fTimeElapsed);
+	CGameObject::Update(fDeltaTime);
 
 	for (auto bullet : m_vecBulletContainer) {
 		if (bullet->GetActive())
-			bullet->Update(fTimeElapsed);
+			bullet->Update(fDeltaTime);
 	}
 
 	m_mtxParent = m_pOwner->GetSkinnedMesh()->GetFinalBoneMtx(m_nBoneIndex);

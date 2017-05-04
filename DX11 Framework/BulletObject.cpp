@@ -21,22 +21,22 @@ void CBulletObject::OnCollisionCheck()
 {
 	CollisionInfo info;
 	
-	if (COLLISION_MGR->RayCastCollisionToCharacterParts(info, GetvPosition(), GetLook())) {
+	if (COLLISION_MGR->RayCastCollisionToCharacter(info, GetvPosition(), GetLook())) {
 		//SetActive(false);
 		//info.m_pHitObject->SetCollision(true);
 		cout << "CBulletObject::OnCollisionCheck() 충돌함" << endl;
 	}
 }
 
-void CBulletObject::Update(float fTimeElapsed)
+void CBulletObject::Update(float fDeltaTime)
 { 
 	if (m_fMovingDistance < m_fRange) {
-		m_fMovingDistance += m_fSpeed * fTimeElapsed;
-		MoveForward(m_fSpeed * fTimeElapsed);
+		m_fMovingDistance += m_fSpeed * fDeltaTime;
+		MoveForward(m_fSpeed * fDeltaTime);
 	}
 	else {
 		InitializeData();
 	}
 
-	OnCollisionCheck();
+//	OnCollisionCheck(); - 레이 충돌하므로 제외함
 }

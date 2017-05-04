@@ -12,7 +12,7 @@ CRotatingObject::~CRotatingObject()
 {
 }
 
-void CRotatingObject::Update(float fTimeElapsed)
+void CRotatingObject::Update(float fDeltaTime)
 {
-	CGameObject::Rotate(&XMLoadFloat3(&m_d3dxvRotationAxis), m_fRotationSpeed * fTimeElapsed);
+	CGameObject::Rotate(&XMLoadFloat3(&m_d3dxvRotationAxis), m_fRotationSpeed * fDeltaTime);
 }

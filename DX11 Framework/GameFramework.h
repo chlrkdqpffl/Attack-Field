@@ -96,7 +96,7 @@ private:
 
 	// FrameRate
 	UINT							m_nFrameRate = 0;
-	float							m_fTimeElapsed = 0.0f;
+	float							m_fDeltaTime = 0.0f;
 
 	// ResizeRatio
 	float							m_fResizeRatioX = 1.0f;

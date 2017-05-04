@@ -391,12 +391,12 @@ void CObjectsShader::ReleaseObjects()
 		SafeDelete(shader.second);
 }
 
-void CObjectsShader::UpdateObjects(float fTimeElapsed)
+void CObjectsShader::UpdateObjects(float fDeltaTime)
 {
 	for (auto shaderTag : m_vecObjectContainer) {
 		for (auto vecObject : shaderTag.second) {
 			if (vecObject->GetActive())
-				vecObject->Update(fTimeElapsed);
+				vecObject->Update(fDeltaTime);
 		}
 	}
 }

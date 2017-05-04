@@ -38,7 +38,7 @@ void CLoadingScene::CreateUIImage()
 	m_pUIManager->SetBackGroundUI(pBackGroundUI);
 }
 
-void CLoadingScene::Update(float fTimeElapsed)
+void CLoadingScene::Update(float fDeltaTime)
 {
 	// 0.5초 후 로딩
 	if (GetTickCount() - m_dwLoadingStartTime > 500)

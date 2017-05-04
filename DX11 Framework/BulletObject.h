@@ -11,7 +11,7 @@ public:
 	CBulletObject(float fRange, float fSpeed);
 	virtual ~CBulletObject();
 
-	virtual void Update(float fTimeElapsed) override;
+	virtual void Update(float fDeltaTime) override;
 	virtual void OnCollisionCheck() override;
 
 	void InitializeData();

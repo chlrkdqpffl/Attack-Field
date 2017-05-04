@@ -29,7 +29,6 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 		}
 		*/
 		m_pPlayer->SetKeyDown(KeyInput::eLeftMouse);
-	//	((CCharacterObject*)m_vecObjectsContainer.back())->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
 		break;
 	case WM_LBUTTONUP:
 		m_pPlayer->SetKeyUp(KeyInput::eLeftMouse);
@@ -81,6 +80,9 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_F4:		// 중력 테스트용으로 넣음
 				m_pPlayer->SetPosition(XMVectorSet(60, 50, 30, 0));
+				m_pPlayer->SetTimeElpased(0.0f);
+
+				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_F6:		// 회전 테스트용으로 넣음
 			//	m_vecCharacterContainer[1]->SetRotate(TWBAR_MGR->g_xmf3Rotate.x, TWBAR_MGR->g_xmf3Rotate.y, TWBAR_MGR->g_xmf3Rotate.z);
@@ -868,7 +870,8 @@ void CMainScene::CreateUIImage()
 
 	// Aim
 	CUIObject* pAimUI = new CUIObject(TextureTag::eAim);
-	pAimUI->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20, FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20, FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
+	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 5, FRAME_BUFFER_HEIGHT / 2 - 15};		// 오프셋 (1, -10)
+	pAimUI->Initialize(m_pd3dDevice, POINT{ aimingPos.x - 20, aimingPos.y - 20 }, POINT{ aimingPos.x + 20, aimingPos.y + 20 }, 0.0f);
 	m_pUIManager->AddUIObject(pAimUI); 
 	pAimUI->SetActive(false);
 }
@@ -994,16 +997,16 @@ void CMainScene::ModifiedSelectObject()
 //	ShowXMFloat3(TWBAR_MGR->g_xmf3SelectObjectRotate);
 }
 
-void CMainScene::Update(float fTimeElapsed)
+void CMainScene::Update(float fDeltaTime)
 {
 	COLLISION_MGR->UpdateManager();
-	CScene::Update(fTimeElapsed);
+	CScene::Update(fDeltaTime);
 
 //	if (m_pSelectedObject)
 //		ModifiedSelectObject();
 
 	for (auto& object : m_vecCharacterContainer)
-		object->Update(fTimeElapsed);
+		object->Update(fDeltaTime);
 
 	if (m_pLights && m_pd3dcbLights)
 	{
@@ -1020,8 +1023,12 @@ void CMainScene::Update(float fTimeElapsed)
 	if (m_pLights && m_pd3dcbLights) UpdateConstantBuffers(m_pLights);
 
 	// Particle
-	m_fGametime += fTimeElapsed;
-	m_pParticleSystem->Update(fTimeElapsed, m_fGametime);
+	m_fGametime += fDeltaTime;
+	m_pParticleSystem->Update(fDeltaTime, m_fGametime);
+	
+
+	// 캐릭터 몸통 회전 테스트 용 - 추후 제거해야함
+	m_vecCharacterContainer.back()->SetRotate(TWBAR_MGR->g_xmf3Rotate);
 }
 
 void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
@@ -1044,8 +1051,6 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	// ------ End Scene Rendering ------ //
 	m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 
-	
-
 	m_GBuffer->OnPostRender(pd3dDeviceContext);
 	m_GBuffer->OnPrepareForUnpack(pd3dDeviceContext);
 
@@ -1055,6 +1060,9 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	m_GBuffer->DeferredRender(pd3dDeviceContext);
 	m_pUIManager->RenderAll(pd3dDeviceContext);
 	// =============== Rendering Option =================== //
+
+	for (auto& lineObject : GLOBAL_MGR->g_vecLineContainer)
+		lineObject->Render(m_pd3dDeviceContext, m_pCamera);
 
 	if (GLOBAL_MGR->g_bShowWorldAxis)
 		m_pWorldCenterAxis->Render(pd3dDeviceContext, pCamera);
@@ -1075,11 +1083,12 @@ void CMainScene::RenderBoundingBox()
 	m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, false);
 
 	for (auto object : m_vecBBoxRenderContainer) {
-		if (m_bIsPreCollisionCheck != object->GetCollisionCheck()) {
-			m_bIsPreCollisionCheck = object->GetCollisionCheck();
-			m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
-			cout << "충돌해서 한 번 바뀌었다." << endl;
-		}
+//		if (m_bIsPreCollisionCheck != object->GetCollisionCheck()) {
+//			m_bIsPreCollisionCheck = object->GetCollisionCheck();
+//			m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
+//			cout << "충돌해서 한 번 바뀌었다." << endl;
+//		}
+		m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
 		object->BoundingBoxRender(m_pd3dDeviceContext);
 	}
 

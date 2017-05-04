@@ -58,7 +58,7 @@ public:
 	ID3D11BlendState				*m_pd3dBlendState = nullptr;
 
 public:
-	virtual void Update(float fTimeElapsed);
+	virtual void Update(float fDeltaTime);
 	virtual void OnPrepareRender();
 	virtual void RenderMesh(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);

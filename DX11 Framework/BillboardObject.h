@@ -11,7 +11,7 @@ public:
 
 	void SetLookAt(XMFLOAT3 cameraPos);
 
-	virtual void Update(float fTimeElapsed) override;
+	virtual void Update(float fDeltaTime) override;
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 };
 

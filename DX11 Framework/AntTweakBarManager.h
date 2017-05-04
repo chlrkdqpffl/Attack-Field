@@ -16,6 +16,7 @@ public:
 	float g_fAnimationSpeed = 1.0f;
 	XMFLOAT3 g_xmf3Offset = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3 g_xmf3Rotate = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT4 g_xmf3Quaternion = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	
 	// Select Object
 	XMFLOAT3 g_xmf3SelectObjectPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
