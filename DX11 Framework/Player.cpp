@@ -97,6 +97,14 @@ void CPlayer::UpdateKeyInput(float fTimeElapsed)			// FSM으로 제작하여 상호 관계
 
 	d3dxvShift *= m_fSpeed * fTimeElapsed;
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
+
+	cs_key_input Key_button;
+	Key_button.type = CS_KEYTYPE;
+	Key_button.size = sizeof(cs_key_input);
+	Key_button.key_button = m_wKeyState;
+	Key_button.Animation = (static_cast<BYTE>(m_pCharacter->GetAnimation()));
+
+	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
 }
 
 void CPlayer::Move(XMVECTOR d3dxvShift)
@@ -259,29 +267,12 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 {
 	m_wKeyState |= static_cast<int>(key);
 
-
-	cs_key_input Key_button;
-	Key_button.type = CS_KEYTYPE;
-	Key_button.size = sizeof(cs_key_input);
-	Key_button.key_button = m_wKeyState;
-	Key_button.Animation = static_cast<BYTE>(m_pCharacter->GetAnimation());
-
-	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
-
 }
 
 void CPlayer::SetKeyUp(KeyInput key)
 {
 	m_wKeyState ^= static_cast<int>(key);
 
-
-	cs_key_input Key_button;
-	Key_button.type = CS_KEYTYPE;
-	Key_button.size = sizeof(cs_key_input);
-	Key_button.key_button = m_wKeyState;
-	Key_button.Animation = static_cast<BYTE>(m_pCharacter->GetAnimation());
-
-	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
 }
 void CPlayer::SetWorldMatrix(XMMATRIX world)
 {
@@ -306,5 +297,5 @@ void CPlayer::SetLook(float x, float y, float z)
 
 void CPlayer::SetAnimation(BYTE Animation)
 {
-	m_pCharacter->SetAnimation(static_cast<AnimationData::CharacterAnim>());
+	m_pCharacter->SetAnimation(static_cast<AnimationData::CharacterAnim>(Animation));
 }

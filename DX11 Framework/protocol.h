@@ -12,7 +12,7 @@
 struct cs_key_input {	//키버튼 받았을때 
 
 	BYTE	size;
-	BYTE	type;
+	volatile BYTE	type;
 
 	BYTE	Animation;
 
@@ -23,7 +23,7 @@ struct cs_key_input {	//키버튼 받았을때
 struct cs_rotate {	//클라에서 화면을 움직였을때 
 
 	BYTE	size;
-	BYTE	type;
+	volatile BYTE	type;
 
 	float cx;
 	float cy;
@@ -35,7 +35,7 @@ struct cs_rotate {	//클라에서 화면을 움직였을때
 struct sc_packet_put_player {	//서버에서 처음 접속했을때 위치값과 ID를 부여한다.
 
 	BYTE size;
-	BYTE type;
+	volatile BYTE type;
 
 	WORD id;
 
@@ -50,7 +50,7 @@ struct sc_packet_put_player {	//서버에서 처음 접속했을때 위치값과 ID를 부여한다.
 struct sc_packet_pos	//서버에서 처리된 값을 클라에게 보낸다. 
 {
 	BYTE size;
-	BYTE type;
+	volatile BYTE type;
 
 	WORD id;
 
