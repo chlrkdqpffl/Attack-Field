@@ -3,11 +3,13 @@
 template <typename ObjectType>
 class CFSM_State
 {
+protected:
+	
 public:
 	CFSM_State() {};
-	~CFSM_State() {};
+	virtual ~CFSM_State() {};
 
-	virtual void EnterState(ObjectType*) = 0;
-	virtual void UpdateState(ObjectType*) = 0;
-	virtual void ExitState(ObjectType*) = 0;
+	virtual void EnterState(ObjectType*) {};
+	virtual void UpdateState(ObjectType*) {};
+	virtual void ExitState(ObjectType*) {};
 };

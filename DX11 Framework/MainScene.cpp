@@ -95,15 +95,14 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_X:
 				for (auto& object : m_vecCharacterContainer)
-					object->SetAnimation(AnimationData::CharacterAnim::eWalk);
+					object->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
 				break;
 			case VK_C:
 				for (auto& object : m_vecCharacterContainer)
 					object->SetAnimation(AnimationData::CharacterAnim::eRun);
 				break;
 			case VK_V:
-				for (auto& object : m_vecCharacterContainer)
-					object->SetAnimation(AnimationData::CharacterAnim::eStandingFire);
+			
 				break;
 			}
 			break;
@@ -1025,10 +1024,6 @@ void CMainScene::Update(float fDeltaTime)
 	// Particle
 	m_fGametime += fDeltaTime;
 	m_pParticleSystem->Update(fDeltaTime, m_fGametime);
-	
-
-	// 캐릭터 몸통 회전 테스트 용 - 추후 제거해야함
-	m_vecCharacterContainer.back()->SetRotate(TWBAR_MGR->g_xmf3Rotate);
 }
 
 void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)

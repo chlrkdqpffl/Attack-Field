@@ -265,43 +265,21 @@ void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData,
 	}
 }
 
-void CFbxModelSkinnedMesh::GetFinalTransforms(const string& clipName, const float& fTimePos)
-{
-	vector<XMFLOAT4X4> toRootTransforms(m_meshData.m_nBoneCount);
-
-	auto clip = m_meshData.m_mapAnimationClip.find(clipName);
-	clip->second.Interpolate(fTimePos, toRootTransforms);
-
-	m_vecFinalBone.resize(m_meshData.m_nBoneCount);
-
-	for (UINT i = 0; i < m_meshData.m_nBoneCount; ++i)
-	{
-		XMMATRIX mtxOffset = XMLoadFloat4x4(&m_meshData.m_vecBoneOffsets[i]);
-		XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
-
-		m_vecFinalBone[i] = mtxOffset * mtxToRoot;
-	}
-}
-
 void CFbxModelSkinnedMesh::GetFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, const float& fTimePos)
 {
 	vector<XMFLOAT4X4> toRootTransforms(m_meshData.m_nBoneCount);
 
 	auto currClip = m_meshData.m_mapAnimationClip.find(currAnim.m_strClipName);
-	
-	if (TWBAR_MGR->g_isAnimBlending) {
-		if (prevAnim.m_bEnable == true) {
+
+	if (prevAnim.m_bEnable == true) {
 			auto pervClip = m_meshData.m_mapAnimationClip.find(prevAnim.m_strClipName);
 			Interpolate_Blending(pervClip->second, prevAnim.m_bEnable, currClip->second, fTimePos, toRootTransforms);
-		}
-		else
-			currClip->second.Interpolate(fTimePos, toRootTransforms);
 	}
 	else
 		currClip->second.Interpolate(fTimePos, toRootTransforms);
-
-	m_vecFinalBone.resize(m_meshData.m_nBoneCount);
 	
+	m_vecFinalBone.resize(m_meshData.m_nBoneCount);
+
 	// 아래의 코드는 Terrorist Character에만 적용되므로 다른 캐릭터를 사용한다면 해당 본을 찾아서 범위를 조절해야함
 	for (UINT i = 0; i < m_meshData.m_nBoneCount; ++i)
 	{
@@ -310,11 +288,11 @@ void CFbxModelSkinnedMesh::GetFinalTransformsBlending(AnimationTrack& prevAnim, 
 		XMMATRIX mtxOffset = XMLoadFloat4x4(&m_meshData.m_vecBoneOffsets[i]);
 		XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
 
-		if(i < 2)
+		if (i < 2)
 			m_vecFinalBone[i] = mtxOffset * mtxToRoot * mtxRotateHalf;
 		else if (2 <= i && i <= 31)
 			m_vecFinalBone[i] = mtxOffset * mtxToRoot * mtxRotate;
-		else 
+		else
 			m_vecFinalBone[i] = mtxOffset * mtxToRoot;
 	}
 }

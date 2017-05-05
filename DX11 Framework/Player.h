@@ -14,9 +14,6 @@ protected:
 	XMFLOAT3					m_d3dxvUp;
 	XMFLOAT3					m_d3dxvLook;
 
-	float           			m_fPitch;
-	float           			m_fYaw;
-	
 	float						m_fSpeed = 0;
 	XMFLOAT3					m_d3dxvVelocity;
 	XMFLOAT3     				m_d3dxvGravity;
@@ -33,18 +30,12 @@ protected:
 	float						m_fTimeElapsed = 0.0f;
 	float						m_fGravityAcceleration = 0.0f;
 
-	////////////////이전 로테이션값들/////////////////
-	float						m_prev_x;
-	float						m_prev_y;
-	float						m_prev_z;
-
 public:
 	CPlayer(CCharacterObject* pCharacter = nullptr);
 	virtual ~CPlayer();
 
 	virtual void OnApplyGravity(float fDeltaTime) {};
 	virtual void OnCameraUpdated(float fDeltaTime) {};
-	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
 	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag) {};
 	
@@ -54,10 +45,6 @@ public:
 	void Update(float fDeltaTime);
 	void UpdateKeyInput(float fDeltaTime);
 
-	// 캐릭터의 총구 방향(Pitch)을 이용하여 캐릭터 애니메이션이 회전하도록 만들기 위해 Skinned Mesh에 넘겨주는 함수
-	//void RotateToCharacter();
-
-	bool IsMoving() const;
 	// ----- Get, Setter ----- //
 	XMFLOAT3 GetPrevPosition() const { return m_vPrevPosition; }
 	XMVECTOR GetvPrevPosition() const { return XMLoadFloat3(&m_vPrevPosition); }
@@ -72,8 +59,6 @@ public:
 
 	XMVECTOR GetvVelocity() const { return(XMLoadFloat3(&m_d3dxvVelocity)); }
 	XMFLOAT3 GetVelocity() const { return m_d3dxvVelocity; }
-	float GetYaw() const { return(m_fYaw); }
-	float GetPitch() const { return(m_fPitch); }
 	CCamera *GetCamera() { return(m_pCamera); }
 	float GetSpeed() const {return m_fSpeed; }
 	bool GetFloorCollision() const { return m_bIsFloorCollision; }

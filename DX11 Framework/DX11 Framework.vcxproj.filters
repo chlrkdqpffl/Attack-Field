@@ -330,11 +330,8 @@
     <ClCompile Include="CharacterState.cpp">
       <Filter>FSM</Filter>
     </ClCompile>
-    <ClCompile Include="CharacterStateMachine.cpp">
-      <Filter>FSM</Filter>
-    </ClCompile>
     <ClCompile Include="LineObject.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -575,20 +572,17 @@
     <ClInclude Include="CharacterObject.h">
       <Filter>Objects\Character</Filter>
     </ClInclude>
-    <ClInclude Include="StateMachine.h">
-      <Filter>FSM</Filter>
-    </ClInclude>
     <ClInclude Include="FSM_State.h">
       <Filter>FSM</Filter>
     </ClInclude>
     <ClInclude Include="CharacterState.h">
       <Filter>FSM</Filter>
     </ClInclude>
-    <ClInclude Include="CharacterStateMachine.h">
-      <Filter>FSM</Filter>
-    </ClInclude>
     <ClInclude Include="LineObject.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="StateMachine.h">
+      <Filter>FSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

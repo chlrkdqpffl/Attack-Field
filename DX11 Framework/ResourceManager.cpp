@@ -148,9 +148,9 @@ void CResourceManager::LoadCharacterData()
 	AddResourece(TextureTag::eRifleN,			"../Assets/FBX Model/Weapon/Rifle/RifleNM.png");
 
 
-//	AddResourece(MeshTag::ePolice,				"../Assets/FBX Model/Character/Police/Police.model");
 	AddResourece(MeshTag::eTerrorist,			"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
-//	AddResourece(MeshTag::eTerrorist,			"../Assets/FBX Model/Character/Terrorist/Idle.model");
+//	AddResourece(MeshTag::eTerrorist,			"../Assets/FBX Model/Character/Terrorist/Terrorist2.model");
+//	AddResourece(MeshTag::eTerrorist,			"../Assets/FBX Model/Character/Terrorist/Test.model");
 
 
 	AddResourece(MeshTag::eRifle,				"../Assets/FBX Model/Weapon/Rifle/rifle.model");

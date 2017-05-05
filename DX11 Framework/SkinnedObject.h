@@ -3,6 +3,7 @@
 #include "AnimationController.h"
 #include "FbxModelSkinnedMesh.h"
 
+
 class CSkinnedObject : public CGameObject
 {
 protected:
