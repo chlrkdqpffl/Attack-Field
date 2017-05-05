@@ -63,6 +63,8 @@ public:
 	float GetSpeed() const {return m_fSpeed; }
 	bool GetFloorCollision() const { return m_bIsFloorCollision; }
 
+	void setradian(float x, float y) { m_fPitch = x;  m_fYaw = y; }
+
 	void SetFloorCollision(bool isCollision) { m_bIsFloorCollision = isCollision; }
 	void SetSpeed(float fSpeed) { m_fSpeed = fSpeed; }
 	void SetFriction(float fFriction) { m_fFriction = fFriction; }
@@ -84,5 +86,5 @@ public:
 	void SetWorldMatrix(XMMATRIX world);
 
 	void SetLook(float x, float y, float z);
-
+	void SetAnimation(BYTE Animation);
 };

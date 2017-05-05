@@ -12,9 +12,9 @@
 struct cs_key_input {	//키버튼 받았을때 
 
 	BYTE	size;
-	BYTE	type;
+	volatile BYTE	type;
 
-	float fDistance;
+	BYTE	Animation;
 
 	DWORD key_button;
 
@@ -23,7 +23,7 @@ struct cs_key_input {	//키버튼 받았을때
 struct cs_rotate {	//클라에서 화면을 움직였을때 
 
 	BYTE	size;
-	BYTE	type;
+	volatile BYTE	type;
 
 	float cx;
 	float cy;
@@ -35,7 +35,7 @@ struct cs_rotate {	//클라에서 화면을 움직였을때
 struct sc_packet_put_player {	//서버에서 처음 접속했을때 위치값과 ID를 부여한다.
 
 	BYTE size;
-	BYTE type;
+	volatile BYTE type;
 
 	WORD id;
 
@@ -43,18 +43,22 @@ struct sc_packet_put_player {	//서버에서 처음 접속했을때 위치값과 ID를 부여한다.
 	int y;
 	int z;
 
+	BYTE	Animation;
+
 };
 
 struct sc_packet_pos	//서버에서 처리된 값을 클라에게 보낸다. 
 {
 	BYTE size;
-	BYTE type;
+	volatile BYTE type;
 
 	WORD id;
 
 	float x;
 	float y;
 	float z;
+
+	BYTE	Animation;
 };
 
 struct sc_rotate_vector	
@@ -73,5 +77,17 @@ struct sc_packet_remove_player {	//접속이 종료되면 보내는 패킷이다.
 	BYTE size;
 	BYTE type;
 	WORD id;
+};
+
+
+struct sc_bullet_fire
+{
+	BYTE size;
+	BYTE type;
+
+	WORD id;
+
+	bool fire;
+
 };
 #pragma pack(pop)
