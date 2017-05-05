@@ -2,7 +2,8 @@
 #include "AnimationController.h"
 
 
-CAnimationController::CAnimationController()
+CAnimationController::CAnimationController(AnimationData::MultiAnimation type)
+	:m_typeParts(type)
 {
 }
 
@@ -24,6 +25,9 @@ void CAnimationController::SetAnimation(AnimationData::CharacterAnim anim, float
 			get<1>(m_currAnimState).m_bEnable = true;
 			get<1>(m_currAnimState).m_fSpeed = speed;
 			m_pSkinnedMesh->SetClipName(get<1>(m_currAnimState).m_strClipName);
+
+			if(get<0>(m_prevAnimState) != AnimationData::CharacterAnim::eNone)		// 제일 처음 애니매이션은 블렌딩에 포함 X
+				m_bIsBlending = true;
 			return;
 		}
 }
@@ -41,7 +45,7 @@ void CAnimationController::AddAnimation(tuple<AnimationData::CharacterAnim, Anim
 
 void CAnimationController::UpdateTime(float fDeltaTime)
 {
-	float endTime = m_pSkinnedMesh->GetClipEndTime(m_pSkinnedMesh->GetClipName());
+	float endTime = m_pSkinnedMesh->GetClipEndTime(get<1>(m_currAnimState).m_strClipName);
 	float timeElapse = get<1>(m_currAnimState).m_fSpeed * fDeltaTime * TWBAR_MGR->g_fAnimationSpeed;
 
 	switch (GetAnimType()) {
@@ -50,14 +54,12 @@ void CAnimationController::UpdateTime(float fDeltaTime)
 
 		if (m_fTimePos > endTime)
 			m_fTimePos = 0.0f;
-
 		break;
 	case AnimationData::Type::eInverseLoop:
 		m_fTimePos -= timeElapse;
 
 		if (m_fTimePos < 0.0f)
 			m_fTimePos = endTime;
-
 		break;
 	case AnimationData::Type::eOnce:
 		m_fTimePos += timeElapse;
@@ -94,7 +96,7 @@ void CAnimationController::UpdateTime(float fDeltaTime)
 void CAnimationController::Update(float fDeltaTime)
 {
 	UpdateTime(fDeltaTime);
-	m_pSkinnedMesh->GetFinalTransformsBlending(get<1>(m_prevAnimState), get<1>(m_currAnimState), m_fTimePos);
+	m_pSkinnedMesh->CalcFinalTransformsBlending(BlendingInfo(get<1>(m_prevAnimState), get<1>(m_currAnimState), m_fTimePos, m_typeParts), m_bIsBlending);
 }
 
 void CAnimationController::UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext)

@@ -65,6 +65,20 @@ void CAnimationClip::Interpolate(float fTimePos, vector<XMFLOAT4X4>& boneTransfo
 	}
 }
 
+void CAnimationClip::Interpolate(float timePos, UINT startIndex, UINT endIndex, vector<XMFLOAT4X4>& boneTransforms) const
+{
+	for (UINT i = startIndex; i < endIndex; ++i)
+	{
+		if (0 < m_vecBoneData[i].m_nAnimaitionKeys)
+			m_vecBoneData[i].Interpolate(timePos, boneTransforms[i]);
+		else
+		{
+			XMMATRIX identityMtx = XMMatrixIdentity();
+			XMStoreFloat4x4(&boneTransforms[i], identityMtx);
+		}
+	}
+}
+
 float CAnimationClip::GetClipStartTime() const
 {
 	float t = FLT_MAX;

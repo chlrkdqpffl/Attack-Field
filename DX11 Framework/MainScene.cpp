@@ -334,7 +334,8 @@ void CMainScene::Initialize()
 	*/
 #pragma endregion 
 
-	
+	 
+	/*
 	// ==== Test용 - 총 메쉬 오프셋 찾기용 ==== //
 	CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject();
 	pCharacter->CreateObjectData(m_pd3dDevice);
@@ -346,7 +347,7 @@ void CMainScene::Initialize()
 	m_vecCharacterContainer.push_back(pCharacter);
 
 	COLLISION_MGR->m_vecCharacterContainer.push_back(pCharacter);
-
+	*/
 #pragma region [Create Shader Object]
 	// ----- Test ----- //
 	CFbxModelMesh* pTestMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eTest2);
@@ -1099,10 +1100,10 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	// Draw Position
 	XMFLOAT3 playerPos = m_pPlayer->GetPosition();
 	XMFLOAT3 playerrotate = m_pPlayer->GetLook();
-	XMVECTOR otherrotate = GetCharcontainer()[1]->GetLook(false);
+//	XMVECTOR otherrotate = GetCharcontainer()[1]->GetLook(false);
 
 	XMFLOAT3 temp;
-	XMStoreFloat3(&temp, otherrotate);
+//	XMStoreFloat3(&temp, otherrotate);
 
 	ppos = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")\n";
 	rotate = "player rotate : (" + to_string(playerrotate.x) + ", " + to_string(playerrotate.y) + ", " + to_string(playerrotate.z) + ")\n";

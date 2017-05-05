@@ -599,9 +599,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="memo.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <FxCompile Include="Shader HLSL File\Effect.fx">
       <Filter>HLSL</Filter>
     </FxCompile>
@@ -640,7 +637,6 @@
     <None Include="Shader HLSL File\BoundingBox.hlsli">
       <Filter>HLSL</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
     <None Include="Shader HLSL File\Blurring.hlsli">
       <Filter>HLSL\Deferred</Filter>
     </None>

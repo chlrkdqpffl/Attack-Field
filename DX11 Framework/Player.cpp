@@ -43,14 +43,14 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)			// FSM으로 제작하여 상호 관계를
 	if (m_wKeyState & static_cast<int>(KeyInput::eForward)) {
 		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
 
-//		if(m_pCharacter->GetAnimation() != AnimationData::CharacterAnim::eRun)
-//			m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
+	//	if(m_pCharacter->GetAnimation() != AnimationData::CharacterAnim::eRun)
+		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
 		relativeVelocity += XMVectorSet(0, 0, 1, 0);
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eBackward)) {
 		d3dxvShift -= XMLoadFloat3(&m_d3dxvLook);
-//		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eBackwardWalk);
+		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eBackwardWalk);
 		relativeVelocity += XMVectorSet(0, 0, -1, 0);
 	}
 
