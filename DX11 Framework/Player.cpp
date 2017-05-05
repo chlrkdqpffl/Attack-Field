@@ -74,8 +74,8 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)			// FSM으로 제작하여 상호 관계를
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
-		d3dxvShift *= 10;		// m_fSpeed 로 변경해야함
-//		d3dxvShift *= 3;		// m_fSpeed 로 변경해야함
+	//	d3dxvShift *= 10;		// m_fSpeed 로 변경해야함
+		d3dxvShift *= 3;		// m_fSpeed 로 변경해야함
 		m_pCharacter->Running();
 	}
 
@@ -95,8 +95,18 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)			// FSM으로 제작하여 상호 관계를
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eIdle);
 	}
 
-	d3dxvShift *= m_fSpeed * fDeltaTime;
-	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
+	//d3dxvShift *= m_fSpeed * fDeltaTime;
+	//XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
+
+	cs_key_input Key_button;
+	Key_button.type = CS_KEYTYPE;
+	Key_button.size = sizeof(cs_key_input);
+	Key_button.key_button = m_wKeyState;
+	Key_button.Animation = (static_cast<BYTE>(m_pCharacter->GetAnimation()));
+
+	if(m_wKeyState != 0)
+		Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
+
 }
 
 void CPlayer::Move(XMVECTOR d3dxvShift)
@@ -148,21 +158,25 @@ void CPlayer::Rotate(float x, float y)
 		}
 	}
 
-	XMStoreFloat3(&m_d3dxvLook, XMVector3Normalize(XMLoadFloat3(&m_d3dxvLook)));
-	XMStoreFloat3(&m_d3dxvRight, XMVector3Cross(XMLoadFloat3(&m_d3dxvUp), XMLoadFloat3(&m_d3dxvLook)));
-	XMStoreFloat3(&m_d3dxvRight, XMVector3Normalize(XMLoadFloat3(&m_d3dxvRight)));
-	XMStoreFloat3(&m_d3dxvUp, XMVector3Cross(XMLoadFloat3(&m_d3dxvLook), XMLoadFloat3(&m_d3dxvRight)));
-	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
+	//XMStoreFloat3(&m_d3dxvLook, XMVector3Normalize(XMLoadFloat3(&m_d3dxvLook)));
+	//XMStoreFloat3(&m_d3dxvRight, XMVector3Cross(XMLoadFloat3(&m_d3dxvUp), XMLoadFloat3(&m_d3dxvLook)));
+	//XMStoreFloat3(&m_d3dxvRight, XMVector3Normalize(XMLoadFloat3(&m_d3dxvRight)));
+	//XMStoreFloat3(&m_d3dxvUp, XMVector3Cross(XMLoadFloat3(&m_d3dxvLook), XMLoadFloat3(&m_d3dxvRight)));
+	//XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
 
-	/*
+
 	cs_rotate rotate;
 	rotate.cx = x;
 	rotate.cy = y;
 	rotate.size = sizeof(cs_rotate);
 	rotate.type = CS_ROTATE;
 
-	Sendpacket(reinterpret_cast<unsigned char *>(&rotate));
-	*/
+
+	//if(m_prev_x - x > 0.01f || m_prev_y - y > 0.01f)
+		Sendpacket(reinterpret_cast<unsigned char *>(&rotate));
+
+	m_prev_x = x;
+	m_prev_y = y;
 }
 
 void CPlayer::Update(float fDeltaTime)
@@ -254,30 +268,13 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 {
 	m_wKeyState |= static_cast<int>(key);
 
-	/*
-	cs_key_input Key_button;
-	Key_button.type = CS_KEYTYPE;
-	Key_button.size = sizeof(cs_key_input);
-	Key_button.key_button = m_wKeyState;
-	Key_button.fDistance = 50.0f;
 
-	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
-	*/
 }
 
 void CPlayer::SetKeyUp(KeyInput key)
 {
 	m_wKeyState ^= static_cast<int>(key);
 
-	/*
-	cs_key_input Key_button;
-	Key_button.type = CS_KEYTYPE;
-	Key_button.size = sizeof(cs_key_input);
-	Key_button.key_button = m_wKeyState;
-	Key_button.fDistance = 5.0f;
-
-	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
-	*/
 }
 
 void CPlayer::SetWorldMatrix(XMMATRIX world)
@@ -299,4 +296,9 @@ void CPlayer::SetLook(float x, float y, float z)
 	mtx._43 = position.z;
 
 	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&mtx);
+}
+
+void CPlayer::SetAnimation(BYTE Animation)
+{
+	m_pCharacter->SetAnimation(static_cast<AnimationData::CharacterAnim>(Animation));
 }

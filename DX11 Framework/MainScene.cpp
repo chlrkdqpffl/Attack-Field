@@ -1028,7 +1028,7 @@ void CMainScene::Update(float fDeltaTime)
 	
 
 	// 캐릭터 몸통 회전 테스트 용 - 추후 제거해야함
-	m_vecCharacterContainer.back()->SetRotate(TWBAR_MGR->g_xmf3Rotate);
+//	m_vecCharacterContainer.back()->SetRotate(TWBAR_MGR->g_xmf3Rotate);
 }
 
 void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
@@ -1104,7 +1104,7 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	// Draw Position
 	XMFLOAT3 playerPos = m_pPlayer->GetPosition();
 	XMFLOAT3 playerrotate = m_pPlayer->GetLook();
-	XMVECTOR otherrotate = GetCharcontainer()[1]->GetLook(false);
+	XMVECTOR otherrotate = GetCharcontainer()[1]->GetLook();
 
 	XMFLOAT3 temp;
 	XMStoreFloat3(&temp, otherrotate);

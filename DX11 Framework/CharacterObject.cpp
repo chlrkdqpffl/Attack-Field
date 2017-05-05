@@ -31,6 +31,7 @@ BoundingOrientedBox CCharacterObject::GetPartsBoundingOBox(UINT index) const
 void CCharacterObject::Firing()
 {
 	SetAnimation(AnimationData::CharacterAnim::eStandingFire);
+	XMStoreFloat3(&m_f3FiringDirection, CGameObject::GetLook());
 	m_pWeapon->Firing(XMLoadFloat3(&m_f3FiringDirection));
 }
 
@@ -118,6 +119,7 @@ void CCharacterObject::OnCollisionCheck()
 void CCharacterObject::SetRotate(float fPitch, float fYaw, float fRoll, bool isLocal)
 {
 	CGameObject::SetRotate(0, fYaw, fRoll, isLocal);
+//	XMStoreFloat3(&m_f3FiringDirection, CGameObject::GetLook());
 	m_fPitch = fPitch;
 }
 

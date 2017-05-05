@@ -34,9 +34,13 @@ protected:
 	float						m_fGravityAcceleration = 0.0f;
 
 	////////////////이전 로테이션값들/////////////////
-	float						m_prev_x;
-	float						m_prev_y;
-	float						m_prev_z;
+	float						m_prev_x = 0.0f;
+	float						m_prev_y = 0.0f;
+	float						m_prev_z = 0.0f;
+
+	///////////////이전 키값//////////////////////
+
+	//WORD						prev_m_wKeyState = 0;
 
 public:
 	CPlayer(CCharacterObject* pCharacter = nullptr);
