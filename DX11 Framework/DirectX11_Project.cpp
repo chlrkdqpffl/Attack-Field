@@ -86,7 +86,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	gGameFramework.sethandle(hMainWnd);
 
-//	gGameFramework.Server_init();
+	gGameFramework.Server_init();
 
 	if (!gGameFramework.OnCreate(hInstance, hMainWnd)) return(FALSE);
 

@@ -41,9 +41,9 @@ void ServerFuntion::processpacket(char *ptr)
 		{
 			//memcpy(my_Pos_packet, my_Pos_packet, ptr[0]);
 			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
-		//	SCENE_MGR->g_pPlayer->SetAnimation(my_Pos_packet->Animation);	// 이거 캐릭터 컨테이너에서 Set하도록 하고 Player에 있던 SetAnimation 함수 지움
+			SCENE_MGR->g_pPlayer->SetAnimation(my_Pos_packet->Animation);
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));;
-			
+		
 		}
 		else
 		{
@@ -67,7 +67,7 @@ void ServerFuntion::processpacket(char *ptr)
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[id]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 
 			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
-	//		SCENE_MGR->g_pPlayer->SetAnimation(my_put_packet->Animation);
+			SCENE_MGR->g_pPlayer->SetAnimation(my_put_packet->Animation);
 		}
 		else 
 		{
@@ -77,9 +77,8 @@ void ServerFuntion::processpacket(char *ptr)
 		}
 	}
 	break;
-
-	case 3:
-		my_put_bulletfire = reinterpret_cast<sc_bullet_fire *>(ptr);
+	case 3:	//총알...
+ 		my_put_bulletfire = reinterpret_cast<sc_bullet_fire *>(ptr);
 		id = my_put_bulletfire->id;
 
 		if (id == m_myid)
@@ -111,14 +110,24 @@ void ServerFuntion::processpacket(char *ptr)
 		{
 			//cout << "나다 : " << id << endl;
 			//cout << my_put_rotate->x << " " << my_put_rotate->y << " " << my_put_rotate->z << endl;
-//			SCENE_MGR->g_pPlayer->setradian(my_put_rotate->x, my_put_rotate->y);
+	//		SCENE_MGR->g_pPlayer->setradian(my_put_rotate->x, my_put_rotate->y);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetRotate(my_put_rotate->x, my_put_rotate->y, 0);
+
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
 		}
 		else
 		{
 			//cout << "니다 : " << id << endl;
 			//cout << my_put_rotate->x << " " << my_put_rotate->y << " " << my_put_rotate->z << endl;
+			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
+
+			
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
+
+	//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRight());
+	//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetUp());
+	//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetLook());
+		//	cout << my_put_rotate->x << ", " << my_put_rotate->y << ", " << my_put_rotate->z << endl;
 		}
 		break;
 	default:
@@ -219,18 +228,19 @@ void ServerFuntion::Sendpacket(unsigned char* Data)
 {
 	DWORD iobyte;
 
-	send_wsabuf.len = Data[0];
+	send_wsabuf.len = (size_t)Data[0];
+	memcpy(send_buffer, Data, (size_t)Data[0]);
 	send_wsabuf.buf = reinterpret_cast<char *>(send_buffer);
-	memcpy(send_buffer, Data, Data[0]);
 
-
+	 
 	int retval = WSASend(g_socket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
 	if (retval) {
 		int error_code = WSAGetLastError();
 		printf("Error while sending packet [%d]", error_code);
 	}
+	Sleep(1);
 
-	cout<<"packet type : " << (int)Data[1] << endl;
+	//cout<<"packet type : " << (int)Data[1] << endl;
 }
 
