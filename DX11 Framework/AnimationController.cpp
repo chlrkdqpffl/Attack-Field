@@ -52,6 +52,13 @@ void CAnimationController::UpdateTime(float fDeltaTime)
 			m_fTimePos = 0.0f;
 
 		break;
+	case AnimationData::Type::eInverseLoop:
+		m_fTimePos -= timeElapse;
+
+		if (m_fTimePos < 0.0f)
+			m_fTimePos = endTime;
+
+		break;
 	case AnimationData::Type::eOnce:
 		m_fTimePos += timeElapse;
 

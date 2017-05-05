@@ -22,8 +22,6 @@ void CAntTweakBarManager::InitializeManager()
 	TwDefine(" TweakBar position = '30 100'");
 
 	// ------ Option ----- //
-	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Animation Blending", TW_TYPE_BOOLCPP, &g_isAnimBlending, "group = Option");
-
 
 	// ------ Animation Option ----- //
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Bone Index", TW_TYPE_UINT32, &g_nBoneIndex, "group = AnimationOption");

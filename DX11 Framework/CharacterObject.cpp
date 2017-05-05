@@ -13,12 +13,20 @@ CCharacterObject::~CCharacterObject()
 
 	for (int i = 0; i < ePartsCount; ++i)
 		SafeDelete(m_pPartsBoundingBoxMesh[i]);
+
+	SafeDelete(m_pStateMachine);
 }
 
 void CCharacterObject::CreateObjectData(ID3D11Device *pd3dDevice)
 {
 	CSkinnedObject::CreateObjectData(pd3dDevice);
 	CreateWeapon(pd3dDevice);
+	CreateStateMachine();
+}
+
+void CCharacterObject::CreateStateMachine()
+{
+	m_pStateMachine = new CStateMachine<CCharacterObject>(this);
 }
 
 BoundingOrientedBox CCharacterObject::GetPartsBoundingOBox(UINT index) const
@@ -30,8 +38,7 @@ BoundingOrientedBox CCharacterObject::GetPartsBoundingOBox(UINT index) const
 
 void CCharacterObject::Firing()
 {
-	SetAnimation(AnimationData::CharacterAnim::eStandingFire);
-	XMStoreFloat3(&m_f3FiringDirection, CGameObject::GetLook());
+//	SetAnimation(AnimationData::CharacterAnim::eStandingFire);
 	m_pWeapon->Firing(XMLoadFloat3(&m_f3FiringDirection));
 }
 
@@ -43,10 +50,10 @@ void CCharacterObject::Running()
 
 void CCharacterObject::OnCollisionCheck()
 {	
-	if(m_pPlayer->IsMoving()){
+	if(IsMoving()){
 		for (auto staticObject : COLLISION_MGR->m_vecStaticMeshContainer) {
 			CollisionInfo info;
-			XMVECTOR velocity = m_pPlayer->GetvVelocity();
+			XMVECTOR velocity = XMLoadFloat3(&m_f3Velocity);
 
 			XMMATRIX d3dxmtxInverse;
 			d3dxmtxInverse = XMMatrixInverse(NULL, staticObject->m_mtxWorld);
@@ -119,7 +126,6 @@ void CCharacterObject::OnCollisionCheck()
 void CCharacterObject::SetRotate(float fPitch, float fYaw, float fRoll, bool isLocal)
 {
 	CGameObject::SetRotate(0, fYaw, fRoll, isLocal);
-//	XMStoreFloat3(&m_f3FiringDirection, CGameObject::GetLook());
 	m_fPitch = fPitch;
 }
 
@@ -144,7 +150,6 @@ void CCharacterObject::RotateFiringPos()
 		XMMATRIX mtxRotate = XMMatrixRotationAxis(m_pPlayer->GetvRight(), XMConvertToRadians(m_fPitch));
 		firingDirection = XMVector3TransformNormal(m_pPlayer->GetvLook(), mtxRotate);
 		XMStoreFloat3(&m_f3FiringDirection, firingDirection);
-		m_fPitch = m_pPlayer->GetPitch();
 	}
 
 	m_fPitch = clamp(m_fPitch, -40.0f, 50.0f);		// 이 각도는 캐릭터가 최대로 허리를 숙이는 각도로 캐릭터마다 다르지만 현재는 여기에서 clamp하도록 만듦
@@ -152,11 +157,15 @@ void CCharacterObject::RotateFiringPos()
 }
 
 void CCharacterObject::Update(float fDeltaTime)
-{
+{ 
 	RotateFiringPos();
 	if (m_pPlayer) {
 		m_pPlayer->UpdateKeyInput(fDeltaTime);
 		OnCollisionCheck();
+	}
+	m_pStateMachine->Update();
+
+	if (m_pPlayer) {
 		m_pPlayer->Update(fDeltaTime);
 	}
 

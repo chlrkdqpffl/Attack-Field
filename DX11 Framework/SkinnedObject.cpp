@@ -21,7 +21,7 @@ void CSkinnedObject::CreateObjectData(ID3D11Device *pd3dDevice)
 	m_pAnimController->SetAnimation(AnimationData::CharacterAnim::eIdle);
 }
 
-void CSkinnedObject::SetMesh(CFbxModelSkinnedMesh* mesh) 
+void CSkinnedObject::SetMesh(CFbxModelSkinnedMesh* mesh)
 {
 	CGameObject::SetMesh(mesh);
 	m_pAnimController->SetMesh(mesh);

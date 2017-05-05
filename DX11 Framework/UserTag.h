@@ -62,16 +62,35 @@ namespace WeaponData
 
 namespace AnimationData
 {
+	enum class MultiAnimation
+	{ 
+		Defalut, UpperBody, LowerBody
+	};
+
 	enum class Type
 	{
-		eLoop, eOnce, ePingPong
+		eLoop, eInverseLoop, eOnce, ePingPong
 	};
 
 	enum class CharacterAnim
 	{
-		eNone, eIdle, eWalk, eRun, eStandingFire, eWalkingFire, eStandingReloading		//eDeath
+		eNone,
+		// --------------------------------------------------------- // 
+		// Whole Body
+		eIdle, eDeath, eRun,
+
+		// --------------------------------------------------------- // 
+		// Upper Body
+		UpperBodyAnim = 100,
+		eFire, eReload,
+		// --------------------------------------------------------- // 
+		// Lower Body
+		LowerBodyAnim = 1000,
+	
+		eLeftWalk, eForwardLeftWalk, eForwardWalk, eForwardRightWalk, eRightWalk, eRightBackwardWalk, eBackwardWalk, eBackwardLeftWalk	
 	};
 }
+
 
 // =========================================================================================================================== //
 // ===================================================== Texture Data ======================================================== //

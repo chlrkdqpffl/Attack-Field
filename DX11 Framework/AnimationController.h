@@ -40,4 +40,3 @@ public:
 	void SetMesh(CFbxModelSkinnedMesh* mesh) { m_pSkinnedMesh = mesh; }
 	void SetAnimation(AnimationData::CharacterAnim anim, float speed = 1.0f);
 };
-

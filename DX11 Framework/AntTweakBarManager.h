@@ -8,7 +8,6 @@ public:
 
 
 	// Option
-	bool g_isAnimBlending = true;
 
 	// Etc
 	int g_nSelect = 0;

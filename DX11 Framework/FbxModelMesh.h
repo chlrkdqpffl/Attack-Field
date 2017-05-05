@@ -16,6 +16,7 @@ protected:
 	ID3D11Buffer			*m_pd3dTangentBuffer = nullptr;
 
 public:
+	CFbxModelMesh() {}
 	CFbxModelMesh(ID3D11Device *pd3dDevice, const MeshTag meshTag, const XMFLOAT3 size = XMFLOAT3(1.f, 1.f, 1.f));
 	virtual ~CFbxModelMesh();
 
