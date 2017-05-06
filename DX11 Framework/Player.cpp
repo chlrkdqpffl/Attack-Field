@@ -43,8 +43,8 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)			// FSM으로 제작하여 상호 관계를
 	if (m_wKeyState & static_cast<int>(KeyInput::eForward)) {
 		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
 
-	//	if(m_pCharacter->GetAnimation() != AnimationData::CharacterAnim::eRun)
-		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
+		if(m_pCharacter->GetAnimationEnum(AnimationData::Parts::LowerBody) != AnimationData::CharacterAnim::eRun)
+			m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
 		relativeVelocity += XMVectorSet(0, 0, 1, 0);
 	}
 
@@ -67,8 +67,8 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)			// FSM으로 제작하여 상호 관계를
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
-		d3dxvShift *= 10;		// m_fSpeed 로 변경해야함
-//		d3dxvShift *= 3;		// m_fSpeed 로 변경해야함
+//		d3dxvShift *= 10;		// m_fSpeed 로 변경해야함
+		d3dxvShift *= 3;		// m_fSpeed 로 변경해야함
 		m_pCharacter->Running();
 	}
 
@@ -85,6 +85,9 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)			// FSM으로 제작하여 상호 관계를
 		&& (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)))
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalkingFire);
 		*/
+
+
+
 	if (m_wKeyState == 0) { 
 		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eIdle);
 	}

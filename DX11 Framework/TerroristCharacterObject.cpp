@@ -16,6 +16,8 @@ void CTerroristCharacterObject::CreateMesh(ID3D11Device *pd3dDevice)
 	CFbxModelSkinnedMesh* pCharacterMesh = new CFbxModelSkinnedMesh(pd3dDevice, MeshTag::eTerrorist);
 	pCharacterMesh->Initialize(pd3dDevice);
 	SetMesh(pCharacterMesh);
+
+	m_pSkinnedMesh->SetBodyBoundaryIndex(32);
 }
 
 void CTerroristCharacterObject::CreateShader(ID3D11Device *pd3dDevice)
@@ -43,14 +45,11 @@ void CTerroristCharacterObject::CreateMaterial()
 
 void CTerroristCharacterObject::CreateAnimation()
 {
-	m_pUpperController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,			AnimationTrack("Idle"), AnimationData::Type::eLoop));
-	m_pLowerController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,			AnimationTrack("Idle"), AnimationData::Type::eLoop));
-
-	m_pUpperController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eFire,			AnimationTrack("StandingFire"), AnimationData::Type::eLoop));
-
-	m_pLowerController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eForwardWalk,		AnimationTrack("Walk"), AnimationData::Type::eLoop));
-	m_pLowerController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eBackwardWalk,	AnimationTrack("Walk"), AnimationData::Type::eInverseLoop));
-		
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,			AnimationTrack("Idle"),			AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eFire,			AnimationTrack("StandingFire"), AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eForwardWalk,		AnimationTrack("Walk"),			AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eBackwardWalk,	AnimationTrack("Walk"),			AnimationData::Type::eInverseLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eRun,				AnimationTrack("Run"),			AnimationData::Type::eLoop));
 	/*
 	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,				AnimationTrack("Idle"), AnimationData::Type::eLoop));
 	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eForwardWalk,		AnimationTrack("Walk"), AnimationData::Type::eLoop));

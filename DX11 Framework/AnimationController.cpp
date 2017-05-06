@@ -2,7 +2,7 @@
 #include "AnimationController.h"
 
 
-CAnimationController::CAnimationController(AnimationData::MultiAnimation type)
+CAnimationController::CAnimationController(AnimationData::Parts type)
 	:m_typeParts(type)
 {
 }
@@ -18,6 +18,7 @@ void CAnimationController::SetAnimation(AnimationData::CharacterAnim anim, float
 
 	for (auto& animState : m_animaitionTupleVector)
 		if (get<0>(animState) == anim) {
+
 			m_prevAnimState = m_currAnimState;
 			m_currAnimState = animState;
 
@@ -26,8 +27,8 @@ void CAnimationController::SetAnimation(AnimationData::CharacterAnim anim, float
 			get<1>(m_currAnimState).m_fSpeed = speed;
 			m_pSkinnedMesh->SetClipName(get<1>(m_currAnimState).m_strClipName);
 
-			if(get<0>(m_prevAnimState) != AnimationData::CharacterAnim::eNone)		// 제일 처음 애니매이션은 블렌딩에 포함 X
-				m_bIsBlending = true;
+//			if(get<0>(m_prevAnimState) != AnimationData::CharacterAnim::eNone)		// 제일 처음 애니매이션은 블렌딩에 포함 X
+//				m_bIsBlending = true;
 			return;
 		}
 }
@@ -96,7 +97,9 @@ void CAnimationController::UpdateTime(float fDeltaTime)
 void CAnimationController::Update(float fDeltaTime)
 {
 	UpdateTime(fDeltaTime);
-	m_pSkinnedMesh->CalcFinalTransformsBlending(BlendingInfo(get<1>(m_prevAnimState), get<1>(m_currAnimState), m_fTimePos, m_typeParts), m_bIsBlending);
+//	m_pSkinnedMesh->GetFinalTransformsBlending(get<1>(m_prevAnimState), get<1>(m_currAnimState), m_fTimePos);
+	m_pSkinnedMesh->CalcFinalTransformsBlending(get<1>(m_prevAnimState), get<1>(m_currAnimState), m_fTimePos, m_typeParts);
+//	m_pSkinnedMesh->CalcFinalTransformsBlending(BlendingInfo(get<1>(m_prevAnimState), get<1>(m_currAnimState), m_fTimePos, m_typeParts), m_bIsBlending);
 }
 
 void CAnimationController::UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext)

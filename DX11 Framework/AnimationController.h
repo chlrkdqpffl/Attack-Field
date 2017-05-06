@@ -18,7 +18,7 @@ class CAnimationController
 {
 	float						m_fTimePos = 0.0f;
 	CFbxModelSkinnedMesh*		m_pSkinnedMesh = nullptr;
-	AnimationData::MultiAnimation	m_typeParts = AnimationData::MultiAnimation::Defalut;
+	AnimationData::Parts		m_typeParts = AnimationData::Parts::Defalut;
 	bool						m_bIsBlending = false;
 
 	tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> m_prevAnimState;
@@ -27,7 +27,7 @@ class CAnimationController
 
 public:
 	CAnimationController() {};
-	CAnimationController(AnimationData::MultiAnimation type);
+	CAnimationController(AnimationData::Parts type);
 	virtual ~CAnimationController();
 
 	void AddAnimation(tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> anim);

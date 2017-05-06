@@ -12,9 +12,9 @@ struct BlendingInfo
 	AnimationTrack			m_prevAnimation;
 	AnimationTrack			m_CurrAnimation;
 	float					m_fTimePos = 0.0f;
-	AnimationData::MultiAnimation	m_typeParts = AnimationData::MultiAnimation::Defalut;
+	AnimationData::Parts	m_typeParts = AnimationData::Parts::Defalut;
 
-	BlendingInfo(AnimationTrack prev, AnimationTrack curr, float timePos, AnimationData::MultiAnimation type)
+	BlendingInfo(AnimationTrack prev, AnimationTrack curr, float timePos, AnimationData::Parts type)
 		: m_prevAnimation(prev), m_CurrAnimation(curr), m_fTimePos(timePos), m_typeParts(type)
 	{
 	}
@@ -27,13 +27,17 @@ protected:
 	float						m_fPitch = 0;
 	XMFLOAT4					*m_pboneIndices = nullptr;
 	XMFLOAT4					*m_pboneWeights = nullptr;
-	UINT						m_nBodyBoundaryIndex = 32;			// 상체와 하체를 구분하는 인덱스. 하체의 첫번째 뼈대 인덱스를 의미
 
 	string						m_strClipName;
 
 	ID3D11Buffer				*m_pd3dBoneWeightBuffer = nullptr;
 	ID3D11Buffer				*m_pd3dBoneIndiceBuffer = nullptr;
 	ID3D11Buffer				*m_pd3dcbBones = nullptr;
+
+	// Multi Animation Variable
+	UINT						m_nBodyBoundaryIndex = 0;			// 상체와 하체를 구분하는 인덱스. 하체의 첫번째 뼈대 인덱스를 의미
+	float						m_fUpperBlendingTimeElapsed = 0.0f;
+	float						m_fLowerBlendingTimeElapsed = 0.0f;
 
 public:
 	CFbxModelSkinnedMesh() {};
@@ -46,12 +50,15 @@ public:
 	void UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext);
 	void ReleaseConstantBuffer();
 
-	void Interpolate_Blending(const CAnimationClip& dataA, bool& enable, const CAnimationClip& dataB, float timePos, vector<XMFLOAT4X4>& boneTransforms) const;
-	void Interpolate_Blending(const CAnimationClip& dataA, bool& enable, const CAnimationClip& dataB, float timePos, AnimationData::MultiAnimation type, vector<XMFLOAT4X4>& boneTransforms) const;
+	void Interpolate_Blending(const CAnimationClip& dataA, bool& enable, const CAnimationClip& dataB, float timePos, vector<XMFLOAT4X4>& boneTransforms);
+	void Interpolate_Blending(const CAnimationClip& dataA, bool& enable, const CAnimationClip& dataB, float timePos, AnimationData::Parts type, vector<XMFLOAT4X4>& boneTransforms);
 
 	// ----- Get, Setter ----- //
 	void CalcFinalTransformsBlending(BlendingInfo& blendingInfo, bool& bIsBlending);
+
 	void GetFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, const float& fTimePos);
+	void CalcFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, const float& fTimePos, AnimationData::Parts type);
+	
 
 	float GetClipStartTime(const string& clipName) const;
 	float GetClipEndTime(const string& clipName) const;
@@ -62,4 +69,5 @@ public:
 
 	void SetClipName(string name) { m_strClipName = name; }
 	void SetPitch(float pitch) { m_fPitch = pitch; }
+	void SetBodyBoundaryIndex(UINT index) { m_nBodyBoundaryIndex = index; }
 };

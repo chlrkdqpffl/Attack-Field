@@ -84,25 +84,20 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
-			case VK_F6:		// 회전 테스트용으로 넣음
-			//	m_vecCharacterContainer[1]->SetRotate(TWBAR_MGR->g_xmf3Rotate.x, TWBAR_MGR->g_xmf3Rotate.y, TWBAR_MGR->g_xmf3Rotate.z);
-			
-				//m_pPlayer
-				break;
 			case VK_Z:
-				for(auto& object : m_vecCharacterContainer)
-					object->SetAnimation(AnimationData::CharacterAnim::eIdle);
+				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eIdle);
+				cout << "아이들로 전환" << endl;
 				break;
 			case VK_X:
-				for (auto& object : m_vecCharacterContainer)
-					object->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
+				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
+				cout << "걷기로 전환" << endl;
 				break;
 			case VK_C:
-				for (auto& object : m_vecCharacterContainer)
-					object->SetAnimation(AnimationData::CharacterAnim::eRun);
+				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eRun);
+				cout << "달리기로 전환" << endl;
 				break;
 			case VK_V:
-			
+				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eFire);
 				break;
 			}
 			break;
@@ -335,7 +330,7 @@ void CMainScene::Initialize()
 #pragma endregion 
 
 	 
-	/*
+	
 	// ==== Test용 - 총 메쉬 오프셋 찾기용 ==== //
 	CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject();
 	pCharacter->CreateObjectData(m_pd3dDevice);
@@ -347,7 +342,7 @@ void CMainScene::Initialize()
 	m_vecCharacterContainer.push_back(pCharacter);
 
 	COLLISION_MGR->m_vecCharacterContainer.push_back(pCharacter);
-	*/
+	
 #pragma region [Create Shader Object]
 	// ----- Test ----- //
 	CFbxModelMesh* pTestMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eTest2);

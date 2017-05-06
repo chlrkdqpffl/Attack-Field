@@ -11,6 +11,7 @@ protected:
 
 	CAnimationController*	m_pUpperController = nullptr;
 	CAnimationController*	m_pLowerController = nullptr;
+
 public:
 	CSkinnedObject();
 	virtual ~CSkinnedObject();
@@ -23,10 +24,19 @@ public:
 	virtual void Update(float fDeltaTime) override;
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 
+	void AddAnimation(tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> anim) { 
+		m_pUpperController->AddAnimation(anim); 
+		m_pLowerController->AddAnimation(anim);
+	};
 	// ------ Get, Setter ------ //
 	CFbxModelSkinnedMesh* GetSkinnedMesh() const { return m_pSkinnedMesh; }
-//	AnimationData::CharacterAnim GetAnimation() const { return m_pAnimController->GetAnimEnum(); }
-
+	AnimationData::CharacterAnim GetAnimationEnum(AnimationData::Parts parts) const {
+		if (parts == AnimationData::Parts::UpperBody)
+			return m_pUpperController->GetAnimEnum();
+		else
+			return m_pLowerController->GetAnimEnum();
+	}
+	
 	void SetMesh(CFbxModelSkinnedMesh* mesh);
 	void SetAnimation(AnimationData::CharacterAnim anim, float speed = 1.0f);
 };

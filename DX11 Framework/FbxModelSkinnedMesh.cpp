@@ -159,7 +159,7 @@ void CFbxModelSkinnedMesh::ReleaseConstantBuffer()
 	ReleaseCOM(m_pd3dcbBones);
 }
 
-void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData, bool& enable, const CAnimationClip& targetData, float fTimePos, vector<XMFLOAT4X4>& boneTransforms) const
+void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData, bool& enable, const CAnimationClip& targetData, float fTimePos, vector<XMFLOAT4X4>& boneTransforms)
 {
 	// 각 애니메이션 본의 갯수가 틀림
 	assert(targetData.m_vecBoneData.size() == basicData.m_vecBoneData.size());
@@ -169,15 +169,14 @@ void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData,
 	XMVECTOR P1 = zero, P2 = zero;
 	XMVECTOR Q1 = zero, Q2 = zero;
 
-	static float addTime = 0.0f;
 	static float changeTime = 0.2f;		// 애니메이션 전환 시간 0.2초
-	float blendFactor = addTime / changeTime;
+	float blendFactor = m_fUpperBlendingTimeElapsed / changeTime;
 
-	addTime += SCENE_MGR->g_fDeltaTime;
+	m_fUpperBlendingTimeElapsed += SCENE_MGR->g_fDeltaTime;
 
 	if (blendFactor > 1) 		// 애니메이션 전환 시점
 	{
-		addTime = 0.0f;
+		m_fUpperBlendingTimeElapsed = 0.0f;
 		enable = false;
 	}
 
@@ -266,7 +265,7 @@ void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData,
 	}
 }
 
-void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData, bool& enable, const CAnimationClip& targetData, float fTimePos, AnimationData::MultiAnimation type, vector<XMFLOAT4X4>& boneTransforms) const
+void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData, bool& enable, const CAnimationClip& targetData, float fTimePos, AnimationData::Parts type, vector<XMFLOAT4X4>& boneTransforms)
 {
 	// 각 애니메이션 본의 갯수가 틀림
 	assert(targetData.m_vecBoneData.size() == basicData.m_vecBoneData.size());
@@ -276,21 +275,31 @@ void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData,
 	XMVECTOR P1 = zero, P2 = zero;
 	XMVECTOR Q1 = zero, Q2 = zero;
 
-	static float addTime = 0.0f;
-	static float changeTime = 0.2f;		// 애니메이션 전환 시간 0.2초
-	float blendFactor = addTime / changeTime;
-	
-	addTime += SCENE_MGR->g_fDeltaTime;
+	//static float changeTime = 0.2f;		// 애니메이션 전환 시간 0.2초
+	static const float changeTime = 0.3f;
+	float blendFactor;
+	if (type == AnimationData::Parts::UpperBody) {
+		blendFactor = m_fUpperBlendingTimeElapsed / changeTime;
+		m_fUpperBlendingTimeElapsed += SCENE_MGR->g_fDeltaTime;
+	}
+	else {
+		blendFactor = m_fLowerBlendingTimeElapsed / changeTime;
+		m_fLowerBlendingTimeElapsed += SCENE_MGR->g_fDeltaTime;
+	}
 
 	if (blendFactor > 1) 		// 애니메이션 전환 시점
 	{
-		addTime = 0.0f;
+		if (type == AnimationData::Parts::UpperBody)
+			m_fUpperBlendingTimeElapsed = 0.0f;
+		else
+			m_fLowerBlendingTimeElapsed = 0.0f;
+
 		enable = false;
 	}
 
 	float timeLerpPos = (fTimePos / targetData.GetClipEndTime()) * basicData.GetClipEndTime();
 	
-	if (type == AnimationData::MultiAnimation::UpperBody) {
+	if (type == AnimationData::Parts::UpperBody) {
 		for (UINT i = 0; i < m_nBodyBoundaryIndex; ++i)
 		{
 			if (0 < basicData.m_vecBoneData[i].m_nAnimaitionKeys) {
@@ -488,6 +497,53 @@ void CFbxModelSkinnedMesh::GetFinalTransformsBlending(AnimationTrack& prevAnim, 
 	}
 }
 
+void CFbxModelSkinnedMesh::CalcFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, const float& fTimePos, AnimationData::Parts type)
+{
+	vector<XMFLOAT4X4> toRootTransforms(m_meshData.m_nBoneCount);
+
+	auto currClip = m_meshData.m_mapAnimationClip.find(currAnim.m_strClipName);
+
+	if (prevAnim.m_bEnable == true) {
+		auto pervClip = m_meshData.m_mapAnimationClip.find(prevAnim.m_strClipName);
+		Interpolate_Blending(pervClip->second, prevAnim.m_bEnable, currClip->second, fTimePos, type, toRootTransforms);
+	}
+	else {
+		if (type == AnimationData::Parts::UpperBody)
+			currClip->second.Interpolate(fTimePos, 0, m_nBodyBoundaryIndex, toRootTransforms);
+		else
+			currClip->second.Interpolate(fTimePos, m_nBodyBoundaryIndex, m_meshData.m_nBoneCount, toRootTransforms);
+	}
+	m_vecFinalBone.resize(m_meshData.m_nBoneCount);
+
+
+	// 아래의 코드는 Terrorist Character에만 적용되므로 다른 캐릭터를 사용한다면 해당 본을 찾아서 범위를 조절해야함
+	if (type == AnimationData::Parts::UpperBody) {
+		for (UINT i = 0; i < m_nBodyBoundaryIndex; ++i)
+		{
+			XMMATRIX mtxRotate = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch));
+			XMMATRIX mtxRotateHalf = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch / 2));	// 유연하게 회전하기 위해 추가 생성
+			XMMATRIX mtxOffset = XMLoadFloat4x4(&m_meshData.m_vecBoneOffsets[i]);
+			XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
+
+			if (i < 2)
+				m_vecFinalBone[i] = mtxOffset * mtxToRoot * mtxRotateHalf;
+			else
+				m_vecFinalBone[i] = mtxOffset * mtxToRoot * mtxRotate;
+		}
+	}
+	else {
+		for (UINT i = m_nBodyBoundaryIndex; i < m_meshData.m_nBoneCount; ++i)
+		{
+			XMMATRIX mtxOffset = XMLoadFloat4x4(&m_meshData.m_vecBoneOffsets[i]);
+			XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
+
+			m_vecFinalBone[i] = mtxOffset * mtxToRoot;
+		}
+	}
+}
+
+
+
 void CFbxModelSkinnedMesh::CalcFinalTransformsBlending(BlendingInfo& blendingData, bool& bIsBlending)
 {
 	vector<XMFLOAT4X4> toRootTransforms(m_meshData.m_nBoneCount);
@@ -499,7 +555,7 @@ void CFbxModelSkinnedMesh::CalcFinalTransformsBlending(BlendingInfo& blendingDat
 		Interpolate_Blending(pervClip->second, bIsBlending, currClip->second, blendingData.m_fTimePos, blendingData.m_typeParts, toRootTransforms);
 	}
 	else {
-		if (blendingData.m_typeParts == AnimationData::MultiAnimation::UpperBody)
+		if (blendingData.m_typeParts == AnimationData::Parts::UpperBody)
 			currClip->second.Interpolate(blendingData.m_fTimePos, 0, m_nBodyBoundaryIndex, toRootTransforms);
 		else
 			currClip->second.Interpolate(blendingData.m_fTimePos, m_nBodyBoundaryIndex, m_meshData.m_nBoneCount, toRootTransforms);
@@ -508,7 +564,7 @@ void CFbxModelSkinnedMesh::CalcFinalTransformsBlending(BlendingInfo& blendingDat
 
 
 	// 아래의 코드는 Terrorist Character에만 적용되므로 다른 캐릭터를 사용한다면 해당 본을 찾아서 범위를 조절해야함
-	if (blendingData.m_typeParts == AnimationData::MultiAnimation::UpperBody) {
+	if (blendingData.m_typeParts == AnimationData::Parts::UpperBody) {
 		for (UINT i = 0; i < m_nBodyBoundaryIndex; ++i)
 		{
 			XMMATRIX mtxRotate = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch));

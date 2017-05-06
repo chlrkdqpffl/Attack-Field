@@ -4,7 +4,7 @@
 // ---------------------------- Idle ---------------------------- //
 void CState_Idle::EnterState(CCharacterObject* pCharacter)
 {
-	pCharacter->SetAnimation(AnimationData::CharacterAnim::eIdle);
+//	pCharacter->SetAnimation(AnimationData::CharacterAnim::eIdle);
 	
 }
 
@@ -22,7 +22,7 @@ void CState_Idle::ExitState(CCharacterObject* pCharacter)
 // ---------------------------- Walking ---------------------------- //
 void CState_Walking::EnterState(CCharacterObject* pCharacter)
 {
-	pCharacter->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
+//	pCharacter->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
 }
 
 void CState_Walking::UpdateState(CCharacterObject* pCharacter)

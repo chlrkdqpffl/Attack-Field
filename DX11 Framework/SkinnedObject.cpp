@@ -4,8 +4,8 @@
 
 CSkinnedObject::CSkinnedObject()
 {
-	m_pUpperController = new CAnimationController(AnimationData::MultiAnimation::UpperBody);
-	m_pLowerController = new CAnimationController(AnimationData::MultiAnimation::LowerBody);
+	m_pUpperController = new CAnimationController(AnimationData::Parts::UpperBody);
+	m_pLowerController = new CAnimationController(AnimationData::Parts::LowerBody);
 }
 
 CSkinnedObject::~CSkinnedObject()
@@ -40,16 +40,26 @@ void CSkinnedObject::SetAnimation(AnimationData::CharacterAnim anim, float speed
 	UINT nLowerBody = static_cast<int>(AnimationData::CharacterAnim::LowerBodyAnim);
 
 	if (nAnimType < nUpperBody) {
-		m_pUpperController->SetAnimation(anim, speed);
-		
-		float upperTimePos = m_pUpperController->GetTimePos();
-		m_pLowerController->SetAnimation(anim, speed);
-		m_pLowerController->SetTimePos(upperTimePos);
+		if(m_pUpperController->GetAnimEnum() != anim)
+			m_pUpperController->SetAnimation(anim, speed);
+
+		if (m_pLowerController->GetAnimEnum() != anim)
+			m_pLowerController->SetAnimation(anim, speed);
 	}
-	else if (nAnimType < nLowerBody)
-		m_pUpperController->SetAnimation(anim, speed);
-	else
-		m_pLowerController->SetAnimation(anim, speed);
+	else if (nAnimType < nLowerBody) {
+		if (m_pUpperController->GetAnimEnum() != anim)
+			m_pUpperController->SetAnimation(anim, speed);
+	}
+	else {
+		
+		if (m_pUpperController->GetAnimEnum() == AnimationData::CharacterAnim::eIdle) {	// 상체가 Idle 일 경우 하체의 움직임을 따라간다.
+			float LowerTimePos = m_pUpperController->GetTimePos();
+			m_pUpperController->SetAnimation(anim, speed);
+			m_pUpperController->SetTimePos(LowerTimePos);
+		}
+		if (m_pLowerController->GetAnimEnum() != anim)
+			m_pLowerController->SetAnimation(anim, speed);
+	}
 }
 
 void CSkinnedObject::Update(float fDeltaTime)
