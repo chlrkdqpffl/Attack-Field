@@ -39,16 +39,16 @@ void ServerFuntion::processpacket(char *ptr)
 
 		if (id == m_myid)
 		{
-			//memcpy(my_Pos_packet, my_Pos_packet, ptr[0]);
-			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
-//			SCENE_MGR->g_pPlayer->SetAnimation(my_Pos_packet->Animation);
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));;
+			
+			//SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
+			//SCENE_MGR->g_pPlayer->SetAnimation(my_Pos_packet->Animation);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));;
 		
 		}
 		else
 		{
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetAnimation(static_cast<AnimationData::CharacterAnim>(my_Pos_packet->Animation));
+			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetAnimation(static_cast<AnimationData::CharacterAnim>(my_Pos_packet->Animation));
 		}
 		break;
 	case 2:	//처음 받았을때.
@@ -72,7 +72,7 @@ void ServerFuntion::processpacket(char *ptr)
 		else 
 		{
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetAnimation(static_cast<AnimationData::CharacterAnim>(my_put_packet->Animation));
+			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetAnimation(static_cast<AnimationData::CharacterAnim>(my_put_packet->Animation));
 
 		}
 	}

@@ -21,7 +21,7 @@ CPlayer::CPlayer(CCharacterObject* pCharacter)
 
 	// 임시
 //	m_fSpeed = 50;
-	m_fSpeed = 30;	// 자연스러운 속도
+	m_fSpeed = 5;	// 자연스러운 속도
 }
 
 CPlayer::~CPlayer()
@@ -96,14 +96,37 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)			// FSM으로 제작하여 상호 관계를
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
 	m_pCharacter->SetVelocity(m_d3dxvVelocity);
 	m_pCharacter->SetRelativeVelocity(relativeVelocity);
+
+
+	//Move(d3dxvShift);
+	//	여기 패킷 추가해라
+
+	cs_key_input packet;
+
+	packet.type = CS_KEYTYPE;
+	packet.size = sizeof(packet);
+	packet.key_button = m_wKeyState;
+	//packet.Animation = static_cast<DWORD>(m_pCharacter->GetAnimationEnum());
+
+	packet.x = GetPosition().x;
+	packet.y = GetPosition().y;
+	packet.z = GetPosition().z;
+
+	packet.Hp = m_pCharacter->GetHp();
+
+
+	if (m_wKeyState != 0)
+		Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+
+	
 }
 
 void CPlayer::Move(XMVECTOR vTranslate)
 {	
 	XMVECTOR d3dxvPosition = XMLoadFloat3(&m_d3dxvPosition) + vTranslate;
 	XMStoreFloat3(&m_d3dxvPosition, d3dxvPosition);
-//	XMVECTOR vPosition = m_pCharacter->GetvPosition() + vTranslate;
-//	m_pCharacter->SetPosition(vPosition);
+	XMVECTOR vPosition = m_pCharacter->GetvPosition() + vTranslate;
+	m_pCharacter->SetPosition(vPosition);
 	m_pCamera->Move(vTranslate);
 }
 
@@ -159,7 +182,7 @@ void CPlayer::Rotate(float x, float y)
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Cross(XMLoadFloat3(&m_d3dxvLook), XMLoadFloat3(&m_d3dxvRight)));
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
 
-	/*
+	
 	cs_rotate rotate;
 	rotate.cx = x;
 	rotate.cy = y;
@@ -167,7 +190,7 @@ void CPlayer::Rotate(float x, float y)
 	rotate.type = CS_ROTATE;
 
 	Sendpacket(reinterpret_cast<unsigned char *>(&rotate));
-	*/
+	
 }
 
 void CPlayer::Update(float fDeltaTime)
@@ -254,30 +277,12 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 {
 	m_wKeyState |= static_cast<int>(key);
 
-	/*
-	cs_key_input Key_button;
-	Key_button.type = CS_KEYTYPE;
-	Key_button.size = sizeof(cs_key_input);
-	Key_button.key_button = m_wKeyState;
-	Key_button.fDistance = 50.0f;
-
-	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
-	*/
 }
 
 void CPlayer::SetKeyUp(KeyInput key)
 {
 	m_wKeyState ^= static_cast<int>(key);
 
-	/*
-	cs_key_input Key_button;
-	Key_button.type = CS_KEYTYPE;
-	Key_button.size = sizeof(cs_key_input);
-	Key_button.key_button = m_wKeyState;
-	Key_button.fDistance = 5.0f;
-
-	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
-	*/
 }
 
 void CPlayer::SetWorldMatrix(XMMATRIX world)

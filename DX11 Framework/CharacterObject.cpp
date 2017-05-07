@@ -39,7 +39,7 @@ BoundingOrientedBox CCharacterObject::GetPartsBoundingOBox(UINT index) const
 void CCharacterObject::Firing()
 {
 	SetAnimation(AnimationData::CharacterAnim::eFire);
-	m_pWeapon->Firing(XMLoadFloat3(&m_f3FiringDirection));
+	m_pWeapon->Firing(GetLook());
 }
 
 void CCharacterObject::Running()
