@@ -34,62 +34,58 @@ void CPlayer::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 	if (m_pCamera) m_pCamera->UpdateShaderVariables(pd3dDeviceContext);
 }
 
-void CPlayer::UpdateKeyInput(float fDeltaTime)			// FSM으로 제작하여 상호 관계를 확실히 해야함. 일단 임시로 제작
+void CPlayer::UpdateKeyInput(float fDeltaTime)
 {
+	// Death Check
+	if (m_pCharacter->GetIsDeath())
+		return;
+
 	// Keyboard
 	XMVECTOR d3dxvShift = XMVectorZero();
 	XMVECTOR relativeVelocity = XMVectorZero();
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eForward)) {
 		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
-
-		if(m_pCharacter->GetAnimationEnum(AnimationData::Parts::LowerBody) != AnimationData::CharacterAnim::eRun)
-			m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
 		relativeVelocity += XMVectorSet(0, 0, 1, 0);
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eBackward)) {
 		d3dxvShift -= XMLoadFloat3(&m_d3dxvLook);
-		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eBackwardWalk);
 		relativeVelocity += XMVectorSet(0, 0, -1, 0);
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeft)) {
 		d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
-		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
 		relativeVelocity += XMVectorSet(-1, 0, 0, 0);
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRight)) {
 		d3dxvShift += XMLoadFloat3(&m_d3dxvRight);
-		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
 		relativeVelocity += XMVectorSet(1, 0, 0, 0);
 	}
 
+	if (m_wKeyState & static_cast<int>(KeyInput::eReload)) {
+		m_pCharacter->SetIsReload(true);		
+	}
+
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
-//		d3dxvShift *= 10;		// m_fSpeed 로 변경해야함
-		d3dxvShift *= 3;		// m_fSpeed 로 변경해야함
+		d3dxvShift += XMLoadFloat3(&m_d3dxvLook) * 3;
 		m_pCharacter->Running();
+	}
+	else {
+		m_pCharacter->SetIsRun(false);
 	}
 
 	// Mouse
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)) {
-		m_pCharacter->Firing();
+		m_pCharacter->SetIsFire(true);
 	}
+	else {
+		m_pCharacter->SetIsFire(false);
+	}
+
 	if (m_wKeyState & static_cast<int>(KeyInput::eRightMouse)) {
 	
-	}
-
-	/*	- FSM 만들고 사용하기
-	if ((m_wKeyState & static_cast<int>(KeyInput::eForward))
-		&& (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)))
-		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalkingFire);
-		*/
-
-
-
-	if (m_wKeyState == 0) { 
-		m_pCharacter->SetAnimation(AnimationData::CharacterAnim::eIdle);
 	}
 
 	d3dxvShift *= m_fSpeed * fDeltaTime;
@@ -273,7 +269,9 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 	if (m_pCamera) delete m_pCamera;
 
 	return(pNewCamera);
-}void CPlayer::SetKeyDown(KeyInput key)
+}
+
+void CPlayer::SetKeyDown(KeyInput key)
 {
 	m_wKeyState |= static_cast<int>(key);
 

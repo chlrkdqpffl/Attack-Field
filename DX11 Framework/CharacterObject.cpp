@@ -3,18 +3,21 @@
 
 CCharacterObject::CCharacterObject()
 {
-	for (int i = 0; i < ePartsCount; ++i)
+	for (int i = 0; i < static_cast<int>(ChracterBoundingBoxParts::ePartsCount); ++i)
 		m_pPartsBoundingBoxMesh[i] = nullptr;
+
+	Revival();
 }
 
 CCharacterObject::~CCharacterObject()
 {
 	SafeDelete(m_pWeapon);
 
-	for (int i = 0; i < ePartsCount; ++i)
+	for (int i = 0; i < static_cast<int>(ChracterBoundingBoxParts::ePartsCount); ++i)
 		SafeDelete(m_pPartsBoundingBoxMesh[i]);
 
-	SafeDelete(m_pStateMachine);
+	SafeDelete(m_pStateUpper);
+	SafeDelete(m_pStateLower);
 }
 
 void CCharacterObject::CreateObjectData(ID3D11Device *pd3dDevice)
@@ -26,8 +29,9 @@ void CCharacterObject::CreateObjectData(ID3D11Device *pd3dDevice)
 
 void CCharacterObject::CreateStateMachine()
 {
-	m_pStateMachine = new CStateMachine<CCharacterObject>(this);
-}
+	m_pStateUpper = new CStateMachine<CCharacterObject>(this, AnimationData::Parts::UpperBody);
+	m_pStateLower = new CStateMachine<CCharacterObject>(this, AnimationData::Parts::LowerBody);
+}	
 
 BoundingOrientedBox CCharacterObject::GetPartsBoundingOBox(UINT index) const
 {
@@ -38,14 +42,37 @@ BoundingOrientedBox CCharacterObject::GetPartsBoundingOBox(UINT index) const
 
 void CCharacterObject::Firing()
 {
-	SetAnimation(AnimationData::CharacterAnim::eFire);
-	m_pWeapon->Firing(GetLook());
+	if (m_pWeapon->IsExistBullet())
+		m_pWeapon->Firing(XMLoadFloat3(&m_f3FiringDirection));
+	else
+		m_bIsReload = true;
 }
 
 void CCharacterObject::Running()
 {
-	SetAnimation(AnimationData::CharacterAnim::eRun);
+	m_bIsRun = true;
 //	m_pPlayer->GetCamera()->Move(GetLook() * 1);			// 추후 구현
+}
+
+void CCharacterObject::Reloading()
+{
+	m_pWeapon->Reloading();
+}
+
+void CCharacterObject::Revival()
+{
+	m_nLife = 100;
+	m_bIsDeath = false;
+}
+
+void CCharacterObject::DamagedCharacter(UINT damage)
+{
+	if (m_nLife <= damage) {
+		m_nLife = 0;
+		m_bIsDeath = true;
+	}
+	else
+		m_nLife -= damage;
 }
 
 void CCharacterObject::OnCollisionCheck()
@@ -163,7 +190,12 @@ void CCharacterObject::Update(float fDeltaTime)
 		m_pPlayer->UpdateKeyInput(fDeltaTime);
 		OnCollisionCheck();
 	}
-	m_pStateMachine->Update();
+
+//	cout << "상체 머신 ";
+	m_pStateUpper->Update();
+//	cout << "하체 머신 ";
+	m_pStateLower->Update();
+//	cout << endl;
 
 	if (m_pPlayer) {
 		m_pPlayer->Update(fDeltaTime);
@@ -185,24 +217,24 @@ void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *p
 
 void CCharacterObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
 {
-	m_mtxPartsBoundingWorld[BoundingBoxParts::eBody] = GetSkinnedMesh()->GetFinalBoneMtx(2) * m_mtxWorld;
-	m_mtxPartsBoundingWorld[BoundingBoxParts::eHead] = GetSkinnedMesh()->GetFinalBoneMtx(5) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eBody)] = GetSkinnedMesh()->GetFinalBoneMtx(2) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eHead)] = GetSkinnedMesh()->GetFinalBoneMtx(5) * m_mtxWorld;
 
 	// --- Arm --- //
-	m_mtxPartsBoundingWorld[BoundingBoxParts::eLeftUpArm] = GetSkinnedMesh()->GetFinalBoneMtx(7) * m_mtxWorld;
-	m_mtxPartsBoundingWorld[BoundingBoxParts::eLeftDownArm] = GetSkinnedMesh()->GetFinalBoneMtx(8) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eLeftUpArm)] = GetSkinnedMesh()->GetFinalBoneMtx(7) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eLeftDownArm)] = GetSkinnedMesh()->GetFinalBoneMtx(8) * m_mtxWorld;
 
-	m_mtxPartsBoundingWorld[BoundingBoxParts::eRightUpArm] = GetSkinnedMesh()->GetFinalBoneMtx(20) * m_mtxWorld;
-	m_mtxPartsBoundingWorld[BoundingBoxParts::eRightDownArm] = GetSkinnedMesh()->GetFinalBoneMtx(21) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eRightUpArm)] = GetSkinnedMesh()->GetFinalBoneMtx(20) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eRightDownArm)] = GetSkinnedMesh()->GetFinalBoneMtx(21) * m_mtxWorld;
 
 	// --- Leg --- //
-	m_mtxPartsBoundingWorld[BoundingBoxParts::eLeftUpLeg] = GetSkinnedMesh()->GetFinalBoneMtx(32) * m_mtxWorld;
-	m_mtxPartsBoundingWorld[BoundingBoxParts::eLeftDownLeg] = GetSkinnedMesh()->GetFinalBoneMtx(33) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eLeftUpLeg)] = GetSkinnedMesh()->GetFinalBoneMtx(32) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eLeftDownLeg)] = GetSkinnedMesh()->GetFinalBoneMtx(33) * m_mtxWorld;
 
-	m_mtxPartsBoundingWorld[BoundingBoxParts::eRightUpLeg] = GetSkinnedMesh()->GetFinalBoneMtx(36) * m_mtxWorld;
-	m_mtxPartsBoundingWorld[BoundingBoxParts::eRightDownLeg] = GetSkinnedMesh()->GetFinalBoneMtx(37) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eRightUpLeg)] = GetSkinnedMesh()->GetFinalBoneMtx(36) * m_mtxWorld;
+	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eRightDownLeg)] = GetSkinnedMesh()->GetFinalBoneMtx(37) * m_mtxWorld;
 	
-	for (int i = 0; i < ePartsCount; ++i) {
+	for (int i = 0; i < static_cast<int>(ChracterBoundingBoxParts::ePartsCount); ++i) {
 		if (m_pPartsBoundingBoxMesh[i]) {
 			BoundingOrientedBox bcObbox;
 			XMMATRIX mtxBoundingBoxWorld = m_mtxPartsBoundingWorld[i];

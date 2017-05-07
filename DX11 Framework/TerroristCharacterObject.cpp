@@ -45,11 +45,27 @@ void CTerroristCharacterObject::CreateMaterial()
 
 void CTerroristCharacterObject::CreateAnimation()
 {
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,			AnimationTrack("Idle"),			AnimationData::Type::eLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eFire,			AnimationTrack("StandingFire"), AnimationData::Type::eLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eForwardWalk,		AnimationTrack("Walk"),			AnimationData::Type::eLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eBackwardWalk,	AnimationTrack("Walk"),			AnimationData::Type::eInverseLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eRun,				AnimationTrack("Run"),			AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,				AnimationTrack("Idle"),				AnimationData::Type::eLoop));
+
+	// Walk
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Left,			AnimationTrack("Walk_Left"),		AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Right,			AnimationTrack("Walk_Left"),		AnimationData::Type::eInverseLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_ForwardLeft,	AnimationTrack("Walk_ForwardLeft"),	AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_BackwardRight,	AnimationTrack("Walk_ForwardLeft"), AnimationData::Type::eInverseLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Forward,		AnimationTrack("Walk_Forward"),		AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Backward,		AnimationTrack("Walk_Forward"),		AnimationData::Type::eInverseLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_ForwardRight,	AnimationTrack("Walk_ForwardRight"), AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_BackwardLeft,	AnimationTrack("Walk_ForwardRight"), AnimationData::Type::eInverseLoop));
+
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eRun,					AnimationTrack("Run"),				AnimationData::Type::eLoop));
+
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eFire,				AnimationTrack("Fire"),				AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eReload,				AnimationTrack("Reload"),			AnimationData::Type::eOnce));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eDeath_Head,			AnimationTrack("Death_Head"),		AnimationData::Type::eOnce));
+	
+
+
+
 	/*
 	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,				AnimationTrack("Idle"), AnimationData::Type::eLoop));
 	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eForwardWalk,		AnimationTrack("Walk"), AnimationData::Type::eLoop));
@@ -72,52 +88,52 @@ void CTerroristCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)
 void CTerroristCharacterObject::CreateBoundingBox(ID3D11Device *pd3dDevice)
 {
 	// ----- Bounding Box Size ----- //
-	m_bcPartsBoundingOBox[BoundingBoxParts::eBody].Center = XMFLOAT3(0.00f, 1.95f, 0.0f);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eBody].Extents = XMFLOAT3(0.3f, 0.55f, 0.25f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eBody)].Center = XMFLOAT3(0.00f, 1.95f, 0.0f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eBody)].Extents = XMFLOAT3(0.3f, 0.55f, 0.25f);
 
-	m_bcPartsBoundingOBox[BoundingBoxParts::eHead].Center = XMFLOAT3(0, 2.75f, 0);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eHead].Extents = XMFLOAT3(0.15f, 0.18f, 0.15f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eHead)].Center = XMFLOAT3(0, 2.75f, 0);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eHead)].Extents = XMFLOAT3(0.15f, 0.18f, 0.15f);
 
 	// --- Arm --- //
-	m_bcPartsBoundingOBox[BoundingBoxParts::eLeftUpArm].Center = XMFLOAT3(-0.5f, 2.2f, -0.1f);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eLeftUpArm].Extents = XMFLOAT3(0.08f, 0.3f, 0.08f);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eLeftDownArm].Center = XMFLOAT3(-0.8f, 1.8f, -0.1f);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eLeftDownArm].Extents = XMFLOAT3(0.1f, 0.3f, 0.1f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftUpArm)].Center = XMFLOAT3(-0.5f, 2.2f, -0.1f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftUpArm)].Extents = XMFLOAT3(0.08f, 0.3f, 0.08f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftDownArm)].Center = XMFLOAT3(-0.8f, 1.8f, -0.1f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftDownArm)].Extents = XMFLOAT3(0.1f, 0.3f, 0.1f);
 
-	m_bcPartsBoundingOBox[BoundingBoxParts::eRightUpArm].Center = XMFLOAT3(0.5f, 2.15f, -0.2f);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eRightUpArm].Extents = XMFLOAT3(0.1f, 0.3f, 0.1f);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eRightDownArm].Center = XMFLOAT3(0.8f, 1.75f, -0.15f);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eRightDownArm].Extents = XMFLOAT3(0.1f, 0.3f, 0.1f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightUpArm)].Center = XMFLOAT3(0.5f, 2.15f, -0.2f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightUpArm)].Extents = XMFLOAT3(0.1f, 0.3f, 0.1f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightDownArm)].Center = XMFLOAT3(0.8f, 1.75f, -0.15f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightDownArm)].Extents = XMFLOAT3(0.1f, 0.3f, 0.1f);
 
 	// --- Leg --- //
-	m_bcPartsBoundingOBox[BoundingBoxParts::eLeftUpLeg].Center = XMFLOAT3(-0.2f, 1.1f, 0.0f);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eLeftUpLeg].Extents = XMFLOAT3(0.15f, 0.3f, 0.17f);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eLeftDownLeg].Center = XMFLOAT3(-0.175f, 0.475f, 0.0f);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eLeftDownLeg].Extents = XMFLOAT3(0.12f, 0.35f, 0.17f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftUpLeg)].Center = XMFLOAT3(-0.2f, 1.1f, 0.0f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftUpLeg)].Extents = XMFLOAT3(0.15f, 0.3f, 0.17f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftDownLeg)].Center = XMFLOAT3(-0.175f, 0.475f, 0.0f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftDownLeg)].Extents = XMFLOAT3(0.12f, 0.35f, 0.17f);
 
 
-	m_bcPartsBoundingOBox[BoundingBoxParts::eRightUpLeg].Center = XMFLOAT3(0.175f, 1.1f, 0.0f);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eRightUpLeg].Extents = XMFLOAT3(0.15f, 0.3f, 0.17f);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eRightDownLeg].Center = XMFLOAT3(0.175f, 0.45f, 0.0f);
-	m_bcPartsBoundingOBox[BoundingBoxParts::eRightDownLeg].Extents = XMFLOAT3(0.12f, 0.35f, 0.17f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightUpLeg)].Center = XMFLOAT3(0.175f, 1.1f, 0.0f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightUpLeg)].Extents = XMFLOAT3(0.15f, 0.3f, 0.17f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightDownLeg)].Center = XMFLOAT3(0.175f, 0.45f, 0.0f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightDownLeg)].Extents = XMFLOAT3(0.12f, 0.35f, 0.17f);
 
 
 	// ----- Bounding Box Mesh ----- //
-	m_pPartsBoundingBoxMesh[BoundingBoxParts::eBody] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eBody]);
-	m_pPartsBoundingBoxMesh[BoundingBoxParts::eHead] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eHead]);
+	m_pPartsBoundingBoxMesh[static_cast<int>(ChracterBoundingBoxParts::eBody)] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eBody)]);
+	m_pPartsBoundingBoxMesh[static_cast<int>(ChracterBoundingBoxParts::eHead)] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eHead)]);
 
 	// --- Arm --- //
-	m_pPartsBoundingBoxMesh[BoundingBoxParts::eLeftUpArm] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eLeftUpArm]);
-	m_pPartsBoundingBoxMesh[BoundingBoxParts::eLeftDownArm] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eLeftDownArm]);
+	m_pPartsBoundingBoxMesh[static_cast<int>(ChracterBoundingBoxParts::eLeftUpArm)] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftUpArm)]);
+	m_pPartsBoundingBoxMesh[static_cast<int>(ChracterBoundingBoxParts::eLeftDownArm)] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftDownArm)]);
 
-	m_pPartsBoundingBoxMesh[BoundingBoxParts::eRightUpArm] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eRightUpArm]);
-	m_pPartsBoundingBoxMesh[BoundingBoxParts::eRightDownArm] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eRightDownArm]);
+	m_pPartsBoundingBoxMesh[static_cast<int>(ChracterBoundingBoxParts::eRightUpArm)] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightUpArm)]);
+	m_pPartsBoundingBoxMesh[static_cast<int>(ChracterBoundingBoxParts::eRightDownArm)] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightDownArm)]);
 
 	// --- Leg --- //
-	m_pPartsBoundingBoxMesh[BoundingBoxParts::eLeftUpLeg] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eLeftUpLeg]);
-	m_pPartsBoundingBoxMesh[BoundingBoxParts::eLeftDownLeg] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eLeftDownLeg]);
-	m_pPartsBoundingBoxMesh[BoundingBoxParts::eRightUpLeg] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eRightUpLeg]);
-	m_pPartsBoundingBoxMesh[BoundingBoxParts::eRightDownLeg] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[BoundingBoxParts::eRightDownLeg]);
+	m_pPartsBoundingBoxMesh[static_cast<int>(ChracterBoundingBoxParts::eLeftUpLeg)] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftUpLeg)]);
+	m_pPartsBoundingBoxMesh[static_cast<int>(ChracterBoundingBoxParts::eLeftDownLeg)] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftDownLeg)]);
+	m_pPartsBoundingBoxMesh[static_cast<int>(ChracterBoundingBoxParts::eRightUpLeg)] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightUpLeg)]);
+	m_pPartsBoundingBoxMesh[static_cast<int>(ChracterBoundingBoxParts::eRightDownLeg)] = new CBoundingBoxMesh(pd3dDevice, m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightDownLeg)]);
 	
 	m_pBoundingBoxMesh = new CBoundingBoxMesh(pd3dDevice, m_bcMeshBoundingBox);
 }

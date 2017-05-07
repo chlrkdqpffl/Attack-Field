@@ -194,13 +194,9 @@ bool CCollisionManager::RayCastCollisionToCharacter_Parts(CollisionInfo& info, X
 {
 	CCharacterObject* pCollisionObject = static_cast<CCharacterObject*>(info.m_pHitObject);
 
-
 	for (int i = 0; i < 10; ++i) {
 		if (pCollisionObject->GetPartsBoundingOBox(i).Intersects(originPos, direction, info.m_fDistance)) {
-			
-			if (i == 1) {
-			//	cout << "머리 충돌" << endl;
-			}
+			info.m_HitParts = static_cast<ChracterBoundingBoxParts>(i);
 			return true;
 		}
 	}

@@ -13,11 +13,12 @@ enum class KeyInput
 	eLeft			= 0x04,
 	eRight			= 0x08,
 	eRun			= 0x10,
+	eReload			= 0x20,
 
 	// Mouse
-	eLeftMouse		= 0x20,
-	eRightMouse		= 0x40,
-	eMouseWheel		= 0x80,		// 휠 위아래는 추후 구현
+	eLeftMouse		= 0x100,
+	eRightMouse		= 0x200,
+	eMouseWheel		= 0x400,		// 휠 위아래는 추후 구현
 
 };
 
@@ -44,6 +45,15 @@ enum class ShaderTag {
 	eNone,
 	eColor, eNormal, eTexture, eNormalTexture, eNormalTangentTexture,
 	eInstanceNormalTexture
+};
+
+enum class ChracterBoundingBoxParts 
+{
+	eBody, eHead,
+	eLeftUpArm, eLeftDownArm, eRightUpArm, eRightDownArm,
+	eLeftUpLeg, eLeftDownLeg, eRightUpLeg, eRightDownLeg,
+	
+	ePartsCount
 };
 
 // ========================================================================================================================== //
@@ -77,7 +87,7 @@ namespace AnimationData
 		eNone,
 		// --------------------------------------------------------- // 
 		// Whole Body
-		eIdle, eDeath, eRun,
+		eIdle, eDeath, eDeath_Head, eRun,
 
 		// --------------------------------------------------------- // 
 		// Upper Body
@@ -87,7 +97,7 @@ namespace AnimationData
 		// Lower Body
 		LowerBodyAnim = 1000,
 	
-		eLeftWalk, eForwardLeftWalk, eForwardWalk, eForwardRightWalk, eRightWalk, eRightBackwardWalk, eBackwardWalk, eBackwardLeftWalk	
+		eWalk_Left, eWalk_ForwardLeft, eWalk_Forward, eWalk_ForwardRight, eWalk_Right, eWalk_BackwardRight, eWalk_Backward, eWalk_BackwardLeft,
 	};
 }
 
