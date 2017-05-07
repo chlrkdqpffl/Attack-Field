@@ -36,8 +36,19 @@ public:
 		else
 			return m_pLowerController->GetAnimEnum();
 	}
-	
+	bool GetControllerActive(AnimationData::Parts parts) const {
+		if (parts == AnimationData::Parts::UpperBody)
+			return m_pUpperController->GetActive();
+		else
+			return m_pLowerController->GetActive();
+	}
+	void SetControllerActive(AnimationData::Parts parts, bool set) const {
+		if (parts == AnimationData::Parts::UpperBody)
+			m_pUpperController->SetActive(set);
+		else
+			m_pLowerController->SetActive(set);
+	}
 	void SetMesh(CFbxModelSkinnedMesh* mesh);
 	void SetAnimation(AnimationData::CharacterAnim anim, float speed = 1.0f);
+	void SetAnimation(AnimationData::Parts parts, AnimationData::CharacterAnim anim, float speed = 1.0f);
 };
-

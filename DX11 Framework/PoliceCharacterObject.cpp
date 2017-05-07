@@ -12,7 +12,7 @@ CPoliceCharacterObject::~CPoliceCharacterObject()
 
 void CPoliceCharacterObject::CreateMesh(ID3D11Device *pd3dDevice)
 {
-	CFbxModelSkinnedMesh* pCharacterMesh = new CFbxModelSkinnedMesh(pd3dDevice, MeshTag::ePolice);
+	CFbxModelSkinnedMesh* pCharacterMesh = new CFbxModelSkinnedMesh(pd3dDevice, MeshTag::eTest2);
 	pCharacterMesh->Initialize(pd3dDevice);
 
 	SetMesh(pCharacterMesh);
@@ -29,7 +29,7 @@ void CPoliceCharacterObject::CreateMaterial()
 	CTexture *pCharacterTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
 
 	m_pMaterial = new CMaterial();
-	pCharacterTexture->SetTexture(0, TextureTag::ePoliceD);
+	pCharacterTexture->SetTexture(0, TextureTag::eTerroristD);
 //	pCharacterTexture->SetTexture(1, TextureTag::eTerroristND);
 	pCharacterTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
 
@@ -38,11 +38,7 @@ void CPoliceCharacterObject::CreateMaterial()
 
 void CPoliceCharacterObject::CreateAnimation()
 {
-//	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,				AnimationTrack("Take_001"), AnimationData::Type::eLoop));
-//	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,				AnimationTrack("Idle"), AnimationData::Type::eLoop));
-//	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk,				AnimationTrack("Walk"), AnimationData::Type::eLoop));
-//	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eRun,				AnimationTrack("Run"), AnimationData::Type::eLoop));
-//	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eStandingFire,	AnimationTrack("StandingFire"), AnimationData::Type::eOnce));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle, AnimationTrack("Take_001"), AnimationData::Type::eLoop));
 }
 
 void CPoliceCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)

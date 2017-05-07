@@ -11,14 +11,6 @@ CWeapon::CWeapon(CCharacterObject* pOwner)
 
 CWeapon::~CWeapon()
 {
-	for (auto& bullet : m_vecBulletContainer)
-		SafeDelete(bullet);
-}
-
-void CWeapon::CreateObjectData(ID3D11Device *pd3dDevice)
-{
-	CGameObject::CreateObjectData(pd3dDevice);
-	CreateBulletPool(pd3dDevice);
 }
 
 void CWeapon::CreateFireDirectionLine(XMVECTOR direction)
@@ -36,47 +28,49 @@ void CWeapon::Firing(XMVECTOR direction)
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed) {
 		m_dwLastAttackTime = GetTickCount();
 
+		m_nhasBulletCount--;
+
 		CollisionInfo info;
 		if (COLLISION_MGR->RayCastCollisionToCharacter(info, GetvPosition(), direction)) {
-			info.m_pHitObject->SetCollision(true);
+			if (info.m_fDistance < m_fRange) {
+				// 최종 충돌 확인
+				info.m_pHitObject->SetCollision(true);
+
+				CCharacterObject* hitCharacter = static_cast<CCharacterObject*>(info.m_pHitObject);
+				// Head Shot 판정
+				if (info.m_HitParts == ChracterBoundingBoxParts::eHead) {
+					cout << "적중 전 체력 : " << hitCharacter->GetLife() << endl;
+					cout << "헤드샷" << endl;
+					hitCharacter->DamagedCharacter(m_fDamage * 2.5f);
+
+					cout << "적중 후 체력 : " << hitCharacter->GetLife() << endl;
+				}
+				else {
+					cout << "적중 전 체력 : " << hitCharacter->GetLife() << endl;
+					hitCharacter->DamagedCharacter(m_fDamage);
+
+					cout << "적중 후 체력 : " << hitCharacter->GetLife() << endl;
+				}
+			}
 		}
 	
 		CreateFireDirectionLine(direction);
-		/*
-		// 아래는 총알 렌더링시 필요한 코드
-		for (auto bullet : m_vecBulletContainer) {
-			if (false == bullet->GetActive()) {
-				bullet->SetActive(true);
-				bullet->SetPosition(GetPosition());
-
-				bullet->SetvLook(direction);
-				break;
-			}
-		}
-		*/
 	}
+}
+
+void CWeapon::Reloading()
+{
+	cout << "총알 재장전 완료" << endl;
+	m_nhasBulletCount = m_nMaxhasBulletCount;
+
 }
 
 void CWeapon::Update(float fDeltaTime)
 {
 	CGameObject::Update(fDeltaTime);
 
-	for (auto bullet : m_vecBulletContainer) {
-		if (bullet->GetActive())
-			bullet->Update(fDeltaTime);
-	}
-
 	m_mtxParent = m_pOwner->GetSkinnedMesh()->GetFinalBoneMtx(m_nBoneIndex);
 	m_mtxWorld = m_mtxLocal * m_mtxParent * m_pOwner->m_mtxWorld;
 //	SetRotate(TWBAR_MGR->g_xmf3Rotate, true);
 //	SetPosition(TWBAR_MGR->g_xmf3Offset, true);
-}
-
-void CWeapon::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
-{
-	CGameObject::Render(pd3dDeviceContext, pCamera);
-
-	for (auto bullet : m_vecBulletContainer)
-		if (bullet->GetActive()) 
-			bullet->Render(pd3dDeviceContext, pCamera);
 }

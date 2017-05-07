@@ -16,11 +16,12 @@ CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner) : CWeapon(pOwner)
 
 	// Data Initialize
 	m_Type = WeaponData::Type::eRifle;
-	m_fDamage = 100.f;
-	m_fBulletMovingSpeed = 100.f;
-//	m_fBulletMovingSpeed = 0.f;
+	m_fDamage = 30.f;
 	m_fRange = 1000.f;
 	m_uiFireSpeed = 200;
+
+	m_nMaxhasBulletCount = 30;
+	m_nhasBulletCount = 30;
 
 }
 
@@ -52,17 +53,4 @@ void CRifleGunWeapon::CreateMaterial()
 	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
 	
 	m_pMaterial->SetTexture(pTexture);
-}
-
-void CRifleGunWeapon::CreateBulletPool(ID3D11Device* pd3dDevice)
-{
-	for (int i = 0; i < 20; ++i) {
-		CRifleBullet* pBulletObject = new CRifleBullet(m_fRange, m_fBulletMovingSpeed);
-		pBulletObject->CreateObjectData(pd3dDevice);
-		pBulletObject->CreateAxisObject(pd3dDevice);
-		pBulletObject->SetActive(false);
-
-		m_vecBulletContainer.push_back(pBulletObject);
-		COLLISION_MGR->m_vecDynamicMeshContainer.push_back(pBulletObject);
-	}
 }

@@ -11,5 +11,4 @@ public:
 	virtual void CreateMesh(ID3D11Device *pd3dDevice) override;
 	virtual void CreateShader(ID3D11Device *pd3dDevice) override;
 	virtual void CreateMaterial() override;
-	virtual void CreateBulletPool(ID3D11Device* pd3dDevice) override;
 };

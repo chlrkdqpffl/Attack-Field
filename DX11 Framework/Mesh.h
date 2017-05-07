@@ -25,12 +25,14 @@ class CGameObject;
 
 struct CollisionInfo
 {
-	CGameObject*	m_pHitObject = nullptr;
-	float			m_fDistance = FLT_MAX;
-	XMFLOAT3		m_f3HitNormal = XMFLOAT3(0, 0, 0);
-	DWORD			m_dwFaceIndex;
-	float			m_fU;
-	float			m_fV;
+	CGameObject*		m_pHitObject = nullptr;
+	float				m_fDistance = FLT_MAX;
+	XMFLOAT3			m_f3HitNormal = XMFLOAT3(0, 0, 0);
+	DWORD				m_dwFaceIndex;
+	float				m_fU;
+	float				m_fV;
+
+	ChracterBoundingBoxParts	m_HitParts;
 };
 
 //------------------------------------------------------------------------------------------------

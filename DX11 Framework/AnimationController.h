@@ -16,6 +16,7 @@ struct AnimationTrack
 
 class CAnimationController
 {
+	bool						m_isActive = true;
 	float						m_fTimePos = 0.0f;
 	CFbxModelSkinnedMesh*		m_pSkinnedMesh = nullptr;
 	AnimationData::Parts		m_typeParts = AnimationData::Parts::Defalut;
@@ -44,4 +45,6 @@ public:
 	void SetAnimation(AnimationData::CharacterAnim anim, float speed = 1.0f);
 	float GetTimePos() const { return m_fTimePos; }
 	void SetTimePos(float timePos) { m_fTimePos = timePos; }
+	bool GetActive() const { return m_isActive; }
+	void SetActive(bool set) { m_isActive = set; }
 };

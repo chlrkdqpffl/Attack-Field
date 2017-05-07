@@ -7,6 +7,7 @@ struct VS_CB_SKINNED
 	XMFLOAT4X4	m_mtxBoneTransform[MAXBONECOUNT];
 };
 
+/*		// Tuple을 사용하기 때문에 bool 인자 전달이 안되어 현재는 함수에 전부 인자값을 전달하는 방식으로 채택
 struct BlendingInfo
 {
 	AnimationTrack			m_prevAnimation;
@@ -19,6 +20,7 @@ struct BlendingInfo
 	{
 	}
 };
+*/
 
 class CFbxModelSkinnedMesh : public CFbxModelMesh
 {
@@ -54,7 +56,6 @@ public:
 	void Interpolate_Blending(const CAnimationClip& dataA, bool& enable, const CAnimationClip& dataB, float timePos, AnimationData::Parts type, vector<XMFLOAT4X4>& boneTransforms);
 
 	// ----- Get, Setter ----- //
-	void CalcFinalTransformsBlending(BlendingInfo& blendingInfo, bool& bIsBlending);
 
 	void GetFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, const float& fTimePos);
 	void CalcFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, const float& fTimePos, AnimationData::Parts type);

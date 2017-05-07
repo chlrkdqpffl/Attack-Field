@@ -275,8 +275,8 @@ void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData,
 	XMVECTOR P1 = zero, P2 = zero;
 	XMVECTOR Q1 = zero, Q2 = zero;
 
-	//static float changeTime = 0.2f;		// 애니메이션 전환 시간 0.2초
-	static const float changeTime = 0.3f;
+	//static float changeTime = 0.2f;		
+	static const float changeTime = 0.2f;	// 애니메이션 전환 시간 0.3초
 	float blendFactor;
 	if (type == AnimationData::Parts::UpperBody) {
 		blendFactor = m_fUpperBlendingTimeElapsed / changeTime;
@@ -518,53 +518,6 @@ void CFbxModelSkinnedMesh::CalcFinalTransformsBlending(AnimationTrack& prevAnim,
 
 	// 아래의 코드는 Terrorist Character에만 적용되므로 다른 캐릭터를 사용한다면 해당 본을 찾아서 범위를 조절해야함
 	if (type == AnimationData::Parts::UpperBody) {
-		for (UINT i = 0; i < m_nBodyBoundaryIndex; ++i)
-		{
-			XMMATRIX mtxRotate = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch));
-			XMMATRIX mtxRotateHalf = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch / 2));	// 유연하게 회전하기 위해 추가 생성
-			XMMATRIX mtxOffset = XMLoadFloat4x4(&m_meshData.m_vecBoneOffsets[i]);
-			XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
-
-			if (i < 2)
-				m_vecFinalBone[i] = mtxOffset * mtxToRoot * mtxRotateHalf;
-			else
-				m_vecFinalBone[i] = mtxOffset * mtxToRoot * mtxRotate;
-		}
-	}
-	else {
-		for (UINT i = m_nBodyBoundaryIndex; i < m_meshData.m_nBoneCount; ++i)
-		{
-			XMMATRIX mtxOffset = XMLoadFloat4x4(&m_meshData.m_vecBoneOffsets[i]);
-			XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
-
-			m_vecFinalBone[i] = mtxOffset * mtxToRoot;
-		}
-	}
-}
-
-
-
-void CFbxModelSkinnedMesh::CalcFinalTransformsBlending(BlendingInfo& blendingData, bool& bIsBlending)
-{
-	vector<XMFLOAT4X4> toRootTransforms(m_meshData.m_nBoneCount);
-
-	auto currClip = m_meshData.m_mapAnimationClip.find(blendingData.m_CurrAnimation.m_strClipName);
-
-	if (bIsBlending == true) {
-		auto pervClip = m_meshData.m_mapAnimationClip.find(blendingData.m_prevAnimation.m_strClipName);
-		Interpolate_Blending(pervClip->second, bIsBlending, currClip->second, blendingData.m_fTimePos, blendingData.m_typeParts, toRootTransforms);
-	}
-	else {
-		if (blendingData.m_typeParts == AnimationData::Parts::UpperBody)
-			currClip->second.Interpolate(blendingData.m_fTimePos, 0, m_nBodyBoundaryIndex, toRootTransforms);
-		else
-			currClip->second.Interpolate(blendingData.m_fTimePos, m_nBodyBoundaryIndex, m_meshData.m_nBoneCount, toRootTransforms);
-	}
-	m_vecFinalBone.resize(m_meshData.m_nBoneCount);
-
-
-	// 아래의 코드는 Terrorist Character에만 적용되므로 다른 캐릭터를 사용한다면 해당 본을 찾아서 범위를 조절해야함
-	if (blendingData.m_typeParts == AnimationData::Parts::UpperBody) {
 		for (UINT i = 0; i < m_nBodyBoundaryIndex; ++i)
 		{
 			XMMATRIX mtxRotate = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch));

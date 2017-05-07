@@ -15,7 +15,6 @@ void CAnimationController::SetAnimation(AnimationData::CharacterAnim anim, float
 {
 	if (get<0>(m_currAnimState) == anim)
 		return;
-
 	for (auto& animState : m_animaitionTupleVector)
 		if (get<0>(animState) == anim) {
 
@@ -27,10 +26,10 @@ void CAnimationController::SetAnimation(AnimationData::CharacterAnim anim, float
 			get<1>(m_currAnimState).m_fSpeed = speed;
 			m_pSkinnedMesh->SetClipName(get<1>(m_currAnimState).m_strClipName);
 
-//			if(get<0>(m_prevAnimState) != AnimationData::CharacterAnim::eNone)		// 제일 처음 애니매이션은 블렌딩에 포함 X
-//				m_bIsBlending = true;
 			return;
 		}
+
+	cout << "No Animation Data!! -  " << static_cast<int>(anim) << endl;
 }
 
 void CAnimationController::AddAnimation(tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> anim)
@@ -64,12 +63,9 @@ void CAnimationController::UpdateTime(float fDeltaTime)
 		break;
 	case AnimationData::Type::eOnce:
 		m_fTimePos += timeElapse;
-
-		if (m_fTimePos  > endTime) {
-			SetAnimation(AnimationData::CharacterAnim::eIdle);
-			m_fTimePos = 0.0f;
-		}
-
+		if (m_fTimePos > endTime)
+			//SetAnimation(AnimationData::CharacterAnim::eIdle);
+			m_isActive = false;
 		break;
 	case AnimationData::Type::ePingPong:
 		static bool isReverse = false;
@@ -84,10 +80,10 @@ void CAnimationController::UpdateTime(float fDeltaTime)
 		else if (isReverse == true) {
 			m_fTimePos -= timeElapse;
 
-			if (m_fTimePos  < 0.0f) {
+			if (m_fTimePos < 0.0f) {
 				isReverse = false;
-				m_fTimePos = 0.0f;
 				SetAnimation(AnimationData::CharacterAnim::eIdle);
+				m_isActive = false;
 			}
 		}
 		break;
@@ -96,10 +92,10 @@ void CAnimationController::UpdateTime(float fDeltaTime)
 
 void CAnimationController::Update(float fDeltaTime)
 {
-	UpdateTime(fDeltaTime);
-//	m_pSkinnedMesh->GetFinalTransformsBlending(get<1>(m_prevAnimState), get<1>(m_currAnimState), m_fTimePos);
-	m_pSkinnedMesh->CalcFinalTransformsBlending(get<1>(m_prevAnimState), get<1>(m_currAnimState), m_fTimePos, m_typeParts);
-//	m_pSkinnedMesh->CalcFinalTransformsBlending(BlendingInfo(get<1>(m_prevAnimState), get<1>(m_currAnimState), m_fTimePos, m_typeParts), m_bIsBlending);
+	if (m_isActive) {
+		UpdateTime(fDeltaTime);
+		m_pSkinnedMesh->CalcFinalTransformsBlending(get<1>(m_prevAnimState), get<1>(m_currAnimState), m_fTimePos, m_typeParts);
+	}
 }
 
 void CAnimationController::UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext)

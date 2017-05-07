@@ -67,6 +67,9 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			case VK_SHIFT:
 				m_pPlayer->SetKeyDown(KeyInput::eRun);
 				break;
+			case VK_R:
+				m_pPlayer->SetKeyDown(KeyInput::eReload);
+				break;
 			case VK_F1:
 			case VK_F2:
 			case VK_F3:
@@ -86,18 +89,15 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_Z:
 				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eIdle);
-				cout << "아이들로 전환" << endl;
 				break;
 			case VK_X:
-				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
-				cout << "걷기로 전환" << endl;
+				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eWalk_Forward);
 				break;
 			case VK_C:
-				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eRun);
-				cout << "달리기로 전환" << endl;
+				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eReload);
 				break;
 			case VK_V:
-				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eFire);
+				m_vecCharacterContainer.back()->SetIsDeath(true);
 				break;
 			}
 			break;
@@ -114,6 +114,9 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_D:
 				m_pPlayer->SetKeyUp(KeyInput::eRight);
+				break;
+			case VK_R:
+				m_pPlayer->SetKeyUp(KeyInput::eReload);
 				break;
 			case VK_SHIFT:
 				m_pPlayer->SetKeyUp(KeyInput::eRun);
@@ -336,26 +339,14 @@ void CMainScene::Initialize()
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
 
-	pCharacter->SetPosition(10.0f, 2.0f, 0.0f);
+	pCharacter->SetPosition(50.0f, 2.0f, 0.0f);
 
 	m_vecBBoxRenderContainer.push_back(pCharacter);
 	m_vecCharacterContainer.push_back(pCharacter);
 
 	COLLISION_MGR->m_vecCharacterContainer.push_back(pCharacter);
-	
 #pragma region [Create Shader Object]
-	// ----- Test ----- //
-	CFbxModelMesh* pTestMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eTest2);
-	pTestMesh->Initialize(m_pd3dDevice);
-
-
-	CGameObject* pTestObject= new CGameObject();
-	pTestObject->SetMaterial(1, TextureTag::eTerroristD);
-	pTestObject->SetMesh(pTestMesh);
-	pTestObject->CreateBoundingBox(m_pd3dDevice);
-	pTestObject->CreateAxisObject(m_pd3dDevice);
 	
-	AddShaderObject(ShaderTag::eNormalTangentTexture, pTestObject);
 #pragma endregion
 
 	/*
@@ -865,7 +856,7 @@ void CMainScene::CreateUIImage()
 
 	// Aim
 	CUIObject* pAimUI = new CUIObject(TextureTag::eAim);
-	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 5, FRAME_BUFFER_HEIGHT / 2 - 15};		// 오프셋 (1, -10)
+	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 19, FRAME_BUFFER_HEIGHT / 2 };		// 오프셋 (1, -10)			// +가 오른쪽, +가 아래쪽
 	pAimUI->Initialize(m_pd3dDevice, POINT{ aimingPos.x - 20, aimingPos.y - 20 }, POINT{ aimingPos.x + 20, aimingPos.y + 20 }, 0.0f);
 	m_pUIManager->AddUIObject(pAimUI); 
 	pAimUI->SetActive(false);

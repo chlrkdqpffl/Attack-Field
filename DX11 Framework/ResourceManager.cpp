@@ -149,8 +149,7 @@ void CResourceManager::LoadCharacterData()
 
 
 	AddResourece(MeshTag::eTerrorist,			"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
-//	AddResourece(MeshTag::eTerrorist,			"../Assets/FBX Model/Character/Terrorist/Terrorist2.model");
-//	AddResourece(MeshTag::eTerrorist,			"../Assets/FBX Model/Character/Terrorist/Test.model");
+//	AddResourece(MeshTag::eTerrorist,			"../Assets/FBX Model/Character/Terrorist/Idle.model");
 
 
 	AddResourece(MeshTag::eRifle,				"../Assets/FBX Model/Weapon/Rifle/rifle.model");
@@ -169,7 +168,7 @@ void CResourceManager::LoadEtcData()
 	AddResourece(TextureTag::eWallND,		"../Assets/Image/Miscellaneous/wall_NM_height.dds");
 
 	AddResourece(MeshTag::eTest,			"../Assets/FBX Model/character.model");
-	AddResourece(MeshTag::eTest2,			"../Assets/FBX Model/character(Anim).model");
+//	AddResourece(MeshTag::eTest2,			"../Assets/FBX Model/Character/Bumblebi_ani.model");
 }
 
 void CResourceManager::AddResourece(const TextureTag& textureTag, const string& source)
