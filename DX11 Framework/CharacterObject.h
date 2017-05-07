@@ -25,6 +25,11 @@ protected:
 	bool					m_bIsReload = false;
 	bool					m_bIsRun = false;
 
+	//충돌했을시..
+
+	bool					life;
+	BYTE					m_hp = 100;
+
 	// ----- Parts Collision Variable ----- // 
 	enum BoundingBoxParts { eBody, eHead, eLeftUpArm, eLeftDownArm, eRightUpArm, eRightDownArm, 
 		eLeftUpLeg, eLeftDownLeg, eRightUpLeg, eRightDownLeg, ePartsCount };
@@ -53,6 +58,8 @@ public:
 	void RotateFiringPos();
 	void Firing();
 	void Running();
+	DWORD GetHp() { return m_hp; }
+	void SetHp(BYTE hp) { m_hp = hp; }
 
 	// ----- Get, Setter ----- // 
 	void SetPlayer(CPlayer* pPlayer) { m_pPlayer = pPlayer; }

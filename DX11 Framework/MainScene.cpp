@@ -1095,11 +1095,13 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	string ppos;
 	string rotate;
 	string orotate;
+	string T_hp;
 	
 	// Draw Position
 	XMFLOAT3 playerPos = m_pPlayer->GetPosition();
 	XMFLOAT3 playerrotate = m_pPlayer->GetLook();
 	XMVECTOR otherrotate = GetCharcontainer()[1]->GetLook(false);
+	DWORD hp = GetCharcontainer()[1]->GetHp();
 
 	XMFLOAT3 temp;
 	XMStoreFloat3(&temp, otherrotate);
@@ -1107,9 +1109,12 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	ppos = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")\n";
 	rotate = "player rotate : (" + to_string(playerrotate.x) + ", " + to_string(playerrotate.y) + ", " + to_string(playerrotate.z) + ")\n";
 	orotate = "other rotate : (" + to_string(temp.x) + ", " + to_string(temp.y) + ", " + to_string(temp.z) + ")\n";
+	T_hp = " player Hp : (" + to_string(hp) + ")\n";
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(ppos), 30, 20, 50, 0xFFFFFFFF, FW1_LEFT);
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(rotate), 30, 20, 90, 0xFFFFFFFF, FW1_LEFT);
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(orotate), 30, 20, 140, 0xFFFFFFFF, FW1_LEFT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(T_hp), 30, 20, 180, 0xFFFFFFFF, FW1_LEFT);
+
 
 	// Draw Select Object
 	if (m_pSelectedObject) {

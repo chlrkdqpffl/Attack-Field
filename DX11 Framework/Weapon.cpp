@@ -37,8 +37,9 @@ void CWeapon::Firing(XMVECTOR direction)
 		m_dwLastAttackTime = GetTickCount();
 
 		CollisionInfo info;
-		if (COLLISION_MGR->RayCastCollisionToCharacter(info, GetvPosition(), direction)) {
-			info.m_pHitObject->SetCollision(true);
+		if (COLLISION_MGR->RayCastCollisionToCharacter(info, GetvPosition(), direction)) 
+		{
+			info.m_pHitObject->SetCollision(true);	//여기서 hp를 깎는다.
 		}
 	
 		CreateFireDirectionLine(direction);
