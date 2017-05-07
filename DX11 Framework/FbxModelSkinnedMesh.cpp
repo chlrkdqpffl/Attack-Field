@@ -159,31 +159,31 @@ void CFbxModelSkinnedMesh::ReleaseConstantBuffer()
 	ReleaseCOM(m_pd3dcbBones);
 }
 
-void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData, bool& enable, const CAnimationClip& targetData, float fTimePos, vector<XMFLOAT4X4>& boneTransforms) const
+void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData, bool& enable, const CAnimationClip& targetData, float fTimePos, vector<XMFLOAT4X4>& boneTransforms)
 {
 	// 각 애니메이션 본의 갯수가 틀림
 	assert(targetData.m_vecBoneData.size() == basicData.m_vecBoneData.size());
-	
+
 	XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 	XMVECTOR S1 = zero, S2 = zero;
 	XMVECTOR P1 = zero, P2 = zero;
 	XMVECTOR Q1 = zero, Q2 = zero;
 
-	static float addTime = 0.0f;
 	static float changeTime = 0.2f;		// 애니메이션 전환 시간 0.2초
-	float blendFactor = addTime / changeTime;
-	
-	addTime += SCENE_MGR->g_fDeltaTime;
+	float blendFactor = m_fUpperBlendingTimeElapsed / changeTime;
+
+	m_fUpperBlendingTimeElapsed += SCENE_MGR->g_fDeltaTime;
 
 	if (blendFactor > 1) 		// 애니메이션 전환 시점
 	{
-		addTime = 0.0f;
+		m_fUpperBlendingTimeElapsed = 0.0f;
 		enable = false;
 	}
 
 	float timeLerpPos = (fTimePos / targetData.GetClipEndTime()) * basicData.GetClipEndTime();
-	
-	for (UINT i = 0; i < targetData.m_vecBoneData.size(); ++i)
+
+
+	for (UINT i = 0; i < m_meshData.m_nBoneCount; ++i)
 	{
 		if (0 < basicData.m_vecBoneData[i].m_nAnimaitionKeys) {
 			vector<CKeyframeData> keyframeDataVector = basicData.m_vecBoneData[i].m_vecKeyframeData;
@@ -265,6 +265,206 @@ void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData,
 	}
 }
 
+void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData, bool& enable, const CAnimationClip& targetData, float fTimePos, AnimationData::Parts type, vector<XMFLOAT4X4>& boneTransforms)
+{
+	// 각 애니메이션 본의 갯수가 틀림
+	assert(targetData.m_vecBoneData.size() == basicData.m_vecBoneData.size());
+	
+	XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	XMVECTOR S1 = zero, S2 = zero;
+	XMVECTOR P1 = zero, P2 = zero;
+	XMVECTOR Q1 = zero, Q2 = zero;
+
+	//static float changeTime = 0.2f;		// 애니메이션 전환 시간 0.2초
+	static const float changeTime = 0.3f;
+	float blendFactor;
+	if (type == AnimationData::Parts::UpperBody) {
+		blendFactor = m_fUpperBlendingTimeElapsed / changeTime;
+		m_fUpperBlendingTimeElapsed += SCENE_MGR->g_fDeltaTime;
+	}
+	else {
+		blendFactor = m_fLowerBlendingTimeElapsed / changeTime;
+		m_fLowerBlendingTimeElapsed += SCENE_MGR->g_fDeltaTime;
+	}
+
+	if (blendFactor > 1) 		// 애니메이션 전환 시점
+	{
+		if (type == AnimationData::Parts::UpperBody)
+			m_fUpperBlendingTimeElapsed = 0.0f;
+		else
+			m_fLowerBlendingTimeElapsed = 0.0f;
+
+		enable = false;
+	}
+
+	float timeLerpPos = (fTimePos / targetData.GetClipEndTime()) * basicData.GetClipEndTime();
+	
+	if (type == AnimationData::Parts::UpperBody) {
+		for (UINT i = 0; i < m_nBodyBoundaryIndex; ++i)
+		{
+			if (0 < basicData.m_vecBoneData[i].m_nAnimaitionKeys) {
+				vector<CKeyframeData> keyframeDataVector = basicData.m_vecBoneData[i].m_vecKeyframeData;
+
+				for (UINT i = 0; i < keyframeDataVector.size() - 1; ++i)
+				{
+					if (keyframeDataVector[i].m_fAnimationTime <= timeLerpPos && timeLerpPos <= keyframeDataVector[i + 1].m_fAnimationTime)
+					{
+						float lerpPercent = (timeLerpPos - keyframeDataVector[i].m_fAnimationTime) / (keyframeDataVector[i + 1].m_fAnimationTime - keyframeDataVector[i].m_fAnimationTime);
+
+						XMVECTOR s0 = XMLoadFloat3(&keyframeDataVector[i].m_xmf3Scale);
+						XMVECTOR s1 = XMLoadFloat3(&keyframeDataVector[i + 1].m_xmf3Scale);
+
+						XMVECTOR p0 = XMLoadFloat3(&keyframeDataVector[i].m_xmf3Translate);
+						XMVECTOR p1 = XMLoadFloat3(&keyframeDataVector[i + 1].m_xmf3Translate);
+
+						XMVECTOR q0 = XMLoadFloat4(&keyframeDataVector[i].m_xmf4Quaternion);
+						XMVECTOR q1 = XMLoadFloat4(&keyframeDataVector[i + 1].m_xmf4Quaternion);
+
+						S1 = XMVectorLerp(s0, s1, lerpPercent);
+						P1 = XMVectorLerp(p0, p1, lerpPercent);
+						Q1 = XMQuaternionSlerp(q0, q1, lerpPercent);
+
+						break;
+					}
+				}
+			}
+			if (0 < targetData.m_vecBoneData[i].m_nAnimaitionKeys) {
+				vector<CKeyframeData> keyframeDataVector = targetData.m_vecBoneData[i].m_vecKeyframeData;
+
+				if (fTimePos <= keyframeDataVector.front().m_fAnimationTime)
+				{
+					S2 = XMLoadFloat3(&keyframeDataVector.front().m_xmf3Scale);
+					P2 = XMLoadFloat3(&keyframeDataVector.front().m_xmf3Translate);
+					Q2 = XMLoadFloat4(&keyframeDataVector.front().m_xmf4Quaternion);
+				}
+				else if (keyframeDataVector.back().m_fAnimationTime <= fTimePos)
+				{
+					S2 = XMLoadFloat3(&keyframeDataVector.back().m_xmf3Scale);
+					P2 = XMLoadFloat3(&keyframeDataVector.back().m_xmf3Translate);
+					Q2 = XMLoadFloat4(&keyframeDataVector.back().m_xmf4Quaternion);
+				}
+
+				for (UINT i = 0; i < keyframeDataVector.size() - 1; ++i)
+				{
+					if (keyframeDataVector[i].m_fAnimationTime <= fTimePos && fTimePos <= keyframeDataVector[i + 1].m_fAnimationTime)
+					{
+						float lerpPercent = (fTimePos - keyframeDataVector[i].m_fAnimationTime) / (keyframeDataVector[i + 1].m_fAnimationTime - keyframeDataVector[i].m_fAnimationTime);
+
+						XMVECTOR s0 = XMLoadFloat3(&keyframeDataVector[i].m_xmf3Scale);
+						XMVECTOR s1 = XMLoadFloat3(&keyframeDataVector[i + 1].m_xmf3Scale);
+
+						XMVECTOR p0 = XMLoadFloat3(&keyframeDataVector[i].m_xmf3Translate);
+						XMVECTOR p1 = XMLoadFloat3(&keyframeDataVector[i + 1].m_xmf3Translate);
+
+						XMVECTOR q0 = XMLoadFloat4(&keyframeDataVector[i].m_xmf4Quaternion);
+						XMVECTOR q1 = XMLoadFloat4(&keyframeDataVector[i + 1].m_xmf4Quaternion);
+
+						S2 = XMVectorLerp(s0, s1, lerpPercent);
+						P2 = XMVectorLerp(p0, p1, lerpPercent);
+						Q2 = XMQuaternionSlerp(q0, q1, lerpPercent);
+
+						break;
+					}
+				}
+			}
+			else if (XMVector3Equal(S1, zero))
+			{
+				XMMATRIX identityMtx = XMMatrixIdentity();
+				XMStoreFloat4x4(&boneTransforms[i], identityMtx);
+				return;
+			}
+
+			XMVECTOR S = XMVectorLerp(S1, S2, blendFactor);
+			XMVECTOR P = XMVectorLerp(P1, P2, blendFactor);
+			XMVECTOR Q = XMQuaternionSlerp(Q1, Q2, blendFactor);
+
+			XMStoreFloat4x4(&boneTransforms[i], XMMatrixAffineTransformation(S, zero, Q, P));
+		}
+	}
+	else {
+		for (UINT i = m_nBodyBoundaryIndex; i < m_meshData.m_nBoneCount; ++i)
+		{
+			if (0 < basicData.m_vecBoneData[i].m_nAnimaitionKeys) {
+				vector<CKeyframeData> keyframeDataVector = basicData.m_vecBoneData[i].m_vecKeyframeData;
+
+				for (UINT i = 0; i < keyframeDataVector.size() - 1; ++i)
+				{
+					if (keyframeDataVector[i].m_fAnimationTime <= timeLerpPos && timeLerpPos <= keyframeDataVector[i + 1].m_fAnimationTime)
+					{
+						float lerpPercent = (timeLerpPos - keyframeDataVector[i].m_fAnimationTime) / (keyframeDataVector[i + 1].m_fAnimationTime - keyframeDataVector[i].m_fAnimationTime);
+
+						XMVECTOR s0 = XMLoadFloat3(&keyframeDataVector[i].m_xmf3Scale);
+						XMVECTOR s1 = XMLoadFloat3(&keyframeDataVector[i + 1].m_xmf3Scale);
+
+						XMVECTOR p0 = XMLoadFloat3(&keyframeDataVector[i].m_xmf3Translate);
+						XMVECTOR p1 = XMLoadFloat3(&keyframeDataVector[i + 1].m_xmf3Translate);
+
+						XMVECTOR q0 = XMLoadFloat4(&keyframeDataVector[i].m_xmf4Quaternion);
+						XMVECTOR q1 = XMLoadFloat4(&keyframeDataVector[i + 1].m_xmf4Quaternion);
+
+						S1 = XMVectorLerp(s0, s1, lerpPercent);
+						P1 = XMVectorLerp(p0, p1, lerpPercent);
+						Q1 = XMQuaternionSlerp(q0, q1, lerpPercent);
+
+						break;
+					}
+				}
+			}
+			if (0 < targetData.m_vecBoneData[i].m_nAnimaitionKeys) {
+				vector<CKeyframeData> keyframeDataVector = targetData.m_vecBoneData[i].m_vecKeyframeData;
+
+				if (fTimePos <= keyframeDataVector.front().m_fAnimationTime)
+				{
+					S2 = XMLoadFloat3(&keyframeDataVector.front().m_xmf3Scale);
+					P2 = XMLoadFloat3(&keyframeDataVector.front().m_xmf3Translate);
+					Q2 = XMLoadFloat4(&keyframeDataVector.front().m_xmf4Quaternion);
+				}
+				else if (keyframeDataVector.back().m_fAnimationTime <= fTimePos)
+				{
+					S2 = XMLoadFloat3(&keyframeDataVector.back().m_xmf3Scale);
+					P2 = XMLoadFloat3(&keyframeDataVector.back().m_xmf3Translate);
+					Q2 = XMLoadFloat4(&keyframeDataVector.back().m_xmf4Quaternion);
+				}
+
+				for (UINT i = 0; i < keyframeDataVector.size() - 1; ++i)
+				{
+					if (keyframeDataVector[i].m_fAnimationTime <= fTimePos && fTimePos <= keyframeDataVector[i + 1].m_fAnimationTime)
+					{
+						float lerpPercent = (fTimePos - keyframeDataVector[i].m_fAnimationTime) / (keyframeDataVector[i + 1].m_fAnimationTime - keyframeDataVector[i].m_fAnimationTime);
+
+						XMVECTOR s0 = XMLoadFloat3(&keyframeDataVector[i].m_xmf3Scale);
+						XMVECTOR s1 = XMLoadFloat3(&keyframeDataVector[i + 1].m_xmf3Scale);
+
+						XMVECTOR p0 = XMLoadFloat3(&keyframeDataVector[i].m_xmf3Translate);
+						XMVECTOR p1 = XMLoadFloat3(&keyframeDataVector[i + 1].m_xmf3Translate);
+
+						XMVECTOR q0 = XMLoadFloat4(&keyframeDataVector[i].m_xmf4Quaternion);
+						XMVECTOR q1 = XMLoadFloat4(&keyframeDataVector[i + 1].m_xmf4Quaternion);
+
+						S2 = XMVectorLerp(s0, s1, lerpPercent);
+						P2 = XMVectorLerp(p0, p1, lerpPercent);
+						Q2 = XMQuaternionSlerp(q0, q1, lerpPercent);
+
+						break;
+					}
+				}
+			}
+			else if (XMVector3Equal(S1, zero))
+			{
+				XMMATRIX identityMtx = XMMatrixIdentity();
+				XMStoreFloat4x4(&boneTransforms[i], identityMtx);
+				return;
+			}
+
+			XMVECTOR S = XMVectorLerp(S1, S2, blendFactor);
+			XMVECTOR P = XMVectorLerp(P1, P2, blendFactor);
+			XMVECTOR Q = XMQuaternionSlerp(Q1, Q2, blendFactor);
+
+			XMStoreFloat4x4(&boneTransforms[i], XMMatrixAffineTransformation(S, zero, Q, P));
+		}
+	}
+}
+
 void CFbxModelSkinnedMesh::GetFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, const float& fTimePos)
 {
 	vector<XMFLOAT4X4> toRootTransforms(m_meshData.m_nBoneCount);
@@ -294,5 +494,97 @@ void CFbxModelSkinnedMesh::GetFinalTransformsBlending(AnimationTrack& prevAnim, 
 			m_vecFinalBone[i] = mtxOffset * mtxToRoot * mtxRotate;
 		else
 			m_vecFinalBone[i] = mtxOffset * mtxToRoot;
+	}
+}
+
+void CFbxModelSkinnedMesh::CalcFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, const float& fTimePos, AnimationData::Parts type)
+{
+	vector<XMFLOAT4X4> toRootTransforms(m_meshData.m_nBoneCount);
+
+	auto currClip = m_meshData.m_mapAnimationClip.find(currAnim.m_strClipName);
+
+	if (prevAnim.m_bEnable == true) {
+		auto pervClip = m_meshData.m_mapAnimationClip.find(prevAnim.m_strClipName);
+		Interpolate_Blending(pervClip->second, prevAnim.m_bEnable, currClip->second, fTimePos, type, toRootTransforms);
+	}
+	else {
+		if (type == AnimationData::Parts::UpperBody)
+			currClip->second.Interpolate(fTimePos, 0, m_nBodyBoundaryIndex, toRootTransforms);
+		else
+			currClip->second.Interpolate(fTimePos, m_nBodyBoundaryIndex, m_meshData.m_nBoneCount, toRootTransforms);
+	}
+	m_vecFinalBone.resize(m_meshData.m_nBoneCount);
+
+
+	// 아래의 코드는 Terrorist Character에만 적용되므로 다른 캐릭터를 사용한다면 해당 본을 찾아서 범위를 조절해야함
+	if (type == AnimationData::Parts::UpperBody) {
+		for (UINT i = 0; i < m_nBodyBoundaryIndex; ++i)
+		{
+			XMMATRIX mtxRotate = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch));
+			XMMATRIX mtxRotateHalf = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch / 2));	// 유연하게 회전하기 위해 추가 생성
+			XMMATRIX mtxOffset = XMLoadFloat4x4(&m_meshData.m_vecBoneOffsets[i]);
+			XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
+
+			if (i < 2)
+				m_vecFinalBone[i] = mtxOffset * mtxToRoot * mtxRotateHalf;
+			else
+				m_vecFinalBone[i] = mtxOffset * mtxToRoot * mtxRotate;
+		}
+	}
+	else {
+		for (UINT i = m_nBodyBoundaryIndex; i < m_meshData.m_nBoneCount; ++i)
+		{
+			XMMATRIX mtxOffset = XMLoadFloat4x4(&m_meshData.m_vecBoneOffsets[i]);
+			XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
+
+			m_vecFinalBone[i] = mtxOffset * mtxToRoot;
+		}
+	}
+}
+
+
+
+void CFbxModelSkinnedMesh::CalcFinalTransformsBlending(BlendingInfo& blendingData, bool& bIsBlending)
+{
+	vector<XMFLOAT4X4> toRootTransforms(m_meshData.m_nBoneCount);
+
+	auto currClip = m_meshData.m_mapAnimationClip.find(blendingData.m_CurrAnimation.m_strClipName);
+
+	if (bIsBlending == true) {
+		auto pervClip = m_meshData.m_mapAnimationClip.find(blendingData.m_prevAnimation.m_strClipName);
+		Interpolate_Blending(pervClip->second, bIsBlending, currClip->second, blendingData.m_fTimePos, blendingData.m_typeParts, toRootTransforms);
+	}
+	else {
+		if (blendingData.m_typeParts == AnimationData::Parts::UpperBody)
+			currClip->second.Interpolate(blendingData.m_fTimePos, 0, m_nBodyBoundaryIndex, toRootTransforms);
+		else
+			currClip->second.Interpolate(blendingData.m_fTimePos, m_nBodyBoundaryIndex, m_meshData.m_nBoneCount, toRootTransforms);
+	}
+	m_vecFinalBone.resize(m_meshData.m_nBoneCount);
+
+
+	// 아래의 코드는 Terrorist Character에만 적용되므로 다른 캐릭터를 사용한다면 해당 본을 찾아서 범위를 조절해야함
+	if (blendingData.m_typeParts == AnimationData::Parts::UpperBody) {
+		for (UINT i = 0; i < m_nBodyBoundaryIndex; ++i)
+		{
+			XMMATRIX mtxRotate = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch));
+			XMMATRIX mtxRotateHalf = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch / 2));	// 유연하게 회전하기 위해 추가 생성
+			XMMATRIX mtxOffset = XMLoadFloat4x4(&m_meshData.m_vecBoneOffsets[i]);
+			XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
+
+			if (i < 2)
+				m_vecFinalBone[i] = mtxOffset * mtxToRoot * mtxRotateHalf;
+			else
+				m_vecFinalBone[i] = mtxOffset * mtxToRoot * mtxRotate;
+		}
+	}
+	else {
+		for (UINT i = m_nBodyBoundaryIndex; i < m_meshData.m_nBoneCount; ++i)
+		{
+			XMMATRIX mtxOffset = XMLoadFloat4x4(&m_meshData.m_vecBoneOffsets[i]);
+			XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
+
+			m_vecFinalBone[i] = mtxOffset * mtxToRoot;
+		}
 	}
 }

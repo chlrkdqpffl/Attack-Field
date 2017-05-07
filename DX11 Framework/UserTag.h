@@ -62,7 +62,7 @@ namespace WeaponData
 
 namespace AnimationData
 {
-	enum class MultiAnimation
+	enum class Parts
 	{ 
 		Defalut, UpperBody, LowerBody
 	};

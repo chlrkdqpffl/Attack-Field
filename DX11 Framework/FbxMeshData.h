@@ -24,6 +24,7 @@ struct CAnimationClip
 	vector<CBoneData> m_vecBoneData;
 
 	void Interpolate(float timePos, vector<XMFLOAT4X4>& boneTransforms) const;
+	void Interpolate(float timePos, UINT startIndex, UINT endIndex, vector<XMFLOAT4X4>& boneTransforms) const;
 	float GetClipStartTime() const;
 	float GetClipEndTime() const;
 };

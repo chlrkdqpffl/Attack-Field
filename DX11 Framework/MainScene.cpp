@@ -84,25 +84,20 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
-			case VK_F6:		// 회전 테스트용으로 넣음
-			//	m_vecCharacterContainer[1]->SetRotate(TWBAR_MGR->g_xmf3Rotate.x, TWBAR_MGR->g_xmf3Rotate.y, TWBAR_MGR->g_xmf3Rotate.z);
-			
-				//m_pPlayer
-				break;
 			case VK_Z:
-				for(auto& object : m_vecCharacterContainer)
-					object->SetAnimation(AnimationData::CharacterAnim::eIdle);
+				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eIdle);
+				cout << "아이들로 전환" << endl;
 				break;
 			case VK_X:
-				for (auto& object : m_vecCharacterContainer)
-					object->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
+				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eForwardWalk);
+				cout << "걷기로 전환" << endl;
 				break;
 			case VK_C:
-				for (auto& object : m_vecCharacterContainer)
-					object->SetAnimation(AnimationData::CharacterAnim::eRun);
+				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eRun);
+				cout << "달리기로 전환" << endl;
 				break;
 			case VK_V:
-			
+				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eFire);
 				break;
 			}
 			break;
@@ -334,6 +329,7 @@ void CMainScene::Initialize()
 	*/
 #pragma endregion 
 
+	 
 	
 	// ==== Test용 - 총 메쉬 오프셋 찾기용 ==== //
 	CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject();
@@ -346,7 +342,7 @@ void CMainScene::Initialize()
 	m_vecCharacterContainer.push_back(pCharacter);
 
 	COLLISION_MGR->m_vecCharacterContainer.push_back(pCharacter);
-
+	
 #pragma region [Create Shader Object]
 	// ----- Test ----- //
 	CFbxModelMesh* pTestMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eTest2);
@@ -1095,26 +1091,21 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	string ppos;
 	string rotate;
 	string orotate;
-	string T_hp;
 	
 	// Draw Position
 	XMFLOAT3 playerPos = m_pPlayer->GetPosition();
 	XMFLOAT3 playerrotate = m_pPlayer->GetLook();
-	XMVECTOR otherrotate = GetCharcontainer()[1]->GetLook(false);
-	DWORD hp = GetCharcontainer()[1]->GetHp();
+//	XMVECTOR otherrotate = GetCharcontainer()[1]->GetLook(false);
 
 	XMFLOAT3 temp;
-	XMStoreFloat3(&temp, otherrotate);
+//	XMStoreFloat3(&temp, otherrotate);
 
 	ppos = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")\n";
 	rotate = "player rotate : (" + to_string(playerrotate.x) + ", " + to_string(playerrotate.y) + ", " + to_string(playerrotate.z) + ")\n";
 	orotate = "other rotate : (" + to_string(temp.x) + ", " + to_string(temp.y) + ", " + to_string(temp.z) + ")\n";
-	T_hp = " player Hp : (" + to_string(hp) + ")\n";
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(ppos), 30, 20, 50, 0xFFFFFFFF, FW1_LEFT);
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(rotate), 30, 20, 90, 0xFFFFFFFF, FW1_LEFT);
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(orotate), 30, 20, 140, 0xFFFFFFFF, FW1_LEFT);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(T_hp), 30, 20, 180, 0xFFFFFFFF, FW1_LEFT);
-
 
 	// Draw Select Object
 	if (m_pSelectedObject) {

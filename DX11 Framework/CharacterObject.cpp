@@ -38,12 +38,8 @@ BoundingOrientedBox CCharacterObject::GetPartsBoundingOBox(UINT index) const
 
 void CCharacterObject::Firing()
 {
-//	SetAnimation(AnimationData::CharacterAnim::eStandingFire);
-	m_pWeapon->Firing(GetLook());//XMLoadFloat3(&m_f3FiringDirection));
-	if (GetCollisionCheck())
-		m_hp -= 30;
-	//XMStoreFloat3(m_f3FiringDirection, GetLook());
-
+	SetAnimation(AnimationData::CharacterAnim::eFire);
+	m_pWeapon->Firing(XMLoadFloat3(&m_f3FiringDirection));
 }
 
 void CCharacterObject::Running()
@@ -176,10 +172,6 @@ void CCharacterObject::Update(float fDeltaTime)
 	CGameObject::Update(fDeltaTime);
 	CSkinnedObject::Update(fDeltaTime);
 	m_pWeapon->Update(fDeltaTime);
-
-	if(m_hp <= 0)
-		m_hp = 0;
-
 }
 
 void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)

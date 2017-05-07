@@ -329,9 +329,6 @@
     <ResourceCompile Include="DirectX11_Project.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="memo.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <FxCompile Include="Shader HLSL File\Effect.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -347,7 +344,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
     <None Include="Shader HLSL File\Blurring.hlsli" />
     <None Include="Shader HLSL File\BoundingBox.hlsli" />
     <None Include="Shader HLSL File\CharacterSkinnedNormal.hlsli" />

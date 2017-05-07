@@ -15,7 +15,7 @@ protected:
 	XMFLOAT3					m_d3dxvLook;
 
 	float						m_fSpeed = 0;
-	XMFLOAT3					m_d3dxvVelocity;	//서버에서 이걸 넘겨주면됩니다.
+	XMFLOAT3					m_d3dxvVelocity;
 	XMFLOAT3     				m_d3dxvGravity;
 	float           			m_fMaxVelocityXZ;
 	float           			m_fMaxVelocityY;
@@ -63,6 +63,8 @@ public:
 	float GetSpeed() const {return m_fSpeed; }
 	bool GetFloorCollision() const { return m_bIsFloorCollision; }
 
+//	void setradian(float x, float y) { m_fPitch = x;  m_fYaw = y; }
+
 	void SetFloorCollision(bool isCollision) { m_bIsFloorCollision = isCollision; }
 	void SetSpeed(float fSpeed) { m_fSpeed = fSpeed; }
 	void SetFriction(float fFriction) { m_fFriction = fFriction; }
@@ -84,5 +86,4 @@ public:
 	void SetWorldMatrix(XMMATRIX world);
 
 	void SetLook(float x, float y, float z);
-
 };
