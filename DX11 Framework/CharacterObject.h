@@ -92,7 +92,12 @@ public:
 	float GetPitch() const { return m_fPitch; }
 
 	// ----- State Function ----- //
-	bool IsMoving() const { return (m_f3Velocity.x != 0 || m_f3Velocity.y != 0 || m_f3Velocity.z != 0); }
+	bool IsMoving() const { 
+		if (m_f3Velocity.x != 0 || m_f3Velocity.y != 0 || m_f3Velocity.z != 0)
+			return (m_f3RelativeVelocity.x != 0 || m_f3RelativeVelocity.y != 0 || m_f3RelativeVelocity.z != 0);
+		else
+			return (m_f3RelativeVelocity.x != 0 || m_f3RelativeVelocity.y != 0 || m_f3RelativeVelocity.z != 0);
+	}
 	void SetIsRun(bool set) { m_bIsRun = set; }
 	bool GetIsRun() const { return  m_bIsRun; }
 	void SetIsTempRun(bool set) { m_bTempIsRun = set;}

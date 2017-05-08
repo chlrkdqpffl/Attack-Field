@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CharacterState.h"
 
-void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)
+void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)	//살았는지 확인 or 헤드샷 확인.
 {
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
@@ -69,7 +69,7 @@ void CState_Walk::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
-
+	//cout << "상체 : walk" << endl;
 	// Check Reload 
 	if (pCharacter->GetIsReload()) {
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());
@@ -85,6 +85,7 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 	
+	//cout << "하체 : walk" << endl;
 	// Check Run
 	if (pCharacter->GetIsRun()) {
 		if (!pCharacter->GetIsReload()) {

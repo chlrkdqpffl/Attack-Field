@@ -30,6 +30,8 @@ protected:
 	float						m_fGravityTimeElapsed  = 0.0f;
 	float						m_fGravityAcceleration = 0.0f;
 
+	int							count;
+
 public:
 	CPlayer(CCharacterObject* pCharacter = nullptr);
 	virtual ~CPlayer();

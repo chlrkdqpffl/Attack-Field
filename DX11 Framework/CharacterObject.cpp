@@ -49,7 +49,7 @@ void CCharacterObject::InitCollisionInfo()
 void CCharacterObject::Firing()
 {
 	if (m_pWeapon->IsExistBullet())
-		m_pWeapon->Firing(XMLoadFloat3(&m_f3FiringDirection));
+		m_pWeapon->Firing((GetLook()));
 	else
 		m_bIsReload = true;
 }
@@ -67,6 +67,7 @@ void CCharacterObject::Reloading()
 
 void CCharacterObject::Revival()
 {
+
 	m_nLife = 100;
 	m_bIsDeath = false;
 }
@@ -198,7 +199,7 @@ void CCharacterObject::Update(float fDeltaTime)
 
 	m_pStateUpper->Update();
 	m_pStateLower->Update();
-
+	
 	if (m_pPlayer) {
 		m_pPlayer->Update(fDeltaTime);
 	}

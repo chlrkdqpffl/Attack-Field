@@ -48,8 +48,10 @@ void CWeapon::Firing(XMVECTOR direction)
 
 				}
 				cout << "적중 후 체력 : " << hitCharacter->GetLife() << endl;
+				
 			}
 		}
+
 		CreateFireDirectionLine(direction);
 	}
 }
