@@ -14,9 +14,10 @@ struct cs_key_input {	//키버튼 받았을때
 	BYTE	size;
 	volatile BYTE	type;
 
-	DWORD	Animation;
+	XMVECTOR	 Animation;
 
-	DWORD key_button;
+
+	DWORD	key_button;
 
 	BYTE	Hp;
 
@@ -49,7 +50,7 @@ struct sc_packet_put_player {	//서버에서 처음 접속했을때 위치값과 ID를 부여한다.
 	float y;
 	float z;
 
-	DWORD	Animation;
+	XMVECTOR	Animation;
 	BYTE	hp;
 
 };
@@ -65,7 +66,7 @@ struct sc_packet_pos	//서버에서 처리된 값을 클라에게 보낸다.
 	float	y;
 	float	z;
 
-	DWORD	Animation;
+	XMVECTOR	Animation;
 	BYTE	hp;
 };
 

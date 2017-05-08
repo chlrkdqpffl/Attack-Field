@@ -37,6 +37,7 @@ void CPlayer::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 void CPlayer::UpdateKeyInput(float fDeltaTime)
 {
 	// Death Check
+	BYTE Animation = 0;
 	if (m_pCharacter->GetIsDeath())
 		return;
 
@@ -47,21 +48,25 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	if (m_wKeyState & static_cast<int>(KeyInput::eForward)) {
 		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
 		relativeVelocity += XMVectorSet(0, 0, 1, 0);
+		Animation = 1;
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eBackward)) {
 		d3dxvShift -= XMLoadFloat3(&m_d3dxvLook);
 		relativeVelocity += XMVectorSet(0, 0, -1, 0);
+		Animation = 2;
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeft)) {
 		d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
 		relativeVelocity += XMVectorSet(-1, 0, 0, 0);
+		Animation = 3;
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRight)) {
 		d3dxvShift += XMLoadFloat3(&m_d3dxvRight);
 		relativeVelocity += XMVectorSet(1, 0, 0, 0);
+		Animation = 4;
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eReload)) {
@@ -71,6 +76,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
 		d3dxvShift += XMLoadFloat3(&m_d3dxvLook) * 3;
 		m_pCharacter->Running();
+		Animation = 5;
 	}
 	else {
 		m_pCharacter->SetIsRun(false);
@@ -79,6 +85,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	// Mouse
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)) {
 		m_pCharacter->SetIsFire(true);
+		Animation = 6;
 	}
 	else {
 		m_pCharacter->SetIsFire(false);
@@ -102,18 +109,20 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	packet.type = CS_KEYTYPE;
 	packet.size = sizeof(packet);
 	packet.key_button = m_wKeyState;
-	//packet.Animation = static_cast<DWORD>(m_pCharacter->GetAnimationEnum());
+	packet.Animation = relativeVelocity;
+	
 
 	packet.x = GetPosition().x;
 	packet.y = GetPosition().y;
 	packet.z = GetPosition().z;
 
-	packet.Hp = m_pCharacter->GetHp();
+	packet.Hp = m_pCharacter->GetLife();
 
 
 	if (m_wKeyState != 0)
+	{
 		Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-
+	}
 	
 }
 

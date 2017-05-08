@@ -39,16 +39,20 @@ void ServerFuntion::processpacket(char *ptr)
 
 		if (id == m_myid)
 		{
-			
 			//SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
 			//SCENE_MGR->g_pPlayer->SetAnimation(my_Pos_packet->Animation);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));;
-		
+			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));;
 		}
 		else
 		{
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetAnimation(static_cast<AnimationData::CharacterAnim>(my_Pos_packet->Animation));
+
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRelativeVelocity(my_Pos_packet->Animation);
+			
+			cout << "니꺼" << endl;
+			ShowXMVector(my_Pos_packet->Animation);
+			cout << SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRelativeVelocity().x << " " << SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRelativeVelocity().y << " " << SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRelativeVelocity().z << endl;
+
 		}
 		break;
 	case 2:	//처음 받았을때.
@@ -67,18 +71,21 @@ void ServerFuntion::processpacket(char *ptr)
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[id]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 
 			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
-//			SCENE_MGR->g_pPlayer->SetAnimation(my_put_packet->Animation);
-		}
-		else 
-		{
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetAnimation(static_cast<AnimationData::CharacterAnim>(my_put_packet->Animation));
+
 
 		}
+		else
+		{
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
+
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRelativeVelocity(my_put_packet->Animation);
+
+		}
+
 	}
 	break;
 	case 3:	//총알...
- 		my_put_bulletfire = reinterpret_cast<sc_bullet_fire *>(ptr);
+		my_put_bulletfire = reinterpret_cast<sc_bullet_fire *>(ptr);
 		id = my_put_bulletfire->id;
 
 		if (id == m_myid)
@@ -87,7 +94,7 @@ void ServerFuntion::processpacket(char *ptr)
 		}
 		else
 		{
-			if(my_put_bulletfire->fire == true)
+			if (my_put_bulletfire->fire == true)
 				SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->Firing();
 		}
 		break;
@@ -102,7 +109,7 @@ void ServerFuntion::processpacket(char *ptr)
 	}
 	break;
 	case 5:	//rotate된 값 처리
-		
+
 		my_put_rotate = reinterpret_cast<sc_rotate_vector *>(ptr);
 		id = my_put_rotate->id;
 
@@ -111,7 +118,7 @@ void ServerFuntion::processpacket(char *ptr)
 			//cout << "나다 : " << id << endl;
 			//cout << my_put_rotate->x << " " << my_put_rotate->y << " " << my_put_rotate->z << endl;
 	//		SCENE_MGR->g_pPlayer->setradian(my_put_rotate->x, my_put_rotate->y);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetRotate(my_put_rotate->x, my_put_rotate->y, 0);
+			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetRotate(my_put_rotate->x, my_put_rotate->y, 0);
 
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
 		}
@@ -121,13 +128,13 @@ void ServerFuntion::processpacket(char *ptr)
 			//cout << my_put_rotate->x << " " << my_put_rotate->y << " " << my_put_rotate->z << endl;
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
 
-			
+
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
 
-	//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRight());
-	//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetUp());
-	//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetLook());
-		//	cout << my_put_rotate->x << ", " << my_put_rotate->y << ", " << my_put_rotate->z << endl;
+			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRight());
+			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetUp());
+			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetLook());
+				//	cout << my_put_rotate->x << ", " << my_put_rotate->y << ", " << my_put_rotate->z << endl;
 		}
 		break;
 	default:
@@ -211,7 +218,7 @@ void ServerFuntion::Server_init()
 		exit(1);
 	}
 
-	
+
 
 	WSAAsyncSelect(g_socket, m_handle, WM_SOCKET, FD_CLOSE | FD_READ);
 
@@ -232,7 +239,7 @@ void ServerFuntion::Sendpacket(unsigned char* Data)
 	memcpy(send_buffer, Data, (size_t)Data[0]);
 	send_wsabuf.buf = reinterpret_cast<char *>(send_buffer);
 
-	 
+
 	int retval = WSASend(g_socket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
 	if (retval) {
