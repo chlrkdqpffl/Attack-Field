@@ -26,7 +26,7 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		m_pCamera->SetPosition(GetPosition());
 		m_pCamera->SetOffset(m_d3dxvLook, 0.5f);	// 캐릭터 가슴보다 조금 앞
 		m_pCamera->SetOffset(m_d3dxvUp, 0.95f);
-		m_pCamera->GenerateProjectionMatrix(0.15f, 5000.0f, ASPECT_RATIO, 60.0f);
+		m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, 60.0f);
 
 		break;
 	case CameraTag::eSpaceShip:
@@ -71,12 +71,12 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 
 void CTerrainPlayer::OnApplyGravity(float fDeltaTime)
 {
-	m_fTimeElapsed += fDeltaTime;
-	m_d3dxvVelocity.y = m_d3dxvVelocity.y + m_fGravityAcceleration * m_fTimeElapsed  * fDeltaTime;
+	m_fGravityTimeElapsed += fDeltaTime;
+	m_d3dxvVelocity.y = m_d3dxvVelocity.y + m_fGravityAcceleration * m_fGravityTimeElapsed  * fDeltaTime;
 	float groundHeight = 0.0f;
 	if (m_bIsFloorCollision) {
 		groundHeight = m_pCharacter->GetCollisionInfo().m_pHitObject->GetBoundingOBox().Center.y + m_pCharacter->GetCollisionInfo().m_pHitObject->GetBoundingOBox().Extents.y;
-		m_fTimeElapsed = 0.0f;
+		m_fGravityTimeElapsed = 0.0f;
 		m_d3dxvVelocity.y = 0.0f;
 
 		XMFLOAT3 pos = GetPosition();

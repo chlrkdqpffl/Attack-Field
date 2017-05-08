@@ -62,19 +62,8 @@ void CTerroristCharacterObject::CreateAnimation()
 	AddAnimation(make_tuple(AnimationData::CharacterAnim::eFire,				AnimationTrack("Fire"),				AnimationData::Type::eLoop));
 	AddAnimation(make_tuple(AnimationData::CharacterAnim::eReload,				AnimationTrack("Reload"),			AnimationData::Type::eOnce));
 	AddAnimation(make_tuple(AnimationData::CharacterAnim::eDeath_Head,			AnimationTrack("Death_Head"),		AnimationData::Type::eOnce));
-	
-
-
-
-	/*
-	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,				AnimationTrack("Idle"), AnimationData::Type::eLoop));
-	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eForwardWalk,		AnimationTrack("Walk"), AnimationData::Type::eLoop));
-	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eBackwardWalk,		AnimationTrack("Walk"), AnimationData::Type::eInverseLoop));
-	*/
-//	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eRun,				AnimationTrack("Run"), AnimationData::Type::eLoop));
-//	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eStandingFire,		AnimationTrack("StandingFire"), AnimationData::Type::eLoop));
-//	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalkingFire,		AnimationTrack("WalkingFire"), AnimationData::Type::eLoop));
-//	m_pAnimController->AddAnimation(make_tuple(AnimationData::CharacterAnim::eStandingReloading, AnimationTrack("StandingReloading"), AnimationData::Type::eOnce));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eDeath,				AnimationTrack("Death"),			AnimationData::Type::eOnce));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eHeadHit,				AnimationTrack("HeadHit"),			AnimationData::Type::eOnce));
 }
 
 void CTerroristCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)

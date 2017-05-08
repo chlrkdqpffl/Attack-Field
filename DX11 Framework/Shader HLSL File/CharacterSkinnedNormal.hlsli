@@ -87,13 +87,13 @@ float4 PSSkinnedTexturedBumpedLightingColor(VS_SKINNED_OUTPUT input) : SV_Target
  //       cColor = Fog(cColor, input.positionW);
 
  /*
-    float rimWidth = 0.8f;
-    float3 vCameraPos = normalize(gvCameraPosition - input.positionW);
+    float rimWidth = 0.2f;
+    float3 vCameraPos = normalize(gvCameraPosition.xyz - input.positionW);
     float RimLightColor = smoothstep(1.0 - rimWidth, 1.0f, 1.0f - max(0, dot(normalW.xyz, vCameraPos)));
     cColor.r += RimLightColor * 0.8f;
-    cColor.g += RimLightColor * 0.8f;
-    cColor.b += RimLightColor * 0.8f;
-  */
+//    cColor.g += RimLightColor * 0.8f;
+ //   cColor.b += RimLightColor * 0.8f;
+ */
 
     return cColor;
 }

@@ -49,6 +49,7 @@ enum class ShaderTag {
 
 enum class ChracterBoundingBoxParts 
 {
+	eNone = -1,
 	eBody, eHead,
 	eLeftUpArm, eLeftDownArm, eRightUpArm, eRightDownArm,
 	eLeftUpLeg, eLeftDownLeg, eRightUpLeg, eRightDownLeg,
@@ -92,7 +93,7 @@ namespace AnimationData
 		// --------------------------------------------------------- // 
 		// Upper Body
 		UpperBodyAnim = 100,
-		eFire, eReload,
+		eFire, eReload, eHeadHit,
 		// --------------------------------------------------------- // 
 		// Lower Body
 		LowerBodyAnim = 1000,

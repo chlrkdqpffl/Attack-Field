@@ -27,7 +27,7 @@ protected:
 	WORD						m_wKeyState = 0;
 	CCharacterObject			*m_pCharacter = nullptr;
 	bool						m_bIsFloorCollision = false;
-	float						m_fTimeElapsed = 0.0f;
+	float						m_fGravityTimeElapsed  = 0.0f;
 	float						m_fGravityAcceleration = 0.0f;
 
 public:
@@ -77,7 +77,7 @@ public:
 		XMVECTOR v = XMLoadFloat3(&m_d3dxvPosition);
 		Move((d3dxvPosition - v));
 	}
-	void SetTimeElpased(float time) { m_fTimeElapsed = time; }
+	void SetGravityTimeElpased(float time) { m_fGravityTimeElapsed = time; }
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
 	void SetPlayerUpdatedContext(LPVOID pContext) { m_pPlayerUpdatedContext = pContext; }
 	void SetKeyDown(KeyInput key);

@@ -21,7 +21,8 @@ CPlayer::CPlayer(CCharacterObject* pCharacter)
 
 	// 임시
 //	m_fSpeed = 50;
-	m_fSpeed = 5;	// 자연스러운 속도
+	m_fSpeed = 30;	// 자연스러운 속도
+//	m_fSpeed = 10;	// 자연스러운 속도
 }
 
 CPlayer::~CPlayer()
@@ -37,7 +38,6 @@ void CPlayer::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 void CPlayer::UpdateKeyInput(float fDeltaTime)
 {
 	// Death Check
-	BYTE Animation = 0;
 	if (m_pCharacter->GetIsDeath())
 		return;
 
@@ -48,25 +48,21 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	if (m_wKeyState & static_cast<int>(KeyInput::eForward)) {
 		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
 		relativeVelocity += XMVectorSet(0, 0, 1, 0);
-		Animation = 1;
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eBackward)) {
 		d3dxvShift -= XMLoadFloat3(&m_d3dxvLook);
 		relativeVelocity += XMVectorSet(0, 0, -1, 0);
-		Animation = 2;
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeft)) {
 		d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
 		relativeVelocity += XMVectorSet(-1, 0, 0, 0);
-		Animation = 3;
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRight)) {
 		d3dxvShift += XMLoadFloat3(&m_d3dxvRight);
 		relativeVelocity += XMVectorSet(1, 0, 0, 0);
-		Animation = 4;
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eReload)) {
@@ -74,9 +70,9 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
-		d3dxvShift += XMLoadFloat3(&m_d3dxvLook) * 3;
+		if(m_pCharacter->GetIsTempRun())		// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
+			d3dxvShift += XMLoadFloat3(&m_d3dxvLook) * 3;
 		m_pCharacter->Running();
-		Animation = 5;
 	}
 	else {
 		m_pCharacter->SetIsRun(false);
@@ -85,7 +81,6 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	// Mouse
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)) {
 		m_pCharacter->SetIsFire(true);
-		Animation = 6;
 	}
 	else {
 		m_pCharacter->SetIsFire(false);
@@ -98,40 +93,15 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	d3dxvShift *= m_fSpeed * fDeltaTime;
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
 	m_pCharacter->SetVelocity(m_d3dxvVelocity);
-	m_pCharacter->SetRelativeVelocity(relativeVelocity);
-
-
-	//Move(d3dxvShift);
-	//	여기 패킷 추가해라
-
-	cs_key_input packet;
-
-	packet.type = CS_KEYTYPE;
-	packet.size = sizeof(packet);
-	packet.key_button = m_wKeyState;
-	packet.Animation = relativeVelocity;
-	
-
-	packet.x = GetPosition().x;
-	packet.y = GetPosition().y;
-	packet.z = GetPosition().z;
-
-	packet.Hp = m_pCharacter->GetLife();
-
-
-	if (m_wKeyState != 0)
-	{
-		Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-	}
-	
+	m_pCharacter->SetRelativevVelocity(relativeVelocity);
 }
 
 void CPlayer::Move(XMVECTOR vTranslate)
 {	
 	XMVECTOR d3dxvPosition = XMLoadFloat3(&m_d3dxvPosition) + vTranslate;
 	XMStoreFloat3(&m_d3dxvPosition, d3dxvPosition);
-	XMVECTOR vPosition = m_pCharacter->GetvPosition() + vTranslate;
-	m_pCharacter->SetPosition(vPosition);
+//	XMVECTOR vPosition = m_pCharacter->GetvPosition() + vTranslate;
+//	m_pCharacter->SetPosition(vPosition);
 	m_pCamera->Move(vTranslate);
 }
 
@@ -187,7 +157,7 @@ void CPlayer::Rotate(float x, float y)
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Cross(XMLoadFloat3(&m_d3dxvLook), XMLoadFloat3(&m_d3dxvRight)));
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
 
-	
+	/*
 	cs_rotate rotate;
 	rotate.cx = x;
 	rotate.cy = y;
@@ -195,7 +165,7 @@ void CPlayer::Rotate(float x, float y)
 	rotate.type = CS_ROTATE;
 
 	Sendpacket(reinterpret_cast<unsigned char *>(&rotate));
-	
+	*/
 }
 
 void CPlayer::Update(float fDeltaTime)
@@ -284,12 +254,30 @@ void CPlayer::SetKeyDown(KeyInput key)
 {
 	m_wKeyState |= static_cast<int>(key);
 
+	/*
+	cs_key_input Key_button;
+	Key_button.type = CS_KEYTYPE;
+	Key_button.size = sizeof(cs_key_input);
+	Key_button.key_button = m_wKeyState;
+	Key_button.fDistance = 50.0f;
+
+	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
+	*/
 }
 
 void CPlayer::SetKeyUp(KeyInput key)
 {
 	m_wKeyState ^= static_cast<int>(key);
 
+	/*
+	cs_key_input Key_button;
+	Key_button.type = CS_KEYTYPE;
+	Key_button.size = sizeof(cs_key_input);
+	Key_button.key_button = m_wKeyState;
+	Key_button.fDistance = 5.0f;
+
+	Sendpacket(reinterpret_cast<unsigned char *>(&Key_button));
+	*/
 }
 
 void CPlayer::SetWorldMatrix(XMMATRIX world)

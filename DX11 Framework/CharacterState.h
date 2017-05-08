@@ -120,6 +120,10 @@ class CState_Death : public CFSM_State<CCharacterObject>
 	DWORD		m_dwDeathWaitingTime = 0;
 	DWORD		m_dwDeathStartTime = 0;
 
+	bool		m_bIsDeath = false;			// Death 애니메이션 위치 Offset 맞추기 용도
+	bool		m_bIsDeathHead = false;
+
+	XMVECTOR	m_Position;
 public:
 	CState_Death() {};
 	virtual ~CState_Death() {};
@@ -136,3 +140,23 @@ public:
 		return &instance;
 	}
 };
+
+class CState_HeadHit : public CFSM_State<CCharacterObject>
+{
+public:
+	CState_HeadHit() {};
+	virtual ~CState_HeadHit() {};
+
+	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void UpdateUpperBodyState(CCharacterObject*) override;
+	virtual void UpdateLowerBodyState(CCharacterObject*) override;
+	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+
+	static CState_HeadHit* GetInstance()
+	{
+		static CState_HeadHit instance;
+
+		return &instance;
+	}
+};
+

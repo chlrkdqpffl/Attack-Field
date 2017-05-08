@@ -598,6 +598,12 @@ bool CGameObject::IsCollision(CGameObject* pObject)
 	return true;
 }
 
+void CGameObject::InitCollisionInfo()
+{
+	m_bIsCollision = false;
+	m_infoCollision = CollisionInfo();
+}
+
 void CGameObject::Update(float fDeltaTime)
 {
 	if (m_pAxisObject) {

@@ -40,6 +40,12 @@ BoundingOrientedBox CCharacterObject::GetPartsBoundingOBox(UINT index) const
 	return bcObox;
 }
 
+void CCharacterObject::InitCollisionInfo()
+{
+	CGameObject::InitCollisionInfo();
+	m_collisionParts = ChracterBoundingBoxParts::eNone;
+}
+
 void CCharacterObject::Firing()
 {
 	if (m_pWeapon->IsExistBullet())
@@ -178,7 +184,6 @@ void CCharacterObject::RotateFiringPos()
 		firingDirection = XMVector3TransformNormal(m_pPlayer->GetvLook(), mtxRotate);
 		XMStoreFloat3(&m_f3FiringDirection, firingDirection);
 	}
-
 	m_fPitch = clamp(m_fPitch, -40.0f, 50.0f);		// 이 각도는 캐릭터가 최대로 허리를 숙이는 각도로 캐릭터마다 다르지만 현재는 여기에서 clamp하도록 만듦
 	GetSkinnedMesh()->SetPitch(m_fPitch);
 }
@@ -191,16 +196,12 @@ void CCharacterObject::Update(float fDeltaTime)
 		OnCollisionCheck();
 	}
 
-//	cout << "상체 머신 ";
 	m_pStateUpper->Update();
-//	cout << "하체 머신 ";
 	m_pStateLower->Update();
-//	cout << endl;
 
 	if (m_pPlayer) {
 		m_pPlayer->Update(fDeltaTime);
 	}
-
 	CGameObject::Update(fDeltaTime);
 	CSkinnedObject::Update(fDeltaTime);
 	m_pWeapon->Update(fDeltaTime);

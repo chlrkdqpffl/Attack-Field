@@ -27,9 +27,11 @@ protected:
 	bool					m_bIsReload = false;
 	bool					m_bIsRun = false;
 	bool					m_bIsDeath = false;
+	bool					m_bTempIsRun = false;	// 임시로 달리기 속력 맞추려고 넣은 변수 이므로 사용 금지 - 추후 수정
 
 	// ----- Game System Variable ----- //
 	UINT					m_nLife = 0;
+	ChracterBoundingBoxParts	m_collisionParts = ChracterBoundingBoxParts::eNone;
 
 	// ----- Parts Collision Variable ----- // 
 
@@ -44,6 +46,7 @@ protected:
 public:
 	virtual void CreateObjectData(ID3D11Device *pd3dDevice) override;
 	virtual void OnCollisionCheck();
+	virtual void InitCollisionInfo();
 
 	virtual void Update(float fDeltaTime) override;
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
@@ -73,10 +76,15 @@ public:
 		else
 			return m_pStateLower;
 	}
-	void SetVelocity(XMFLOAT3 velocity) { m_f3Velocity = velocity; }
+	void SetVelocity(XMFLOAT3 velocity) { 
+		m_f3Velocity = velocity; 
+		m_f3RelativeVelocity = velocity;
+	}
 	XMFLOAT3 GetVelocity()const { return m_f3Velocity; }
-	void SetRelativeVelocity(XMVECTOR velocity) { XMStoreFloat3(&m_f3RelativeVelocity, velocity); }
+	void SetRelativevVelocity(XMVECTOR velocity) { XMStoreFloat3(&m_f3RelativeVelocity, velocity); }
+	void SetRelativeVelocity(XMFLOAT3 velocity) { m_f3RelativeVelocity = velocity; }
 	XMFLOAT3 GetRelativeVelocity()const { return m_f3RelativeVelocity; }
+	XMVECTOR GetRelativevVelocity()const { return XMLoadFloat3(&m_f3RelativeVelocity); }
 
 	void SetYaw(float yaw) { m_fYaw = yaw; }
 	float GetYaw() const { return m_fYaw; }
@@ -87,6 +95,8 @@ public:
 	bool IsMoving() const { return (m_f3Velocity.x != 0 || m_f3Velocity.y != 0 || m_f3Velocity.z != 0); }
 	void SetIsRun(bool set) { m_bIsRun = set; }
 	bool GetIsRun() const { return  m_bIsRun; }
+	void SetIsTempRun(bool set) { m_bTempIsRun = set;}
+	bool GetIsTempRun() const { return m_bTempIsRun; }
 	void SetIsFire(bool set) { m_bIsFire = set; }
 	bool GetIsFire() const { return  m_bIsFire; }
 	void SetIsReload(bool set) { m_bIsReload = set; }
@@ -97,4 +107,6 @@ public:
 	// ----- Game System Function ----- //
 	void SetLife(UINT life) { m_nLife = life; }
 	UINT GetLife() const { return m_nLife; }
+	ChracterBoundingBoxParts GetCollisionParts() const { return m_collisionParts; }
+	void SetCollisionParts(ChracterBoundingBoxParts parts) { m_collisionParts = parts; }
 };

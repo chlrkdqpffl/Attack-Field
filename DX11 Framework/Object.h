@@ -63,6 +63,7 @@ public:
 	virtual void RenderMesh(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 	virtual void OnCollisionCheck() {};
+	virtual void InitCollisionInfo();
 
 	virtual void CreateBoundingBox(ID3D11Device *pd3dDevice);
 	virtual void BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext);

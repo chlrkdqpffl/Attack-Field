@@ -4,7 +4,6 @@
 
 class CCollisionManager : public CSingletonManager<CCollisionManager>
 {
-	DWORD								m_dwInitTime = 0;
 public:
 	vector<CGameObject*>				m_vecStaticMeshContainer;
 	vector<CGameObject*>				m_vecDynamicMeshContainer;
@@ -17,6 +16,8 @@ public:
 	virtual void InitializeManager() override;
 	virtual void UpdateManager() override;
 	virtual void ReleseManager() override;
+
+	void InitCollisionInfo();
 
 	bool RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
 	bool RayCastCollisionToCharacter(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
