@@ -37,23 +37,19 @@ void CWeapon::Firing(XMVECTOR direction)
 				info.m_pHitObject->SetCollision(true);
 
 				CCharacterObject* hitCharacter = static_cast<CCharacterObject*>(info.m_pHitObject);
+				hitCharacter->SetCollisionParts(info.m_HitParts);
 				// Head Shot 판정
 				if (info.m_HitParts == ChracterBoundingBoxParts::eHead) {
-					cout << "적중 전 체력 : " << hitCharacter->GetLife() << endl;
 					cout << "헤드샷" << endl;
 					hitCharacter->DamagedCharacter(m_fDamage * 2.5f);
-
-					cout << "적중 후 체력 : " << hitCharacter->GetLife() << endl;
 				}
 				else {
-					cout << "적중 전 체력 : " << hitCharacter->GetLife() << endl;
 					hitCharacter->DamagedCharacter(m_fDamage);
 
-					cout << "적중 후 체력 : " << hitCharacter->GetLife() << endl;
 				}
+				cout << "적중 후 체력 : " << hitCharacter->GetLife() << endl;
 			}
 		}
-	
 		CreateFireDirectionLine(direction);
 	}
 }

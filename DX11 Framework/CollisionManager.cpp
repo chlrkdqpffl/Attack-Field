@@ -19,15 +19,6 @@ void CCollisionManager::ReleseManager()
 
 void CCollisionManager::UpdateManager()
 {
-	// 0.5초 마다 충돌 초기화
-	if (GLOBAL_MGR->SetTimer(m_dwInitTime, 500)) {
-		for (auto& staticObject : m_vecStaticMeshContainer)
-			staticObject->SetCollision(false);
-
-		for (auto& character : m_vecCharacterContainer)
-			character->SetCollision(false);
-	}
-
 	/*
 	for (auto& dynamicObject : m_vecDynamicMeshContainer) {
 		if (dynamicObject->GetActive()) {
@@ -53,6 +44,15 @@ void CCollisionManager::UpdateManager()
 		}
 	}
 	*/
+}
+
+void CCollisionManager::InitCollisionInfo()
+{
+	for (auto& staticObject : m_vecStaticMeshContainer)
+		staticObject->InitCollisionInfo();
+
+	for (auto& character : m_vecCharacterContainer)
+		character->InitCollisionInfo();
 }
 
 bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)

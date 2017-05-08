@@ -11,16 +11,23 @@ public:
 	{
 		m_pCurrentState = CState_Idle::GetInstance();
 		m_pCurrentState->EnterState(m_pOwner, m_partsBody);
+		m_pPreviousState = m_pCurrentState;
 
 		m_pAnyState = CState_AnyTime::GetInstance();
 	}
 	virtual ~CStateMachine() {};
+	
+	void InitState()
+	{
+		m_pCurrentState = CState_Idle::GetInstance();
+		m_pCurrentState->EnterState(m_pOwner, m_partsBody);
+	}
 
 	void ChangeState(CFSM_State<ObjectType>* newState)
 	{
 		if (newState == m_pCurrentState)
 			return;
-
+		m_pPreviousState = m_pCurrentState;
 		m_pCurrentState->ExitState(m_pOwner, m_partsBody);
 
 		m_pCurrentState = newState;
@@ -38,6 +45,7 @@ public:
 	}
 
 	// ----- Get, Setter ----- //
+	CFSM_State<ObjectType>* GetPreviousState() const { return m_pPreviousState; }
 	CFSM_State<ObjectType>* GetCurrentState() const { return m_pCurrentState; }
 
 protected:
@@ -45,5 +53,6 @@ protected:
 	AnimationData::Parts		m_partsBody = AnimationData::Parts::Defalut;
 
 	CFSM_State<ObjectType>*		m_pAnyState = nullptr;
+	CFSM_State<ObjectType>*		m_pPreviousState = nullptr;
 	CFSM_State<ObjectType>*		m_pCurrentState = nullptr;
 };

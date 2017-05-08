@@ -22,6 +22,7 @@ CPlayer::CPlayer(CCharacterObject* pCharacter)
 	// 임시
 //	m_fSpeed = 50;
 	m_fSpeed = 30;	// 자연스러운 속도
+//	m_fSpeed = 10;	// 자연스러운 속도
 }
 
 CPlayer::~CPlayer()
@@ -69,7 +70,8 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
-		d3dxvShift += XMLoadFloat3(&m_d3dxvLook) * 3;
+		if(m_pCharacter->GetIsTempRun())		// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
+			d3dxvShift += XMLoadFloat3(&m_d3dxvLook) * 3;
 		m_pCharacter->Running();
 	}
 	else {
@@ -91,7 +93,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	d3dxvShift *= m_fSpeed * fDeltaTime;
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
 	m_pCharacter->SetVelocity(m_d3dxvVelocity);
-	m_pCharacter->SetRelativeVelocity(relativeVelocity);
+	m_pCharacter->SetRelativevVelocity(relativeVelocity);
 }
 
 void CPlayer::Move(XMVECTOR vTranslate)

@@ -48,7 +48,7 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	CScene::OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
-
+	static bool bTest = false;
 	switch (nMessageID) {
 		case WM_KEYDOWN:
 			switch (wParam) {
@@ -82,22 +82,24 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 						m_pUIManager->GetUIObject(TextureTag::eAim)->SetActive(true);
 				break;
 			case VK_F4:		// 중력 테스트용으로 넣음
-				m_pPlayer->SetPosition(XMVectorSet(60, 50, 30, 0));
-				m_pPlayer->SetTimeElpased(0.0f);
+				m_pPlayer->SetPosition(XMVectorSet(60, 30, 30, 0));
+				m_pPlayer->SetGravityTimeElpased(0.0f);
 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_Z:
-				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eIdle);
+				m_vecCharacterContainer.back()->SetVelocity(XMFLOAT3(2.0f, 0, 0));
 				break;
 			case VK_X:
-				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eWalk_Forward);
+				bTest = !bTest;
+				m_vecCharacterContainer.back()->SetIsRun(bTest);
 				break;
 			case VK_C:
-				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eReload);
+				bTest = !bTest;
+				m_vecCharacterContainer.back()->SetIsReload(bTest);
 				break;
 			case VK_V:
-				m_vecCharacterContainer.back()->SetIsDeath(true);
+				m_vecCharacterContainer.back()->SetVelocity(XMFLOAT3(-2.0f, 0, 0));
 				break;
 			}
 			break;
@@ -339,7 +341,7 @@ void CMainScene::Initialize()
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
 
-	pCharacter->SetPosition(50.0f, 2.0f, 0.0f);
+	pCharacter->SetPosition(40.0f, 2.4f, 2.0f);
 
 	m_vecBBoxRenderContainer.push_back(pCharacter);
 	m_vecCharacterContainer.push_back(pCharacter);
@@ -985,7 +987,10 @@ void CMainScene::ModifiedSelectObject()
 
 void CMainScene::Update(float fDeltaTime)
 {
+	// 충돌 정보 갱신
+	COLLISION_MGR->InitCollisionInfo();
 	COLLISION_MGR->UpdateManager();
+
 	CScene::Update(fDeltaTime);
 
 //	if (m_pSelectedObject)

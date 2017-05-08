@@ -3,9 +3,17 @@
 
 void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
+
 	if (pCharacter->GetIsDeath()) {
-		pCharacter->GetFSM(AnimationData::Parts::UpperBody)->ChangeState(CState_Death::GetInstance());
-		pCharacter->GetFSM(AnimationData::Parts::LowerBody)->ChangeState(CState_Death::GetInstance());
+		pUpperFSM->ChangeState(CState_Death::GetInstance());
+		pLowerFSM->ChangeState(CState_Death::GetInstance());
+		return;
+	}
+	else if (pCharacter->GetCollisionParts() == ChracterBoundingBoxParts::eHead) {
+		pUpperFSM->ChangeState(CState_HeadHit::GetInstance());
+		return;
 	}
 }
 
@@ -17,29 +25,37 @@ void CState_Idle::EnterState(CCharacterObject* pCharacter, AnimationData::Parts 
 
 void CState_Idle::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
-//	cout << "Idle" << endl;
-	if (pCharacter->GetIsReload())
-		pCharacter->GetFSM(AnimationData::Parts::UpperBody)->ChangeState(CState_Reload::GetInstance());
-	else if(pCharacter->GetIsFire())
-		pCharacter->GetFSM(AnimationData::Parts::UpperBody)->ChangeState(CState_Fire::GetInstance());
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 
+	// Check Reload
+	if (pCharacter->GetIsReload()) {
+		pUpperFSM->ChangeState(CState_Reload::GetInstance());
+		return;
+	}
+	else if (pCharacter->GetIsFire()) {
+		pUpperFSM->ChangeState(CState_Fire::GetInstance());
+		return;
+	}
 	// 상체가 Idle 상태일 경우 하체의 움직임을 따라간다.
 	AnimationData::CharacterAnim lowerAnim = pCharacter->GetAnimationEnum(AnimationData::Parts::LowerBody);
-	if(lowerAnim != AnimationData::CharacterAnim::eIdle)
-		pCharacter->GetFSM(AnimationData::Parts::UpperBody)->ChangeState(pCharacter->GetFSM(AnimationData::Parts::LowerBody)->GetCurrentState());
-
+	if (lowerAnim != AnimationData::CharacterAnim::eIdle)
+		pUpperFSM->ChangeState(pLowerFSM->GetCurrentState());
 }
 
 void CState_Idle::UpdateLowerBodyState(CCharacterObject* pCharacter)
 {
-//	cout << "Idle" << endl;
-	if (pCharacter->IsMoving())
-		pCharacter->GetFSM(AnimationData::Parts::LowerBody)->ChangeState(CState_Walk::GetInstance());
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
+
+	if (pCharacter->IsMoving()) {
+		pLowerFSM->ChangeState(CState_Walk::GetInstance());
+		return;
+	}
 }
 
 void CState_Idle::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-
 }
 
 // ---------------------------- Walking ---------------------------- //
@@ -51,21 +67,32 @@ void CState_Walk::EnterState(CCharacterObject* pCharacter, AnimationData::Parts 
 
 void CState_Walk::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
-	// Check Reload 
-	if (pCharacter->GetIsReload())
-		pCharacter->GetFSM(AnimationData::Parts::UpperBody)->ChangeState(CState_Reload::GetInstance());
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 
+	// Check Reload 
+	if (pCharacter->GetIsReload()) {
+		pUpperFSM->ChangeState(CState_Reload::GetInstance());
+		return;
+	}
 	AnimationData::CharacterAnim lowerAnim = pCharacter->GetAnimationEnum(AnimationData::Parts::LowerBody);
 	if (lowerAnim == AnimationData::CharacterAnim::eIdle)
-		pCharacter->GetFSM(AnimationData::Parts::UpperBody)->ChangeState(pCharacter->GetFSM(AnimationData::Parts::LowerBody)->GetCurrentState());
+		pUpperFSM->ChangeState(pLowerFSM->GetCurrentState());
 }
 
 void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 {
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
+	
 	// Check Run
 	if (pCharacter->GetIsRun()) {
-		pCharacter->GetFSM(AnimationData::Parts::UpperBody)->ChangeState(CState_Run::GetInstance());
-		pCharacter->GetFSM(AnimationData::Parts::LowerBody)->ChangeState(CState_Run::GetInstance());
+		if (!pCharacter->GetIsReload()) {
+			pUpperFSM->ChangeState(CState_Run::GetInstance());
+			pLowerFSM->ChangeState(CState_Run::GetInstance());
+
+			return;
+		}
 	}
 
 	// Check Walk Direction 
@@ -106,8 +133,7 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 	}
 
 	if (!pCharacter->IsMoving())
-		pCharacter->GetFSM(AnimationData::Parts::LowerBody)->ChangeState(CState_Idle::GetInstance());
-
+		pLowerFSM->ChangeState(CState_Idle::GetInstance());
 }
 
 void CState_Walk::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
@@ -122,9 +148,11 @@ void CState_Reload::EnterState(CCharacterObject* pCharacter, AnimationData::Part
 
 void CState_Reload::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
 	if(!pCharacter->GetControllerActive(AnimationData::Parts::UpperBody)) {
-		pCharacter->GetFSM(AnimationData::Parts::UpperBody)->ChangeState(CState_Idle::GetInstance());
+		pUpperFSM->ChangeState(CState_Idle::GetInstance());
 		pCharacter->SetControllerActive(AnimationData::Parts::UpperBody, true);
+		return;
 	}
 }
 
@@ -146,10 +174,16 @@ void CState_Fire::EnterState(CCharacterObject* pCharacter, AnimationData::Parts 
 
 void CState_Fire::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
-	if (pCharacter->GetIsReload())
-		pCharacter->GetFSM(AnimationData::Parts::UpperBody)->ChangeState(CState_Reload::GetInstance());
-	else if (!pCharacter->GetIsFire())
-		pCharacter->GetFSM(AnimationData::Parts::UpperBody)->ChangeState(CState_Idle::GetInstance());
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+
+	if (pCharacter->GetIsReload()) {
+		pUpperFSM->ChangeState(CState_Reload::GetInstance());
+		return;
+	}
+	else if (!pCharacter->GetIsFire()) {
+		pUpperFSM->ChangeState(CState_Idle::GetInstance());
+		return;
+	}
 
 	pCharacter->Firing();
 }
@@ -166,6 +200,7 @@ void CState_Fire::ExitState(CCharacterObject* pCharacter, AnimationData::Parts t
 void CState_Run::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
+	pCharacter->SetIsTempRun(true);
 }
 
 void CState_Run::UpdateUpperBodyState(CCharacterObject* pCharacter)
@@ -174,39 +209,80 @@ void CState_Run::UpdateUpperBodyState(CCharacterObject* pCharacter)
 
 void CState_Run::UpdateLowerBodyState(CCharacterObject* pCharacter)
 {
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
+
 	if (!pCharacter->GetIsRun()) {
 		if (pCharacter->IsMoving()) {
-			pCharacter->GetFSM(AnimationData::Parts::UpperBody)->ChangeState(CState_Walk::GetInstance());
-			pCharacter->GetFSM(AnimationData::Parts::LowerBody)->ChangeState(CState_Walk::GetInstance());
+			pUpperFSM->ChangeState(CState_Walk::GetInstance());
+			pLowerFSM->ChangeState(CState_Walk::GetInstance());
+			return;
 		}
 		else {
-			pCharacter->GetFSM(AnimationData::Parts::UpperBody)->ChangeState(CState_Idle::GetInstance());
-			pCharacter->GetFSM(AnimationData::Parts::LowerBody)->ChangeState(CState_Idle::GetInstance());
+			pUpperFSM->ChangeState(CState_Idle::GetInstance());
+			pLowerFSM->ChangeState(CState_Idle::GetInstance());
+			return;
 		}
 	}
 }
 
 void CState_Run::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	pCharacter->SetIsTempRun(false);
 }
 
-// ---------------------------- Run ---------------------------- //
+// ---------------------------- Death ---------------------------- //
 void CState_Death::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-	// 리스폰 대기 시간 4초
-	m_dwDeathWaitingTime = 4000;			
+	// 리스폰 대기 시간 5초
+	m_dwDeathWaitingTime = 5000;
 	m_dwDeathStartTime = GetTickCount();
 
-	// 맞은 위치 확인하여 죽는 모션 다르게 하기
-	pCharacter->SetAnimation(AnimationData::CharacterAnim::eDeath_Head);
+	ChracterBoundingBoxParts parts = pCharacter->GetCollisionParts();
+	if (parts == ChracterBoundingBoxParts::eHead) {
+		pCharacter->SetAnimation(AnimationData::CharacterAnim::eDeath_Head);
+		m_bIsDeathHead = true;
+	}
+	else {
+		pCharacter->SetAnimation(AnimationData::CharacterAnim::eDeath);
+		m_bIsDeath = true;
+	}
+
+	// Test용도
+	m_Position = pCharacter->GetvPosition();
 }
 
 void CState_Death::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
+	DWORD timeElapsed = GetTickCount() - m_dwDeathStartTime;
+
+	// Death 애니메이션 위치 Offset 맞추기 용도
+	if (m_bIsDeath) {
+		if (1400 < timeElapsed && timeElapsed < 1600) {
+			XMVECTOR prevPos = pCharacter->GetvPosition();
+			prevPos -= XMVectorSet(0, pCharacter->GetBoundingBox().Extents.y * SCENE_MGR->g_fDeltaTime, 0, 0);
+			pCharacter->SetPosition(prevPos);
+		}
+		if (1600 < timeElapsed && timeElapsed < 2000) {
+			XMVECTOR prevPos = pCharacter->GetvPosition();
+			prevPos -= XMVectorSet(0, 1.5f * pCharacter->GetBoundingBox().Extents.y * SCENE_MGR->g_fDeltaTime, 0, 0);
+			pCharacter->SetPosition(prevPos);
+		}
+	}
+	else if(m_bIsDeathHead){
+		if (900 < timeElapsed && timeElapsed < 1600) {
+			XMVECTOR prevPos = pCharacter->GetvPosition();
+			prevPos -= XMVectorSet(0, pCharacter->GetBoundingBox().Extents.y * SCENE_MGR->g_fDeltaTime, 0, 0);
+			pCharacter->SetPosition(prevPos);
+		}
+	}
+
 	if (!pCharacter->GetControllerActive(AnimationData::Parts::UpperBody)) {
-		if (GetTickCount() - m_dwDeathStartTime > m_dwDeathWaitingTime) {
-			pCharacter->GetFSM(AnimationData::Parts::UpperBody)->ChangeState(CState_Idle::GetInstance());
-			pCharacter->GetFSM(AnimationData::Parts::LowerBody)->ChangeState(CState_Idle::GetInstance());
+		if (m_dwDeathWaitingTime < timeElapsed) {
+			pUpperFSM->ChangeState(CState_Idle::GetInstance());
+			pLowerFSM->ChangeState(CState_Idle::GetInstance());
 			pCharacter->SetControllerActive(AnimationData::Parts::UpperBody, true);
 			pCharacter->SetControllerActive(AnimationData::Parts::LowerBody, true);
 		}
@@ -219,5 +295,37 @@ void CState_Death::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 void CState_Death::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
+
 	pCharacter->Revival();
+	pCharacter->SetPosition(m_Position);
+	pUpperFSM->InitState();
+	pLowerFSM->InitState();
+}
+
+// ---------------------------- Head Hit ---------------------------- //
+void CState_HeadHit::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
+{
+	pCharacter->SetAnimation(AnimationData::CharacterAnim::eHeadHit);
+}
+
+void CState_HeadHit::UpdateUpperBodyState(CCharacterObject* pCharacter)
+{
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+//	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
+
+	if (!pCharacter->GetControllerActive(AnimationData::Parts::UpperBody)) {
+		pUpperFSM->ChangeState(pUpperFSM->GetPreviousState());
+		pCharacter->SetControllerActive(AnimationData::Parts::UpperBody, true);
+		return;
+	}
+}
+
+void CState_HeadHit::UpdateLowerBodyState(CCharacterObject* pCharacter)
+{
+}
+
+void CState_HeadHit::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
+{
 }
