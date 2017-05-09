@@ -280,11 +280,6 @@ void CPlayer::SetKeyUp(KeyInput key)
 	*/
 }
 
-void CPlayer::SetWorldMatrix(XMMATRIX world)
-{
-	m_pCharacter->m_mtxWorld = world;
-}
-
 void CPlayer::SetLook(float x, float y, float z)
 {
 	XMMATRIX mtxRotate;

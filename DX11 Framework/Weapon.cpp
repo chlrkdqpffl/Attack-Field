@@ -27,7 +27,7 @@ void CWeapon::Firing(XMVECTOR direction)
 {
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed) {
 		m_dwLastAttackTime = GetTickCount();
-
+		SOUND_MGR->Play3DSound(SoundTag::eFire, m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);
 		m_nhasBulletCount--;
 
 		CollisionInfo info;
@@ -58,7 +58,6 @@ void CWeapon::Reloading()
 {
 	cout << "총알 재장전 완료" << endl;
 	m_nhasBulletCount = m_nMaxhasBulletCount;
-
 }
 
 void CWeapon::Update(float fDeltaTime)

@@ -88,15 +88,13 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_Z:
-				m_vecCharacterContainer.back()->SetVelocity(XMFLOAT3(2.0f, 0, 0));
+				SOUND_MGR->VolumeControl(-0.2f);
 				break;
 			case VK_X:
-				bTest = !bTest;
-				m_vecCharacterContainer.back()->SetIsRun(bTest);
+				SOUND_MGR->PlayBgm(SoundTag::eBGM_TitleScene);
 				break;
 			case VK_C:
-				bTest = !bTest;
-				m_vecCharacterContainer.back()->SetIsReload(bTest);
+				SOUND_MGR->Play3DSound(SoundTag::eFire, m_pPlayer->GetPosition(), m_pPlayer->GetVelocity(), 1, 1);
 				break;
 			case VK_V:
 				m_vecCharacterContainer.back()->SetVelocity(XMFLOAT3(-2.0f, 0, 0));
@@ -1084,33 +1082,22 @@ void CMainScene::RenderBoundingBox()
 
 void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 {
-	string ppos;
-	string rotate;
-	string orotate;
-	
+	string str;
+
 	// Draw Position
 	XMFLOAT3 playerPos = m_pPlayer->GetPosition();
-	XMFLOAT3 playerrotate = m_pPlayer->GetLook();
-//	XMVECTOR otherrotate = GetCharcontainer()[1]->GetLook(false);
 
-	XMFLOAT3 temp;
-//	XMStoreFloat3(&temp, otherrotate);
+	XMVECTOR temp = XMVector3LengthEst(m_pPlayer->GetvPosition());
+	str = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")\n";
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 50, 0xFFFFFFFF, FW1_LEFT);
 
-	ppos = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")\n";
-	rotate = "player rotate : (" + to_string(playerrotate.x) + ", " + to_string(playerrotate.y) + ", " + to_string(playerrotate.z) + ")\n";
-	orotate = "other rotate : (" + to_string(temp.x) + ", " + to_string(temp.y) + ", " + to_string(temp.z) + ")\n";
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(ppos), 30, 20, 50, 0xFFFFFFFF, FW1_LEFT);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(rotate), 30, 20, 90, 0xFFFFFFFF, FW1_LEFT);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(orotate), 30, 20, 140, 0xFFFFFFFF, FW1_LEFT);
+	str = "원점으로부터의 거리 : (" + to_string(XMVectorGetX(temp)) + ")\n";
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 90, 0xFFFFFFFF, FW1_LEFT);
 
 	// Draw Select Object
 	if (m_pSelectedObject) {
 		XMFLOAT3 pos = m_pSelectedObject->GetPosition();
-
-
-	
-		ppos = "Position : (" + to_string(pos.x) + ", " + to_string(pos.y) + to_string(pos.z) + ")";
-
+		str = "Position : (" + to_string(pos.x) + ", " + to_string(pos.y) + to_string(pos.z) + ")";
 
 		//TEXT_MGR->RenderText(pd3dDeviceContext, ppos, 30, 20, 80, 0xFFFFFFFF, FW1_LEFT);
 	}

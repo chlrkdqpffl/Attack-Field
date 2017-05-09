@@ -139,7 +139,7 @@ void CCharacterObject::OnCollisionCheck()
 	XMVECTOR centerPos = m_pPlayer->GetvPrevPosition();			// 혹시 몰라서 이전 프레임의 위치로 설정
 	BoundingOrientedBox bcObox = GetBoundingOBox();
 
-	if (COLLISION_MGR->RayCastCollision(m_infoCollision, centerPos, -1 * GetUp())) {
+	if (COLLISION_MGR->RayCastCollision(m_infoCollision, centerPos, -1 * GetvUp())) {
 		if (m_infoCollision.m_fDistance <= bcObox.Extents.y) {
 			m_pPlayer->SetFloorCollision(true);
 		}

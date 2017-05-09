@@ -75,6 +75,11 @@ void CState_Walk::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());
 		return;
 	}
+	else if (pCharacter->GetIsFire()) {
+		pUpperFSM->ChangeState(CState_Fire::GetInstance());
+		return;
+	}
+
 	AnimationData::CharacterAnim lowerAnim = pCharacter->GetAnimationEnum(AnimationData::Parts::LowerBody);
 	if (lowerAnim == AnimationData::CharacterAnim::eIdle)
 		pUpperFSM->ChangeState(pLowerFSM->GetCurrentState());
@@ -143,7 +148,8 @@ void CState_Walk::ExitState(CCharacterObject* pCharacter, AnimationData::Parts t
 // ---------------------------- Reload ---------------------------- //
 void CState_Reload::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload);
+	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0) , 1, 1);
+	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.3f);
 }
 
 void CState_Reload::UpdateUpperBodyState(CCharacterObject* pCharacter)

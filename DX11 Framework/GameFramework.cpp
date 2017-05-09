@@ -46,8 +46,8 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(492852);
-//	_CrtSetBreakAlloc(282);
+//	_CrtSetBreakAlloc(1258671);
+//	_CrtSetBreakAlloc(846137);
 //	_CrtSetBreakAlloc(289);
 //	_CrtSetBreakAlloc(205);		// 16
 //	_CrtSetBreakAlloc(206);		// 16
@@ -71,9 +71,39 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 
 	MAPDATA_MGR->InitializeManager();
 	RESOURCE_MGR->InitializeManager();
+	SOUND_MGR->InitializeManager();
 	BuildObjects();
 
 	return(true);
+}
+
+void CGameFramework::OnDestroy()
+{
+	ReleaseObjects();
+
+	if (m_pd3dDeviceContext) m_pd3dDeviceContext->ClearState();
+	if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
+	if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();
+	if (m_pd3dDepthStencilView) m_pd3dDepthStencilView->Release();
+	if (m_pDXGISwapChain) m_pDXGISwapChain->Release();
+	if (m_pd3dDeviceContext) m_pd3dDevice->Release();
+	if (m_pd3dDevice) m_pd3dDevice->Release();
+
+	// Relesed Manager
+	STATEOBJ_MGR->ReleseInstance();
+	GLOBAL_MGR->ReleseInstance();
+	TEXT_MGR->ReleseInstance();
+	SCENE_MGR->ReleseInstance();
+	RESOURCE_MGR->ReleseInstance();
+	TWBAR_MGR->ReleseInstance();
+	MAPDATA_MGR->ReleseInstance();
+	COLLISION_MGR->ReleseInstance();
+	SOUND_MGR->ReleseInstance();
+
+#if defined(DEBUG) || defined(_DEBUG)
+	_CrtDumpMemoryLeaks();
+#endif
+
 }
 
 bool CGameFramework::CreateDirect3DDisplay()
@@ -317,34 +347,6 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	DXUT_SetDebugName(m_pd3dUAVTexture, "UAVTexture");
 
 	return(true);
-}
-
-void CGameFramework::OnDestroy()
-{
-	ReleaseObjects();
-
-	if (m_pd3dDeviceContext) m_pd3dDeviceContext->ClearState();
-	if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
-	if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();
-	if (m_pd3dDepthStencilView) m_pd3dDepthStencilView->Release();
-	if (m_pDXGISwapChain) m_pDXGISwapChain->Release();
-	if (m_pd3dDeviceContext) m_pd3dDevice->Release();
-	if (m_pd3dDevice) m_pd3dDevice->Release();
-
-	// Relesed Manager
-	STATEOBJ_MGR->ReleseInstance();
-	GLOBAL_MGR->ReleseInstance();
-	TEXT_MGR->ReleseInstance();
-	SCENE_MGR->ReleseInstance();
-	RESOURCE_MGR->ReleseInstance();
-	TWBAR_MGR->ReleseInstance();
-	MAPDATA_MGR->ReleseInstance();
-	COLLISION_MGR->ReleseInstance();
-
-#if defined(DEBUG) || defined(_DEBUG)
-	_CrtDumpMemoryLeaks();
-#endif
-
 }
 
 void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -714,6 +716,7 @@ void CGameFramework::UpdateObjects()
 
 	SCENE_MGR->g_fDeltaTime = m_fDeltaTime;
 	SCENE_MGR->g_nowScene->Update(m_fDeltaTime);
+	SOUND_MGR->Update(m_fDeltaTime);
 }
 
 //#define _WITH_PLAYER_TOP

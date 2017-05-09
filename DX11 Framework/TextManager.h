@@ -2,13 +2,19 @@
 #include "SingletonManager.h"
 #include "../Setting/FW1FontWrapper/FW1FontWrapper.h"
 
-// 32비트 컴파일
+
+#ifdef _M_IX86		// 32비트
+#pragma comment(lib, "../Setting/FW1FontWrapper/x86/FW1FontWrapper.lib")
+#elif _M_X64		// 64비트
+#pragma comment(lib, "../Setting/FW1FontWrapper/x64/FW1FontWrapper.lib")
+#endif
+
 //#pragma comment(lib, "../Setting/FW1FontWrapper/x86/FW1FontWrapper.lib")
 // 응용프로그램을 제대로 시작하지 못했습니다. (0xc000007b) 오류는 FW1FontWrapper.dll 이 32비트용이 아니므로 32비트용으로 덮어쓰기
 
-// 64비트 컴파일
-#pragma comment(lib, "../Setting/FW1FontWrapper/x64/FW1FontWrapper.lib")
-				
+
+
+
 // 응용프로그램을 제대로 시작하지 못했습니다. (0xc000007b) 오류는 FW1FontWrapper.dll 이 64비트용이 아니므로 64비트용으로 덮어쓰기
 
 enum TEXT

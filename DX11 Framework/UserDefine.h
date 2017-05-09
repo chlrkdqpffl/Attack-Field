@@ -39,6 +39,7 @@
 #define GLOBAL_MGR CGlobalVariableManager::GetInstance()
 #define COLLISION_MGR CCollisionManager::GetInstance()
 #define MAPDATA_MGR CMapDataManager::GetInstance()
+#define SOUND_MGR CSoundManager::GetInstance()
 
 // Check Timer
 #define STARTTIMER(msg)			{ cout << msg; GLOBAL_MGR->g_startTime = chrono::system_clock::now();}

@@ -66,7 +66,6 @@ using namespace std;
 #pragma comment(lib, "legacy_stdio_definitions.lib")		// DXTrace
 #pragma comment(lib, "ws2_32.lib")							// ¼­¹ö
 
-
 #include "ConstantBuffer_Slot.h"
 #include "UserDefine.h"
 #include "UserTag.h"
@@ -80,6 +79,7 @@ using namespace std;
 #include "AntTweakBarManager.h"
 #include "CollisionManager.h"
 #include "MapDataManager.h"
+#include "SoundManager.h"
 // ------------------------------- //
 
 template <typename T>
@@ -182,7 +182,7 @@ inline void DXUT_SetDebugName(ID3D11DeviceChild* pObj, const WCHAR* pstrName)
 #endif
 
 
-inline void ShowXMMatrix(XMMATRIX mtx)
+inline void ShowXMMatrix(XMMATRIX& mtx)
 {
 	XMFLOAT4X4 mtxOut;
 	XMStoreFloat4x4(&mtxOut, mtx);
@@ -192,7 +192,7 @@ inline void ShowXMMatrix(XMMATRIX mtx)
 	cout << mtxOut._41 << ", " << mtxOut._42 << ", " << mtxOut._43 << ", " << mtxOut._44 << endl << endl;
 }
 
-inline void ShowXMFloat4x4(XMFLOAT4X4 mtx)
+inline void ShowXMFloat4x4(XMFLOAT4X4& mtx)
 {
 	cout << mtx._11 << ", " << mtx._12 << ", " << mtx._13 << ", " << mtx._14 << endl;
 	cout << mtx._21 << ", " << mtx._22 << ", " << mtx._23 << ", " << mtx._24 << endl;
@@ -200,17 +200,17 @@ inline void ShowXMFloat4x4(XMFLOAT4X4 mtx)
 	cout << mtx._41 << ", " << mtx._42 << ", " << mtx._43 << ", " << mtx._44 << endl << endl;
 }
 
-inline void ShowXMFloat4(XMFLOAT4 xmf4)
+inline void ShowXMFloat4(XMFLOAT4& xmf4)
 {
 	cout << xmf4.x << ", " << xmf4.y << ", " << xmf4.z << ", " << xmf4.w << endl;
 }
 
-inline void ShowXMFloat3(XMFLOAT3 xmf3)
+inline void ShowXMFloat3(XMFLOAT3& xmf3)
 {
 	cout << xmf3.x << ", " << xmf3.y << ", " << xmf3.z << endl;
 }
 
-inline void ShowXMVector(XMVECTOR xmVector)
+inline void ShowXMVector(XMVECTOR& xmVector)
 {
 	XMFLOAT4 out;
 	XMStoreFloat4(&out, xmVector);

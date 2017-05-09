@@ -21,7 +21,7 @@ void CBulletObject::OnCollisionCheck()
 {
 	CollisionInfo info;
 	
-	if (COLLISION_MGR->RayCastCollisionToCharacter(info, GetvPosition(), GetLook())) {
+	if (COLLISION_MGR->RayCastCollisionToCharacter(info, GetvPosition(), GetvLook())) {
 		//SetActive(false);
 		//info.m_pHitObject->SetCollision(true);
 		cout << "CBulletObject::OnCollisionCheck() Ãæµ¹ÇÔ" << endl;
