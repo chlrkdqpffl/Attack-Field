@@ -49,7 +49,7 @@ void CCharacterObject::InitCollisionInfo()
 void CCharacterObject::Firing()
 {
 	if (m_pWeapon->IsExistBullet())
-		m_pWeapon->Firing((GetLook()));
+		m_pWeapon->Firing(XMLoadFloat3(&m_f3FiringDirection));
 	else
 		m_bIsReload = true;
 }

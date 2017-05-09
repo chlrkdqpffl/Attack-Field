@@ -129,13 +129,15 @@ int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRay
 	int nPrimitives = (m_d3dPrimitiveTopology == D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST) ? (m_nVertices / 3) : (m_nVertices - 2);
 	if (m_nIndices > 0) nPrimitives = (m_d3dPrimitiveTopology == D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST) ? (m_nIndices / 3) : (m_nIndices - 2);
 
-	XMVECTOR v0, v1, v2;
-	float fuHitBaryCentric, fvHitBaryCentric, fHitDistance, fNearHitDistance = FLT_MAX;
+	XMFLOAT3 v0, v1, v2;
+//	XMVECTOR v0, v1, v2;
+	v0 = v1 = v2 = XMFLOAT3(0, 0, 0);
+	float fuHitBaryCentric = 0.0f, fvHitBaryCentric = 0.0f, fHitDistance = 0.0f, fNearHitDistance = FLT_MAX;
 	for (int i = 0; i < nPrimitives; i++)
 	{
-		v0 = *(XMVECTOR *)(pbPositions + ((m_pnIndices) ? (m_pnIndices[(i*nOffset) + 0]) : ((i*nOffset) + 0)) * m_pnVertexStrides[0]);
-		v1 = *(XMVECTOR *)(pbPositions + ((m_pnIndices) ? (m_pnIndices[(i*nOffset) + 1]) : ((i*nOffset) + 1)) * m_pnVertexStrides[0]);
-		v2 = *(XMVECTOR *)(pbPositions + ((m_pnIndices) ? (m_pnIndices[(i*nOffset) + 2]) : ((i*nOffset) + 2)) * m_pnVertexStrides[0]);
+		v0 = *(XMFLOAT3 *)(pbPositions + ((m_pnIndices) ? (m_pnIndices[(i*nOffset) + 0]) : ((i*nOffset) + 0)) * m_pnVertexStrides[0]);
+		v1 = *(XMFLOAT3 *)(pbPositions + ((m_pnIndices) ? (m_pnIndices[(i*nOffset) + 1]) : ((i*nOffset) + 1)) * m_pnVertexStrides[0]);
+		v2 = *(XMFLOAT3 *)(pbPositions + ((m_pnIndices) ? (m_pnIndices[(i*nOffset) + 2]) : ((i*nOffset) + 2)) * m_pnVertexStrides[0]);
 
 	if (D3DXIntersectTri((D3DXVECTOR3 *)&v0, (D3DXVECTOR3 *)&v1, (D3DXVECTOR3 *)&v2, (D3DXVECTOR3 *)pd3dxvRayPosition, (D3DXVECTOR3 *)pd3dxvRayDirection, &fuHitBaryCentric, &fvHitBaryCentric, &fHitDistance))	{ 
 			if (fHitDistance < fNearHitDistance){
@@ -146,8 +148,8 @@ int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRay
 					pd3dxIntersectInfo->m_fV = fvHitBaryCentric;
 					pd3dxIntersectInfo->m_fDistance = fHitDistance;
 				
-					XMVECTOR edge1 = v1 - v0;
-					XMVECTOR edge2 = v2 - v0;
+					XMVECTOR edge1 = XMLoadFloat3(&v1) - XMLoadFloat3(&v0);
+					XMVECTOR edge2 = XMLoadFloat3(&v2) - XMLoadFloat3(&v0);
 					XMVECTOR normal = XMVector3Cross(edge1, edge2);
 					normal = XMVector3Normalize(normal);
 					XMStoreFloat3(&pd3dxIntersectInfo->m_f3HitNormal, -1 * normal);		// -1을 해줘야 정확하던데 왜그런지 미확인
