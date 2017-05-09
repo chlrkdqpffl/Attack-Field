@@ -18,7 +18,7 @@ CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner) : CWeapon(pOwner)
 	m_Type = WeaponData::Type::eRifle;
 	m_fDamage = 30.f;
 	m_fRange = 1000.f;
-	m_uiFireSpeed = 200;
+	m_uiFireSpeed = 100;
 
 	m_nMaxhasBulletCount = 30;
 	m_nhasBulletCount = 30;

@@ -11,7 +11,8 @@ void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)	//살았는
 		pLowerFSM->ChangeState(CState_Death::GetInstance());
 		return;
 	}
-	else if (pCharacter->GetCollisionParts() == ChracterBoundingBoxParts::eHead) {
+	//else if (pCharacter->GetCollisionParts() == ChracterBoundingBoxParts::eHead) {
+	else if(pCharacter->GetIsHeadHit()) {
 		pUpperFSM->ChangeState(CState_HeadHit::GetInstance());
 		return;
 	}
@@ -75,6 +76,11 @@ void CState_Walk::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());
 		return;
 	}
+	else if (pCharacter->GetIsFire()) {
+		pUpperFSM->ChangeState(CState_Fire::GetInstance());
+		return;
+	}
+
 	AnimationData::CharacterAnim lowerAnim = pCharacter->GetAnimationEnum(AnimationData::Parts::LowerBody);
 	if (lowerAnim == AnimationData::CharacterAnim::eIdle)
 		pUpperFSM->ChangeState(pLowerFSM->GetCurrentState());
@@ -144,7 +150,8 @@ void CState_Walk::ExitState(CCharacterObject* pCharacter, AnimationData::Parts t
 // ---------------------------- Reload ---------------------------- //
 void CState_Reload::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload);
+	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0) , 1, 1);
+	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.5f);
 }
 
 void CState_Reload::UpdateUpperBodyState(CCharacterObject* pCharacter)
@@ -239,15 +246,10 @@ void CState_Death::EnterState(CCharacterObject* pCharacter, AnimationData::Parts
 	m_dwDeathWaitingTime = 5000;
 	m_dwDeathStartTime = GetTickCount();
 
-	ChracterBoundingBoxParts parts = pCharacter->GetCollisionParts();
-	if (parts == ChracterBoundingBoxParts::eHead) {
+	if (pCharacter->GetIsDeathHead())
 		pCharacter->SetAnimation(AnimationData::CharacterAnim::eDeath_Head);
-		m_bIsDeathHead = true;
-	}
-	else {
+	else 
 		pCharacter->SetAnimation(AnimationData::CharacterAnim::eDeath);
-		m_bIsDeath = true;
-	}
 
 	// Test용도
 	m_Position = pCharacter->GetvPosition();
@@ -260,7 +262,14 @@ void CState_Death::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	DWORD timeElapsed = GetTickCount() - m_dwDeathStartTime;
 
 	// Death 애니메이션 위치 Offset 맞추기 용도
-	if (m_bIsDeath) {
+	if (pCharacter->GetIsDeathHead()) {
+		if (900 < timeElapsed && timeElapsed < 1600) {
+			XMVECTOR prevPos = pCharacter->GetvPosition();
+			prevPos -= XMVectorSet(0, pCharacter->GetBoundingBox().Extents.y * SCENE_MGR->g_fDeltaTime, 0, 0);
+			pCharacter->SetPosition(prevPos);
+		}
+	}
+	else {
 		if (1400 < timeElapsed && timeElapsed < 1600) {
 			XMVECTOR prevPos = pCharacter->GetvPosition();
 			prevPos -= XMVectorSet(0, pCharacter->GetBoundingBox().Extents.y * SCENE_MGR->g_fDeltaTime, 0, 0);
@@ -269,13 +278,6 @@ void CState_Death::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		if (1600 < timeElapsed && timeElapsed < 2000) {
 			XMVECTOR prevPos = pCharacter->GetvPosition();
 			prevPos -= XMVectorSet(0, 1.5f * pCharacter->GetBoundingBox().Extents.y * SCENE_MGR->g_fDeltaTime, 0, 0);
-			pCharacter->SetPosition(prevPos);
-		}
-	}
-	else if(m_bIsDeathHead){
-		if (900 < timeElapsed && timeElapsed < 1600) {
-			XMVECTOR prevPos = pCharacter->GetvPosition();
-			prevPos -= XMVectorSet(0, pCharacter->GetBoundingBox().Extents.y * SCENE_MGR->g_fDeltaTime, 0, 0);
 			pCharacter->SetPosition(prevPos);
 		}
 	}
@@ -329,4 +331,5 @@ void CState_HeadHit::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 void CState_HeadHit::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	pCharacter->SetIsHeadHit(false);
 }

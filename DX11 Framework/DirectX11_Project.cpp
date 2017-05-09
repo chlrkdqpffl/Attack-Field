@@ -86,8 +86,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	gGameFramework.sethandle(hMainWnd);
 
+#ifdef	USE_SERVER
 	gGameFramework.Server_init();
-
+#endif
 	if (!gGameFramework.OnCreate(hInstance, hMainWnd)) return(FALSE);
 
 	ShowWindow(hMainWnd, nCmdShow);
@@ -129,7 +130,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			hdc = BeginPaint(hWnd, &ps);
 			EndPaint(hWnd, &ps);
 			break;
-
+#ifdef	USE_SERVER
 		case WM_SOCKET:
 		{
 			if (WSAGETSELECTERROR(lParam)) {
@@ -146,9 +147,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				exit(-1);
 				break;
 			}
-
 		}
 		break;
+#endif
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			break;

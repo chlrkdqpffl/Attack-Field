@@ -4,6 +4,10 @@
 //#define FRAME_BUFFER_WIDTH				1280
 //#define FRAME_BUFFER_HEIGHT				768
 
+
+#define USE_CONSOLE					// Open Console Windows
+//#define USE_SERVER
+
 #define PROJECT_NAME					L"DX11_Framework ("
 
 #define FRAME_BUFFER_WIDTH				1600
@@ -18,7 +22,7 @@
 #define SHADOW_RENDER_TARGET_WIDTH		1024
 #define SHADOW_RENDER_TARGET_HEIGHT		1024
 
-#define MAXBONECOUNT					80
+#define MAXBONECOUNT					60
 
 #define _WITH_TERRAIN_PARTITION
 #define _WITH_FRUSTUM_CULLING_BY_OBJECT
@@ -27,8 +31,6 @@
 //#define _WITH_SKYBOX_TEXTURE_ARRAY
 #define _WITH_SKYBOX_TEXTURE_CUBE
 //#define _WITH_TERRAIN_TEXTURE_ARRAY
-
-#define USE_CONSOLE					// Open Console Windows
 
 // --------------------- Manager -------------------- //
 #define STATEOBJ_MGR CStateObjectManager::GetInstance()
@@ -39,6 +41,7 @@
 #define GLOBAL_MGR CGlobalVariableManager::GetInstance()
 #define COLLISION_MGR CCollisionManager::GetInstance()
 #define MAPDATA_MGR CMapDataManager::GetInstance()
+#define SOUND_MGR CSoundManager::GetInstance()
 
 // Check Timer
 #define STARTTIMER(msg)			{ cout << msg; GLOBAL_MGR->g_startTime = chrono::system_clock::now();}

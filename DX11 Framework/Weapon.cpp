@@ -27,7 +27,7 @@ void CWeapon::Firing(XMVECTOR direction)
 {
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed) {
 		m_dwLastAttackTime = GetTickCount();
-
+		SOUND_MGR->Play3DSound(SoundTag::eFire, m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);
 		m_nhasBulletCount--;
 
 		CollisionInfo info;
@@ -37,10 +37,10 @@ void CWeapon::Firing(XMVECTOR direction)
 				info.m_pHitObject->SetCollision(true);
 
 				CCharacterObject* hitCharacter = static_cast<CCharacterObject*>(info.m_pHitObject);
-				hitCharacter->SetCollisionParts(info.m_HitParts);
 				// Head Shot 판정
 				if (info.m_HitParts == ChracterBoundingBoxParts::eHead) {
 					cout << "헤드샷" << endl;
+					hitCharacter->SetIsHeadHit(true);
 					hitCharacter->DamagedCharacter(m_fDamage * 2.5f);
 				}
 				else {
@@ -60,7 +60,6 @@ void CWeapon::Reloading()
 {
 	cout << "총알 재장전 완료" << endl;
 	m_nhasBulletCount = m_nMaxhasBulletCount;
-
 }
 
 void CWeapon::Update(float fDeltaTime)

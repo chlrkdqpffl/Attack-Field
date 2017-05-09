@@ -108,9 +108,12 @@ public:
 
 	XMVECTOR GetvPosition(bool bIsLocal = false) const;
 	XMFLOAT3 GetPosition(bool isLocal = false) const;
-	XMVECTOR GetLook(bool bIsLocal = false) const;
-	XMVECTOR GetUp(bool bIsLocal = false) const;
-	XMVECTOR GetRight(bool bIsLocal = false) const;
+	XMVECTOR GetvLook(bool bIsLocal = false) const;
+	XMVECTOR GetvUp(bool bIsLocal = false) const;
+	XMVECTOR GetvRight(bool bIsLocal = false) const;
+	XMFLOAT3 GetLook(bool bIsLocal = false) const;
+	XMFLOAT3 GetUp(bool bIsLocal = false) const;
+	XMFLOAT3 GetRight(bool bIsLocal = false) const;
 
 	void SetLook(XMFLOAT3 axis, bool bIsLocal = false);
 	void SetvLook(XMVECTOR axis, bool bIsLocal = false);

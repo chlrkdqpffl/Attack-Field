@@ -201,11 +201,21 @@ enum class ObjectTag
 };
 
 
-// 충돌 처리시 사용할 Layer
-namespace Layer 
+// =========================================================================================================================== //
+// ===================================================== Sound Data ======================================================== //
+enum class SoundTag
 {
+	eNone = -1,
 
-}
+	// BGM
+	eBGM_TitleScene,
+
+	// Effect
+	eFire, eReload,
+
+	SoundCount
+};
+
 
 enum class GBufferType
 {

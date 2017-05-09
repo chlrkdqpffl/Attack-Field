@@ -228,7 +228,7 @@ void CGameObject::SetPosition(XMFLOAT3 pos, bool isLocal)
 void CGameObject::MoveStrafe(float fDistance)
 {
 	XMVECTOR d3dxvPosition = GetvPosition();
-	XMVECTOR d3dxvRight = GetRight();
+	XMVECTOR d3dxvRight = GetvRight();
 	d3dxvPosition += fDistance * d3dxvRight;
 	CGameObject::SetPosition(d3dxvPosition);
 }
@@ -236,7 +236,7 @@ void CGameObject::MoveStrafe(float fDistance)
 void CGameObject::MoveUp(float fDistance)
 {
 	XMVECTOR d3dxvPosition = GetvPosition();
-	XMVECTOR d3dxvUp = GetUp();
+	XMVECTOR d3dxvUp = GetvUp();
 	d3dxvPosition += fDistance * d3dxvUp;
 	CGameObject::SetPosition(d3dxvPosition);
 }
@@ -244,7 +244,7 @@ void CGameObject::MoveUp(float fDistance)
 void CGameObject::MoveForward(float fDistance)
 {
 	XMVECTOR d3dxvPosition = GetvPosition();
-	XMVECTOR d3dxvLookAt = GetLook();
+	XMVECTOR d3dxvLookAt = GetvLook();
 	d3dxvPosition += fDistance * d3dxvLookAt;
 	CGameObject::SetPosition(d3dxvPosition);
 }
@@ -383,7 +383,7 @@ XMFLOAT3 CGameObject::GetPosition(bool isLocal) const
 	return XMFLOAT3(mtx._41, mtx._42, mtx._43);
 }
 
-XMVECTOR CGameObject::GetRight(bool isLocal) const
+XMVECTOR CGameObject::GetvRight(bool isLocal) const
 {
 	XMFLOAT4X4 mtx;
 	
@@ -398,7 +398,7 @@ XMVECTOR CGameObject::GetRight(bool isLocal) const
 	return d3dxvRight;
 }
 
-XMVECTOR CGameObject::GetUp(bool isLocal) const
+XMVECTOR CGameObject::GetvUp(bool isLocal) const
 {
 	XMFLOAT4X4 mtx;
 
@@ -413,7 +413,7 @@ XMVECTOR CGameObject::GetUp(bool isLocal) const
 	return d3dxvUp;
 }
 
-XMVECTOR CGameObject::GetLook(bool isLocal) const
+XMVECTOR CGameObject::GetvLook(bool isLocal) const
 {
 	XMFLOAT4X4 mtx;
 
@@ -426,6 +426,54 @@ XMVECTOR CGameObject::GetLook(bool isLocal) const
 	d3dxvLookAt = XMVector3Normalize(d3dxvLookAt);
 
 	return d3dxvLookAt;
+}
+
+XMFLOAT3 CGameObject::GetRight(bool isLocal) const
+{
+	XMFLOAT4X4 mtx;
+
+	if (isLocal)
+		XMStoreFloat4x4(&mtx, m_mtxLocal);
+	else
+		XMStoreFloat4x4(&mtx, m_mtxWorld);
+
+	XMVECTOR d3dxvRight = XMVectorSet(mtx._11, mtx._12, mtx._13, 0.f);
+	d3dxvRight = XMVector3NormalizeEst(d3dxvRight);
+
+	XMFLOAT3 right; XMStoreFloat3(&right, d3dxvRight);
+	return right;
+}
+
+XMFLOAT3 CGameObject::GetUp(bool isLocal) const
+{
+	XMFLOAT4X4 mtx;
+
+	if (isLocal)
+		XMStoreFloat4x4(&mtx, m_mtxLocal);
+	else
+		XMStoreFloat4x4(&mtx, m_mtxWorld);
+
+	XMVECTOR d3dxvUp = XMVectorSet(mtx._21, mtx._22, mtx._23, 0.f);
+	d3dxvUp = XMVector3Normalize(d3dxvUp);
+
+	XMFLOAT3 up; XMStoreFloat3(&up, d3dxvUp);
+	return up;
+}
+
+XMFLOAT3 CGameObject::GetLook(bool isLocal) const
+{
+	XMFLOAT4X4 mtx;
+
+	if (isLocal)
+		XMStoreFloat4x4(&mtx, m_mtxLocal);
+	else
+		XMStoreFloat4x4(&mtx, m_mtxWorld);
+
+	XMVECTOR d3dxvLookAt = XMVectorSet(mtx._31, mtx._32, mtx._33, 0.f);
+	d3dxvLookAt = XMVector3Normalize(d3dxvLookAt);
+
+	XMFLOAT3 look; XMStoreFloat3(&look, d3dxvLookAt);
+	return look;
 }
 
 BoundingBox CGameObject::GetBoundingBox(bool isLocal) const
