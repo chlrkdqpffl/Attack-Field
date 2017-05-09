@@ -14,9 +14,16 @@ struct cs_key_input {	//키버튼 받았을때
 	BYTE	size;
 	volatile BYTE	type;
 
-	BYTE	Animation;
+	XMVECTOR	 Animation;
 
-	DWORD key_button;
+
+	DWORD	key_button;
+
+	BYTE	Hp;
+
+	float	x;
+	float	y;
+	float	z;
 
 };
 
@@ -43,7 +50,8 @@ struct sc_packet_put_player {	//서버에서 처음 접속했을때 위치값과 ID를 부여한다.
 	float y;
 	float z;
 
-	BYTE	Animation;
+	XMVECTOR	Animation;
+	BYTE	hp;
 
 };
 
@@ -52,19 +60,21 @@ struct sc_packet_pos	//서버에서 처리된 값을 클라에게 보낸다.
 	BYTE size;
 	volatile BYTE type;
 
-	WORD id;
+	WORD	id;
 
-	float x;
-	float y;
-	float z;
+	float	x;
+	float	y;
+	float	z;
 
-	BYTE	Animation;
+	XMVECTOR	Animation;
+	BYTE	hp;
 };
 
 struct sc_rotate_vector	
 {
 	BYTE size;
 	BYTE type;
+
 	WORD id;
 
 	float x;
@@ -72,13 +82,6 @@ struct sc_rotate_vector
 	float z;
 
 };
-
-struct sc_packet_remove_player {	//접속이 종료되면 보내는 패킷이다.
-	BYTE size;
-	BYTE type;
-	WORD id;
-};
-
 
 struct sc_bullet_fire
 {
@@ -89,5 +92,12 @@ struct sc_bullet_fire
 
 	bool fire;
 
+};
+
+
+struct sc_packet_remove_player {	//접속이 종료되면 보내는 패킷이다.
+	BYTE size;
+	BYTE type;
+	WORD id;
 };
 #pragma pack(pop)
