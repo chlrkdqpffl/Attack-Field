@@ -119,10 +119,6 @@ class CState_Death : public CFSM_State<CCharacterObject>
 {
 	DWORD		m_dwDeathWaitingTime = 0;
 	DWORD		m_dwDeathStartTime = 0;
-
-	bool		m_bIsDeath = false;			// Death 애니메이션 위치 Offset 맞추기 용도
-	bool		m_bIsDeathHead = false;
-
 	XMVECTOR	m_Position;
 public:
 	CState_Death() {};

@@ -40,16 +40,10 @@ BoundingOrientedBox CCharacterObject::GetPartsBoundingOBox(UINT index) const
 	return bcObox;
 }
 
-void CCharacterObject::InitCollisionInfo()
-{
-	CGameObject::InitCollisionInfo();
-	m_collisionParts = ChracterBoundingBoxParts::eNone;
-}
-
 void CCharacterObject::Firing()
 {
 	if (m_pWeapon->IsExistBullet())
-		m_pWeapon->Firing((GetLook()));
+		m_pWeapon->Firing(XMLoadFloat3(&m_f3FiringDirection));
 	else
 		m_bIsReload = true;
 }

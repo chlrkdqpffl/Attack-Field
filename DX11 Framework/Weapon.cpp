@@ -37,10 +37,10 @@ void CWeapon::Firing(XMVECTOR direction)
 				info.m_pHitObject->SetCollision(true);
 
 				CCharacterObject* hitCharacter = static_cast<CCharacterObject*>(info.m_pHitObject);
-				hitCharacter->SetCollisionParts(info.m_HitParts);
 				// Head Shot ÆÇÁ¤
 				if (info.m_HitParts == ChracterBoundingBoxParts::eHead) {
 					cout << "Çìµå¼¦" << endl;
+					hitCharacter->SetIsHeadHit(true);
 					hitCharacter->DamagedCharacter(m_fDamage * 2.5f);
 				}
 				else {

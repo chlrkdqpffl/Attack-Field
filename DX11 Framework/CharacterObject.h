@@ -27,12 +27,13 @@ protected:
 	bool					m_bIsReload = false;
 	bool					m_bIsRun = false;
 	bool					m_bIsDeath = false;
+	bool					m_bIsDeathHead = false;
+	bool					m_bIsHeadHit = false;
 	bool					m_bTempIsRun = false;	// 임시로 달리기 속력 맞추려고 넣은 변수 이므로 사용 금지 - 추후 수정
 
 	// ----- Game System Variable ----- //
 	UINT					m_nLife = 0;
-	ChracterBoundingBoxParts	m_collisionParts = ChracterBoundingBoxParts::eNone;
-
+	
 	// ----- Parts Collision Variable ----- // 
 
 	BoundingOrientedBox		m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
@@ -46,7 +47,6 @@ protected:
 public:
 	virtual void CreateObjectData(ID3D11Device *pd3dDevice) override;
 	virtual void OnCollisionCheck();
-	virtual void InitCollisionInfo();
 
 	virtual void Update(float fDeltaTime) override;
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
@@ -108,10 +108,12 @@ public:
 	bool GetIsReload() const { return m_bIsReload; }
 	void SetIsDeath(bool set) { m_bIsDeath = set; }
 	bool GetIsDeath() const { return m_bIsDeath; }
-
+	void SetIsDeathHead(bool set) { m_bIsDeathHead = set; }
+	bool GetIsDeathHead() const { return m_bIsDeathHead; }
+	void SetIsHeadHit(bool set) { m_bIsHeadHit = set; }
+	bool GetIsHeadHit() const { return m_bIsHeadHit; }
+	
 	// ----- Game System Function ----- //
 	void SetLife(UINT life) { m_nLife = life; }
 	UINT GetLife() const { return m_nLife; }
-	ChracterBoundingBoxParts GetCollisionParts() const { return m_collisionParts; }
-	void SetCollisionParts(ChracterBoundingBoxParts parts) { m_collisionParts = parts; }
 };

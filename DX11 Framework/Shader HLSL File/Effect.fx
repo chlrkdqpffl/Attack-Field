@@ -47,7 +47,7 @@ cbuffer cbRenderOption : register(b5)                       // PS Set
 
 cbuffer cbSkinned : register(b7)							// VS Set
 {
-	matrix gBoneTransform[80];
+	matrix gBoneTransform[60];
 };
 
 Texture2D gtxDiffuse			: register(t0);

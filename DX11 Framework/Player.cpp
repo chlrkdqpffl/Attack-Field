@@ -103,9 +103,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	m_pCharacter->SetRelativevVelocity(relativeVelocity);
 
 
-
-	//	여기 패킷 추가해라
-
+#ifdef	USE_SERVER
 	cs_key_input packet;
 
 	packet.type = CS_KEYTYPE;
@@ -127,6 +125,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 
 	}
 	count++;
+#endif
 }
 
 void CPlayer::Move(XMVECTOR vTranslate)
@@ -190,7 +189,7 @@ void CPlayer::Rotate(float x, float y)
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Cross(XMLoadFloat3(&m_d3dxvLook), XMLoadFloat3(&m_d3dxvRight)));
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
 
-	
+#ifdef	USE_SERVER
 	cs_rotate rotate;
 	rotate.cx = x;
 	rotate.cy = y;
@@ -198,7 +197,7 @@ void CPlayer::Rotate(float x, float y)
 	rotate.type = CS_ROTATE;
 
 	Sendpacket(reinterpret_cast<unsigned char *>(&rotate));
-	
+#endif
 }
 
 void CPlayer::Update(float fDeltaTime)

@@ -70,12 +70,11 @@ void CSoundManager::LoadBGMSound()
 {
 	g_pSystem->createStream("../Assets/Sound/BGM/Audiomachine.mp3",			FMOD_LOOP_NORMAL, 0, &g_pSound[static_cast<int>(SoundTag::eBGM_TitleScene)]);	
 }
-
+ 
 void CSoundManager::LoadEffectSound()
 {
 	g_pSystem->createSound("../Assets/Sound/Effect/Fire.mp3",			FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eFire)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Reload.mp3",			FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eReload)]);
-	
 }
 
 void CSoundManager::Update(float fTimeDelta)
