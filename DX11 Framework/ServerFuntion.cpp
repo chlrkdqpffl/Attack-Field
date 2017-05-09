@@ -32,7 +32,6 @@ void ServerFuntion::processpacket(char *ptr)
 
 	int id = 0;
 
-	XMFLOAT3 Temp;
 	switch (ptr[1])
 	{
 	case 1:	//계속 받을때
@@ -44,16 +43,13 @@ void ServerFuntion::processpacket(char *ptr)
 			//SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
 			//SCENE_MGR->g_pPlayer->SetAnimation(my_Pos_packet->Animation);
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));;
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(my_Pos_packet->hp);
 		}
 		else
 		{
-			XMStoreFloat3(&Temp, my_Pos_packet->Animation);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetLife(my_Pos_packet->hp);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRelativeVelocity(Temp);
-			
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRelativeVelocity(my_Pos_packet->Animation);
 			//cout << "니꺼" ;
+	
 			//ShowXMVector(my_Pos_packet->Animation);
 			//cout<<"제대로 들어갔는지 확인" << SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRelativeVelocity().x << " " << SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRelativeVelocity().y << " " << SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRelativeVelocity().z << endl;
 
@@ -80,12 +76,10 @@ void ServerFuntion::processpacket(char *ptr)
 		}
 		else
 		{
-			XMStoreFloat3(&Temp, my_put_packet->Animation);
 
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
-
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRelativeVelocity(Temp);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetLife(my_put_packet->hp);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRelativeVelocity(my_put_packet->Animation);
+			
 
 		}
 
@@ -102,7 +96,12 @@ void ServerFuntion::processpacket(char *ptr)
 		else
 		{
 			if (my_put_bulletfire->fire == true)
+			{
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetFireDirection(my_put_bulletfire->FireDirection);
 				SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->Firing();
+			}
+				cout << SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetLife() << endl;
+			   
 		}
 		break;
 

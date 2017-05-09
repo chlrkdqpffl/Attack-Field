@@ -90,6 +90,8 @@ public:
 	float GetYaw() const { return m_fYaw; }
 	void SetPitch(float pitch) { m_fPitch = pitch; }
 	float GetPitch() const { return m_fPitch; }
+	XMFLOAT3 GetFireDirection() const { return m_f3FiringDirection; }
+	void SetFireDirection(XMFLOAT3 GetFireDirection) { m_f3FiringDirection = GetFireDirection; }
 
 	// ----- State Function ----- //
 	bool IsMoving() const {

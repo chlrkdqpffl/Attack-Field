@@ -109,12 +109,13 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	packet.type = CS_KEYTYPE;
 	packet.size = sizeof(packet);
 	packet.key_button = m_wKeyState;
-	packet.Animation = relativeVelocity;
+	XMStoreFloat3(&packet.Animation, relativeVelocity);
 
 
 	packet.x = GetPosition().x;
 	packet.y = GetPosition().y;
 	packet.z = GetPosition().z;
+	packet.FireDirection = m_pCharacter->GetFireDirection();
 
 	packet.Hp = m_pCharacter->GetLife();
 
