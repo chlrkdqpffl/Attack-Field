@@ -2,10 +2,9 @@
 //#include "SkinnedObject.h"
 #include "Object.h"
 #include "Camera.h"
-#include "ServerFuntion.h"
+#include "CharacterObject.h"
 
-class CCharacterObject;
-class CPlayer : public ServerFuntion
+class CPlayer
 {
 protected:
 	XMFLOAT3					m_vPrevPosition = XMFLOAT3(0,0,0);
