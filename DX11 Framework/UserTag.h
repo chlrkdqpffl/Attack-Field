@@ -211,7 +211,7 @@ enum class SoundTag
 	eBGM_TitleScene,
 
 	// Effect
-	eFire, eReload,
+	eFire, eReload, eWalk, eRun, eDeath, eShellsFall,
 
 	SoundCount
 };

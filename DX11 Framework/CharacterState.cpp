@@ -64,13 +64,21 @@ void CState_Walk::EnterState(CCharacterObject* pCharacter, AnimationData::Parts 
 {
 	if(type == AnimationData::Parts::UpperBody)
 		pCharacter->SetAnimation(AnimationData::Parts::UpperBody, AnimationData::CharacterAnim::eWalk_Forward);
+
+	m_dwSoundWatingTime = GetTickCount();
+	SOUND_MGR->Play3DSound(SoundTag::eWalk, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
 }
 
 void CState_Walk::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
+	if (GetTickCount() - m_dwSoundWatingTime > 1000) {
+		SOUND_MGR->Play3DSound(SoundTag::eWalk, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
+		m_dwSoundWatingTime = GetTickCount();
+	}
+
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
-	//cout << "상체 : walk" << endl;
+	
 	// Check Reload 
 	if (pCharacter->GetIsReload()) {
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());
@@ -209,10 +217,17 @@ void CState_Run::EnterState(CCharacterObject* pCharacter, AnimationData::Parts t
 {
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
 	pCharacter->SetIsTempRun(true);
+
+	m_dwSoundWatingTime = GetTickCount();
+	SOUND_MGR->Play3DSound(SoundTag::eRun, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.3f);
 }
 
 void CState_Run::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
+	if (GetTickCount() - m_dwSoundWatingTime > 1000) {
+		SOUND_MGR->Play3DSound(SoundTag::eRun, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.3f);
+		m_dwSoundWatingTime = GetTickCount();
+	}
 }
 
 void CState_Run::UpdateLowerBodyState(CCharacterObject* pCharacter)
@@ -253,6 +268,8 @@ void CState_Death::EnterState(CCharacterObject* pCharacter, AnimationData::Parts
 
 	// Test용도
 	m_Position = pCharacter->GetvPosition();
+
+	SOUND_MGR->Play3DSound(SoundTag::eDeath, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 1);
 }
 
 void CState_Death::UpdateUpperBodyState(CCharacterObject* pCharacter)
