@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Weapon.h"
 #include "CharacterObject.h"
+#include "protocol.h"
 
 CWeapon::CWeapon(CCharacterObject* pOwner) 
 	: m_pOwner(pOwner)
@@ -32,6 +33,15 @@ void CWeapon::Firing(XMVECTOR direction)
 		m_nhasBulletCount--;
 
 		CollisionInfo info;
+#ifdef USE_SERVER
+		cs_weapon packet;
+		packet.size = sizeof(cs_weapon);
+		packet.type = CS_WEAPONE;
+		packet.position = GetPosition();
+		XMStoreFloat3(&packet.direction, direction);
+
+		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+#elif
 		if (COLLISION_MGR->RayCastCollisionToCharacter(info, GetvPosition(), direction)) {
 			if (info.m_fDistance < m_fRange) {
 				// 최종 충돌 확인
@@ -49,13 +59,14 @@ void CWeapon::Firing(XMVECTOR direction)
 
 				}
 				cout << "적중 후 체력 : " << hitCharacter->GetLife() << endl;
-				
+
 			}
 		}
-
+#endif
 		CreateFireDirectionLine(direction);
 	}
 }
+
 
 void CWeapon::Reloading()
 {

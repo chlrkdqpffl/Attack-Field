@@ -33,8 +33,9 @@ protected:
 	DWORD					m_dwWalkSoundWatingTime = 0;
 
 	// ----- Game System Variable ----- //
+	UINT					m_nServerID = 0;
 	UINT					m_nLife = 0;
-	
+
 	// ----- Parts Collision Variable ----- // 
 
 	BoundingOrientedBox		m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
@@ -68,7 +69,6 @@ public:
 
 	void DamagedCharacter(UINT damage);
 
-
 	// ----- Get, Setter ----- // 
 	void SetPlayer(CPlayer* pPlayer) { m_pPlayer = pPlayer; }
 	BoundingOrientedBox GetPartsBoundingOBox(UINT index) const;
@@ -94,6 +94,7 @@ public:
 	float GetPitch() const { return m_fPitch; }
 	XMFLOAT3 GetFireDirection() const { return m_f3FiringDirection; }
 	void SetFireDirection(XMFLOAT3 GetFireDirection) { m_f3FiringDirection = GetFireDirection; }
+	void SetPartsWorldMtx();
 
 	// ----- State Function ----- //
 	bool IsMoving() const {
@@ -120,6 +121,8 @@ public:
 	// ----- Game System Function ----- //
 	void SetLife(UINT life) { m_nLife = life; }
 	UINT GetLife() const { return m_nLife; }
+	void SetServerID(UINT id) { m_nServerID = id; }
+	UINT GetServerID() const { return m_nServerID; }
 	UINT GetWeaponBulletCount() const { return m_pWeapon->GetBulletCount(); }
 	UINT GetWeaponMaxBulletCount() const { return m_pWeapon->GetMaxBulletCount(); }
 };

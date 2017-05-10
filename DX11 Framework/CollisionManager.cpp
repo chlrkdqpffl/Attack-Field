@@ -201,53 +201,6 @@ bool CCollisionManager::RayCastCollisionToCharacter_Parts(CollisionInfo& info, X
 		}
 	}
 	return false;
-
-	
-
-	/*
-	if (pCollisionObject->GetPartsBoundingOBox(0).Intersects(originPos, direction, info.m_fDistance)) {
-		cout << "个烹 面倒 " << endl;
-		
-	}
-	else if (pCollisionObject->GetPartsBoundingOBox(1).Intersects(originPos, direction, info.m_fDistance)) {
-		cout << "赣府 面倒 " << endl;
-		
-	}
-	else if (pCollisionObject->GetPartsBoundingOBox(2).Intersects(originPos, direction, info.m_fDistance)) {
-		cout << "哭率 拉迫 面倒 " << endl;
-
-	}
-	else if (pCollisionObject->GetPartsBoundingOBox(3).Intersects(originPos, direction, info.m_fDistance)) {
-		cout << "哭率 酒阀迫 面倒 " << endl;
-
-	}
-	else if (pCollisionObject->GetPartsBoundingOBox(4).Intersects(originPos, direction, info.m_fDistance)) {
-		cout << "坷弗率 拉迫 面倒 " << endl;
-
-	}
-	else if (pCollisionObject->GetPartsBoundingOBox(5).Intersects(originPos, direction, info.m_fDistance)) {
-		cout << "坷弗率 酒阀迫 面倒 " << endl;
-
-	}
-
-	else if (pCollisionObject->GetPartsBoundingOBox(6).Intersects(originPos, direction, info.m_fDistance)) {
-		cout << "哭率 拉促府 面倒 " << endl;
-
-	}
-	else if (pCollisionObject->GetPartsBoundingOBox(7).Intersects(originPos, direction, info.m_fDistance)) {
-		cout << "哭率 酒阀促府 面倒 " << endl;
-
-	}
-	else if (pCollisionObject->GetPartsBoundingOBox(8).Intersects(originPos, direction, info.m_fDistance)) {
-		cout << "坷弗率 拉促府 面倒 " << endl;
-
-	}
-	else if (pCollisionObject->GetPartsBoundingOBox(9).Intersects(originPos, direction, info.m_fDistance)) {
-		cout << "坷弗率 酒阀促府 面倒 " << endl;
-
-	}
-	return true;
-	*/
 }
 
 bool CCollisionManager::AABBCollision(CollisionInfo& info, BoundingBox bcBox)

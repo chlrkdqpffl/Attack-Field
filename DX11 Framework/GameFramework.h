@@ -4,9 +4,8 @@
 //#include "TitleScene.h"
 //#include "MainScene.h"
 #include "ScreenShader.h"
-#include "ServerFuntion.h"
 
-class CGameFramework : public ServerFuntion
+class CGameFramework
 {
 public:
 	CGameFramework();

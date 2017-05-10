@@ -1,7 +1,6 @@
 #pragma once
 #include "Scene.h"
 #include "BoundingBoxShader.h"
-#include "ServerFuntion.h"
 #include "GBuffer.h"
 
 

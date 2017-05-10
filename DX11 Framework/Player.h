@@ -2,9 +2,9 @@
 //#include "SkinnedObject.h"
 #include "Object.h"
 #include "Camera.h"
-#include "CharacterObject.h"
 #include "ServerFuntion.h"
 
+class CCharacterObject;
 class CPlayer : public ServerFuntion
 {
 protected:
