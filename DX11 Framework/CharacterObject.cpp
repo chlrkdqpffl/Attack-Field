@@ -183,35 +183,7 @@ void CCharacterObject::RotateFiringPos()
 	GetSkinnedMesh()->SetPitch(m_fPitch);
 }
 
-void CCharacterObject::Update(float fDeltaTime)
-{ 
-	RotateFiringPos();
-	if (m_pPlayer) {
-		m_pPlayer->UpdateKeyInput(fDeltaTime);
-		OnCollisionCheck();
-	}
-
-	m_pStateUpper->Update();
-	m_pStateLower->Update();
-	
-	if (m_pPlayer) {
-		m_pPlayer->Update(fDeltaTime);
-	}
-	CGameObject::Update(fDeltaTime);
-	CSkinnedObject::Update(fDeltaTime);
-	m_pWeapon->Update(fDeltaTime);
-}
-
-void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
-{
-	if(m_pPlayer)
-		m_pPlayer->UpdateShaderVariables(pd3dDeviceContext);
-
-	CSkinnedObject::Render(pd3dDeviceContext, pCamera);
-	m_pWeapon->Render(pd3dDeviceContext, pCamera);
-}
-
-void CCharacterObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
+void CCharacterObject::SetPartsWorldMtx()
 {
 	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eBody)] = GetSkinnedMesh()->GetFinalBoneMtx(2) * m_mtxWorld;
 	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eHead)] = GetSkinnedMesh()->GetFinalBoneMtx(5) * m_mtxWorld;
@@ -229,7 +201,39 @@ void CCharacterObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
 
 	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eRightUpLeg)] = GetSkinnedMesh()->GetFinalBoneMtx(36) * m_mtxWorld;
 	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eRightDownLeg)] = GetSkinnedMesh()->GetFinalBoneMtx(37) * m_mtxWorld;
+}
+
+void CCharacterObject::Update(float fDeltaTime)
+{ 
+	RotateFiringPos();
+	if (m_pPlayer) {
+		m_pPlayer->UpdateKeyInput(fDeltaTime);
+		OnCollisionCheck();
+	}
+
+	m_pStateUpper->Update();
+	m_pStateLower->Update();
 	
+	if (m_pPlayer) {
+		m_pPlayer->Update(fDeltaTime);
+	}
+	CGameObject::Update(fDeltaTime);
+	CSkinnedObject::Update(fDeltaTime);
+	m_pWeapon->Update(fDeltaTime);
+	SetPartsWorldMtx();
+}
+
+void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
+{
+	if(m_pPlayer)
+		m_pPlayer->UpdateShaderVariables(pd3dDeviceContext);
+
+	CSkinnedObject::Render(pd3dDeviceContext, pCamera);
+	m_pWeapon->Render(pd3dDeviceContext, pCamera);
+}
+
+void CCharacterObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
+{	
 	for (int i = 0; i < static_cast<int>(ChracterBoundingBoxParts::ePartsCount); ++i) {
 		if (m_pPartsBoundingBoxMesh[i]) {
 			BoundingOrientedBox bcObbox;

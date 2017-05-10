@@ -61,6 +61,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	if (!CreateDirect3DDisplay()) return(false);
 
 	// Initialize Manager
+	SERVER_MGR->InitializeManager();
 	STATEOBJ_MGR->InitializeManager();
 	GLOBAL_MGR->InitializeManager();
 	TEXT_MGR->InitializeManager(m_pd3dDevice, L"Koverwatch");
@@ -99,6 +100,7 @@ void CGameFramework::OnDestroy()
 	MAPDATA_MGR->ReleseInstance();
 	COLLISION_MGR->ReleseInstance();
 	SOUND_MGR->ReleseInstance();
+	SERVER_MGR->ReleseInstance();
 
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtDumpMemoryLeaks();

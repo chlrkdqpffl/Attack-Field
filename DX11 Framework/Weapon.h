@@ -27,6 +27,7 @@ protected:
 	UINT					m_nMaxhasBulletCount = 0;			// 한 번 장전시 장탄 수
 	UINT					m_nhasBulletCount = 0;				// 현재 장탄 수
 
+
 public:
 	virtual void Firing(XMVECTOR direction);
 	virtual void Update(float fDeltaTime) override;
@@ -34,4 +35,6 @@ public:
 	void CreateFireDirectionLine(XMVECTOR direction);
 	void Reloading();
 	bool IsExistBullet() const { return ( 0 < m_nhasBulletCount); }
+
+	
 };

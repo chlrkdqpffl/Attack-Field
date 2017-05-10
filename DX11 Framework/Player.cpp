@@ -21,7 +21,7 @@ CPlayer::CPlayer(CCharacterObject* pCharacter)
 
 	// 임시
 //	m_fSpeed = 50;
-	m_fSpeed = 30;	// 자연스러운 속도
+	m_fSpeed = 10;	// 자연스러운 속도
 //	m_fSpeed = 10;	// 자연스러운 속도
 	count = 0;
 }
@@ -122,8 +122,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 
 	if ((m_wKeyState != 0) || count == 0)
 	{
-		Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-
+		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 	}
 	count++;
 #endif
@@ -197,7 +196,7 @@ void CPlayer::Rotate(float x, float y)
 	rotate.size = sizeof(cs_rotate);
 	rotate.type = CS_ROTATE;
 
-	Sendpacket(reinterpret_cast<unsigned char *>(&rotate));
+	SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&rotate));
 #endif
 }
 

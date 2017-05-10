@@ -6,15 +6,17 @@
 
 
 #define USE_CONSOLE					// Open Console Windows
-//#define USE_SERVER
+#define USE_SERVER
 
 #define PROJECT_NAME					L"DX11_Framework ("
 
-#define FRAME_BUFFER_WIDTH				1600
-#define FRAME_BUFFER_HEIGHT				900
-
-//#define FRAME_BUFFER_WIDTH				1280			// 서버 테스트용
-//#define FRAME_BUFFER_HEIGHT				640
+#ifdef USE_SERVER
+	#define FRAME_BUFFER_WIDTH				800
+	#define FRAME_BUFFER_HEIGHT				450
+#elif
+	#define FRAME_BUFFER_WIDTH				1600
+	#define FRAME_BUFFER_HEIGHT				900
+#endif
 
 #define CUBEMAP_RENDER_TARGET_WIDTH		1024
 #define CUBEMAP_RENDER_TARGET_HEIGHT	1024
@@ -42,6 +44,7 @@
 #define COLLISION_MGR CCollisionManager::GetInstance()
 #define MAPDATA_MGR CMapDataManager::GetInstance()
 #define SOUND_MGR CSoundManager::GetInstance()
+#define SERVER_MGR CServerManager::GetInstance()
 
 // Check Timer
 #define STARTTIMER(msg)			{ cout << msg; GLOBAL_MGR->g_startTime = chrono::system_clock::now();}

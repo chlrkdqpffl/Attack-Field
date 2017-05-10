@@ -3,8 +3,10 @@
 
 #define CS_KEYTYPE		1
 #define CS_ROTATE		2
+#define	CS_WEAPONE		3
+#define CS_HEAD_HIT		4
 
-#define RemovePlayer	4
+#define RemovePlayer	5
 
 
 
@@ -103,5 +105,34 @@ struct sc_packet_remove_player {	//접속이 종료되면 보내는 패킷이다.
 	BYTE size;
 	BYTE type;
 	WORD id;
+};
+
+struct cs_weapon {	//클라에서 무기의 정보를 보낸다.
+	BYTE size;
+	BYTE type;
+	
+	XMFLOAT3 direction;
+	XMFLOAT3 position;
+
+};
+
+struct SC_Collison
+{
+	BYTE size;
+	BYTE type;
+
+	WORD id;
+	BOOL collision;
+	XMFLOAT3 position;
+	XMFLOAT3 direction;
+};
+
+struct CS_Head_Collison
+{
+	BYTE size;
+	BYTE type;
+
+	BOOL Head;
+
 };
 #pragma pack(pop)
