@@ -35,6 +35,7 @@ protected:
 	// ----- Game System Variable ----- //
 	UINT					m_nServerID = 0;
 	UINT					m_nLife = 0;
+	UINT					m_nArmorPoint = 0;
 
 	// ----- Parts Collision Variable ----- // 
 
@@ -121,6 +122,9 @@ public:
 	// ----- Game System Function ----- //
 	void SetLife(UINT life) { m_nLife = life; }
 	UINT GetLife() const { return m_nLife; }
+	void SetArmorPoint(UINT armorPoint) { m_nArmorPoint = armorPoint; }
+	UINT GetArmorPoint() const { return m_nArmorPoint; }
+	
 	void SetServerID(UINT id) { m_nServerID = id; }
 	UINT GetServerID() const { return m_nServerID; }
 	UINT GetWeaponBulletCount() const { return m_pWeapon->GetBulletCount(); }

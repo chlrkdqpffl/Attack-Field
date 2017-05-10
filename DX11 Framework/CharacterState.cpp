@@ -31,10 +31,12 @@ void CState_Idle::UpdateUpperBodyState(CCharacterObject* pCharacter)
 
 	// Check Reload
 	if (pCharacter->GetIsReload()) {
-		pUpperFSM->ChangeState(CState_Reload::GetInstance());
-		return;
+		if (pCharacter->GetWeaponBulletCount() != pCharacter->GetWeaponMaxBulletCount()) {
+			pUpperFSM->ChangeState(CState_Reload::GetInstance());
+			return;
+		}
 	}
-	else if (pCharacter->GetIsFire()) {
+	if (pCharacter->GetIsFire()) {
 		pUpperFSM->ChangeState(CState_Fire::GetInstance());
 		return;
 	}
@@ -73,10 +75,12 @@ void CState_Walk::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	
 	// Check Reload 
 	if (pCharacter->GetIsReload()) {
-		pUpperFSM->ChangeState(CState_Reload::GetInstance());
-		return;
+		if (pCharacter->GetWeaponBulletCount() != pCharacter->GetWeaponMaxBulletCount()) {
+			pUpperFSM->ChangeState(CState_Reload::GetInstance());
+			return;
+		}
 	}
-	else if (pCharacter->GetIsFire()) {
+	if (pCharacter->GetIsFire()) {
 		pUpperFSM->ChangeState(CState_Fire::GetInstance());
 		return;
 	}
@@ -151,7 +155,7 @@ void CState_Walk::ExitState(CCharacterObject* pCharacter, AnimationData::Parts t
 // ---------------------------- Reload ---------------------------- //
 void CState_Reload::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.5f);
+	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.6f);
 	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 1);
 }
 
@@ -185,11 +189,22 @@ void CState_Fire::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
 
-	if (pCharacter->GetIsReload()) {
+	// Check BulletCount
+	if (pCharacter->GetWeaponBulletCount() == 0) {
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());
 		return;
 	}
-	else if (!pCharacter->GetIsFire()) {
+
+	// Check Reload
+	if (pCharacter->GetIsReload()) {
+		if (pCharacter->GetWeaponBulletCount() != pCharacter->GetWeaponMaxBulletCount()) {
+			pUpperFSM->ChangeState(CState_Reload::GetInstance());
+			return;
+		}
+	}
+	
+	// Check not Fire
+	if (!pCharacter->GetIsFire()) {
 		pUpperFSM->ChangeState(CState_Idle::GetInstance());
 		return;
 	}

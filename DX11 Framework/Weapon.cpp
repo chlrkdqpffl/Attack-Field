@@ -41,7 +41,7 @@ void CWeapon::Firing(XMVECTOR direction)
 		XMStoreFloat3(&packet.direction, direction);
 
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-#elif
+#else
 		if (COLLISION_MGR->RayCastCollisionToCharacter(info, GetvPosition(), direction)) {
 			if (info.m_fDistance < m_fRange) {
 				// 최종 충돌 확인

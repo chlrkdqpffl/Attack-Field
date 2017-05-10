@@ -72,8 +72,9 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eReload)) {
 		m_pCharacter->SetIsReload(true);
-
 	}
+	else
+		m_pCharacter->SetIsReload(false);
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
 		if (m_pCharacter->GetIsTempRun())		// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함

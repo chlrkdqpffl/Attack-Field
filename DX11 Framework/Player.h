@@ -91,4 +91,5 @@ public:
 	UINT GetWeaponBulletCount() const { return m_pCharacter->GetWeaponBulletCount(); }
 	UINT GetWeaponMaxBulletCount() const { return m_pCharacter->GetWeaponMaxBulletCount(); }
 	UINT GetPlayerLife() const { return m_pCharacter->GetLife(); }
+	UINT GetPlayerArmorPoint() const { return m_pCharacter->GetArmorPoint(); }
 };

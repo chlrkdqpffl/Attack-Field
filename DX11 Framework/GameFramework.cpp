@@ -469,7 +469,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 
 		if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();		// 왜 최소화 하면 안만들어지는가 ?
 //		if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();			// 해제할 경우 디퍼드 렌더링 시 문제됨
-		if (m_pd3dDepthStencilView) m_pd3dDepthStencilView->Release();
+//		if (m_pd3dDepthStencilView) m_pd3dDepthStencilView->Release();
 
 		m_pDXGISwapChain->ResizeBuffers(1, m_nWndClientSize.x, m_nWndClientSize.y, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 
@@ -824,8 +824,8 @@ void CGameFramework::RenderAllText()
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 40, 1500, 20, 0xFF0000FF, FW1_LEFT);
 
 	// Graphic Crad Info
-	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_wsGraphicBrandName, 30, 20, 830, 0xFF41FF3A, FW1_LEFT);
-	TEXT_MGR->RenderText(m_pd3dDeviceContext, "Video Memory : " + to_string(m_ui64VideoMemory / 1048576) + "MB", 30, 20, 860, 0xFF0000FF, FW1_LEFT);
+	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_wsGraphicBrandName, 30, 270, 830, 0xFF41FF3A, FW1_LEFT);
+	TEXT_MGR->RenderText(m_pd3dDeviceContext, "Video Memory : " + to_string(m_ui64VideoMemory / 1048576) + "MB", 30, 270, 860, 0xFF0000FF, FW1_LEFT);
 
 	m_pd3dDeviceContext->GSSetShader(nullptr, nullptr, 0);
 }
