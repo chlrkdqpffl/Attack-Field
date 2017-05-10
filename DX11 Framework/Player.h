@@ -2,9 +2,9 @@
 //#include "SkinnedObject.h"
 #include "Object.h"
 #include "Camera.h"
+#include "CharacterObject.h"
 #include "ServerFuntion.h"
 
-class CCharacterObject;
 class CPlayer : public ServerFuntion
 {
 protected:
@@ -86,4 +86,10 @@ public:
 	void SetKeyUp(KeyInput key);
 	WORD GetKeyState() const { return m_wKeyState; }
 	void SetLook(float x, float y, float z);
+
+
+	// --- Draw UI Text --- //
+	UINT GetWeaponBulletCount() const { return m_pCharacter->GetWeaponBulletCount(); }
+	UINT GetWeaponMaxBulletCount() const { return m_pCharacter->GetWeaponMaxBulletCount(); }
+	UINT GetPlayerLife() const { return m_pCharacter->GetLife(); }
 };

@@ -47,11 +47,22 @@ void CCharacterObject::Firing()
 	else
 		m_bIsReload = true;
 }
+void CCharacterObject::Walking()
+{
+	if (GetTickCount() - m_dwWalkSoundWatingTime > 1000) {
+		SOUND_MGR->Play3DSound(SoundTag::eWalk, SoundChannel::eChannel_Walk, GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
+		m_dwWalkSoundWatingTime = GetTickCount();
+	}
+}
 
 void CCharacterObject::Running()
 {
 	m_bIsRun = true;
 //	m_pPlayer->GetCamera()->Move(GetLook() * 1);			// 추후 구현
+	if (GetTickCount() - m_dwWalkSoundWatingTime > 1000) {
+		SOUND_MGR->Play3DSound(SoundTag::eRun, SoundChannel::eChannel_Walk, GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
+		m_dwWalkSoundWatingTime = GetTickCount();
+	}
 }
 
 void CCharacterObject::Reloading()

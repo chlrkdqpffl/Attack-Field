@@ -21,8 +21,8 @@ CPlayer::CPlayer(CCharacterObject* pCharacter)
 
 	// 임시
 //	m_fSpeed = 50;
-	m_fSpeed = 30;	// 자연스러운 속도
-//	m_fSpeed = 10;	// 자연스러운 속도
+//	m_fSpeed = 30;
+	m_fSpeed = 10;	// 자연스러운 속도
 	count = 0;
 }
 
@@ -101,8 +101,10 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
 	m_pCharacter->SetVelocity(m_d3dxvVelocity);
 	m_pCharacter->SetRelativevVelocity(relativeVelocity);
-
-
+	if (m_pCharacter->IsMoving()) {
+		m_pCharacter->Walking();
+	}
+	
 #ifdef	USE_SERVER
 	cs_key_input packet;
 

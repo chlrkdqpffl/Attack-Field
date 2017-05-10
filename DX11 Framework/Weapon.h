@@ -34,4 +34,6 @@ public:
 	void CreateFireDirectionLine(XMVECTOR direction);
 	void Reloading();
 	bool IsExistBullet() const { return ( 0 < m_nhasBulletCount); }
+	UINT GetBulletCount() const { return m_nhasBulletCount; }
+	UINT GetMaxBulletCount() const { return m_nMaxhasBulletCount; }
 };

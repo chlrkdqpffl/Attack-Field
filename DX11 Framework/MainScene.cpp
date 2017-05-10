@@ -1068,12 +1068,11 @@ void CMainScene::RenderBoundingBox()
 	m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, false);
 
 	for (auto object : m_vecBBoxRenderContainer) {
-//		if (m_bIsPreCollisionCheck != object->GetCollisionCheck()) {
-//			m_bIsPreCollisionCheck = object->GetCollisionCheck();
-//			m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
-//			cout << "충돌해서 한 번 바뀌었다." << endl;
-//		}
-		m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
+		if (m_bIsPreCollisionCheck != object->GetCollisionCheck()) {
+			m_bIsPreCollisionCheck = object->GetCollisionCheck();
+			m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
+		}
+//		m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
 		object->BoundingBoxRender(m_pd3dDeviceContext);
 	}
 
@@ -1101,4 +1100,17 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 
 		//TEXT_MGR->RenderText(pd3dDeviceContext, ppos, 30, 20, 80, 0xFFFFFFFF, FW1_LEFT);
 	}
+
+
+
+	// ================ Draw UI Text ================ //
+	UINT nBulletCount = m_pPlayer->GetWeaponBulletCount();
+	UINT nMaxBulletCount = m_pPlayer->GetWeaponMaxBulletCount();
+	str = "Bullet : ( " + to_string(nBulletCount) + " / " + to_string(nMaxBulletCount) + " ) ";
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 40, 1345, 840, 0xFF00FFFF, FW1_LEFT);
+
+	UINT nPlayerLife = m_pPlayer->GetPlayerLife();
+	str = "Life : ( " + to_string(nPlayerLife) + " / 100 ) ";
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 40, 30, 780, 0xFFFFFFFF, FW1_LEFT);
+
 }

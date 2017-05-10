@@ -103,12 +103,23 @@ void CSoundManager::AllStop()
 		g_pChannel[i]->stop();
 }
 
+void CSoundManager::StopSound(SoundChannel channel)
+{
+	g_pChannel[channel]->stop();
+}
+
 void CSoundManager::Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume)
 {
 	FMOD_RESULT result;
 	g_pChannel[eChannel_Effect]->setVolume(volume);
 	result = g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel[eChannel_Effect]);
 //	g_listSound3DContainer.push_back(new CSound3D(SCENE_MGR->g_pCamera->GetPosition(), position, direction, nowSpeed, addSpeed, volume, g_pChannel[eChannel_Effect]));
+}
+
+void CSoundManager::Play3DSound(SoundTag soundTag, SoundChannel channel, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume)
+{
+	g_pChannel[eChannel_Effect]->setVolume(volume);
+	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel[channel]);
 }
 
 void CSoundManager::PlayBgm(SoundTag soundTag, float volume)

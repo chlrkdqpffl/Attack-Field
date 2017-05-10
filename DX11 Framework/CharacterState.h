@@ -41,8 +41,6 @@ public:
 
 class CState_Walk : public CFSM_State<CCharacterObject>
 {
-	DWORD		m_dwSoundWatingTime = 0;
-
 public:
 	CState_Walk() {};
 	virtual ~CState_Walk() {};
@@ -100,8 +98,6 @@ public:
 
 class CState_Run : public CFSM_State<CCharacterObject>
 {
-	DWORD		m_dwSoundWatingTime = 0;
-
 public:
 	CState_Run() {};
 	virtual ~CState_Run() {};

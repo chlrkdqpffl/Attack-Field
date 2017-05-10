@@ -138,6 +138,7 @@ enum class TextureTag
 
 	// Road
 	eRoad1D, eRoad2D, eCenterRoadD, eCrossRoadD,
+	eRoad1N, eRoad2N, eCenterRoadN, eCrossRoadN,
 
 	// UI
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,

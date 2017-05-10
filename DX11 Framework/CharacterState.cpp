@@ -64,18 +64,10 @@ void CState_Walk::EnterState(CCharacterObject* pCharacter, AnimationData::Parts 
 {
 	if(type == AnimationData::Parts::UpperBody)
 		pCharacter->SetAnimation(AnimationData::Parts::UpperBody, AnimationData::CharacterAnim::eWalk_Forward);
-
-	m_dwSoundWatingTime = GetTickCount();
-	SOUND_MGR->Play3DSound(SoundTag::eWalk, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
 }
 
 void CState_Walk::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
-	if (GetTickCount() - m_dwSoundWatingTime > 1000) {
-		SOUND_MGR->Play3DSound(SoundTag::eWalk, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
-		m_dwSoundWatingTime = GetTickCount();
-	}
-
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 	
@@ -153,13 +145,14 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 void CState_Walk::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	SOUND_MGR->StopSound(SoundChannel::eChannel_Walk);
 }
 
 // ---------------------------- Reload ---------------------------- //
 void CState_Reload::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0) , 1, 1);
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.5f);
+	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 1);
 }
 
 void CState_Reload::UpdateUpperBodyState(CCharacterObject* pCharacter)
@@ -215,19 +208,13 @@ void CState_Fire::ExitState(CCharacterObject* pCharacter, AnimationData::Parts t
 // ---------------------------- Run ---------------------------- //
 void CState_Run::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	SOUND_MGR->Play3DSound(SoundTag::eRun, SoundChannel::eChannel_Walk, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
 	pCharacter->SetIsTempRun(true);
-
-	m_dwSoundWatingTime = GetTickCount();
-	SOUND_MGR->Play3DSound(SoundTag::eRun, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.3f);
 }
 
 void CState_Run::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
-	if (GetTickCount() - m_dwSoundWatingTime > 1000) {
-		SOUND_MGR->Play3DSound(SoundTag::eRun, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.3f);
-		m_dwSoundWatingTime = GetTickCount();
-	}
 }
 
 void CState_Run::UpdateLowerBodyState(CCharacterObject* pCharacter)
@@ -252,6 +239,7 @@ void CState_Run::UpdateLowerBodyState(CCharacterObject* pCharacter)
 void CState_Run::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
 	pCharacter->SetIsTempRun(false);
+	SOUND_MGR->StopSound(SoundChannel::eChannel_Walk);
 }
 
 // ---------------------------- Death ---------------------------- //

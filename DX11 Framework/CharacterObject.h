@@ -30,6 +30,7 @@ protected:
 	bool					m_bIsDeathHead = false;
 	bool					m_bIsHeadHit = false;
 	bool					m_bTempIsRun = false;	// 임시로 달리기 속력 맞추려고 넣은 변수 이므로 사용 금지 - 추후 수정
+	DWORD					m_dwWalkSoundWatingTime = 0;
 
 	// ----- Game System Variable ----- //
 	UINT					m_nLife = 0;
@@ -60,6 +61,7 @@ public:
 
 	// ----- Game System Function ----- //
 	void Firing();
+	void Walking();
 	void Running();
 	void Reloading();
 	void Revival();
@@ -114,8 +116,10 @@ public:
 	bool GetIsDeathHead() const { return m_bIsDeathHead; }
 	void SetIsHeadHit(bool set) { m_bIsHeadHit = set; }
 	bool GetIsHeadHit() const { return m_bIsHeadHit; }
-	
+
 	// ----- Game System Function ----- //
 	void SetLife(UINT life) { m_nLife = life; }
 	UINT GetLife() const { return m_nLife; }
+	UINT GetWeaponBulletCount() const { return m_pWeapon->GetBulletCount(); }
+	UINT GetWeaponMaxBulletCount() const { return m_pWeapon->GetMaxBulletCount(); }
 };
