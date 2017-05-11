@@ -138,10 +138,11 @@ enum class TextureTag
 
 	// Road
 	eRoad1D, eRoad2D, eCenterRoadD, eCrossRoadD,
+	eRoad1N, eRoad2N, eCenterRoadN, eCrossRoadN,
 
 	// UI
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
-	eCaptureArea, eAim,
+	eCaptureArea, eAim, eMagazineUI, eLifeUI, eScoreUI,
 
 	// Etc
 	eBusStopD, eStreetLampD,
@@ -211,7 +212,7 @@ enum class SoundTag
 	eBGM_TitleScene,
 
 	// Effect
-	eFire, eReload,
+	eFire, eReload, eWalk, eRun, eDeath, eShellsFall,
 
 	SoundCount
 };

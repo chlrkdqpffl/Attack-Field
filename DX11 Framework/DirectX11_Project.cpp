@@ -1,24 +1,14 @@
-// DirectX11_Project.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
-//
-
 #include "stdafx.h"
 #include "DirectX11_Project.h"
-
 #include "GameFramework.h"
-
-//서버추가
-#include "protocol.h"
 
 #define MAX_LOADSTRING 100
 
 TCHAR				szTitle[MAX_LOADSTRING];				// 제목 표시줄 텍스트입니다.
 TCHAR				szWindowClass[MAX_LOADSTRING];			// 기본 창 클래스 이름입니다.
 
-CGameFramework		gGameFramework;      
-
+CGameFramework		gGameFramework;
 SOCKET g_socket;
-
-
 
 BOOL InitInstance(HINSTANCE, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);

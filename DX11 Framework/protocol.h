@@ -123,6 +123,7 @@ struct SC_Collison
 
 	WORD id;
 	BOOL collision;
+	XMFLOAT3 position;
 	XMFLOAT3 direction;
 };
 

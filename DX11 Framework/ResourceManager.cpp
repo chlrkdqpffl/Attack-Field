@@ -34,7 +34,6 @@ void CResourceManager::LoadResourceTitleScene()
 	AddResourece(TextureTag::eStartButtonOff,		"../Assets/Image/UI/StartOff.png");
 	AddResourece(TextureTag::eExitButtonOn,			"../Assets/Image/UI/ExitOn.png");
 	AddResourece(TextureTag::eExitButtonOff,		"../Assets/Image/UI/ExitOff.png");
-	AddResourece(TextureTag::eAim,					"../Assets/Image/UI/Aim.png");
 }
 
 bool CResourceManager::LoadResourceAll()
@@ -83,7 +82,11 @@ void CResourceManager::LoadEnvironmentData()
 
 void CResourceManager::LoadUIData()
 {
-	AddResourece(TextureTag::eCaptureArea,		 "../Assets/Image/UI/CaptureArea.png");
+	AddResourece(TextureTag::eAim,				"../Assets/Image/UI/AimUI.png");
+	AddResourece(TextureTag::eCaptureArea,		"../Assets/Image/UI/CaptureArea.png");
+	AddResourece(TextureTag::eScoreUI,			"../Assets/Image/UI/ScoreUI.png");
+	AddResourece(TextureTag::eMagazineUI,		"../Assets/Image/UI/MagazineUI.png");
+	AddResourece(TextureTag::eLifeUI,			"../Assets/Image/UI/LifeUI.png");
 }
 
 void CResourceManager::LoadMapData()
@@ -115,9 +118,14 @@ void CResourceManager::LoadMapData()
 	
 	// ============== Road ============== //
 	AddResourece(TextureTag::eRoad1D,			"../Assets/FBX Model/Road/Road1D.dds");
+	AddResourece(TextureTag::eRoad1N,			"../Assets/FBX Model/Road/Road1N.dds");
 	AddResourece(TextureTag::eRoad2D,			"../Assets/FBX Model/Road/Road2D.dds");
-	AddResourece(TextureTag::eCenterRoadD,		"../Assets/FBX Model/Road/CenterRoad.dds");
+	AddResourece(TextureTag::eRoad2N,			"../Assets/FBX Model/Road/Road2N.dds");
+	AddResourece(TextureTag::eCenterRoadD,		"../Assets/FBX Model/Road/CenterRoadD.jpg");
+	AddResourece(TextureTag::eCenterRoadN,		"../Assets/FBX Model/Road/CenterRoadN.dds");
 	AddResourece(TextureTag::eCrossRoadD,		"../Assets/FBX Model/Road/CrossRoadD.jpg");
+	AddResourece(TextureTag::eCrossRoadN,		"../Assets/FBX Model/Road/CrossRoadN.dds");
+
 
 	AddResourece(MeshTag::eRoad,				"../Assets/FBX Model/Road/road.model");
 	AddResourece(MeshTag::eCenterRoad,			"../Assets/FBX Model/Road/RoadCenter.model");

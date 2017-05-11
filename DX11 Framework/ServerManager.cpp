@@ -66,13 +66,22 @@ void CServerManager::processpacket(char *ptr)
 
 			first_time = false;
 		}
+		// ================================================================================================================ //
+		// - 05. 10 - 레이캐스트 세부 충돌 구현 중
+		// 서버에서 생성한 아이디를 클라이언트에도 해당 똑같이 적용하기 위해서 ServerID 만들었다 이거 짚고 넘어가
+		// ServerID는 클라이언트 자체적으로 ID만 가지고 어떤 객체인지 알 수 있게 만든거임 
+		// ObjectID는 클라이언트 자체 ID이니까 ServerID랑 구분 하셈!
+
+		// 그리고 이제 여러 캐릭터 받도록 if문 수정해야겠다.
+		// ================================================================================================================ //
+
 		if (id == m_myid)
 		{
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[id]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 
 			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(my_put_packet->hp);
-
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetServerID(id);
 		}
 		else
 		{
@@ -80,7 +89,7 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRelativeVelocity(my_put_packet->Animation);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetLife(my_put_packet->hp);
-
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetServerID(id);
 
 		}
 
@@ -144,32 +153,37 @@ void CServerManager::processpacket(char *ptr)
 		break;
 
 	case 6:
+	{
 		my_collision = reinterpret_cast<SC_Collison*>(ptr);
-		id = my_collision->id;
-		if (id == m_myid)
-		{
-			if (my_collision->collision)
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsCollisionSC(my_collision->collision, XMLoadFloat3(&my_collision->direction));
+
+		// 서버로부터 받은 아이디를 컨테이너에서 같은 아이디를 찾으면 해당 객체가 충돌 객체가 된다.
+		// 그 객체의 바운딩 박스를 검사해서 충돌 확인하고 서버로 정보를 보내준다.
+		CollisionInfo info;
+		bool bIsPartsCollisionCS = false;
+		for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
+			if (character->GetServerID() == my_collision->id)
+				info.m_pHitObject = character;
 		}
-		else
-		{
-			if (my_collision->collision)
-			   SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetIsCollisionSC(my_collision->collision, XMLoadFloat3(&my_collision->direction));
+
+		bIsPartsCollisionCS = COLLISION_MGR->RayCastCollisionToCharacter_Parts(info, XMLoadFloat3(&my_collision->position), XMLoadFloat3(&my_collision->direction));
+
+		if (bIsPartsCollisionCS) {
+			CS_Head_Collison Collison;
+			Collison.Head = false;
+			Collison.type = CS_HEAD_HIT;
+			Collison.size = sizeof(CS_Head_Collison);
+			if (info.m_HitParts == ChracterBoundingBoxParts::eHead)
+				Collison.Head = true;
+			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&Collison));
 		}
+	}
 		break;
 	default:
 		std::cout << "Unknown PACKET type :" << (int)ptr[1] << "\n";
 		break;
-
-
-
 	}
-
-
-
-	//cout << GameFramework.GetCamera().GetPlayer()->GetPosition().x<<" "<< GameFramework.GetCamera().GetPlayer()->GetPosition().y<<" "<< GameFramework.GetCamera().GetPlayer()->GetPosition().z <<endl;
-
 }
+
 void CServerManager::ReadPacket(SOCKET sock)
 {
 	DWORD iobyte, ioflag = 0;

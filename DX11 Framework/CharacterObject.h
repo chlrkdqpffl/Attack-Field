@@ -30,11 +30,13 @@ protected:
 	bool					m_bIsDeathHead = false;
 	bool					m_bIsHeadHit = false;
 	bool					m_bTempIsRun = false;	// 임시로 달리기 속력 맞추려고 넣은 변수 이므로 사용 금지 - 추후 수정
+	DWORD					m_dwWalkSoundWatingTime = 0;
 
 	// ----- Game System Variable ----- //
+	UINT					m_nServerID = 0;
 	UINT					m_nLife = 0;
-	bool					m_bIsCollisionSC = false;
-		
+	UINT					m_nArmorPoint = 0;
+
 	// ----- Parts Collision Variable ----- // 
 
 	BoundingOrientedBox		m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
@@ -61,12 +63,12 @@ public:
 
 	// ----- Game System Function ----- //
 	void Firing();
+	void Walking();
 	void Running();
 	void Reloading();
 	void Revival();
 
 	void DamagedCharacter(UINT damage);
-	void CSPartCollisionCheck(XMVECTOR direction);
 
 	// ----- Get, Setter ----- // 
 	void SetPlayer(CPlayer* pPlayer) { m_pPlayer = pPlayer; }
@@ -93,11 +95,7 @@ public:
 	float GetPitch() const { return m_fPitch; }
 	XMFLOAT3 GetFireDirection() const { return m_f3FiringDirection; }
 	void SetFireDirection(XMFLOAT3 GetFireDirection) { m_f3FiringDirection = GetFireDirection; }
-	void SetIsCollisionSC(bool collision, XMVECTOR direction) 
-	{ 
-		m_bIsCollisionSC = collision; if (m_bIsCollisionSC) CSPartCollisionCheck(direction);
-	}
-	bool GetIsCollisionSC() const { return m_bIsCollisionSC; }
+	void SetPartsWorldMtx();
 
 	// ----- State Function ----- //
 	bool IsMoving() const {
@@ -120,8 +118,15 @@ public:
 	bool GetIsDeathHead() const { return m_bIsDeathHead; }
 	void SetIsHeadHit(bool set) { m_bIsHeadHit = set; }
 	bool GetIsHeadHit() const { return m_bIsHeadHit; }
-	
+
 	// ----- Game System Function ----- //
 	void SetLife(UINT life) { m_nLife = life; }
 	UINT GetLife() const { return m_nLife; }
+	void SetArmorPoint(UINT armorPoint) { m_nArmorPoint = armorPoint; }
+	UINT GetArmorPoint() const { return m_nArmorPoint; }
+	
+	void SetServerID(UINT id) { m_nServerID = id; }
+	UINT GetServerID() const { return m_nServerID; }
+	UINT GetWeaponBulletCount() const { return m_pWeapon->GetBulletCount(); }
+	UINT GetWeaponMaxBulletCount() const { return m_pWeapon->GetMaxBulletCount(); }
 };

@@ -20,6 +20,7 @@ enum SoundChannel
 {
 	eChannel_Bgm,
 	eChannel_Effect,
+	eChannel_Walk,
 
 	ChannelCount
 };
@@ -65,6 +66,8 @@ public:
 	void Update(float fTimeDelta);
 	void AllStop();
 	void Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f);
+	void Play3DSound(SoundTag soundTag, SoundChannel channel, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f);
+	void StopSound(SoundChannel channel);
 	void Play2DSound(SoundTag soundTag, float volume = 1.0f);
 	void PlayBgm(SoundTag soundTag, float vol = 0.7f);
 

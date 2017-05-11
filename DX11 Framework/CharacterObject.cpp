@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "CharacterObject.h"
-#include "protocol.h"
 
 CCharacterObject::CCharacterObject()
 {
@@ -48,11 +47,22 @@ void CCharacterObject::Firing()
 	else
 		m_bIsReload = true;
 }
+void CCharacterObject::Walking()
+{
+	if (GetTickCount() - m_dwWalkSoundWatingTime > 1000) {
+		SOUND_MGR->Play3DSound(SoundTag::eWalk, SoundChannel::eChannel_Walk, GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
+		m_dwWalkSoundWatingTime = GetTickCount();
+	}
+}
 
 void CCharacterObject::Running()
 {
 	m_bIsRun = true;
 //	m_pPlayer->GetCamera()->Move(GetLook() * 1);			// 추후 구현
+	if (GetTickCount() - m_dwWalkSoundWatingTime > 1000) {
+		SOUND_MGR->Play3DSound(SoundTag::eRun, SoundChannel::eChannel_Walk, GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
+		m_dwWalkSoundWatingTime = GetTickCount();
+	}
 }
 
 void CCharacterObject::Reloading()
@@ -75,28 +85,6 @@ void CCharacterObject::DamagedCharacter(UINT damage)
 	}
 	else
 		m_nLife -= damage;
-}
-
-void CCharacterObject::CSPartCollisionCheck(XMVECTOR direction)
-{
-	CollisionInfo info;
-	if (GetIsCollisionSC()) {
-		info.m_pHitObject = this;
-		bool bIsPartsCollisionCS = false;
-		bIsPartsCollisionCS = COLLISION_MGR->RayCastCollisionToCharacter_Parts(info, m_pWeapon->GetvPosition(), direction);
-
-		if (bIsPartsCollisionCS) {
-			// 서버로 어디 맞앗는지 패킷을 보낸다.
-			CS_Head_Collison Collison;
-			Collison.Head = false;
-			Collison.type = CS_HEAD_HIT;
-			Collison.size = sizeof(CS_Head_Collison);
-			if (info.m_HitParts == ChracterBoundingBoxParts::eHead)
-				Collison.Head = true;
-			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&Collison));
-			
-		}
-	}
 }
 
 void CCharacterObject::OnCollisionCheck()
@@ -206,36 +194,7 @@ void CCharacterObject::RotateFiringPos()
 	GetSkinnedMesh()->SetPitch(m_fPitch);
 }
 
-void CCharacterObject::Update(float fDeltaTime)
-{ 
-	RotateFiringPos();
-	if (m_pPlayer) {
-		m_pPlayer->UpdateKeyInput(fDeltaTime);
-		OnCollisionCheck();
-	}
-
-	m_pStateUpper->Update();
-	m_pStateLower->Update();
-	
-	if (m_pPlayer) {
-		m_pPlayer->Update(fDeltaTime);
-	}
-	CGameObject::Update(fDeltaTime);
-	CSkinnedObject::Update(fDeltaTime);
-	m_pWeapon->Update(fDeltaTime);
-	
-}
-
-void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
-{
-	if(m_pPlayer)
-		m_pPlayer->UpdateShaderVariables(pd3dDeviceContext);
-
-	CSkinnedObject::Render(pd3dDeviceContext, pCamera);
-	m_pWeapon->Render(pd3dDeviceContext, pCamera);
-}
-
-void CCharacterObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
+void CCharacterObject::SetPartsWorldMtx()
 {
 	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eBody)] = GetSkinnedMesh()->GetFinalBoneMtx(2) * m_mtxWorld;
 	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eHead)] = GetSkinnedMesh()->GetFinalBoneMtx(5) * m_mtxWorld;
@@ -253,7 +212,39 @@ void CCharacterObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
 
 	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eRightUpLeg)] = GetSkinnedMesh()->GetFinalBoneMtx(36) * m_mtxWorld;
 	m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::eRightDownLeg)] = GetSkinnedMesh()->GetFinalBoneMtx(37) * m_mtxWorld;
+}
+
+void CCharacterObject::Update(float fDeltaTime)
+{ 
+	RotateFiringPos();
+	if (m_pPlayer) {
+		m_pPlayer->UpdateKeyInput(fDeltaTime);
+		OnCollisionCheck();
+	}
+
+	m_pStateUpper->Update();
+	m_pStateLower->Update();
 	
+	if (m_pPlayer) {
+		m_pPlayer->Update(fDeltaTime);
+	}
+	CGameObject::Update(fDeltaTime);
+	CSkinnedObject::Update(fDeltaTime);
+	m_pWeapon->Update(fDeltaTime);
+	SetPartsWorldMtx();
+}
+
+void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
+{
+	if(m_pPlayer)
+		m_pPlayer->UpdateShaderVariables(pd3dDeviceContext);
+
+	CSkinnedObject::Render(pd3dDeviceContext, pCamera);
+	m_pWeapon->Render(pd3dDeviceContext, pCamera);
+}
+
+void CCharacterObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)
+{	
 	for (int i = 0; i < static_cast<int>(ChracterBoundingBoxParts::ePartsCount); ++i) {
 		if (m_pPartsBoundingBoxMesh[i]) {
 			BoundingOrientedBox bcObbox;

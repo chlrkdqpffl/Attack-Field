@@ -21,8 +21,8 @@ CPlayer::CPlayer(CCharacterObject* pCharacter)
 
 	// 임시
 //	m_fSpeed = 50;
+//	m_fSpeed = 30;
 	m_fSpeed = 10;	// 자연스러운 속도
-//	m_fSpeed = 10;	// 자연스러운 속도
 	count = 0;
 }
 
@@ -72,8 +72,9 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eReload)) {
 		m_pCharacter->SetIsReload(true);
-
 	}
+	else
+		m_pCharacter->SetIsReload(false);
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
 		if (m_pCharacter->GetIsTempRun())		// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
@@ -101,8 +102,10 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
 	m_pCharacter->SetVelocity(m_d3dxvVelocity);
 	m_pCharacter->SetRelativevVelocity(relativeVelocity);
-
-
+	if (m_pCharacter->IsMoving()) {
+		m_pCharacter->Walking();
+	}
+	
 #ifdef	USE_SERVER
 	cs_key_input packet;
 
@@ -281,8 +284,6 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 
 	return(pNewCamera);
 }
-
-
 
 void CPlayer::SetKeyDown(KeyInput key)
 {

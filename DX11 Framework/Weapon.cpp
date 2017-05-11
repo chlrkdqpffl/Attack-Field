@@ -29,13 +29,11 @@ void CWeapon::Firing(XMVECTOR direction)
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed) {
 		m_dwLastAttackTime = GetTickCount();
 		SOUND_MGR->Play3DSound(SoundTag::eFire, m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);
+		SOUND_MGR->Play3DSound(SoundTag::eShellsFall, m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);
 		m_nhasBulletCount--;
 
 		CollisionInfo info;
-		//ShowXMMatrix(m_pOwner->m_mtxWorld);
-//#ifdef USE_SERVER
-	//방향 위치 패킷 보내	GetvPosition(), direction
-
+#ifdef USE_SERVER
 		cs_weapon packet;
 		packet.size = sizeof(cs_weapon);
 		packet.type = CS_WEAPONE;
@@ -43,7 +41,7 @@ void CWeapon::Firing(XMVECTOR direction)
 		XMStoreFloat3(&packet.direction, direction);
 
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-//#elif
+#else
 		if (COLLISION_MGR->RayCastCollisionToCharacter(info, GetvPosition(), direction)) {
 			if (info.m_fDistance < m_fRange) {
 				// 최종 충돌 확인
@@ -64,7 +62,7 @@ void CWeapon::Firing(XMVECTOR direction)
 
 			}
 		}
-//#endif
+#endif
 		CreateFireDirectionLine(direction);
 	}
 }

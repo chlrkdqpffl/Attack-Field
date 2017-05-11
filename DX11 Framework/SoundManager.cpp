@@ -68,13 +68,18 @@ void CSoundManager::LoadAllSound()
 
 void CSoundManager::LoadBGMSound()
 {
-	g_pSystem->createStream("../Assets/Sound/BGM/Audiomachine.mp3",			FMOD_LOOP_NORMAL, 0, &g_pSound[static_cast<int>(SoundTag::eBGM_TitleScene)]);	
+//	g_pSystem->createStream("../Assets/Sound/BGM/Audiomachine.mp3",			FMOD_LOOP_NORMAL, 0, &g_pSound[static_cast<int>(SoundTag::eBGM_TitleScene)]);	
+	g_pSystem->createStream("../Assets/Sound/BGM/normalmode.mp3",			FMOD_LOOP_NORMAL, 0, &g_pSound[static_cast<int>(SoundTag::eBGM_TitleScene)]);	
 }
  
 void CSoundManager::LoadEffectSound()
 {
 	g_pSystem->createSound("../Assets/Sound/Effect/Fire.mp3",			FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eFire)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Reload.mp3",			FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eReload)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/Walk.mp3",			FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eWalk)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/Run.mp3",			FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eRun)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/Death.mp3",			FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eDeath)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/ShellsFall.mp3",		FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eShellsFall)]);
 }
 
 void CSoundManager::Update(float fTimeDelta)
@@ -98,23 +103,35 @@ void CSoundManager::AllStop()
 		g_pChannel[i]->stop();
 }
 
+void CSoundManager::StopSound(SoundChannel channel)
+{
+	g_pChannel[channel]->stop();
+}
+
 void CSoundManager::Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume)
 {
 	FMOD_RESULT result;
+	g_pChannel[eChannel_Effect]->setVolume(volume);
 	result = g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel[eChannel_Effect]);
 //	g_listSound3DContainer.push_back(new CSound3D(SCENE_MGR->g_pCamera->GetPosition(), position, direction, nowSpeed, addSpeed, volume, g_pChannel[eChannel_Effect]));
 }
 
+void CSoundManager::Play3DSound(SoundTag soundTag, SoundChannel channel, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume)
+{
+	g_pChannel[eChannel_Effect]->setVolume(volume);
+	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel[channel]);
+}
+
 void CSoundManager::PlayBgm(SoundTag soundTag, float volume)
 {
-	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], 0, &g_pChannel[eChannel_Bgm]);
 	g_pChannel[eChannel_Bgm]->setVolume(volume);
+	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], 0, &g_pChannel[eChannel_Bgm]);
 }
 
 void CSoundManager::Play2DSound(SoundTag soundTag, float volume) 
 {
-	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel[eChannel_Effect]);
 	g_pChannel[eChannel_Effect]->setVolume(volume);
+	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel[eChannel_Effect]);
 }
 
 void CSoundManager::VolumeControl(float volume)

@@ -853,13 +853,28 @@ void CMainScene::CreateUIImage()
 {
 	m_pUIManager = new CUIManager();
 	m_pUIManager->Initialize(m_pd3dDevice);
-
+	CUIObject* pUIObject;
 	// Aim
-	CUIObject* pAimUI = new CUIObject(TextureTag::eAim);
-	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 19, FRAME_BUFFER_HEIGHT / 2 };		// 오프셋 (1, -10)			// +가 오른쪽, +가 아래쪽
-	pAimUI->Initialize(m_pd3dDevice, POINT{ aimingPos.x - 20, aimingPos.y - 20 }, POINT{ aimingPos.x + 20, aimingPos.y + 20 }, 0.0f);
-	m_pUIManager->AddUIObject(pAimUI); 
-	pAimUI->SetActive(false);
+	pUIObject = new CUIObject(TextureTag::eAim);
+	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 4, FRAME_BUFFER_HEIGHT / 2 - 13};		// 오프셋 (19, 0)			// +가 오른쪽, +가 아래쪽
+	pUIObject->Initialize(m_pd3dDevice, POINT{ aimingPos.x - 20, aimingPos.y - 20 }, POINT{ aimingPos.x + 20, aimingPos.y + 20 }, 0.0f);
+	m_pUIManager->AddUIObject(pUIObject);
+	pUIObject->SetActive(false);
+
+	// Score
+	pUIObject = new CUIObject(TextureTag::eScoreUI);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 600, 0 }, POINT{ 1000, 90 }, 0.0f);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	// Life
+	pUIObject = new CUIObject(TextureTag::eLifeUI);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 10, 740 }, POINT{ 240, 890 }, 0.0f);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	// Magazine
+	pUIObject = new CUIObject(TextureTag::eMagazineUI);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH - 260, FRAME_BUFFER_HEIGHT - 140 }, POINT{ FRAME_BUFFER_WIDTH - 10, FRAME_BUFFER_HEIGHT - 10}, 0.0f);
+	m_pUIManager->AddUIObject(pUIObject);
 }
 
 void CMainScene::ReleaseObjects()
@@ -1068,12 +1083,11 @@ void CMainScene::RenderBoundingBox()
 	m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, false);
 
 	for (auto object : m_vecBBoxRenderContainer) {
-//		if (m_bIsPreCollisionCheck != object->GetCollisionCheck()) {
-//			m_bIsPreCollisionCheck = object->GetCollisionCheck();
-//			m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
-//			cout << "충돌해서 한 번 바뀌었다." << endl;
-//		}
-		m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
+		if (m_bIsPreCollisionCheck != object->GetCollisionCheck()) {
+			m_bIsPreCollisionCheck = object->GetCollisionCheck();
+			m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
+		}
+//		m_pBoundingBoxShader->OnPrepareSetting(m_pd3dDeviceContext, object->GetCollisionCheck());
 		object->BoundingBoxRender(m_pd3dDeviceContext);
 	}
 
@@ -1092,7 +1106,7 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	str = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")\n";
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 50, 0xFFFFFFFF, FW1_LEFT);
 
-	str = "원점으로부터의 거리 : (" + to_string(XMVectorGetX(temp)) + ")\n";
+	str = "원점으로부터의 거리 : (" + to_string(XMVectorGetX(temp)) + ")\n";		// 3D 사운드 용
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 90, 0xFFFFFFFF, FW1_LEFT);
 
 	str = "HP : (" + to_string(HP) + ")\n";
@@ -1105,4 +1119,27 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 
 		//TEXT_MGR->RenderText(pd3dDeviceContext, ppos, 30, 20, 80, 0xFFFFFFFF, FW1_LEFT);
 	}
+
+	// ================ Draw UI Text ================ //
+
+	// ----- Magazine ------ //
+	str = "M16A1";
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 46, 1430, 765, 0xFFCCCCCC, FW1_LEFT);
+
+	UINT nBulletCount = m_pPlayer->GetWeaponBulletCount();
+	str = to_string(nBulletCount);
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 53, 1465, 823, 0xFFFFFFFF, FW1_RIGHT);
+
+	UINT nMaxBulletCount = m_pPlayer->GetWeaponMaxBulletCount();
+	str = " /  " + to_string(nMaxBulletCount);
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 53, 1470, 823, 0xFFBBBBBB, FW1_LEFT);
+
+	// ----- Life, ArmorPoint ----- //
+	UINT nPlayerLife = m_pPlayer->GetPlayerLife();
+	str = to_string(nPlayerLife);
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 170, 753, 0xFFFFFFFF, FW1_RIGHT);
+
+	UINT nPlayerArmorPoint = m_pPlayer->GetPlayerArmorPoint();
+	str = to_string(nPlayerArmorPoint);
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 170, 828, 0xFFFFFFFF, FW1_RIGHT);
 }

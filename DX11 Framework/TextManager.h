@@ -17,16 +17,6 @@
 
 // 응용프로그램을 제대로 시작하지 못했습니다. (0xc000007b) 오류는 FW1FontWrapper.dll 이 64비트용이 아니므로 64비트용으로 덮어쓰기
 
-enum TEXT
-{
-	PIVOT_TOP = FW1_TOP,
-	PIVOT_LEFT = FW1_LEFT,
-	PIVOT_CENTER = FW1_CENTER,
-	PIVOT_RIGHT = FW1_RIGHT,
-	PIVOT_VCENTER = FW1_VCENTER,
-	PIVOT_BOTTOM = FW1_BOTTOM
-};
-
 class CTextManager : public CSingletonManager<CTextManager>
 {
 private:
@@ -43,10 +33,10 @@ public:
 	virtual ~CTextManager();
 
 	void RenderText(ID3D11DeviceContext* pd3dDeviceContext, std::string text, float fontSize,
-		float posX, float posY, UINT32 color = 0xFF000000, UINT pivot = (PIVOT_LEFT | PIVOT_TOP));
+		float posX, float posY, UINT32 color = 0xFF000000, UINT pivot = (FW1_LEFT | FW1_TOP));
 
 	void RenderText(ID3D11DeviceContext* pd3dDeviceContext, std::wstring text, float fontSize,
-		float posX, float posY, UINT32 color = 0xFF000000, UINT pivot = (PIVOT_LEFT | PIVOT_TOP));
+		float posX, float posY, UINT32 color = 0xFF000000, UINT pivot = (FW1_LEFT | FW1_TOP));
 
 public:
 	virtual void InitializeManager() {};

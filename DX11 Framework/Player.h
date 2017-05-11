@@ -2,9 +2,9 @@
 //#include "SkinnedObject.h"
 #include "Object.h"
 #include "Camera.h"
+#include "CharacterObject.h"
 
-class CCharacterObject;
-class CPlayer 
+class CPlayer
 {
 protected:
 	XMFLOAT3					m_vPrevPosition = XMFLOAT3(0,0,0);
@@ -85,4 +85,11 @@ public:
 	void SetKeyUp(KeyInput key);
 	WORD GetKeyState() const { return m_wKeyState; }
 	void SetLook(float x, float y, float z);
+
+
+	// --- Draw UI Text --- //
+	UINT GetWeaponBulletCount() const { return m_pCharacter->GetWeaponBulletCount(); }
+	UINT GetWeaponMaxBulletCount() const { return m_pCharacter->GetWeaponMaxBulletCount(); }
+	UINT GetPlayerLife() const { return m_pCharacter->GetLife(); }
+	UINT GetPlayerArmorPoint() const { return m_pCharacter->GetArmorPoint(); }
 };

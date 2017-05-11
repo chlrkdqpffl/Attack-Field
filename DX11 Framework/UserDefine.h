@@ -6,20 +6,17 @@
 
 
 #define USE_CONSOLE					// Open Console Windows
-#define USE_SERVER
+//#define USE_SERVER
 
 #define PROJECT_NAME					L"DX11_Framework ("
 
 #ifdef USE_SERVER
 	#define FRAME_BUFFER_WIDTH				800
 	#define FRAME_BUFFER_HEIGHT				450
-#elif
+#else
 	#define FRAME_BUFFER_WIDTH				1600
 	#define FRAME_BUFFER_HEIGHT				900
 #endif
-
-#define FRAME_BUFFER_WIDTH				1600
-#define FRAME_BUFFER_HEIGHT				900
 
 #define CUBEMAP_RENDER_TARGET_WIDTH		1024
 #define CUBEMAP_RENDER_TARGET_HEIGHT	1024
