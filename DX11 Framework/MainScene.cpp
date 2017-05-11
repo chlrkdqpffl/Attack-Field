@@ -856,11 +856,11 @@ void CMainScene::CreateUIImage()
 	CUIObject* pUIObject;
 	// Aim
 	pUIObject = new CUIObject(TextureTag::eAim);
-	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 4, FRAME_BUFFER_HEIGHT / 2 - 13};		// 오프셋 (19, 0)			// +가 오른쪽, +가 아래쪽
+	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 1, FRAME_BUFFER_HEIGHT / 2 - 16};		// 오프셋 (2, -14)			// +가 오른쪽, +가 아래쪽
 	pUIObject->Initialize(m_pd3dDevice, POINT{ aimingPos.x - 20, aimingPos.y - 20 }, POINT{ aimingPos.x + 20, aimingPos.y + 20 }, 0.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 	pUIObject->SetActive(false);
-
+	
 	// Score
 	pUIObject = new CUIObject(TextureTag::eScoreUI);
 	pUIObject->Initialize(m_pd3dDevice, POINT{ 600, 0 }, POINT{ 1000, 90 }, 0.0f);
@@ -868,7 +868,7 @@ void CMainScene::CreateUIImage()
 
 	// Life
 	pUIObject = new CUIObject(TextureTag::eLifeUI);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ 10, 740 }, POINT{ 240, 890 }, 0.0f);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 10, FRAME_BUFFER_HEIGHT - 190 }, POINT{ 360, FRAME_BUFFER_HEIGHT - 10 }, 0.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 
 	// Magazine

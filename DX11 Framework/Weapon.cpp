@@ -16,7 +16,7 @@ CWeapon::~CWeapon()
 
 void CWeapon::CreateFireDirectionLine(XMVECTOR direction)
 {
-	float lineLength = 10;
+	float lineLength = m_fRange;
 	XMVECTOR endPos = GetvPosition() + (direction * lineLength);
 	CLineObject* pRayObject = new CLineObject(GetvPosition(), endPos, 3000);
 	pRayObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
