@@ -8,7 +8,6 @@
 
 //서버추가
 #include "protocol.h"
-#include "ServerFuntion.h"
 
 #define MAX_LOADSTRING 100
 
@@ -84,10 +83,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	HWND hMainWnd = CreateWindow(szWindowClass, szTitle, dwStyle, 150, 30, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);	// 윈도우 창 시작 위치 조절 가능
 	if (!hMainWnd) return(FALSE);
 
-	gGameFramework.sethandle(hMainWnd);
+	SERVER_MGR->sethandle(hMainWnd);
 
 #ifdef	USE_SERVER
-	gGameFramework.Server_init();
+	SERVER_MGR->Server_init();
 #endif
 	if (!gGameFramework.OnCreate(hInstance, hMainWnd)) return(FALSE);
 
@@ -140,7 +139,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			switch (WSAGETSELECTEVENT(lParam)) {
 			case FD_READ:
-				gGameFramework.ReadPacket((SOCKET)wParam);
+				SERVER_MGR->ReadPacket((SOCKET)wParam);
 				break;
 			case FD_CLOSE:
 				closesocket((SOCKET)wParam);

@@ -1086,6 +1086,7 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 
 	// Draw Position
 	XMFLOAT3 playerPos = m_pPlayer->GetPosition();
+	DWORD	 HP = GetCharcontainer()[0]->GetLife();
 
 	XMVECTOR temp = XMVector3LengthEst(m_pPlayer->GetvPosition());
 	str = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")\n";
@@ -1093,6 +1094,9 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 
 	str = "원점으로부터의 거리 : (" + to_string(XMVectorGetX(temp)) + ")\n";
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 90, 0xFFFFFFFF, FW1_LEFT);
+
+	str = "HP : (" + to_string(HP) + ")\n";
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 130, 0xFFFFFFFF, FW1_LEFT);
 
 	// Draw Select Object
 	if (m_pSelectedObject) {

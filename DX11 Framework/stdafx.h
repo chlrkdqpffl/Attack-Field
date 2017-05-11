@@ -71,6 +71,7 @@ using namespace std;
 #include "UserTag.h"
 
 // ------- Manager Header -------- //
+#include "ServerManager.h"
 #include "GlobalVariableManager.h"
 #include "StateObjectManager.h"
 #include "ResourceManager.h"

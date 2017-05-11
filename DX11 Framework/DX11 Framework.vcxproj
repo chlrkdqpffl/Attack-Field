@@ -184,7 +184,7 @@
     <ClCompile Include="FbxModelSkinnedMesh.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="ServerFuntion.cpp" />
+    <ClCompile Include="ServerManager.cpp" />
     <ClCompile Include="SkinnedObject.cpp" />
     <ClCompile Include="SkyBoxShader.cpp" />
     <ClCompile Include="SoundManager.cpp" />
@@ -288,7 +288,7 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="MainScene.h" />
     <ClInclude Include="ScreenShader.h" />
-    <ClInclude Include="ServerFuntion.h" />
+    <ClInclude Include="ServerManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SingletonManager.h" />
     <ClInclude Include="FbxModelSkinnedMesh.h">

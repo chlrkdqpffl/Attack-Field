@@ -33,7 +33,8 @@ protected:
 
 	// ----- Game System Variable ----- //
 	UINT					m_nLife = 0;
-	
+	bool					m_bIsCollisionSC = false;
+		
 	// ----- Parts Collision Variable ----- // 
 
 	BoundingOrientedBox		m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
@@ -65,7 +66,7 @@ public:
 	void Revival();
 
 	void DamagedCharacter(UINT damage);
-
+	void CSPartCollisionCheck(XMVECTOR direction);
 
 	// ----- Get, Setter ----- // 
 	void SetPlayer(CPlayer* pPlayer) { m_pPlayer = pPlayer; }
@@ -92,6 +93,11 @@ public:
 	float GetPitch() const { return m_fPitch; }
 	XMFLOAT3 GetFireDirection() const { return m_f3FiringDirection; }
 	void SetFireDirection(XMFLOAT3 GetFireDirection) { m_f3FiringDirection = GetFireDirection; }
+	void SetIsCollisionSC(bool collision, XMVECTOR direction) 
+	{ 
+		m_bIsCollisionSC = collision; if (m_bIsCollisionSC) CSPartCollisionCheck(direction);
+	}
+	bool GetIsCollisionSC() const { return m_bIsCollisionSC; }
 
 	// ----- State Function ----- //
 	bool IsMoving() const {

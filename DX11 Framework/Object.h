@@ -7,7 +7,6 @@
 class CShader;
 class CBoundingBoxMesh;
 class CAxisObjects;
-class CGameObject;
 
 class CGameObject
 {

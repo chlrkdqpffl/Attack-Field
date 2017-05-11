@@ -1,14 +1,12 @@
 #pragma once
+#include "SingletonManager.h"
 
 #define ServerPort			9000
 #define BUF_SIZE			1024
 #define	WM_SOCKET			WM_USER + 1
 
-
-class ServerFuntion 
+class CServerManager : public CSingletonManager<CServerManager>
 {
-private:
-
 	SOCKET				m_socket;
 	HWND				m_handle;
 
@@ -23,23 +21,19 @@ private:
 	char				packet_buffer[BUF_SIZE];
 
 	int					m_myid = 0;
-
-
-
-
-
 public:
-	ServerFuntion();
-	~ServerFuntion();
+	CServerManager();
+	virtual ~CServerManager();
+	
+	virtual void InitializeManager() override;
+	virtual void ReleseManager() override;
+
 
 	void sethandle(HWND handle) { m_handle = handle; }
 	void Server_init();
-	void Sendpacket(unsigned char* Data);
 	void ReadPacket(SOCKET sock);
 	void processpacket(char *ptr);
 	void error_display(char *msg, int err_num);
 
-
-
+	void Sendpacket(unsigned char* Data);
 };
-

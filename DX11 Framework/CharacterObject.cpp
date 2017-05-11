@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CharacterObject.h"
+#include "protocol.h"
 
 CCharacterObject::CCharacterObject()
 {
@@ -74,6 +75,28 @@ void CCharacterObject::DamagedCharacter(UINT damage)
 	}
 	else
 		m_nLife -= damage;
+}
+
+void CCharacterObject::CSPartCollisionCheck(XMVECTOR direction)
+{
+	CollisionInfo info;
+	if (GetIsCollisionSC()) {
+		info.m_pHitObject = this;
+		bool bIsPartsCollisionCS = false;
+		bIsPartsCollisionCS = COLLISION_MGR->RayCastCollisionToCharacter_Parts(info, m_pWeapon->GetvPosition(), direction);
+
+		if (bIsPartsCollisionCS) {
+			// 서버로 어디 맞앗는지 패킷을 보낸다.
+			CS_Head_Collison Collison;
+			Collison.Head = false;
+			Collison.type = CS_HEAD_HIT;
+			Collison.size = sizeof(CS_Head_Collison);
+			if (info.m_HitParts == ChracterBoundingBoxParts::eHead)
+				Collison.Head = true;
+			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&Collison));
+			
+		}
+	}
 }
 
 void CCharacterObject::OnCollisionCheck()
@@ -200,6 +223,7 @@ void CCharacterObject::Update(float fDeltaTime)
 	CGameObject::Update(fDeltaTime);
 	CSkinnedObject::Update(fDeltaTime);
 	m_pWeapon->Update(fDeltaTime);
+	
 }
 
 void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)

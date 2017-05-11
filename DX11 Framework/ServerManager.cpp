@@ -1,34 +1,32 @@
-#pragma once
-
 #include "stdafx.h"
-#include "Protocol.h"
-#include "ServerFuntion.h"
-#include "GameFramework.h"
+#include "protocol.h"
+#include "ServerManager.h"
 
 
-
-#define ServerPort			9000
-#define BUF_SIZE			1024
-#define	WM_SOCKET			WM_USER + 1
-
-CGameFramework GameFramework;
-
-ServerFuntion::ServerFuntion()
+CServerManager::CServerManager()
 {
-
 }
 
-ServerFuntion::~ServerFuntion()
+CServerManager::~CServerManager()
 {
-
 }
-void ServerFuntion::processpacket(char *ptr)
+
+void CServerManager::InitializeManager()
+{
+}
+
+void CServerManager::ReleseManager()
+{
+}
+
+void CServerManager::processpacket(char *ptr)
 {
 	static bool first_time = true;
 	sc_packet_pos*			my_Pos_packet;
 	sc_packet_put_player*	my_put_packet;
 	sc_rotate_vector*		my_put_rotate;
 	sc_bullet_fire*			my_put_bulletfire;
+	SC_Collison*			my_collision;
 
 	int id = 0;
 
@@ -43,13 +41,15 @@ void ServerFuntion::processpacket(char *ptr)
 			//SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
 			//SCENE_MGR->g_pPlayer->SetAnimation(my_Pos_packet->Animation);
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));;
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(my_Pos_packet->hp);
 		}
 		else
 		{
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRelativeVelocity(my_Pos_packet->Animation);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetLife(my_Pos_packet->hp);
 			//cout << "니꺼" ;
-	
+
 			//ShowXMVector(my_Pos_packet->Animation);
 			//cout<<"제대로 들어갔는지 확인" << SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRelativeVelocity().x << " " << SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRelativeVelocity().y << " " << SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRelativeVelocity().z << endl;
 
@@ -79,7 +79,8 @@ void ServerFuntion::processpacket(char *ptr)
 
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRelativeVelocity(my_put_packet->Animation);
-			
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetLife(my_put_packet->hp);
+
 
 		}
 
@@ -100,8 +101,6 @@ void ServerFuntion::processpacket(char *ptr)
 				SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetFireDirection(my_put_bulletfire->FireDirection);
 				SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->Firing();
 			}
-				cout << SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetLife() << endl;
-			   
 		}
 		break;
 
@@ -123,7 +122,7 @@ void ServerFuntion::processpacket(char *ptr)
 		{
 			//cout << "나다 : " << id << endl;
 			//cout << my_put_rotate->x << " " << my_put_rotate->y << " " << my_put_rotate->z << endl;
-	//		SCENE_MGR->g_pPlayer->setradian(my_put_rotate->x, my_put_rotate->y);
+			//		SCENE_MGR->g_pPlayer->setradian(my_put_rotate->x, my_put_rotate->y);
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetRotate(my_put_rotate->x, my_put_rotate->y, 0);
 
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
@@ -140,7 +139,22 @@ void ServerFuntion::processpacket(char *ptr)
 			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRight());
 			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetUp());
 			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetLook());
-				//	cout << my_put_rotate->x << ", " << my_put_rotate->y << ", " << my_put_rotate->z << endl;
+			//	cout << my_put_rotate->x << ", " << my_put_rotate->y << ", " << my_put_rotate->z << endl;
+		}
+		break;
+
+	case 6:
+		my_collision = reinterpret_cast<SC_Collison*>(ptr);
+		id = my_collision->id;
+		if (id == m_myid)
+		{
+			if (my_collision->collision)
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsCollisionSC(my_collision->collision, XMLoadFloat3(&my_collision->direction));
+		}
+		else
+		{
+			if (my_collision->collision)
+			   SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetIsCollisionSC(my_collision->collision, XMLoadFloat3(&my_collision->direction));
 		}
 		break;
 	default:
@@ -156,7 +170,7 @@ void ServerFuntion::processpacket(char *ptr)
 	//cout << GameFramework.GetCamera().GetPlayer()->GetPosition().x<<" "<< GameFramework.GetCamera().GetPlayer()->GetPosition().y<<" "<< GameFramework.GetCamera().GetPlayer()->GetPosition().z <<endl;
 
 }
-void ServerFuntion::ReadPacket(SOCKET sock)
+void CServerManager::ReadPacket(SOCKET sock)
 {
 	DWORD iobyte, ioflag = 0;
 
@@ -186,7 +200,7 @@ void ServerFuntion::ReadPacket(SOCKET sock)
 	}
 }
 
-void ServerFuntion::error_display(char *msg, int err_num)
+void CServerManager::error_display(char *msg, int err_num)
 {
 	LPVOID lpMsgBuf;
 	FormatMessage(
@@ -198,7 +212,7 @@ void ServerFuntion::error_display(char *msg, int err_num)
 	LocalFree(lpMsgBuf);
 }
 
-void ServerFuntion::Server_init()
+void CServerManager::Server_init()
 {
 	std::cout << " ip 입력 : ";
 	char ip[20] = "127.0.0.1";
@@ -237,7 +251,7 @@ void ServerFuntion::Server_init()
 
 }
 
-void ServerFuntion::Sendpacket(unsigned char* Data)
+void CServerManager::Sendpacket(unsigned char* Data)
 {
 	DWORD iobyte;
 
