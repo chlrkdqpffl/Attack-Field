@@ -86,18 +86,28 @@ void CServerManager::processpacket(char *ptr)
 		else
 		{
 			CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject();	//객체 생성
-			pCharObject->CreateObjectData(SCENE_MGR->g_pMainScene->Getpd3dDevice());
+			pCharObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
 			pCharObject->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
+
+			pCharObject->SetRelativeVelocity(my_put_packet->Animation);
+			pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
+			pCharObject->SetServerID(id);
 
 			SCENE_MGR->g_pMainScene->GetCharcontainer().push_back(pCharObject);
 			SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);
 
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[my_put_packet->Charid - 1]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[my_put_packet->Charid - 1 ]->SetRelativeVelocity(my_put_packet->Animation);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[my_put_packet->Charid - 1 ]->SetLife(static_cast<UINT>(my_put_packet->hp));
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[my_put_packet->Charid - 1 ]->SetServerID(id);
-
 			COLLISION_MGR->m_vecCharacterContainer.push_back(pCharObject);
+
+			/*
+			UINT index;
+			int i = 0;
+			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
+				if (character->GetServerID() == my_put_packet->id) {
+					index = i;
+				}
+				i++;
+			}
+			*/
 
 		}
 
@@ -279,10 +289,10 @@ void CServerManager::error_display(char *msg, int err_num)
 void CServerManager::Server_init()
 {
 	std::cout << " ip 입력 : ";
-	char ip[20] = "127.0.0.1";
-	rewind(stdin);
-	//std::cin.clear();
-	//std::cin >> ip;
+//	char ip[20] = "127.0.0.1";
+	char ip[20] = "192.168.43.79";
+//	rewind(stdin);
+//	std::cin >> ip;
 
 	WSADATA wsa;
 	WSAStartup(MAKEWORD(2, 2), &wsa);
