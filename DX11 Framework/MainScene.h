@@ -34,9 +34,10 @@ public:
 	void AddShaderObject(ShaderTag tag, CGameObject* pObject);
 
 	void RenderBoundingBox();
+	ID3D11Device* Getpd3dDevice() { return m_pd3dDevice; }
 
 	vector<CCharacterObject*> &GetCharcontainer() { return m_vecCharacterContainer; }
-
+	vector<CGameObject*>	&GetBbBoxcontainer()	{return m_vecBBoxRenderContainer; }
 private:
 	float							m_fGlobalAmbient	= 0.0f;
 	ID3D11Buffer					*m_pd3dcbLights		= nullptr;

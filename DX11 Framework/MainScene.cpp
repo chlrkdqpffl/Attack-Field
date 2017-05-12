@@ -333,7 +333,9 @@ void CMainScene::Initialize()
 #pragma endregion 
 
 	 
-	
+#ifdef USE_SERVER
+
+#elif
 	// ==== Test용 - 총 메쉬 오프셋 찾기용 ==== //
 	CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject();
 	pCharacter->CreateObjectData(m_pd3dDevice);
@@ -345,6 +347,7 @@ void CMainScene::Initialize()
 	m_vecCharacterContainer.push_back(pCharacter);
 
 	COLLISION_MGR->m_vecCharacterContainer.push_back(pCharacter);
+#endif
 #pragma region [Create Shader Object]
 	
 #pragma endregion
@@ -1100,7 +1103,8 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 
 	// Draw Position
 	XMFLOAT3 playerPos = m_pPlayer->GetPosition();
-	DWORD	 HP = GetCharcontainer()[0]->GetLife();
+	DWORD	 HP = m_pPlayer->GetPlayerLife();
+	DWORD	 ID = SERVER_MGR->GetId();
 
 	XMVECTOR temp = XMVector3LengthEst(m_pPlayer->GetvPosition());
 	str = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")\n";
@@ -1111,6 +1115,9 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 
 	str = "HP : (" + to_string(HP) + ")\n";
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 130, 0xFFFFFFFF, FW1_LEFT);
+
+	str = "ID : (" + to_string(ID) + ")\n";
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 500, 50, 0xFFFFFFFF, FW1_LEFT);
 
 	// Draw Select Object
 	if (m_pSelectedObject) {

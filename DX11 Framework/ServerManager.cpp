@@ -22,43 +22,34 @@ void CServerManager::ReleseManager()
 void CServerManager::processpacket(char *ptr)
 {
 	static bool first_time = true;
-	sc_packet_pos*			my_Pos_packet;
-	sc_packet_put_player*	my_put_packet;
-	sc_rotate_vector*		my_put_rotate;
-	sc_bullet_fire*			my_put_bulletfire;
-	SC_Collison*			my_collision;
-
 	int id = 0;
 
 	switch (ptr[1])
 	{
 	case 1:	//계속 받을때
-		my_Pos_packet = reinterpret_cast<sc_packet_pos *>(ptr);
-		id = my_Pos_packet->id;
-
-		if (id == m_myid)
 		{
-			//SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
-			//SCENE_MGR->g_pPlayer->SetAnimation(my_Pos_packet->Animation);
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));;
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(my_Pos_packet->hp);
-		}
-		else
-		{
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRelativeVelocity(my_Pos_packet->Animation);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetLife(my_Pos_packet->hp);
-			//cout << "니꺼" ;
+			sc_packet_pos*			my_Pos_packet;
+			my_Pos_packet = reinterpret_cast<sc_packet_pos *>(ptr);
+			id = my_Pos_packet->id;
 
-			//ShowXMVector(my_Pos_packet->Animation);
-			//cout<<"제대로 들어갔는지 확인" << SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRelativeVelocity().x << " " << SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRelativeVelocity().y << " " << SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRelativeVelocity().z << endl;
-
+			if (id == m_myid)
+			{
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(my_Pos_packet->hp);
+			}
+			else
+			{
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[my_Pos_packet->Charid - 1 ]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[my_Pos_packet->Charid - 1 ]->SetRelativeVelocity(my_Pos_packet->Animation);
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[my_Pos_packet->Charid - 1 ]->SetLife(my_Pos_packet->hp);
+			}
 		}
 		break;
 	case 2:	//처음 받았을때.
 	{
+		sc_packet_put_player*	my_put_packet;
 		my_put_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
 		id = my_put_packet->id;
+
 		if (first_time)
 
 		{
@@ -80,22 +71,32 @@ void CServerManager::processpacket(char *ptr)
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[id]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 
 			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(my_put_packet->hp);
+			SCENE_MGR->g_pPlayer->SetPlayerlife(static_cast<UINT>(my_put_packet->hp));//SCENE_MGR->g_pMainScene->-> SetLife(static_cast<UINT>(my_put_packet->hp));
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetServerID(id);
 		}
 		else
 		{
+			CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject();	//객체 생성
+			pCharObject->CreateObjectData(SCENE_MGR->g_pMainScene->Getpd3dDevice());
+			pCharObject->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRelativeVelocity(my_put_packet->Animation);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetLife(my_put_packet->hp);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetServerID(id);
+			SCENE_MGR->g_pMainScene->GetCharcontainer().push_back(pCharObject);
+			SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);
+
+			//SCENE_MGR->g_pMainScene->GetCharcontainer()[my_put_packet->Charid - 1]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[my_put_packet->Charid - 1 ]->SetRelativeVelocity(my_put_packet->Animation);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[my_put_packet->Charid - 1 ]->SetLife(static_cast<UINT>(my_put_packet->hp));
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[my_put_packet->Charid - 1 ]->SetServerID(id);
+
+			COLLISION_MGR->m_vecCharacterContainer.push_back(pCharObject);
 
 		}
 
 	}
 	break;
 	case 3:	//총알...
+	{
+		sc_bullet_fire*			my_put_bulletfire;
 		my_put_bulletfire = reinterpret_cast<sc_bullet_fire *>(ptr);
 		id = my_put_bulletfire->id;
 
@@ -107,10 +108,11 @@ void CServerManager::processpacket(char *ptr)
 		{
 			if (my_put_bulletfire->fire == true)
 			{
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetFireDirection(my_put_bulletfire->FireDirection);
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->Firing();
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[my_put_bulletfire->Charid - 1 ]->SetFireDirection(my_put_bulletfire->FireDirection);
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[my_put_bulletfire->Charid - 1 ]->Firing();
 			}
 		}
+	}
 		break;
 
 	case 4:
@@ -123,18 +125,15 @@ void CServerManager::processpacket(char *ptr)
 	}
 	break;
 	case 5:	//rotate된 값 처리
-
+	{
+		sc_rotate_vector*		my_put_rotate;
 		my_put_rotate = reinterpret_cast<sc_rotate_vector *>(ptr);
 		id = my_put_rotate->id;
 
 		if (id == m_myid)
 		{
-			//cout << "나다 : " << id << endl;
-			//cout << my_put_rotate->x << " " << my_put_rotate->y << " " << my_put_rotate->z << endl;
-			//		SCENE_MGR->g_pPlayer->setradian(my_put_rotate->x, my_put_rotate->y);
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetRotate(my_put_rotate->x, my_put_rotate->y, 0);
 
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetRotate(my_put_rotate->x, my_put_rotate->y, 0);
 		}
 		else
 		{
@@ -143,17 +142,19 @@ void CServerManager::processpacket(char *ptr)
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
 
 
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[my_put_rotate->Charid - 1 ]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
 
 			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRight());
 			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetUp());
 			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetLook());
 			//	cout << my_put_rotate->x << ", " << my_put_rotate->y << ", " << my_put_rotate->z << endl;
 		}
+	}
 		break;
 
 	case 6:
 	{
+		SC_Collison*			my_collision;
 		my_collision = reinterpret_cast<SC_Collison*>(ptr);
 
 		// 서버로부터 받은 아이디를 컨테이너에서 같은 아이디를 찾으면 해당 객체가 충돌 객체가 된다.
@@ -172,10 +173,29 @@ void CServerManager::processpacket(char *ptr)
 			Collison.Head = false;
 			Collison.type = CS_HEAD_HIT;
 			Collison.size = sizeof(CS_Head_Collison);
+			Collison.id = my_collision->id;
 			if (info.m_HitParts == ChracterBoundingBoxParts::eHead)
 				Collison.Head = true;
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&Collison));
 		}
+	}
+	break;
+	case 7:
+	{
+		SC_Player_Hp *packet;
+		packet = reinterpret_cast<SC_Player_Hp *>(ptr);
+		id = packet->id;
+
+		if (id == m_myid)
+		{
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(packet->Hp);
+		}
+		else
+		{
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[packet->Charid - 1]->SetLife(packet->Hp);
+		}
+
+
 	}
 		break;
 	default:

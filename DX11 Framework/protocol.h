@@ -48,7 +48,8 @@ struct sc_packet_put_player {	//서버에서 처음 접속했을때 위치값과 ID를 부여한다.
 	BYTE size;
 	volatile BYTE type;
 
-	WORD id;
+	WORD	id;
+	WORD	Charid;
 
 	float x;
 	float y;
@@ -65,6 +66,7 @@ struct sc_packet_pos	//서버에서 처리된 값을 클라에게 보낸다.
 	volatile BYTE type;
 
 	WORD	id;
+	WORD	Charid;
 
 	float	x;
 	float	y;
@@ -82,6 +84,7 @@ struct sc_rotate_vector
 	BYTE type;
 
 	WORD id;
+	WORD Charid;
 
 	float x;
 	float y;
@@ -95,6 +98,7 @@ struct sc_bullet_fire
 	BYTE type;
 
 	WORD id;
+	WORD Charid;
 
 	bool fire;
 	XMFLOAT3 FireDirection;
@@ -133,6 +137,16 @@ struct CS_Head_Collison
 	BYTE type;
 
 	BOOL Head;
+	BYTE id;
+};
 
+struct SC_Player_Hp
+{
+	BYTE size;
+	BYTE type;
+
+	BYTE Hp;
+	BYTE id;
+	WORD Charid;
 };
 #pragma pack(pop)

@@ -97,6 +97,8 @@ void CScene::CreatePlayer()
 {
 	m_pPlayerCharacter = new CTerroristCharacterObject();
 	m_pPlayerCharacter->CreateObjectData(m_pd3dDevice);
+	// 이거 두개 추가.
+
 	m_pPlayerCharacter->CreateAxisObject(m_pd3dDevice);
 
 	m_pPlayer = new CTerrainPlayer(m_pPlayerCharacter);

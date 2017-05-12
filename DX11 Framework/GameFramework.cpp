@@ -175,7 +175,6 @@ bool CGameFramework::CreateDirect3DDisplay()
 #if !defined(DEBUG) && !defined(_DEBUG)
 	int gpu_index = 0;
 	unsigned __int64 comparison_videoMemory;
-	
 	// Find the Best Performance Graphic Cards.
 	while (pdxgiFactory->EnumAdapters(gpu_index, &pAdapter) != DXGI_ERROR_NOT_FOUND) {
 		pAdapter->GetDesc(&adapterDesc);

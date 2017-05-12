@@ -78,7 +78,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
 		if (m_pCharacter->GetIsTempRun())		// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
-			d3dxvShift += XMLoadFloat3(&m_d3dxvLook) * 3;
+			d3dxvShift *= 3;
 		m_pCharacter->Running();
 	}
 	else {
@@ -120,7 +120,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	packet.z = GetPosition().z;
 	packet.FireDirection = m_pCharacter->GetFireDirection();
 
-	packet.Hp = m_pCharacter->GetLife();
+	packet.Hp = static_cast<BYTE>(GetPlayerLife());
 
 
 	if ((m_wKeyState != 0) || count == 0)
