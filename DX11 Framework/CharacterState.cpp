@@ -208,7 +208,6 @@ void CState_Fire::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		pUpperFSM->ChangeState(CState_Idle::GetInstance());
 		return;
 	}
-
 	pCharacter->Firing();
 }
 

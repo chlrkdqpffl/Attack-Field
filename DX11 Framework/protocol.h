@@ -147,6 +147,6 @@ struct SC_Player_Hp
 
 	BYTE Hp;
 	BYTE id;
-	WORD Charid;
+	BOOL Head;
 };
 #pragma pack(pop)

@@ -34,6 +34,7 @@ void CWeapon::Firing(XMVECTOR direction)
 
 		XMVECTOR firePosOffset = GetvPosition() + (-1 * GetvRight() * (GetBoundingBox().Extents.z - 0.6f)) + (-1 * GetvLook() * 0.225) + (GetvUp() * 0.1f);
 		CollisionInfo info;
+
 #ifdef USE_SERVER
 		cs_weapon packet;
 		packet.size = sizeof(cs_weapon);
