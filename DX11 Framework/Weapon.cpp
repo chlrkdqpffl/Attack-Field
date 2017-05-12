@@ -38,7 +38,7 @@ void CWeapon::Firing(XMVECTOR direction)
 		cs_weapon packet;
 		packet.size = sizeof(cs_weapon);
 		packet.type = CS_WEAPONE;
-		XMStoreFloat3(&packet.direction, firePosOffset);
+		XMStoreFloat3(&packet.position, firePosOffset);
 		XMStoreFloat3(&packet.direction, direction);
 
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
