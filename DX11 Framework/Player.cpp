@@ -88,7 +88,6 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	// Mouse
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)) {
 		m_pCharacter->SetIsFire(true);
-
 	}
 	else {
 		m_pCharacter->SetIsFire(false);

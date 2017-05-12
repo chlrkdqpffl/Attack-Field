@@ -34,9 +34,14 @@ public:
 	void AddShaderObject(ShaderTag tag, CGameObject* pObject);
 
 	void RenderBoundingBox();
-	
+	void CalcTime();
+
 	vector<CCharacterObject*> &GetCharcontainer() { return m_vecCharacterContainer; }
 	vector<CGameObject*>	&GetBbBoxcontainer()	{return m_vecBBoxRenderContainer; }
+	void SetGameTime(UINT time) { m_nGameTime = time; }
+	void SetRedTeamKill(UINT kill) { m_nRedTeamTotalKill = kill; }
+	void SetBlueTeamKill(UINT kill) { m_nBlueTeamTotalKill = kill; }
+
 private:
 	float							m_fGlobalAmbient	= 0.0f;
 	ID3D11Buffer					*m_pd3dcbLights		= nullptr;
@@ -50,4 +55,10 @@ private:
 	vector<CCharacterObject*>		m_vecCharacterContainer;
 
 	CGBuffer*						m_GBuffer = nullptr;
+
+	// ----- Game System ----- //
+	DWORD							m_dwTime = 0;
+	UINT							m_nGameTime = 0;
+	UINT							m_nRedTeamTotalKill = 0;
+	UINT							m_nBlueTeamTotalKill = 0;
 };

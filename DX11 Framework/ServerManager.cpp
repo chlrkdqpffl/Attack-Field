@@ -41,7 +41,7 @@ void CServerManager::processpacket(char *ptr)
 				int i = 0;
 				for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
 				{
-					if (character->GetServerID() == i)
+					if (character->GetServerID() == id)
 						break;
 						i++;
 				}
@@ -130,12 +130,12 @@ void CServerManager::processpacket(char *ptr)
 				int i = 0;
 				for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
 				{
-					if (character->GetServerID() == i)
+					if (character->GetServerID() == id)
 						break;
 					i++;
 				}
 				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_bulletfire->FireDirection);
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Firing();
+	//			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Firing();
 			}
 		}
 	}
@@ -159,28 +159,20 @@ void CServerManager::processpacket(char *ptr)
 		if (id == m_myid)
 		{
 
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetRotate(my_put_rotate->x, my_put_rotate->y, 0);
+	//		SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetRotate(my_put_rotate->x, my_put_rotate->y, 0);
 		}
 		else
 		{
-			//cout << "´Ï´Ù : " << id << endl;
-			//cout << my_put_rotate->x << " " << my_put_rotate->y << " " << my_put_rotate->z << endl;
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
-
+	
 			int i = 0;
 			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
 			{
-				if (character->GetServerID() == i)
+				if (character->GetServerID() == id)
 					break;
 				i++;
 			}
 
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
-
-			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRight());
-			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetUp());
-			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetLook());
-			//	cout << my_put_rotate->x << ", " << my_put_rotate->y << ", " << my_put_rotate->z << endl;
 		}
 	}
 		break;
@@ -222,20 +214,20 @@ void CServerManager::processpacket(char *ptr)
 		if (id == m_myid)
 		{
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(packet->Hp);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsHeadHit(packet->Head);
 		}
 		else
 		{
 			int i = 0;
 			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
 			{
-				if (character->GetServerID() == i)
+				if (character->GetServerID() == id)
 					break;
 				i++;
 			}
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->Hp);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsHeadHit(packet->Head);
 		}
-
-
 	}
 		break;
 	default:
