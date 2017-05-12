@@ -38,9 +38,18 @@ void CServerManager::processpacket(char *ptr)
 			}
 			else
 			{
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[my_Pos_packet->Charid - 1 ]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[my_Pos_packet->Charid - 1 ]->SetRelativeVelocity(my_Pos_packet->Animation);
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[my_Pos_packet->Charid - 1 ]->SetLife(my_Pos_packet->hp);
+				int i = 0;
+				for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+				{
+					if (character->GetServerID() == i)
+						break;
+						i++;
+				}
+
+
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRelativeVelocity(my_Pos_packet->Animation);
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(my_Pos_packet->hp);
 			}
 		}
 		break;
@@ -108,8 +117,15 @@ void CServerManager::processpacket(char *ptr)
 		{
 			if (my_put_bulletfire->fire == true)
 			{
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[my_put_bulletfire->Charid - 1 ]->SetFireDirection(my_put_bulletfire->FireDirection);
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[my_put_bulletfire->Charid - 1 ]->Firing();
+				int i = 0;
+				for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+				{
+					if (character->GetServerID() == i)
+						break;
+					i++;
+				}
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_bulletfire->FireDirection);
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Firing();
 			}
 		}
 	}
@@ -141,8 +157,15 @@ void CServerManager::processpacket(char *ptr)
 			//cout << my_put_rotate->x << " " << my_put_rotate->y << " " << my_put_rotate->z << endl;
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
 
+			int i = 0;
+			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+			{
+				if (character->GetServerID() == i)
+					break;
+				i++;
+			}
 
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[my_put_rotate->Charid - 1 ]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
 
 			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRight());
 			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetUp());
@@ -192,7 +215,14 @@ void CServerManager::processpacket(char *ptr)
 		}
 		else
 		{
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[packet->Charid - 1]->SetLife(packet->Hp);
+			int i = 0;
+			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+			{
+				if (character->GetServerID() == i)
+					break;
+				i++;
+			}
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->Hp);
 		}
 
 
