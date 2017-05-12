@@ -39,7 +39,7 @@ public:
 
 	void ScreenCapture(ID3D11Resource* resource);
 	void ScreenCapture(ID3D11View* shaderResourceView);
-	void RenderAllText();
+	void RenderDebugText();
 	void SetTitleName();
 
 private:

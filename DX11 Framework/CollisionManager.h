@@ -30,7 +30,6 @@ public:
 
 private:
 	bool RayCastCollision_AABB(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
-	bool RayCastCollisionToCharacter_Sphere(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
 	bool RayCastCollisionToCharacter_AABB(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
 	bool RayCastCollisionInPolygon(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
 };

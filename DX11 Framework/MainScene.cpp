@@ -88,16 +88,16 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_Z:
-				SOUND_MGR->VolumeControl(-0.2f);
+				
 				break;
 			case VK_X:
-				SOUND_MGR->PlayBgm(SoundTag::eBGM_TitleScene);
+				m_vecCharacterContainer.back()->SetIsFire(true);
 				break;
 			case VK_C:
-				SOUND_MGR->Play3DSound(SoundTag::eFire, m_pPlayer->GetPosition(), m_pPlayer->GetVelocity(), 1, 1);
+				m_vecCharacterContainer.back()->SetLife(10000);
 				break;
 			case VK_V:
-				m_vecCharacterContainer.back()->SetVelocity(XMFLOAT3(-2.0f, 0, 0));
+				//m_vecCharacterContainer.back()->SetVelocity(XMFLOAT3(-2.0f, 0, 0));
 				break;
 			}
 			break;
@@ -341,7 +341,7 @@ void CMainScene::Initialize()
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
 
-	pCharacter->SetPosition(40.0f, 2.4f, 2.0f);
+	pCharacter->SetPosition(40.0f, 1.9f, 2.0f);
 
 	m_vecBBoxRenderContainer.push_back(pCharacter);
 	m_vecCharacterContainer.push_back(pCharacter);
@@ -859,11 +859,11 @@ void CMainScene::CreateUIImage()
 	CUIObject* pUIObject;
 	// Aim
 	pUIObject = new CUIObject(TextureTag::eAim);
-	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 4, FRAME_BUFFER_HEIGHT / 2 - 13};		// 오프셋 (19, 0)			// +가 오른쪽, +가 아래쪽
+	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 3, FRAME_BUFFER_HEIGHT / 2 - 14};		// 오프셋 (3, -14)			// +가 오른쪽, +가 아래쪽
 	pUIObject->Initialize(m_pd3dDevice, POINT{ aimingPos.x - 20, aimingPos.y - 20 }, POINT{ aimingPos.x + 20, aimingPos.y + 20 }, 0.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 	pUIObject->SetActive(false);
-
+	
 	// Score
 	pUIObject = new CUIObject(TextureTag::eScoreUI);
 	pUIObject->Initialize(m_pd3dDevice, POINT{ 600, 0 }, POINT{ 1000, 90 }, 0.0f);
@@ -871,7 +871,7 @@ void CMainScene::CreateUIImage()
 
 	// Life
 	pUIObject = new CUIObject(TextureTag::eLifeUI);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ 10, 740 }, POINT{ 240, 890 }, 0.0f);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 10, FRAME_BUFFER_HEIGHT - 190 }, POINT{ 360, FRAME_BUFFER_HEIGHT - 10 }, 0.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 
 	// Magazine
@@ -1144,9 +1144,11 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	// ----- Life, ArmorPoint ----- //
 	UINT nPlayerLife = m_pPlayer->GetPlayerLife();
 	str = to_string(nPlayerLife);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 170, 753, 0xFFFFFFFF, FW1_RIGHT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 210, 743, 0xFFFFFFFF, FW1_RIGHT);
 
 	UINT nPlayerArmorPoint = m_pPlayer->GetPlayerArmorPoint();
 	str = to_string(nPlayerArmorPoint);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 170, 828, 0xFFFFFFFF, FW1_RIGHT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 255, 815, 0xFFFFFFFF, FW1_RIGHT);
+
+
 }

@@ -74,7 +74,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	RESOURCE_MGR->InitializeManager();
 	SOUND_MGR->InitializeManager();
 	BuildObjects();
-
+	
 	return(true);
 }
 
@@ -779,7 +779,10 @@ void CGameFramework::FrameAdvance()
 #endif
 	
 	SCENE_MGR->g_nowScene->RenderAllText(m_pd3dDeviceContext);		// 텍스트는 마지막에 렌더링
-	RenderAllText();
+
+#if defined(DEBUG) || defined(_DEBUG)
+	RenderDebugText();
+#endif
 
 	// Draw tweak bars
 	if (true == m_bMouseBindFlag) {
@@ -807,7 +810,7 @@ void CGameFramework::SetTitleName()
 	::SetWindowText(m_hWnd, wstrTitleName.c_str());
 }
 
-void CGameFramework::RenderAllText()
+void CGameFramework::RenderDebugText()
 {
 	string str;
 
@@ -823,8 +826,8 @@ void CGameFramework::RenderAllText()
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 40, 1500, 20, 0xFF0000FF, FW1_LEFT);
 
 	// Graphic Crad Info
-	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_wsGraphicBrandName, 30, 270, 830, 0xFF41FF3A, FW1_LEFT);
-	TEXT_MGR->RenderText(m_pd3dDeviceContext, "Video Memory : " + to_string(m_ui64VideoMemory / 1048576) + "MB", 30, 270, 860, 0xFF0000FF, FW1_LEFT);
+	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_wsGraphicBrandName, 30, 1330, 830, 0xFF41FF3A, FW1_RIGHT);
+	TEXT_MGR->RenderText(m_pd3dDeviceContext, "Video Memory : " + to_string(m_ui64VideoMemory / 1048576) + "MB", 30, 1330, 860, 0xFF0000FF, FW1_RIGHT);
 
 	m_pd3dDeviceContext->GSSetShader(nullptr, nullptr, 0);
 }
