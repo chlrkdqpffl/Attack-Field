@@ -119,9 +119,6 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	packet.z = GetPosition().z;
 	packet.FireDirection = m_pCharacter->GetFireDirection();
 
-	packet.Hp = static_cast<BYTE>(GetPlayerLife());
-
-
 	if ((m_wKeyState != 0) || count == 0)
 	{
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));

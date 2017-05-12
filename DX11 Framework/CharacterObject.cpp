@@ -72,9 +72,12 @@ void CCharacterObject::Reloading()
 
 void CCharacterObject::Revival()
 {
+#ifdef USE_SERVER
 
+#elif
 	m_nLife = 100;
 	m_bIsDeath = false;
+#endif
 }
 
 void CCharacterObject::DamagedCharacter(UINT damage)

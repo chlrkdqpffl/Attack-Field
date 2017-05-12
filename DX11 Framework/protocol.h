@@ -6,7 +6,8 @@
 #define	CS_WEAPONE		3
 #define CS_HEAD_HIT		4
 
-#define RemovePlayer	5
+
+#define RemovePlayer	6
 
 
 
@@ -20,8 +21,6 @@ struct cs_key_input {	//키버튼 받았을때
 
 
 	DWORD	key_button;
-
-	BYTE	Hp;
 
 	float	x;
 	float	y;
@@ -49,14 +48,18 @@ struct sc_packet_put_player {	//서버에서 처음 접속했을때 위치값과 ID를 부여한다.
 	volatile BYTE type;
 
 	WORD	id;
-	WORD	Charid;
 
 	float x;
 	float y;
 	float z;
 
 	XMFLOAT3	Animation;
+
 	BYTE	hp;
+
+	BYTE	Goal;
+	BYTE	RED;
+	BYTE	Blue;
 
 };
 
@@ -147,6 +150,22 @@ struct SC_Player_Hp
 
 	BYTE Hp;
 	BYTE id;
+
 	BOOL Head;
+	BOOL life;
 };
+
+struct SC_System_kill
+{
+	BYTE size;
+	BYTE type;
+
+	BYTE RED;
+	BYTE BLUE;
+
+	//FLOAT Time;	//나중에 시간 넣어서 보내준다.
+
+
+};
+
 #pragma pack(pop)

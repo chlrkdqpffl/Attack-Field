@@ -38,6 +38,7 @@ public:
 
 	vector<CCharacterObject*> &GetCharcontainer() { return m_vecCharacterContainer; }
 	vector<CGameObject*>	&GetBbBoxcontainer()	{return m_vecBBoxRenderContainer; }
+	
 	void SetGameTime(UINT time) { m_nGameTime = time; }
 	void SetRedTeamKill(UINT kill) { m_nRedTeamTotalKill = kill; }
 	void SetBlueTeamKill(UINT kill) { m_nBlueTeamTotalKill = kill; }

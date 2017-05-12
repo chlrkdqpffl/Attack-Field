@@ -111,7 +111,12 @@ void CServerManager::processpacket(char *ptr)
 
 		}
 
+		SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(my_put_packet->RED));
+		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(my_put_packet->Blue));
 	}
+
+
+
 	break;
 	case 3:	//ÃÑ¾Ë...
 	{
@@ -215,6 +220,8 @@ void CServerManager::processpacket(char *ptr)
 		{
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(packet->Hp);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsHeadHit(packet->Head);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsDeath(packet->life);
+
 		}
 		else
 		{
@@ -227,9 +234,18 @@ void CServerManager::processpacket(char *ptr)
 			}
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->Hp);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsHeadHit(packet->Head);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsDeath(packet->life);
 		}
 	}
 		break;
+	case 8:
+	{
+		SC_System_kill* packet;
+		packet = reinterpret_cast<SC_System_kill *>(ptr);
+		SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(packet->RED));
+		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(packet->BLUE));
+	}
+	break;
 	default:
 		std::cout << "Unknown PACKET type :" << (int)ptr[1] << "\n";
 		break;
@@ -281,8 +297,8 @@ void CServerManager::error_display(char *msg, int err_num)
 void CServerManager::Server_init()
 {
 	std::cout << " ip ÀÔ·Â : ";
-//	char ip[20] = "127.0.0.1";
-	char ip[20] = "192.168.43.79";
+	char ip[20] = "127.0.0.1";
+//	char ip[20] = "192.168.43.79";
 //	rewind(stdin);
 //	std::cin >> ip;
 
