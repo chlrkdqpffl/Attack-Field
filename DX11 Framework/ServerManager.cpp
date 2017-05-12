@@ -135,7 +135,7 @@ void CServerManager::processpacket(char *ptr)
 					i++;
 				}
 				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_bulletfire->FireDirection);
-				//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Firing();
+	//			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Firing();
 			}
 		}
 	}
@@ -159,14 +159,11 @@ void CServerManager::processpacket(char *ptr)
 		if (id == m_myid)
 		{
 
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetRotate(my_put_rotate->x, my_put_rotate->y, 0);
+	//		SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetRotate(my_put_rotate->x, my_put_rotate->y, 0);
 		}
 		else
 		{
-			//cout << "니다 : " << id << endl;
-			//cout << my_put_rotate->x << " " << my_put_rotate->y << " " << my_put_rotate->z << endl;
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
-
+	
 			int i = 0;
 			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
 			{
@@ -176,11 +173,6 @@ void CServerManager::processpacket(char *ptr)
 			}
 
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
-
-			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetRight());
-			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetUp());
-			//		ShowXMVector(SCENE_MGR->g_pMainScene->GetCharcontainer()[1]->GetLook());
-			//	cout << my_put_rotate->x << ", " << my_put_rotate->y << ", " << my_put_rotate->z << endl;
 		}
 	}
 		break;
@@ -201,8 +193,7 @@ void CServerManager::processpacket(char *ptr)
 
 		bIsPartsCollisionCS = COLLISION_MGR->RayCastCollisionToCharacter_Parts(info, XMLoadFloat3(&my_collision->position), XMLoadFloat3(&my_collision->direction));
 
-		if (bIsPartsCollisionCS) 
-		{
+		if (bIsPartsCollisionCS) {
 			CS_Head_Collison Collison;
 			Collison.Head = false;
 			Collison.type = CS_HEAD_HIT;
@@ -237,8 +228,6 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->Hp);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsHeadHit(packet->Head);
 		}
-
-
 	}
 		break;
 	default:
@@ -292,8 +281,8 @@ void CServerManager::error_display(char *msg, int err_num)
 void CServerManager::Server_init()
 {
 	std::cout << " ip 입력 : ";
-	char ip[20] = "127.0.0.1";
-//	char ip[20] = "192.168.43.79";
+//	char ip[20] = "127.0.0.1";
+	char ip[20] = "192.168.43.79";
 //	rewind(stdin);
 //	std::cin >> ip;
 

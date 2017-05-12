@@ -43,6 +43,9 @@ void CWeapon::Firing(XMVECTOR direction)
 		XMStoreFloat3(&packet.direction, direction);
 
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+		static int count = 0;
+		count++;
+		cout << count << "ÃÑ¾Ë ¸î¹ø ½ú³Ä" << endl;
 #else
 		if (COLLISION_MGR->RayCastCollisionToCharacter(info, firePosOffset, direction)) {
 			if (info.m_fDistance < m_fRange) {

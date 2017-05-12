@@ -4,6 +4,7 @@
 CMainScene::CMainScene()
 {
 	m_tagScene = SceneTag::eMainScene;
+	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(913, 10, -215);
 }
 
 CMainScene::~CMainScene()
@@ -335,7 +336,7 @@ void CMainScene::Initialize()
 	 
 #ifdef USE_SERVER
 
-#elif
+#else
 	// ==== Test용 - 총 메쉬 오프셋 찾기용 ==== //
 	CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject();
 	pCharacter->CreateObjectData(m_pd3dDevice);
@@ -859,7 +860,7 @@ void CMainScene::CreateUIImage()
 	CUIObject* pUIObject;
 	// Aim
 	pUIObject = new CUIObject(TextureTag::eAim);
-	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 3, FRAME_BUFFER_HEIGHT / 2 - 14};		// 오프셋 (3, -14)			// +가 오른쪽, +가 아래쪽
+	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 3, FRAME_BUFFER_HEIGHT / 2 - 22};		// 오프셋 (3, -14)			// +가 오른쪽, +가 아래쪽
 	pUIObject->Initialize(m_pd3dDevice, POINT{ aimingPos.x - 20, aimingPos.y - 20 }, POINT{ aimingPos.x + 20, aimingPos.y + 20 }, 0.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 	pUIObject->SetActive(false);
@@ -1001,6 +1002,14 @@ void CMainScene::ModifiedSelectObject()
 //	ShowXMFloat3(TWBAR_MGR->g_xmf3SelectObjectRotate);
 }
 
+void CMainScene::CalcTime()
+{
+	if (GetTickCount() - m_dwTime > 100) {
+		m_nGameTime++;
+		m_dwTime = GetTickCount();
+	}
+}
+
 void CMainScene::Update(float fDeltaTime)
 {
 	// 충돌 정보 갱신
@@ -1032,6 +1041,8 @@ void CMainScene::Update(float fDeltaTime)
 	// Particle
 	m_fGametime += fDeltaTime;
 	m_pParticleSystem->Update(fDeltaTime, m_fGametime);
+
+	CalcTime();
 }
 
 void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
@@ -1150,5 +1161,27 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	str = to_string(nPlayerArmorPoint);
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 255, 815, 0xFFFFFFFF, FW1_RIGHT);
 
+	// ----- Time ----- //
+	UINT nMinute = m_nGameTime / 60;
+	UINT nSecond = m_nGameTime % 60;
+	if (nMinute < 10)
+		str = '0' + to_string(nMinute);
+	else
+		str = to_string(nMinute);
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 793, 85, 0xFFFFFFFF, FW1_RIGHT);
 
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(":"), 48, 804.3f, 85, 0xFFFFFFFF, FW1_RIGHT);
+
+	if (nSecond < 10)
+		str = '0' + to_string(nSecond);
+	else
+		str = to_string(nSecond);
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 843, 85, 0xFFFFFFFF, FW1_RIGHT);
+
+	// ----- Total Kill ----- //
+	str = to_string(m_nRedTeamTotalKill);
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 60, 698, 10, 0xFF0020FF, FW1_CENTER);
+
+	str = to_string(m_nBlueTeamTotalKill);
+	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 60, 913, 10, 0xFFFF4500, FW1_CENTER);
 }
