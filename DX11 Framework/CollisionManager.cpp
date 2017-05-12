@@ -84,17 +84,12 @@ bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos
 
 bool CCollisionManager::RayCastCollisionToCharacter(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)	//캐릭터 충돌 함수.
 {
-	
-	// 1차 Sphere
-	if (!RayCastCollisionToCharacter_Sphere(info, originPos, direction))	//이거먼저
-		return false;
-		
-	// 2차 AABB
-	if (!RayCastCollisionToCharacter_AABB(info, originPos, direction))		//aabb박스로
+	// 1차 AABB
+	if (!RayCastCollisionToCharacter_AABB(info, originPos, direction))
 		return false;
 
 	// 3차 Parts
-	if (!RayCastCollisionToCharacter_Parts(info, originPos, direction))		//파츠별로
+	if (!RayCastCollisionToCharacter_Parts(info, originPos, direction))
 		return false;
 	
 	return true;
@@ -158,19 +153,25 @@ bool CCollisionManager::RayCastCollision_AABB(CollisionInfo& info, XMVECTOR orig
 	return false;
 }
 
-bool CCollisionManager::RayCastCollisionToCharacter_Sphere(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
+bool CCollisionManager::RayCastCollisionToCharacter_AABB(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
 {
 	CGameObject* pNearestObject = nullptr;
 	float fNearestDistance = FLT_MAX;
 	float fDist = 0;
 	bool isCollision = false;
 
-	for (auto& character : m_vecCharacterContainer) {
-		if (character->GetBoundingSphere(0).Intersects(originPos, direction, info.m_fDistance)) {
-			if (fNearestDistance > info.m_fDistance) {
-				fNearestDistance = info.m_fDistance;
-				pNearestObject = character;
-				isCollision = true;
+	for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
+		if (!character->GetBoundingSphere().Intersects(originPos, direction, info.m_fDistance))
+			return false;
+	
+		info.m_pHitObject = character;
+		if (info.m_pHitObject->GetBoundingBox(0).Intersects(originPos, direction, info.m_fDistance)) {
+			if (info.m_fDistance > 0) {			// 본인이 쏜 Ray인지 확인
+				if (fNearestDistance > info.m_fDistance) {
+					fNearestDistance = info.m_fDistance;
+					pNearestObject = character;
+					isCollision = true;
+				}
 			}
 		}
 	}
@@ -179,14 +180,6 @@ bool CCollisionManager::RayCastCollisionToCharacter_Sphere(CollisionInfo& info, 
 		info.m_pHitObject = pNearestObject;
 		return true;
 	}
-	return false;
-}
-
-bool CCollisionManager::RayCastCollisionToCharacter_AABB(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
-{
-	if (info.m_pHitObject->GetBoundingBox(0).Intersects(originPos, direction, info.m_fDistance))
-		return true;
-
 	return false;
 }
 

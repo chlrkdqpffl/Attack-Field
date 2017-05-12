@@ -14,11 +14,11 @@ CWeapon::~CWeapon()
 {
 }
 
-void CWeapon::CreateFireDirectionLine(XMVECTOR direction)
+void CWeapon::CreateFireDirectionLine(XMVECTOR position, XMVECTOR direction)
 {
 	float lineLength = m_fRange;
 	XMVECTOR endPos = GetvPosition() + (direction * lineLength);
-	CLineObject* pRayObject = new CLineObject(GetvPosition(), endPos, 3000);
+	CLineObject* pRayObject = new CLineObject(position, endPos, 3000);
 	pRayObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
 
 	GLOBAL_MGR->g_vecLineContainer.push_back(pRayObject);
@@ -32,19 +32,19 @@ void CWeapon::Firing(XMVECTOR direction)
 		SOUND_MGR->Play3DSound(SoundTag::eShellsFall, m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);
 		m_nhasBulletCount--;
 
+		XMVECTOR firePosOffset = GetvPosition() + (-1 * GetvRight() * (GetBoundingBox().Extents.z - 0.6f)) + (-1 * GetvLook() * 0.225) + (GetvUp() * 0.1f);
 		CollisionInfo info;
 #ifdef USE_SERVER
 		cs_weapon packet;
 		packet.size = sizeof(cs_weapon);
 		packet.type = CS_WEAPONE;
-		packet.position = GetPosition();
+		packet.position = firePosOffset;
 		XMStoreFloat3(&packet.direction, direction);
 
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 #else
-		if (COLLISION_MGR->RayCastCollisionToCharacter(info, GetvPosition(), direction)) {
+		if (COLLISION_MGR->RayCastCollisionToCharacter(info, firePosOffset, direction)) {
 			if (info.m_fDistance < m_fRange) {
-				// 최종 충돌 확인
 				info.m_pHitObject->SetCollision(true);
 
 				CCharacterObject* hitCharacter = static_cast<CCharacterObject*>(info.m_pHitObject);
@@ -63,7 +63,7 @@ void CWeapon::Firing(XMVECTOR direction)
 			}
 		}
 #endif
-		CreateFireDirectionLine(direction);
+		CreateFireDirectionLine(firePosOffset, direction);
 	}
 }
 
