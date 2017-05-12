@@ -86,7 +86,6 @@ void CResourceManager::LoadUIData()
 	AddResourece(TextureTag::eCaptureArea,		"../Assets/Image/UI/CaptureArea.png");
 	AddResourece(TextureTag::eScoreUI,			"../Assets/Image/UI/ScoreUI.png");
 	AddResourece(TextureTag::eMagazineUI,		"../Assets/Image/UI/MagazineUI.png");
-//	AddResourece(TextureTag::eLifeUI,			"../Assets/Image/UI/LifeUI.png");
 	AddResourece(TextureTag::eLifeUI,			"../Assets/Image/UI/HP.png");
 }
 
