@@ -214,14 +214,13 @@ void CServerManager::processpacket(char *ptr)
 	{
 		SC_Player_Hp *packet;
 		packet = reinterpret_cast<SC_Player_Hp *>(ptr);
-		id = packet->id;
+		id = packet->m_nCharacterID;
 
 		if (id == m_myid)
 		{
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(packet->Hp);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsHeadHit(packet->Head);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsDeath(packet->life);
-
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(packet->m_nLife);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsHeadHit(packet->m_bIsHeadHit);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsDeath(packet->m_bIsAlive);
 		}
 		else
 		{
@@ -232,9 +231,9 @@ void CServerManager::processpacket(char *ptr)
 					break;
 				i++;
 			}
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->Hp);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsHeadHit(packet->Head);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsDeath(packet->life);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->m_nLife);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsHeadHit(packet->m_bIsHeadHit);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsDeath(packet->m_bIsAlive);
 		}
 	}
 		break;
@@ -242,8 +241,11 @@ void CServerManager::processpacket(char *ptr)
 	{
 		SC_System_kill* packet;
 		packet = reinterpret_cast<SC_System_kill *>(ptr);
-		SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(packet->RED));
-		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(packet->BLUE));
+
+		assert(packet->m_nRedTeamTotalKill < 128 && packet->m_nBlueTeamTotalKill < 128);
+
+		SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(packet->m_nRedTeamTotalKill));
+		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(packet->m_nBlueTeamTotalKill));
 	}
 	break;
 	default:

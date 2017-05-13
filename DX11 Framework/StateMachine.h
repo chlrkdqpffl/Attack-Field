@@ -16,12 +16,6 @@ public:
 		m_pAnyState = CState_AnyTime::GetInstance();
 	}
 	virtual ~CStateMachine() {};
-	
-	void InitState()
-	{
-		m_pCurrentState = CState_Idle::GetInstance();
-		m_pCurrentState->EnterState(m_pOwner, m_partsBody);
-	}
 
 	void ChangeState(CFSM_State<ObjectType>* newState)
 	{

@@ -6,7 +6,7 @@ CCharacterObject::CCharacterObject()
 	for (int i = 0; i < static_cast<int>(ChracterBoundingBoxParts::ePartsCount); ++i)
 		m_pPartsBoundingBoxMesh[i] = nullptr;
 
-	Revival();
+	Revival(100);
 }
 
 CCharacterObject::~CCharacterObject()
@@ -70,13 +70,12 @@ void CCharacterObject::Reloading()
 	m_pWeapon->Reloading();
 }
 
-void CCharacterObject::Revival()
+void CCharacterObject::Revival(UINT life)
 {
 #ifdef USE_SERVER
 
-#elif
-	m_nLife = 100;
-	m_bIsDeath = false;
+#else
+	m_nLife = life;
 #endif
 }
 

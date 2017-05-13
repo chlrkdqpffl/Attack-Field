@@ -268,8 +268,9 @@ void CState_Death::EnterState(CCharacterObject* pCharacter, AnimationData::Parts
 	else 
 		pCharacter->SetAnimation(AnimationData::CharacterAnim::eDeath);
 
-	// Test¿ëµµ
+#ifndef USE_SERVER
 	m_Position = pCharacter->GetvPosition();
+#endif
 
 	SOUND_MGR->Play3DSound(SoundTag::eDeath, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 1);
 }
@@ -301,14 +302,28 @@ void CState_Death::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		}
 	}
 
+
+#ifdef USE_SERVER
+	if (pCharacter->GetIsRespawn()) {
+		pUpperFSM->ChangeState(CState_Idle::GetInstance());
+		pLowerFSM->ChangeState(CState_Idle::GetInstance());
+		pCharacter->SetControllerActive(AnimationData::Parts::UpperBody, true);
+		pCharacter->SetControllerActive(AnimationData::Parts::LowerBody, true);
+
+		return;
+	}
+#else
 	if (!pCharacter->GetControllerActive(AnimationData::Parts::UpperBody)) {
 		if (m_dwDeathWaitingTime < timeElapsed) {
 			pUpperFSM->ChangeState(CState_Idle::GetInstance());
 			pLowerFSM->ChangeState(CState_Idle::GetInstance());
 			pCharacter->SetControllerActive(AnimationData::Parts::UpperBody, true);
 			pCharacter->SetControllerActive(AnimationData::Parts::LowerBody, true);
+
+			return;
 		}
 	}
+#endif
 }
 
 void CState_Death::UpdateLowerBodyState(CCharacterObject* pCharacter)
@@ -317,13 +332,11 @@ void CState_Death::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 void CState_Death::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
-	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
-
-	pCharacter->Revival();
+	pCharacter->SetIsDeath(false);
+#ifndef USE_SERVER
+	pCharacter->Revival(100);
 	pCharacter->SetPosition(m_Position);
-	pUpperFSM->InitState();
-	pLowerFSM->InitState();
+#endif
 }
 
 // ---------------------------- Head Hit ---------------------------- //
@@ -335,7 +348,6 @@ void CState_HeadHit::EnterState(CCharacterObject* pCharacter, AnimationData::Par
 void CState_HeadHit::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
-//	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 
 	if (!pCharacter->GetControllerActive(AnimationData::Parts::UpperBody)) {
 		pUpperFSM->ChangeState(pUpperFSM->GetPreviousState());

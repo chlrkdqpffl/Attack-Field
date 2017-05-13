@@ -6,7 +6,7 @@
 
 
 #define USE_CONSOLE					// Open Console Windows
-#define USE_SERVER
+//#define USE_SERVER
 
 #define PROJECT_NAME					L"DX11_Framework ("
 
