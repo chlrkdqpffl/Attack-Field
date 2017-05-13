@@ -20,7 +20,7 @@ struct cs_key_input {	//키버튼 받았을때
 	XMFLOAT3	 Animation;
 
 
-	WORD	key_button;
+	DWORD	key_button;
 
 	float	x;
 	float	y;
@@ -69,6 +69,7 @@ struct sc_packet_pos	//서버에서 처리된 값을 클라에게 보낸다.
 	volatile BYTE type;
 
 	WORD	id;
+	WORD	Charid;
 
 	float	x;
 	float	y;
@@ -86,6 +87,7 @@ struct sc_rotate_vector
 	BYTE type;
 
 	WORD id;
+	WORD Charid;
 
 	float x;
 	float y;
@@ -99,6 +101,7 @@ struct sc_bullet_fire
 	BYTE type;
 
 	WORD id;
+	WORD Charid;
 
 	bool fire;
 	XMFLOAT3 FireDirection;
@@ -145,11 +148,11 @@ struct SC_Player_Hp
 	BYTE size;
 	BYTE type;
 
-	BYTE Hp;
-	BYTE id;
+	BYTE m_nLife;
+	BYTE m_nCharacterID;
 
-	BOOL Head;
-	BOOL life;
+	BOOL m_bIsHeadHit;
+	BOOL m_bIsAlive;
 };
 
 struct SC_System_kill
@@ -157,19 +160,19 @@ struct SC_System_kill
 	BYTE size;
 	BYTE type;
 
-	BYTE RED;
-	BYTE BLUE;
+	BYTE m_nRedTeamTotalKill;
+	BYTE m_nBlueTeamTotalKill;
 
 	//FLOAT Time;	//나중에 시간 넣어서 보내준다.
 };
 
-struct Timer
+struct SC_Respawn
 {
 	BYTE size;
 	BYTE type;
 
-	float Starting_timer;
-
+	BOOL m_bIsRespawn;
+	XMFLOAT3 m_f3Position;
 };
 
 #pragma pack(pop)

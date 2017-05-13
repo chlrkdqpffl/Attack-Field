@@ -31,6 +31,7 @@ protected:
 	bool					m_bIsHeadHit = false;
 	bool					m_bTempIsRun = false;	// 임시로 달리기 속력 맞추려고 넣은 변수 이므로 사용 금지 - 추후 수정
 	DWORD					m_dwWalkSoundWatingTime = 0;
+	bool					m_bIsRespawn = false;
 
 	// ----- Game System Variable ----- //
 	UINT					m_nServerID = 0;
@@ -66,7 +67,7 @@ public:
 	void Walking();
 	void Running();
 	void Reloading();
-	void Revival();
+	void Revival(UINT life);
 
 	void DamagedCharacter(UINT damage);
 
@@ -118,6 +119,8 @@ public:
 	bool GetIsDeathHead() const { return m_bIsDeathHead; }
 	void SetIsHeadHit(bool set) { m_bIsHeadHit = set; }
 	bool GetIsHeadHit() const { return m_bIsHeadHit; }
+	void SetIsRespawn(bool set) { m_bIsRespawn = set; }
+	bool GetIsRespawn() const { return m_bIsRespawn; }
 
 	// ----- Game System Function ----- //
 	void SetLife(UINT life) { m_nLife = life; }
