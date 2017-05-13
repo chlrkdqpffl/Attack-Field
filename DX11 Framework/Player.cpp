@@ -98,7 +98,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	}
 
 	d3dxvShift *= m_fSpeed * fDeltaTime;
-	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
+	DirectX::XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
 	m_pCharacter->SetVelocity(m_d3dxvVelocity);
 	m_pCharacter->SetRelativevVelocity(relativeVelocity);
 	if (m_pCharacter->IsMoving()) {
@@ -106,22 +106,22 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	}
 	
 #ifdef	USE_SERVER
-	cs_key_input* packet = reinterpret_cast<cs_key_input *>(SERVER_MGR->GetSendbuffer());
+	cs_key_input packet;
 
-	packet->type = CS_KEYTYPE;
-	packet->size = sizeof(packet);
-	packet->key_button = m_wKeyState;
-	XMStoreFloat3(&packet->Animation, relativeVelocity);
+	packet.type = CS_KEYTYPE;
+	packet.size = sizeof(packet);
+	packet.key_button = m_wKeyState;
+	DirectX::XMStoreFloat3(&packet.Animation, relativeVelocity);
 
 
-	packet->x = GetPosition().x;
-	packet->y = GetPosition().y;
-	packet->z = GetPosition().z;
-	packet->FireDirection = m_pCharacter->GetFireDirection();
+	packet.x = GetPosition().x;
+	packet.y = GetPosition().y;
+	packet.z = GetPosition().z;
+	packet.FireDirection = m_pCharacter->GetFireDirection();
 
 	if ((m_wKeyState != 0) || count == 0)
 	{
-		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(packet));
+		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 	}
 	count++;
 #endif
@@ -130,7 +130,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 void CPlayer::Move(XMVECTOR vTranslate)
 {	
 	XMVECTOR d3dxvPosition = XMLoadFloat3(&m_d3dxvPosition) + vTranslate;
-	XMStoreFloat3(&m_d3dxvPosition, d3dxvPosition);
+	DirectX::XMStoreFloat3(&m_d3dxvPosition, d3dxvPosition);
 //	XMVECTOR vPosition = m_pCharacter->GetvPosition() + vTranslate;
 //	m_pCharacter->SetPosition(vPosition);
 	m_pCamera->Move(vTranslate);
@@ -162,8 +162,8 @@ void CPlayer::Rotate(float x, float y)
 			m_pCharacter->SetYaw(fYaw);
 
 			mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_d3dxvUp), XMConvertToRadians(y));
-			XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
-			XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
+			DirectX::XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
+			DirectX::XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
 		}
 		m_pCamera->Rotate(x, y, 0);
 	}
@@ -172,30 +172,30 @@ void CPlayer::Rotate(float x, float y)
 		m_pCamera->Rotate(x, y, 0);
 		if (x != 0.0f) {
 			mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_d3dxvRight), XMConvertToRadians(x));
-			XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
-			XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
+			DirectX::XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
+			DirectX::XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
 		}
 		if (y != 0.0f) {
 			mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_d3dxvUp), XMConvertToRadians(y));
-			XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
-			XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
+			DirectX::XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
+			DirectX::XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
 		}
 	}
 
-	XMStoreFloat3(&m_d3dxvLook, XMVector3Normalize(XMLoadFloat3(&m_d3dxvLook)));
-	XMStoreFloat3(&m_d3dxvRight, XMVector3Cross(XMLoadFloat3(&m_d3dxvUp), XMLoadFloat3(&m_d3dxvLook)));
-	XMStoreFloat3(&m_d3dxvRight, XMVector3Normalize(XMLoadFloat3(&m_d3dxvRight)));
-	XMStoreFloat3(&m_d3dxvUp, XMVector3Cross(XMLoadFloat3(&m_d3dxvLook), XMLoadFloat3(&m_d3dxvRight)));
-	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
+	DirectX::XMStoreFloat3(&m_d3dxvLook, XMVector3Normalize(XMLoadFloat3(&m_d3dxvLook)));
+	DirectX::XMStoreFloat3(&m_d3dxvRight, XMVector3Cross(XMLoadFloat3(&m_d3dxvUp), XMLoadFloat3(&m_d3dxvLook)));
+	DirectX::XMStoreFloat3(&m_d3dxvRight, XMVector3Normalize(XMLoadFloat3(&m_d3dxvRight)));
+	DirectX::XMStoreFloat3(&m_d3dxvUp, XMVector3Cross(XMLoadFloat3(&m_d3dxvLook), XMLoadFloat3(&m_d3dxvRight)));
+	DirectX::XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
 
 #ifdef	USE_SERVER
-	cs_rotate *rotate = reinterpret_cast<cs_rotate *>(SERVER_MGR->GetSendbuffer());;
+	cs_rotate *rotate = reinterpret_cast<cs_rotate *>(SERVER_MGR->GetSendbuffer());
 	rotate->cx = x;
 	rotate->cy = y;
 	rotate->size = sizeof(cs_rotate);
 	rotate->type = CS_ROTATE;
 
-	//SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(rotate));
+	SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(rotate));
 #endif
 }
 
@@ -212,7 +212,7 @@ void CPlayer::Update(float fDeltaTime)
 	fLength = XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_d3dxvVelocity)));
 	float fDeceleration = (m_fFriction * fDeltaTime);
 	if (fDeceleration > fLength) fDeceleration = fLength;
-	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvDeceleration * fDeceleration);
+	DirectX::XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvDeceleration * fDeceleration);
 	m_pCharacter->SetVelocity(m_d3dxvVelocity);
 
 	// Camera Update
@@ -256,8 +256,8 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 		m_d3dxvUp = XMFLOAT3(0.0f, 1.0f, 0.0f);
 		m_d3dxvRight.y = 0.0f;
 		m_d3dxvLook.y = 0.0f;
-		XMStoreFloat3(&m_d3dxvRight, XMVector3Normalize(XMLoadFloat3(&m_d3dxvRight)));
-		XMStoreFloat3(&m_d3dxvLook, XMVector3Normalize(XMLoadFloat3(&m_d3dxvLook)));
+		DirectX::XMStoreFloat3(&m_d3dxvRight, XMVector3Normalize(XMLoadFloat3(&m_d3dxvRight)));
+		DirectX::XMStoreFloat3(&m_d3dxvLook, XMVector3Normalize(XMLoadFloat3(&m_d3dxvLook)));
 		float fYaw = XMConvertToDegrees(acosf(XMVectorGetX(XMVector3Dot(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), XMLoadFloat3(&m_d3dxvLook)))));
 
 		if (m_d3dxvLook.x < 0.0f) fYaw = -fYaw;

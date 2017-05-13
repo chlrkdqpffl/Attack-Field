@@ -221,6 +221,7 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(packet->m_nLife);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsHeadHit(packet->m_bIsHeadHit);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsDeath(packet->m_bIsAlive);
+			cout << packet->m_bIsAlive << endl;
 		}
 		else
 		{
@@ -234,6 +235,7 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->m_nLife);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsHeadHit(packet->m_bIsHeadHit);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsDeath(packet->m_bIsAlive);
+			cout << packet->m_bIsAlive << endl;
 		}
 	}
 		break;
@@ -248,6 +250,37 @@ void CServerManager::processpacket(char *ptr)
 		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(packet->m_nBlueTeamTotalKill));
 	}
 	break;
+	case 9:
+	{
+		SC_Starting_Timer*	packet;
+		packet = reinterpret_cast<SC_Starting_Timer *>(ptr);
+		SCENE_MGR->g_pMainScene->SetGameTime(packet->Starting_timer);
+		break;
+	}
+	case 10:
+	{
+		sc_Reload* packet;
+		packet = reinterpret_cast<sc_Reload *>(ptr);
+		id = packet->id;
+
+		if (id == m_myid)
+		{
+
+		}
+		else
+		{
+			int i = 0;
+			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+			{
+				if (character->GetServerID() == id)
+					break;
+				i++;
+			}
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(packet->reload);
+			cout << packet->reload << endl;
+		}
+		break;
+	}
 	default:
 		std::cout << "Unknown PACKET type :" << (int)ptr[1] << "\n";
 		break;
@@ -341,7 +374,7 @@ void CServerManager::Sendpacket(unsigned char* Data)
 
 	send_wsabuf.len = (size_t)Data[0];
 	memcpy(send_buffer, Data, (size_t)Data[0]);
-	send_wsabuf.buf = reinterpret_cast<char *>(send_buffer);
+	send_wsabuf.buf = send_buffer;
 
 
 	int retval = WSASend(g_socket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
@@ -351,6 +384,7 @@ void CServerManager::Sendpacket(unsigned char* Data)
 		printf("Error while sending packet [%d]", error_code);
 	}
 	Sleep(1);
+
 
 	//cout<<"packet type : " << (int)Data[1] << endl;
 }

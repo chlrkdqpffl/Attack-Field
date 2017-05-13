@@ -42,7 +42,7 @@ void CWeapon::Firing(XMVECTOR direction)
 		XMStoreFloat3(&packet->position, firePosOffset);
 		XMStoreFloat3(&packet->direction, direction);
 
-		SERVER_MGR->Sendpacket(reinterpret_cast<char *>(packet));
+		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(packet));
 		static int count = 0;
 		count++;
 		cout << count << "ÃÑ¾Ë ¸î¹ø ½ú³Ä" << endl;

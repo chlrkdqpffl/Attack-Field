@@ -34,7 +34,7 @@ public:
 	void ReadPacket(SOCKET sock);
 	void processpacket(char *ptr);
 	void error_display(char *msg, int err_num);
-	void Sendpacket(char* Data);
+	void Sendpacket(unsigned char* Data);
 
 	int GetId() const { return m_myid; }
 	char * GetSendbuffer() { return send_buffer; }
