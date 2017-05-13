@@ -20,7 +20,7 @@ struct cs_key_input {	//키버튼 받았을때
 	XMFLOAT3	 Animation;
 
 
-	DWORD	key_button;
+	WORD	key_button;
 
 	float	x;
 	float	y;
@@ -69,7 +69,6 @@ struct sc_packet_pos	//서버에서 처리된 값을 클라에게 보낸다.
 	volatile BYTE type;
 
 	WORD	id;
-	WORD	Charid;
 
 	float	x;
 	float	y;
@@ -87,7 +86,6 @@ struct sc_rotate_vector
 	BYTE type;
 
 	WORD id;
-	WORD Charid;
 
 	float x;
 	float y;
@@ -101,7 +99,6 @@ struct sc_bullet_fire
 	BYTE type;
 
 	WORD id;
-	WORD Charid;
 
 	bool fire;
 	XMFLOAT3 FireDirection;
@@ -164,7 +161,14 @@ struct SC_System_kill
 	BYTE BLUE;
 
 	//FLOAT Time;	//나중에 시간 넣어서 보내준다.
+};
 
+struct Timer
+{
+	BYTE size;
+	BYTE type;
+
+	float Starting_timer;
 
 };
 

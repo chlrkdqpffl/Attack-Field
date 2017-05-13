@@ -139,7 +139,7 @@ void CServerManager::processpacket(char *ptr)
 						break;
 					i++;
 				}
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_bulletfire->FireDirection);
+	//			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_bulletfire->FireDirection);
 	//			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Firing();
 			}
 		}
@@ -199,14 +199,16 @@ void CServerManager::processpacket(char *ptr)
 		bIsPartsCollisionCS = COLLISION_MGR->RayCastCollisionToCharacter_Parts(info, XMLoadFloat3(&my_collision->position), XMLoadFloat3(&my_collision->direction));
 
 		if (bIsPartsCollisionCS) {
-			CS_Head_Collison Collison;
-			Collison.Head = false;
-			Collison.type = CS_HEAD_HIT;
-			Collison.size = sizeof(CS_Head_Collison);
-			Collison.id = my_collision->id;
+			CS_Head_Collison *Collison = reinterpret_cast<CS_Head_Collison *>(send_buffer);
+
+			Collison->Head = false;
+			Collison->type = CS_HEAD_HIT;
+			Collison->size = sizeof(CS_Head_Collison);
+			Collison->id = my_collision->id;
 			if (info.m_HitParts == ChracterBoundingBoxParts::eHead)
-				Collison.Head = true;
-			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&Collison));
+				Collison->Head = true;
+			
+			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(Collison));
 		}
 	}
 	break;
@@ -244,6 +246,15 @@ void CServerManager::processpacket(char *ptr)
 		packet = reinterpret_cast<SC_System_kill *>(ptr);
 		SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(packet->RED));
 		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(packet->BLUE));
+		break;
+	}
+	case 9:// 시간을 받는다.
+	{
+		Timer* packet;
+
+		packet = reinterpret_cast<Timer *>(ptr);
+		SCENE_MGR->g_pMainScene->SetGameTime(packet->Starting_timer);
+	
 	}
 	break;
 	default:
@@ -337,10 +348,7 @@ void CServerManager::Sendpacket(unsigned char* Data)
 {
 	DWORD iobyte;
 
-	send_wsabuf.len = (size_t)Data[0];
-	memcpy(send_buffer, Data, (size_t)Data[0]);
-	send_wsabuf.buf = reinterpret_cast<char *>(send_buffer);
-
+	send_wsabuf.len = sizeof(Data);
 
 	int retval = WSASend(g_socket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
@@ -350,6 +358,7 @@ void CServerManager::Sendpacket(unsigned char* Data)
 	}
 	Sleep(1);
 
-	//cout<<"packet type : " << (int)Data[1] << endl;
+	cout<<"packet type : " << (int)Data[1] << endl;
+	cout << (int)send_wsabuf.buf[1] << endl;
 }
 

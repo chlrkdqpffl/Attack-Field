@@ -33,6 +33,9 @@ CGameFramework::CGameFramework()
 		std::ios::sync_with_stdio();
 	#endif
 //#endif
+	m_bMouseBindFlag = !m_bMouseBindFlag;
+	ShowCursor(true);
+	ReleaseCapture();
 }
 
 CGameFramework::~CGameFramework()

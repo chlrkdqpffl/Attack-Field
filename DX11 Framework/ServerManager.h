@@ -14,7 +14,7 @@ class CServerManager : public CSingletonManager<CServerManager>
 	WSABUF				recv_wsabuf;
 
 	char				send_buffer[BUF_SIZE];
-	char				recv_buffer[BUF_SIZE];
+    char				recv_buffer[BUF_SIZE];
 
 	DWORD				in_packet_size = 0;
 	int					saved_packet_size = 0;
@@ -34,7 +34,10 @@ public:
 	void ReadPacket(SOCKET sock);
 	void processpacket(char *ptr);
 	void error_display(char *msg, int err_num);
-	void Sendpacket(unsigned char* Data);
+	void Sendpacket(char* Data);
 
 	int GetId() const { return m_myid; }
+	char * GetSendbuffer() { return send_buffer; }
+	WSABUF GetWsaSendBuf() { return send_wsabuf; }
+	void SetWsaSendbufferlen(int size) { send_wsabuf.len = size; }
 };

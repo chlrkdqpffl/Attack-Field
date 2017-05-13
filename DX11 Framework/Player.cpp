@@ -106,22 +106,22 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	}
 	
 #ifdef	USE_SERVER
-	cs_key_input packet;
+	cs_key_input* packet = reinterpret_cast<cs_key_input *>(SERVER_MGR->GetSendbuffer());
 
-	packet.type = CS_KEYTYPE;
-	packet.size = sizeof(packet);
-	packet.key_button = m_wKeyState;
-	XMStoreFloat3(&packet.Animation, relativeVelocity);
+	packet->type = CS_KEYTYPE;
+	packet->size = sizeof(packet);
+	packet->key_button = m_wKeyState;
+	XMStoreFloat3(&packet->Animation, relativeVelocity);
 
 
-	packet.x = GetPosition().x;
-	packet.y = GetPosition().y;
-	packet.z = GetPosition().z;
-	packet.FireDirection = m_pCharacter->GetFireDirection();
+	packet->x = GetPosition().x;
+	packet->y = GetPosition().y;
+	packet->z = GetPosition().z;
+	packet->FireDirection = m_pCharacter->GetFireDirection();
 
 	if ((m_wKeyState != 0) || count == 0)
 	{
-		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(packet));
 	}
 	count++;
 #endif
@@ -189,13 +189,13 @@ void CPlayer::Rotate(float x, float y)
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
 
 #ifdef	USE_SERVER
-	cs_rotate rotate;
-	rotate.cx = x;
-	rotate.cy = y;
-	rotate.size = sizeof(cs_rotate);
-	rotate.type = CS_ROTATE;
+	cs_rotate *rotate = reinterpret_cast<cs_rotate *>(SERVER_MGR->GetSendbuffer());;
+	rotate->cx = x;
+	rotate->cy = y;
+	rotate->size = sizeof(cs_rotate);
+	rotate->type = CS_ROTATE;
 
-	SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&rotate));
+	//SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(rotate));
 #endif
 }
 
