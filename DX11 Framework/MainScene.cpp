@@ -1324,7 +1324,6 @@ void CMainScene::CreateUIImage()
 
 	m_pUIManager->AddUIObject(pUIObject);
 
-	/*
 	// Damaged Character
 	pUIObject = new CUIObject(TextureTag::eDamagedCharacterUI);
 
@@ -1333,7 +1332,7 @@ void CMainScene::CreateUIImage()
 
 	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.1f);
 	m_pUIManager->AddUIObject(pUIObject);
-	*/
+
 }
 
 void CMainScene::ReleaseObjects()
