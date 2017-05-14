@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "UIObject.h"
 #include "MainScene.h"
-#include "UIShader.h"
+//#include "UIShader.h"
+#include "ScreenShader.h"
 
 CUIObject::CUIObject(TextureTag tag) : m_tagTexture(tag)
 {
@@ -69,7 +70,7 @@ CUIObject* CUIManager::GetUIObject(TextureTag tag)
 
 void CUIManager::Initialize(ID3D11Device* pDevice)
 {
-	m_pUIShader = new CUIShader();
+	m_pUIShader = new CScreenShader();
 	m_pUIShader->CreateShader(pDevice);
 }
 
@@ -97,6 +98,7 @@ void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)
 	for (auto& uiObj : m_vecUIObject) {
 		if (uiObj->GetActive()) {
 
+			/*
 			// Opacity Update
 			if (uiObj->GetOpacity() != m_fSettingOpacity) {
 				m_fSettingOpacity = uiObj->GetOpacity();
@@ -110,6 +112,7 @@ void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)
 				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
 
 			}
+			*/
 
 			uiObj->Render(pDeviceContext);
 		}
