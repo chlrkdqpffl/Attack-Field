@@ -36,13 +36,13 @@ void CWeapon::Firing(XMVECTOR direction)
 		CollisionInfo info;
 
 #ifdef USE_SERVER
-		cs_weapon packet;
-		packet.size = sizeof(cs_weapon);
-		packet.type = CS_WEAPONE;
-		XMStoreFloat3(&packet.position, firePosOffset);
-		XMStoreFloat3(&packet.direction, direction);
+		cs_weapon* packet = reinterpret_cast<cs_weapon *>(SERVER_MGR->GetSendbuffer());
+		packet->size = sizeof(cs_weapon);
+		packet->type = CS_WEAPONE;
+		XMStoreFloat3(&packet->position, firePosOffset);
+		XMStoreFloat3(&packet->direction, direction);
 
-		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(packet));
 		static int count = 0;
 		count++;
 		cout << count << "ÃÑ¾Ë ¸î¹ø ½ú³Ä" << endl;

@@ -189,13 +189,13 @@ void CPlayer::Rotate(float x, float y)
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
 
 #ifdef	USE_SERVER
-	cs_rotate rotate;
-	rotate.cx = x;
-	rotate.cy = y;
-	rotate.size = sizeof(cs_rotate);
-	rotate.type = CS_ROTATE;
+	cs_rotate *rotate = reinterpret_cast<cs_rotate *>(SERVER_MGR->GetSendbuffer());
+	rotate->cx = x;
+	rotate->cy = y;
+	rotate->size = sizeof(cs_rotate);
+	rotate->type = CS_ROTATE;
 
-	SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&rotate));
+	SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(rotate));
 #endif
 }
 

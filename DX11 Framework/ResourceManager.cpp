@@ -158,7 +158,8 @@ void CResourceManager::LoadMapData()
 
 void CResourceManager::LoadCharacterData()
 {
-	AddResourece(TextureTag::eTerroristD,		"../Assets/FBX Model/Character/Terrorist/TerrorristD.dds");
+//	AddResourece(TextureTag::eTerroristD,		"../Assets/FBX Model/Character/Terrorist/TerrorristD.dds");
+	AddResourece(TextureTag::eTerroristD,		"../Assets/FBX Model/Character/Terrorist/test.jpg");
 	AddResourece(TextureTag::eTerroristND,		"../Assets/FBX Model/Character/Terrorist/TerrorristNM_D.dds.dds");
 
 //	AddResourece(TextureTag::ePoliceD,			"../Assets/FBX Model/Character/Police/AllTex.PNG");

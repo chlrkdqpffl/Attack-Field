@@ -14,13 +14,10 @@
 #pragma pack(push, 1)
 struct cs_key_input {	//키버튼 받았을때 
 
-	BYTE	size;
+	BYTE	size;					//1 2 12 2
 	volatile BYTE	type;
-
 	XMFLOAT3	 Animation;
-
-
-	DWORD	key_button;
+	WORD	key_button;
 
 	float	x;
 	float	y;
@@ -60,6 +57,7 @@ struct sc_packet_put_player {	//서버에서 처음 접속했을때 위치값과 ID를 부여한다.
 	BYTE	Goal;
 	BYTE	RED;
 	BYTE	Blue;
+	float	timer;
 
 };
 
@@ -69,7 +67,6 @@ struct sc_packet_pos	//서버에서 처리된 값을 클라에게 보낸다.
 	volatile BYTE type;
 
 	WORD	id;
-	WORD	Charid;
 
 	float	x;
 	float	y;
@@ -87,7 +84,6 @@ struct sc_rotate_vector
 	BYTE type;
 
 	WORD id;
-	WORD Charid;
 
 	float x;
 	float y;
@@ -101,7 +97,6 @@ struct sc_bullet_fire
 	BYTE type;
 
 	WORD id;
-	WORD Charid;
 
 	bool fire;
 	XMFLOAT3 FireDirection;
@@ -173,6 +168,26 @@ struct SC_Respawn
 
 	BOOL m_bIsRespawn;
 	XMFLOAT3 m_f3Position;
+};
+
+struct SC_Starting_Timer
+{
+	BYTE size;
+	BYTE type;
+
+	float Starting_timer;
+
+};
+
+struct sc_Reload
+{
+	BYTE size;
+	BYTE type;
+
+	WORD id;
+
+	bool reload;
+
 };
 
 #pragma pack(pop)

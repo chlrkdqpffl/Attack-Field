@@ -1446,8 +1446,8 @@ void CMainScene::ModifiedSelectObject()
 
 void CMainScene::CalcTime()
 {
-	if (GetTickCount() - m_dwTime > 100) {
-		m_nGameTime++;
+	if (GetTickCount() - m_dwTime > 1000) {
+		m_nGameTime--;
 		m_dwTime = GetTickCount();
 	}
 }
