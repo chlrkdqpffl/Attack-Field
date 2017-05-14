@@ -87,7 +87,6 @@ void CResourceManager::LoadUIData()
 	AddResourece(TextureTag::eScoreUI,			"../Assets/Image/UI/ScoreUI.png");
 	AddResourece(TextureTag::eMagazineUI,		"../Assets/Image/UI/MagazineUI.png");
 	AddResourece(TextureTag::eLifeUI,			"../Assets/Image/UI/LifeUI.png");
-	AddResourece(TextureTag::eDamagedCharacterUI, "../Assets/Image/UI/DamagedCharacter.png");
 }
 
 void CResourceManager::LoadMapData()
@@ -161,8 +160,8 @@ void CResourceManager::LoadMapData()
 
 void CResourceManager::LoadCharacterData()
 {
-	AddResourece(TextureTag::eTerroristD,		"../Assets/FBX Model/Character/Terrorist/TerrorristD.dds");
-//	AddResourece(TextureTag::eTerroristD,		"../Assets/FBX Model/Character/Terrorist/test.jpg");
+//	AddResourece(TextureTag::eTerroristD,		"../Assets/FBX Model/Character/Terrorist/TerrorristD.dds");
+	AddResourece(TextureTag::eTerroristD,		"../Assets/FBX Model/Character/Terrorist/test.jpg");
 	AddResourece(TextureTag::eTerroristND,		"../Assets/FBX Model/Character/Terrorist/TerrorristNM_D.dds.dds");
 
 //	AddResourece(TextureTag::ePoliceD,			"../Assets/FBX Model/Character/Police/AllTex.PNG");
