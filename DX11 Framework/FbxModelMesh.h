@@ -24,6 +24,6 @@ public:
 	virtual void Initialize(ID3D11Device *pd3dDevice, bool isCalcTangent = false);
 	
 	XMFLOAT3 GetModelSize() const { return m_fModelSize; }
-	void CalculateVertexTangent(XMFLOAT3 *pd3dxvTangents);
+	void CalculateVertexTangent(XMVECTOR *pd3dxvTangents);
 	XMVECTOR CalculateTriAngleTangent(UINT nIndex0, UINT nIndex1, UINT nIndex2);
 };

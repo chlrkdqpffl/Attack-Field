@@ -149,7 +149,7 @@ enum class TextureTag
 	eCaptureArea, eAim, eMagazineUI, eLifeUI, eScoreUI,
 
 	// Etc
-	eBusStopD, eStreetLampD, eBarricadeD, eStoneWallD,
+	eBusStopD, eStreetLampD, eBarricadeD,
 
 	// Etc 2
 	eStoneD, eStoneN, eStone02D, eStone02N, eBricksD, eBricksN,
@@ -206,7 +206,7 @@ enum class ObjectTag
 	eParkingLot, eHotel, 
 
 	// Etc
-	eBench, eGrass, eBusStop, eStreetLamp, eBarricade, eStoneWall
+	eBench, eGrass, eBusStop, eStreetLamp, eBarricade
 };
 
 

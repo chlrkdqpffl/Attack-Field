@@ -179,7 +179,6 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="NormalDisplaceMapShader.cpp" />
     <ClCompile Include="PoliceCharacterObject.cpp" />
-    <ClCompile Include="PostFX.cpp" />
     <ClCompile Include="RifleBullet.cpp" />
     <ClCompile Include="RifleGunWeapon.cpp" />
     <ClCompile Include="ScreenShader.cpp" />
@@ -279,7 +278,6 @@
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PoliceCharacterObject.h" />
-    <ClInclude Include="PostFX.h" />
     <ClInclude Include="protocol.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
@@ -334,18 +332,6 @@
     <ResourceCompile Include="DirectX11_Project.rc" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="PostDownScaleFX.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="PostFX.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </FxCompile>
     <FxCompile Include="Shader HLSL File\Effect.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -361,12 +347,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Blur.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </None>
     <None Include="Shader HLSL File\Blurring.hlsli" />
     <None Include="Shader HLSL File\BoundingBox.hlsli" />
     <None Include="Shader HLSL File\CharacterSkinnedNormal.hlsli" />

@@ -63,6 +63,4 @@ private:
 	UINT							m_nGameTime = 0;
 	UINT							m_nRedTeamTotalKill = 0;
 	UINT							m_nBlueTeamTotalKill = 0;
-
-
 };

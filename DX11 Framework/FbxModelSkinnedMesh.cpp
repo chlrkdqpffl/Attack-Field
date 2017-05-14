@@ -73,7 +73,7 @@ void CFbxModelSkinnedMesh::Initialize(ID3D11Device *pd3dDevice, bool isCalcTange
 	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 
 	if (isCalcTangent)
-		CalculateVertexTangent((m_pTangents));
+		CalculateVertexTangent(&XMLoadFloat3(m_pTangents));
 
 	// Create Buffer
 	if (m_meshData.m_bTangent || isCalcTangent) {

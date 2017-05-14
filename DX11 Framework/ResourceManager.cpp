@@ -151,11 +151,9 @@ void CResourceManager::LoadMapData()
 	AddResourece(TextureTag::eBarricadeD,		"../Assets/FBX Model/Barricade/BarricadeD.jpg");
 	AddResourece(MeshTag::eBarricade,			"../Assets/FBX Model/Barricade/streetprops_barricade3.model");
 
+
 	AddResourece(TextureTag::eSideWalk1D,		"../Assets/FBX Model/SideWalk/5.jpg");
 	AddResourece(TextureTag::eSideWalk2D,		"../Assets/FBX Model/SideWalk/2.jpg");
-
-	AddResourece(TextureTag::eStoneWallD,		"../Assets/FBX Model/StoneWall/stonewall_diff.jpg");
-	
 }
 
 void CResourceManager::LoadCharacterData()

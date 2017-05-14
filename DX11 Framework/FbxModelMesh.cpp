@@ -67,7 +67,7 @@ void CFbxModelMesh::Initialize(ID3D11Device *pd3dDevice, bool isCalcTangent)
 	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 
 	if (isCalcTangent)
-		CalculateVertexTangent(m_pTangents);
+		CalculateVertexTangent(&XMLoadFloat3(m_pTangents));
 
 	// Create Buffer
 	if (m_meshData.m_bTangent || isCalcTangent) {
@@ -99,7 +99,7 @@ void CFbxModelMesh::Initialize(ID3D11Device *pd3dDevice, bool isCalcTangent)
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
 }
 
-void CFbxModelMesh::CalculateVertexTangent(XMFLOAT3* pd3dxvTangents)
+void CFbxModelMesh::CalculateVertexTangent(XMVECTOR *pd3dxvTangents)
 {
 	XMVECTOR d3dxvSumOfTangent = XMVectorZero();
 	XMVECTOR *pd3dxvPositions = NULL;
@@ -115,12 +115,10 @@ void CFbxModelMesh::CalculateVertexTangent(XMFLOAT3* pd3dxvTangents)
 			nIndex1 = (3 * i + 1);
 			nIndex1 = m_pnIndices[nIndex1];
 			nIndex2 = m_pnIndices[3 * i + 2];
-			if ((nIndex0 == j) || (nIndex1 == j) || (nIndex2 == j))
-				d3dxvSumOfTangent += CalculateTriAngleTangent(nIndex0, nIndex1, nIndex2);
+			if ((nIndex0 == j) || (nIndex1 == j) || (nIndex2 == j)) d3dxvSumOfTangent += CalculateTriAngleTangent(nIndex0, nIndex1, nIndex2);
 		}
 		d3dxvSumOfTangent = XMVector3Normalize(d3dxvSumOfTangent);
-
-		XMStoreFloat3(&pd3dxvTangents[j], d3dxvSumOfTangent);
+		pd3dxvTangents[j] = d3dxvSumOfTangent;
 		pd3dxvPositions = &XMLoadFloat3(m_pPositions) + j;
 
 	}
