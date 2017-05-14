@@ -21,7 +21,7 @@ void CFirstPersonCamera::Rotate(float x, float y, float z)
 {
 	XMMATRIX mtxRotate;
 	XMFLOAT3 xmPosition;
-if (m_pPlayer && (x != 0.0f))
+	if (m_pPlayer && (x != 0.0f))
 	{
 		mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_d3dxvRight), XMConvertToRadians(x));
 		XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));

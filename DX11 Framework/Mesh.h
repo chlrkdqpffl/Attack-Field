@@ -50,6 +50,10 @@ public:
 	CMesh();
 	virtual ~CMesh();
 
+public:
+	int								m_nReferences = 0;
+	void AddRef() { m_nReferences++; }
+	void Release() { if (--m_nReferences <= 0) delete this; }
 protected:
 	MeshTag							m_tagMesh = MeshTag::eNone;
 	UINT							m_nType = 0;

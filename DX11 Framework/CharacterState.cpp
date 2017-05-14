@@ -30,12 +30,19 @@ void CState_Idle::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 
 	// Check Reload
+#ifdef USE_SERVER
+	if (pCharacter->GetIsReload()) {
+		pUpperFSM->ChangeState(CState_Reload::GetInstance());
+		return;
+	}
+#else
 	if (pCharacter->GetIsReload()) {
 		if (pCharacter->GetWeaponBulletCount() != pCharacter->GetWeaponMaxBulletCount()) {
 			pUpperFSM->ChangeState(CState_Reload::GetInstance());
 			return;
 		}
 	}
+#endif
 	if (pCharacter->GetIsFire()) {
 		pUpperFSM->ChangeState(CState_Fire::GetInstance());
 		return;
@@ -74,12 +81,20 @@ void CState_Walk::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 	
 	// Check Reload 
+#ifdef USE_SERVER
+	if (pCharacter->GetIsReload()) {
+		pUpperFSM->ChangeState(CState_Reload::GetInstance());
+		return;
+	}
+#else
 	if (pCharacter->GetIsReload()) {
 		if (pCharacter->GetWeaponBulletCount() != pCharacter->GetWeaponMaxBulletCount()) {
 			pUpperFSM->ChangeState(CState_Reload::GetInstance());
 			return;
 		}
 	}
+#endif
+
 	if (pCharacter->GetIsFire()) {
 		pUpperFSM->ChangeState(CState_Fire::GetInstance());
 		return;
@@ -196,12 +211,19 @@ void CState_Fire::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	}
 
 	// Check Reload
+#ifdef USE_SERVER
+	if (pCharacter->GetIsReload()) {
+		pUpperFSM->ChangeState(CState_Reload::GetInstance());
+		return;
+	}
+#else
 	if (pCharacter->GetIsReload()) {
 		if (pCharacter->GetWeaponBulletCount() != pCharacter->GetWeaponMaxBulletCount()) {
 			pUpperFSM->ChangeState(CState_Reload::GetInstance());
 			return;
 		}
 	}
+#endif
 	
 	// Check not Fire
 	if (!pCharacter->GetIsFire()) {
@@ -222,6 +244,9 @@ void CState_Fire::ExitState(CCharacterObject* pCharacter, AnimationData::Parts t
 // ---------------------------- Run ---------------------------- //
 void CState_Run::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	if (type == AnimationData::Parts::LowerBody)
+		return;
+
 	SOUND_MGR->Play3DSound(SoundTag::eRun, SoundChannel::eChannel_Walk, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
 	pCharacter->SetIsTempRun(true);
@@ -252,6 +277,9 @@ void CState_Run::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 void CState_Run::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	if (type == AnimationData::Parts::LowerBody)
+		return;
+
 	pCharacter->SetIsTempRun(false);
 	SOUND_MGR->StopSound(SoundChannel::eChannel_Walk);
 }
@@ -259,6 +287,9 @@ void CState_Run::ExitState(CCharacterObject* pCharacter, AnimationData::Parts ty
 // ---------------------------- Death ---------------------------- //
 void CState_Death::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	if (type == AnimationData::Parts::LowerBody)
+		return;
+
 	// 리스폰 대기 시간 5초
 	m_dwDeathWaitingTime = 5000;
 	m_dwDeathStartTime = GetTickCount();
@@ -332,6 +363,9 @@ void CState_Death::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 void CState_Death::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	if (type == AnimationData::Parts::LowerBody)
+		return;
+
 	pCharacter->SetIsDeath(false);
 #ifndef USE_SERVER
 	pCharacter->Revival(100);

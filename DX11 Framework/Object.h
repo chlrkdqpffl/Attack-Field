@@ -36,8 +36,9 @@ protected:
 	bool							m_bActive = true;
 	bool							m_bIsVisible = true;
 
-	CMesh							**m_ppMeshes = nullptr;
-	int								m_nMeshes = 0;
+	vector<CMesh*>					m_vecMeshContainer;
+//	CMesh							**m_ppMeshes = nullptr;
+//	int								m_nMeshes = 0;
 
 	CMaterial						*m_pMaterial = nullptr;
 	CShader							*m_pShader = nullptr;
@@ -65,6 +66,7 @@ public:
 	virtual void InitCollisionInfo();
 
 	virtual void CreateBoundingBox(ID3D11Device *pd3dDevice);
+	virtual void CreateBoundingBox(ID3D11Device *pd3dDevice, CMesh* pMesh);
 	virtual void BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext);
 	void CreateAxisObject(ID3D11Device *pd3dDevice);
 
@@ -82,8 +84,8 @@ public:
 	void Rotate(XMFLOAT3 fAngle, bool isLocal = false);
 	void Rotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLocal = false);
 	// ---------- Get, Setter ---------- //
-	void SetMesh(CMesh *pMesh, int nIndex = 0); CMesh *GetMesh(int nIndex = 0) { return(m_ppMeshes[nIndex]); }
-	UINT GetMeshType() { return((m_ppMeshes) ? m_ppMeshes[0]->GetType() : 0x00); }
+	void SetMesh(CMesh *pMesh, int nIndex = 0); CMesh *GetMesh(int nIndex = 0) { return m_vecMeshContainer[nIndex]; }
+	UINT GetMeshType() { return m_vecMeshContainer[0]->GetType(); }
 
 	void SetActive(bool bActive = false) { m_bActive = bActive; }	bool GetActive() const { return m_bActive; }
 

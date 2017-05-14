@@ -17,9 +17,9 @@ UINT			CGameObject::g_nObjectId = 0;
 
 CGameObject::CGameObject(int nMeshes)
 {
-	m_nMeshes = nMeshes;
-	if (m_nMeshes > 0) m_ppMeshes = new CMesh*[m_nMeshes];
-	for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
+//	m_nMeshes = nMeshes;
+//	if (m_nMeshes > 0) m_ppMeshes = new CMesh*[m_nMeshes];
+//	for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
 
 	m_bcMeshBoundingBox.Center = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_bcMeshBoundingBox.Extents = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -35,16 +35,10 @@ CGameObject::~CGameObject()
 	SafeDelete(m_pShader);
 	SafeDelete(m_pMaterial);
 
-	if (m_ppMeshes)
-	{
-		for (int i = 0; i < m_nMeshes; i++)
-		{
-			SafeDelete(m_ppMeshes[i]);
-			m_ppMeshes[i] = NULL;
-		} 
-		delete[] m_ppMeshes;
-	}
+	for (auto& mesh : m_vecMeshContainer)
+		mesh->Release();
 
+	m_vecMeshContainer.clear();
 	SafeDelete(m_pBoundingBoxMesh);
 	SafeDelete(m_pAxisObject);
 }
@@ -62,6 +56,16 @@ void CGameObject::CreateBoundingBox(ID3D11Device *pd3dDevice)
 	m_pBoundingBoxMesh = new CBoundingBoxMesh(pd3dDevice, m_bcMeshBoundingBox);
 }
 
+void CGameObject::CreateBoundingBox(ID3D11Device *pd3dDevice, CMesh* pMesh)
+{
+	if (pMesh) {
+		BoundingBox::CreateMerged(m_bcMeshBoundingBox, m_bcMeshBoundingBox, pMesh->GetBoundingCube());
+		BoundingSphere::CreateFromBoundingBox(m_bsMeshBoundingSphere, m_bcMeshBoundingBox);
+		BoundingOrientedBox::CreateFromBoundingBox(m_bcMeshBoundingOBox, m_bcMeshBoundingBox);
+	}
+	m_pBoundingBoxMesh = new CBoundingBoxMesh(pd3dDevice, m_bcMeshBoundingBox);
+}
+
 void CGameObject::CreateAxisObject(ID3D11Device *pd3dDevice)
 {
 	m_pAxisObject = new CAxisObjects(this);
@@ -70,31 +74,16 @@ void CGameObject::CreateAxisObject(ID3D11Device *pd3dDevice)
 
 void CGameObject::SetMesh(CMesh *pMesh, int nIndex)
 {
-	m_tagMesh = pMesh->GetMeshTag();
+	pMesh->AddRef();
 
-	if (nIndex >= m_nMeshes)
-	{
-		CMesh **ppMeshes = new CMesh*[nIndex + 1];
-		if (m_ppMeshes)
-		{
-			for (int i = 0; i < m_nMeshes; i++) ppMeshes[i] = m_ppMeshes[i];
-			delete[] m_ppMeshes;
-		}
-		ppMeshes[nIndex] = pMesh;
-		m_nMeshes = nIndex + 1;
-		m_ppMeshes = ppMeshes;
-	}
-	else {
-		if (m_ppMeshes)
-		{
-			SafeDelete(m_ppMeshes[nIndex]);
-			m_ppMeshes[nIndex] = pMesh;
-		}
-	}
+	if (nIndex == 0)
+		m_tagMesh = pMesh->GetMeshTag();
+
+	m_vecMeshContainer.push_back(pMesh);
+
 	BoundingBox::CreateMerged(m_bcMeshBoundingBox, m_bcMeshBoundingBox, pMesh->GetBoundingCube());
 	BoundingSphere::CreateFromBoundingBox(m_bsMeshBoundingSphere, m_bcMeshBoundingBox);
 	BoundingOrientedBox::CreateFromBoundingBox(m_bcMeshBoundingOBox, m_bcMeshBoundingBox);
-
 }
 
 void CGameObject::SetShader(CShader *pShader)
@@ -149,8 +138,6 @@ void CGameObject::SetMaterial(int textureCount, ...)
 	pMaterial->SetTexture(pTexture);
 
 	m_pMaterial = pMaterial;
-
-
 }
 
 void CGameObject::SetShadowMatrix(XMVECTOR d3dxvLight, XMVECTOR d3dxPlane)
@@ -176,12 +163,12 @@ int CGameObject::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMAT
 {
 	XMVECTOR d3dxvPickRayPosition, d3dxvPickRayDirection;
 	int nIntersected = 0;
-	if (m_bActive && m_bIsVisible && m_ppMeshes)
+	if (m_bActive && m_bIsVisible)
 	{
 		GenerateRayForPicking(pd3dxvPickPosition, &m_mtxWorld, pd3dxmtxView, &d3dxvPickRayPosition, &d3dxvPickRayDirection);
-		for (int i = 0; i < m_nMeshes; i++)
-		{
-			nIntersected = m_ppMeshes[i]->CheckRayIntersection(&d3dxvPickRayPosition, &d3dxvPickRayDirection, pd3dxIntersectInfo);
+
+		for(auto& mesh : m_vecMeshContainer) {
+			nIntersected = mesh->CheckRayIntersection(&d3dxvPickRayPosition, &d3dxvPickRayDirection, pd3dxIntersectInfo);
 			if (nIntersected > 0) break;
 		}
 	}
@@ -665,26 +652,23 @@ void CGameObject::Update(float fDeltaTime)
 
 void CGameObject::RenderMesh(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	if (m_ppMeshes) {
-		for (int i = 0; i < m_nMeshes; i++)	{
-			if (m_ppMeshes[i]) {
-				bool bIsVisible = true;
-				#ifdef _WITH_FRUSTUM_CULLING_BY_SUBMESH
-					if (pCamera) {
-					#if _AABB_
-						AABB bcBoundingCube = m_ppMeshes[i]->GetBoundingCube();
-						bcBoundingCube.Update(&XMLoadFloat4x4(&m_d3dxmtxWorld));
-						bIsVisible = pCamera->IsInFrustum(&bcBoundingCube);
-					#else
-						BoundingBox bcBoundingCube = m_ppMeshes[i]->GetBoundingCube();
-						bcBoundingCube.Transform(bcBoundingCube, XMLoadFloat4x4(&m_d3dxmtxWorld));
-						m_bIsVisible = pCamera->IsInFrustum(&bcBoundingCube);
-					#endif
-				}
-				#endif
-				if (bIsVisible) m_ppMeshes[i]->Render(pd3dDeviceContext);
-			}
+	for (auto& mesh : m_vecMeshContainer) {
+		bool bIsVisible = true;
+#ifdef _WITH_FRUSTUM_CULLING_BY_SUBMESH
+		if (pCamera) {
+#if _AABB_
+			AABB bcBoundingCube = m_ppMeshes[i]->GetBoundingCube();
+			bcBoundingCube.Update(&XMLoadFloat4x4(&m_d3dxmtxWorld));
+			bIsVisible = pCamera->IsInFrustum(&bcBoundingCube);
+#else
+			BoundingBox bcBoundingCube = m_ppMeshes[i]->GetBoundingCube();
+			bcBoundingCube.Transform(bcBoundingCube, XMLoadFloat4x4(&m_d3dxmtxWorld));
+			m_bIsVisible = pCamera->IsInFrustum(&bcBoundingCube);
+#endif
 		}
+#endif
+		if (bIsVisible) 
+			mesh->Render(pd3dDeviceContext);
 	}
 }
 

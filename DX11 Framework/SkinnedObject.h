@@ -48,7 +48,7 @@ public:
 		else
 			m_pLowerController->SetActive(set);
 	}
-	void SetMesh(CFbxModelSkinnedMesh* mesh);
+	void SetMesh(CFbxModelSkinnedMesh* mesh, int index = 0);
 	void SetAnimation(AnimationData::CharacterAnim anim, float speed = 1.0f);
 	void SetAnimation(AnimationData::Parts parts, AnimationData::CharacterAnim anim, float speed = 1.0f);
 };

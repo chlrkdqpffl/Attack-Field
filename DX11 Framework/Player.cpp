@@ -153,19 +153,19 @@ void CPlayer::Rotate(float x, float y)
 				fPitch = -40;
 			}
 			m_pCharacter->SetPitch(fPitch);
-		}
-		if (y != 0.0f) {
-			float fYaw = m_pCharacter->GetYaw();
-			fYaw += y;
-			if (fYaw  > 360.0f) fYaw -= 360.0f;
-			if (fYaw  < 0.0f) fYaw += 360.0f;
-			m_pCharacter->SetYaw(fYaw);
+			if (y != 0.0f) {
+				float fYaw = m_pCharacter->GetYaw();
+				fYaw += y;
+				if (fYaw > 360.0f) fYaw -= 360.0f;
+				if (fYaw < 0.0f) fYaw += 360.0f;
+				m_pCharacter->SetYaw(fYaw);
 
-			mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_d3dxvUp), XMConvertToRadians(y));
-			XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
-			XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
+				mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_d3dxvUp), XMConvertToRadians(y));
+				XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
+				XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
+			}
+			m_pCamera->Rotate(x, y, 0);
 		}
-		m_pCamera->Rotate(x, y, 0);
 	}
 	else if (nCurrentCameraTag == CameraTag::eSpaceShip)
 	{

@@ -30,6 +30,7 @@ public:
 	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext) override;
 
 	void CreateMapDataObject();
+	void CreateMapDataInstancingObject();
 	void ModifiedSelectObject();
 	void AddShaderObject(ShaderTag tag, CGameObject* pObject);
 

@@ -17,6 +17,10 @@ void CTerroristCharacterObject::CreateMesh(ID3D11Device *pd3dDevice)
 	pCharacterMesh->Initialize(pd3dDevice);
 	SetMesh(pCharacterMesh);
 
+	CFbxModelSkinnedMesh* pCharacterArmMesh = new CFbxModelSkinnedMesh(pd3dDevice, MeshTag::eTerrorist_Arm);
+	pCharacterArmMesh->Initialize(pd3dDevice);
+	SetMesh(pCharacterArmMesh, 1);
+
 	m_pSkinnedMesh->SetBodyBoundaryIndex(32);
 }
 

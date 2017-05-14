@@ -241,7 +241,33 @@ void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *p
 	if(m_pPlayer)
 		m_pPlayer->UpdateShaderVariables(pd3dDeviceContext);
 
-	CSkinnedObject::Render(pd3dDeviceContext, pCamera);
+	m_pUpperController->UpdateConstantBuffer(pd3dDeviceContext);
+	m_pLowerController->UpdateConstantBuffer(pd3dDeviceContext);
+
+	if (m_pShader) m_pShader->Render(pd3dDeviceContext, pCamera);
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
+
+	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &m_mtxWorld);
+
+	if (m_pd3dBlendState) pd3dDeviceContext->OMSetBlendState(m_pd3dBlendState, NULL, 0xffffffff);
+
+	if (m_pPlayer) {
+		if (m_pPlayer->GetCamera()->GetCameraTag() == CameraTag::eFirstPerson)
+			m_vecMeshContainer[1]->Render(pd3dDeviceContext);
+		else
+			m_vecMeshContainer[0]->Render(pd3dDeviceContext);
+	}
+	else
+		m_vecMeshContainer[0]->Render(pd3dDeviceContext);
+
+	if (m_pAxisObject) {
+		if (GLOBAL_MGR->g_bShowWorldAxis)
+			m_pAxisObject->Render(pd3dDeviceContext, pCamera);
+	}
+
+	if (m_pShader) m_pShader->OnPostRender(pd3dDeviceContext);
+	if (m_pd3dBlendState) pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
+
 	m_pWeapon->Render(pd3dDeviceContext, pCamera);
 }
 

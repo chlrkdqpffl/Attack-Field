@@ -41,12 +41,12 @@ void CTextManager::RenderText(ID3D11DeviceContext* pd3dDeviceContext, std::strin
 {
 	if (!m_pFW1Font) return;
 
-	m_pFW1Font->DrawString(pd3dDeviceContext, s_to_ws(text).c_str(), fontSize, posX * m_fResizeRatioX, posY * m_fResizeRatioY, color, pivot);
+	m_pFW1Font->DrawString(pd3dDeviceContext, s_to_ws(text).c_str(), fontSize * m_fResizeRatioX, posX * m_fResizeRatioX, posY * m_fResizeRatioY, color, pivot);
 }
 
 void CTextManager::RenderText(ID3D11DeviceContext* pd3dDeviceContext, std::wstring text, float fontSize, float posX, float posY, UINT32 color, UINT pivot)
 {
 	if (!m_pFW1Font) return;
 	
-	m_pFW1Font->DrawString(pd3dDeviceContext, text.c_str(), fontSize, posX * m_fResizeRatioX, posY * m_fResizeRatioY, color, pivot);
+	m_pFW1Font->DrawString(pd3dDeviceContext, text.c_str(), fontSize * m_fResizeRatioX, posX * m_fResizeRatioX, posY * m_fResizeRatioY, color, pivot);
 }

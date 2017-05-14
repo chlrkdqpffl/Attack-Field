@@ -41,5 +41,5 @@ void CSphereObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCam
 	if (m_pShader) m_pShader->Render(pd3dDeviceContext, pCamera);
 	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &m_mtxWorld);
 
-	m_ppMeshes[m_nSizeType]->Render(pd3dDeviceContext);
+	m_vecMeshContainer[m_nSizeType]->Render(pd3dDeviceContext);
 }

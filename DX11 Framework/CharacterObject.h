@@ -73,6 +73,7 @@ public:
 
 	// ----- Get, Setter ----- // 
 	void SetPlayer(CPlayer* pPlayer) { m_pPlayer = pPlayer; }
+	CPlayer* GetPlayer() const { return m_pPlayer; }
 	BoundingOrientedBox GetPartsBoundingOBox(UINT index) const;
 	CStateMachine<CCharacterObject>* GetFSM(AnimationData::Parts parts) const {
 		if (parts == AnimationData::Parts::UpperBody)

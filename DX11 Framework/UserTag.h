@@ -33,6 +33,7 @@ enum class CameraTag
 
 enum class TeamType
 {
+	// 현재 안쓰고 있음 - 서버에서 따로 생성하였기 때문
 	eNone,
 	eRedTeam, eBlueTeam
 };
@@ -44,7 +45,9 @@ enum class SceneTag {
 enum class ShaderTag {
 	eNone,
 	eColor, eNormal, eTexture, eNormalTexture, eNormalTangentTexture,
-	eInstanceNormalTexture
+
+	// Instancing
+	eInstanceNormal, eInstanceNormalTexture, eInstanceNormalTangentTexture
 };
 
 enum class ChracterBoundingBoxParts 
@@ -129,8 +132,8 @@ enum class TextureTag
 	eRifleD, eRifleN,
 
 	// Building
-	eBuilding16D, eBuilding19D, eBuilding20D, eBuilding21D, eBuilding22D, eBuilding26D, eBuilding29D, eBuilding30D, eBuilding33D, eBuilding34D, eBuilding50D,
-
+	eBuilding19D, eBuilding20D, eBuilding21D, eBuilding22D, eBuilding30D, eBuilding33D, eBuilding34D, eBuilding77D, eBuilding78D, eBuilding100D, eBuilding103D,
+	eParkingLotD, eHotelD,
 	eBenchD, eGrassD,
 
 	// BackGround Image
@@ -139,13 +142,14 @@ enum class TextureTag
 	// Road
 	eRoad1D, eRoad2D, eCenterRoadD, eCrossRoadD,
 	eRoad1N, eRoad2N, eCenterRoadN, eCrossRoadN,
+	eSideWalk1D, eSideWalk2D,
 
 	// UI
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
 	eCaptureArea, eAim, eMagazineUI, eLifeUI, eScoreUI,
 
 	// Etc
-	eBusStopD, eStreetLampD,
+	eBusStopD, eStreetLampD, eBarricadeD,
 
 	// Etc 2
 	eStoneD, eStoneN, eStone02D, eStone02N, eBricksD, eBricksN,
@@ -161,7 +165,7 @@ enum class MeshTag
 	eNone,
 
 	// Skinned
-	eTerrorist, 
+	eTerrorist, eTerrorist_Arm,
 	eTest2,
 	// --------------------------------------------------------- // 
 	MaxSkinnedMesh = 100,
@@ -174,14 +178,15 @@ enum class MeshTag
 	// Environment
 
 	// Building
-	eBuilding16, eBuilding19, eBuilding20, eBuilding21, eBuilding22, eBuilding26, eBuilding29, eBuilding30, eBuilding33, eBuilding34, eBuilding50,
+	eBuilding19, eBuilding20, eBuilding21, eBuilding22, eBuilding30, eBuilding33, eBuilding34, eBuilding77, eBuilding78, eBuilding100, eBuilding103, eBuilding104,
+	eParkingLot, eHotel,
 
 	// Road
 	eRoad, eCenterRoad, eCrossRoad,
 
 
 	// Etc
-	eBench, eBusStop, eStreetLamp,
+	eBench, eBusStop, eStreetLamp, eBarricade,
 
 	// Etc 2
 	eTest,
@@ -194,11 +199,14 @@ enum class ObjectTag
 
 	// Road
 	eRoad1, eRoad2, eCenterRoad, eCrossRoad,
+	eSideWalk1, eSideWalk2,
 
 	// Building
-	eBuilding16, eBuilding19, eBuilding20, eBuilding21, eBuilding22, eBuilding26, eBuilding29, eBuilding30, eBuilding33, eBuilding34, eBuilding50,
+	eBuilding19, eBuilding20, eBuilding21, eBuilding22, eBuilding30, eBuilding33, eBuilding34, eBuilding77, eBuilding78, eBuilding100, eBuilding103, eBuilding104,
+	eParkingLot, eHotel, 
 
-	eBench, eGrass, eBusStop, eStreetLamp
+	// Etc
+	eBench, eGrass, eBusStop, eStreetLamp, eBarricade
 };
 
 

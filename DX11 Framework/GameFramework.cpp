@@ -33,6 +33,11 @@ CGameFramework::CGameFramework()
 		std::ios::sync_with_stdio();
 	#endif
 //#endif
+#ifdef USE_SERVER
+	m_bMouseBindFlag = true;
+	ShowCursor(true);
+	ReleaseCapture();
+#endif
 }
 
 CGameFramework::~CGameFramework()
@@ -46,8 +51,8 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(1258671);
-//	_CrtSetBreakAlloc(846137);
+//	_CrtSetBreakAlloc(1009294);
+//	_CrtSetBreakAlloc(1388119);
 //	_CrtSetBreakAlloc(289);
 //	_CrtSetBreakAlloc(205);		// 16
 //	_CrtSetBreakAlloc(206);		// 16
@@ -205,7 +210,9 @@ bool CGameFramework::CreateDirect3DDisplay()
 #if defined(DEBUG) || defined(_DEBUG)	// 그래픽 디버깅 도구는 외장 그래픽에서 지원이 안됨
 		if (SUCCEEDED(hResult = D3D11CreateDevice(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext))) 
 #else
-		if (SUCCEEDED(hResult = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
+		// 아래의 코드는 릴리즈 모드시 전체화면이 되지 않는 문제로 인하여 잠시 제거. 외장 그래픽으로 전체화면이 안됨!
+		//if (SUCCEEDED(hResult = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
+		if (SUCCEEDED(hResult = D3D11CreateDevice(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
 #endif
 			break;
 		else {
@@ -409,8 +416,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				dxgiTargetParameters.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 				dxgiTargetParameters.Width = m_nWndClientSize.x;
 				dxgiTargetParameters.Height = m_nWndClientSize.y;
-				dxgiTargetParameters.RefreshRate.Numerator = 60;
-				dxgiTargetParameters.RefreshRate.Denominator = 1;
+			//	dxgiTargetParameters.RefreshRate.Numerator = 60;
+			//	dxgiTargetParameters.RefreshRate.Denominator = 1;
+				dxgiTargetParameters.RefreshRate.Numerator = 0;
+				dxgiTargetParameters.RefreshRate.Denominator = 0;
 				dxgiTargetParameters.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 				dxgiTargetParameters.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 				m_pDXGISwapChain->ResizeTarget(&dxgiTargetParameters);
@@ -470,8 +479,8 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 		if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();			// 해제할 경우 디퍼드 렌더링 시 문제됨
 		if (m_pd3dDepthStencilView) m_pd3dDepthStencilView->Release();
 
-		m_pDXGISwapChain->ResizeBuffers(1, m_nWndClientSize.x, m_nWndClientSize.y, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
-
+//		m_pDXGISwapChain->ResizeBuffers(1, m_nWndClientSize.x, m_nWndClientSize.y, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
+		m_pDXGISwapChain->ResizeBuffers(1, m_nWndClientSize.x, m_nWndClientSize.y, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 		CreateRenderTargetDepthStencilView();
 
 		if (m_pCamera) m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, m_nWndClientSize.x, m_nWndClientSize.y, 0.0f, 1.0f);
@@ -780,9 +789,9 @@ void CGameFramework::FrameAdvance()
 	
 	SCENE_MGR->g_nowScene->RenderAllText(m_pd3dDeviceContext);		// 텍스트는 마지막에 렌더링
 
-#if defined(DEBUG) || defined(_DEBUG)
+// #if defined(DEBUG) || defined(_DEBUG)
 	RenderDebugText();
-#endif
+// #endif
 
 	// Draw tweak bars
 	if (true == m_bMouseBindFlag) {

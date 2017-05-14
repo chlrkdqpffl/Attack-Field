@@ -87,36 +87,30 @@ public:
 protected:
 	ID3D11Device						*m_pd3dDevice = nullptr;
 
-	map <ShaderTag, CShader*>			m_vecShaderContainer;
-	map <ShaderTag, vector<CGameObject*>> m_vecObjectContainer;
-
-	void								*m_pContext = nullptr;
+	map <ShaderTag, CShader*>				m_mapShaderContainer;
+	map <ShaderTag, vector<CGameObject*>>	m_mapObjectContainer;
 
 public:
-	virtual void BuildObjects(ID3D11Device *pd3dDevice, void *pContext = NULL);
+	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 	virtual void ReleaseObjects();
 	virtual void UpdateObjects(float fDeltaTime);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 
 	void AddObject(ShaderTag tag, CGameObject *pGameObject);
 	CGameObject *PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxView, CollisionInfo *pd3dxIntersectInfo);
-
-	// -----  Get, Setter ----- //
 };
 
 class CInstancedObjectsShader : public CObjectsShader
 {
 public:
-	CInstancedObjectsShader(int nObjects = 1);
+	CInstancedObjectsShader(int capacity);
 	virtual ~CInstancedObjectsShader();
 
 	void SetMesh(CMesh *pMesh);
-	void SetMaterial(CMaterial *pMaterial);
-
+	void SetMaterial(int textureCount, ...);
 	virtual void CreateShader(ID3D11Device *pd3dDevice);
-	virtual void CreateShader(ID3D11Device *pd3dDevice, UINT nType);
 
-	virtual void BuildObjects(ID3D11Device *pd3dDevice, void *pContext = NULL);
+	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 	virtual void ReleaseObjects();
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 
@@ -124,6 +118,7 @@ protected:
 	CMesh							*m_pMesh = nullptr;
 	CMaterial						*m_pMaterial = nullptr;
 
+	UINT							m_nCapacity = 0;
 	UINT							m_nInstanceBufferStride = 0;
 	UINT							m_nInstanceBufferOffset = 0;
 

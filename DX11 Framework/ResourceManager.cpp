@@ -92,30 +92,35 @@ void CResourceManager::LoadUIData()
 void CResourceManager::LoadMapData()
 {
 	// ============== Building ============== //
-	AddResourece(TextureTag::eBuilding16D,		"../Assets/FBX Model/Building/16building/16buildingD.jpg");
-	AddResourece(TextureTag::eBuilding19D,		"../Assets/FBX Model/Building/19building/19buildingD.jpg");
-	AddResourece(TextureTag::eBuilding20D,		"../Assets/FBX Model/Building/20building/20buildingD.jpg");
-	AddResourece(TextureTag::eBuilding21D,		"../Assets/FBX Model/Building/21building/21buildingD.jpg");
-	AddResourece(TextureTag::eBuilding22D,		"../Assets/FBX Model/Building/22building/22buildingD.jpg");
-	AddResourece(TextureTag::eBuilding26D,		"../Assets/FBX Model/Building/26building/26buildingD.jpg");
-	AddResourece(TextureTag::eBuilding29D,		"../Assets/FBX Model/Building/29building/29buildingD.jpg");
-	AddResourece(TextureTag::eBuilding30D,		"../Assets/FBX Model/Building/30building/30buildingD.jpg");
-	AddResourece(TextureTag::eBuilding33D,		"../Assets/FBX Model/Building/33building/33buildingD.jpg");
-	AddResourece(TextureTag::eBuilding34D,		"../Assets/FBX Model/Building/34building/34buildingD.jpg");
-	AddResourece(TextureTag::eBuilding50D,		"../Assets/FBX Model/Building/50building/50buildingD.jpg");
-
-	AddResourece(MeshTag::eBuilding16,			"../Assets/FBX Model/Building/16building/16building.model");
-	AddResourece(MeshTag::eBuilding19,			"../Assets/FBX Model/Building/19building/19building.model");
-	AddResourece(MeshTag::eBuilding20,			"../Assets/FBX Model/Building/20building/20building.model");
-	AddResourece(MeshTag::eBuilding21,			"../Assets/FBX Model/Building/21building/21building.model");
-	AddResourece(MeshTag::eBuilding22,			"../Assets/FBX Model/Building/22building/22building.model");
-	AddResourece(MeshTag::eBuilding26,			"../Assets/FBX Model/Building/26building/26building.model");
-	AddResourece(MeshTag::eBuilding29,			"../Assets/FBX Model/Building/29building/29building.model");
-	AddResourece(MeshTag::eBuilding30,			"../Assets/FBX Model/Building/30building/30building.model");
-	AddResourece(MeshTag::eBuilding33,			"../Assets/FBX Model/Building/33building/33building.model");
-	AddResourece(MeshTag::eBuilding34,			"../Assets/FBX Model/Building/34building/34building.model");
-	AddResourece(MeshTag::eBuilding50,			"../Assets/FBX Model/Building/50building/50building.model");
+	AddResourece(TextureTag::eBuilding19D,		"../Assets/FBX Model/Building/Building19/19buildingD.jpg");
+	AddResourece(TextureTag::eBuilding20D,		"../Assets/FBX Model/Building/Building20/20buildingD.jpg");
+	AddResourece(TextureTag::eBuilding21D,		"../Assets/FBX Model/Building/Building21/21buildingD.jpg");
+	AddResourece(TextureTag::eBuilding22D,		"../Assets/FBX Model/Building/Building22/22buildingD.jpg");
+	AddResourece(TextureTag::eBuilding30D,		"../Assets/FBX Model/Building/Building30/30buildingD.jpg");
+	AddResourece(TextureTag::eBuilding33D,		"../Assets/FBX Model/Building/Building33/33buildingD.jpg");
+	AddResourece(TextureTag::eBuilding34D,		"../Assets/FBX Model/Building/Building34/34buildingD.jpg");
+	AddResourece(TextureTag::eBuilding77D,		"../Assets/FBX Model/Building/Building77/77buildingD.jpg");
+	AddResourece(TextureTag::eBuilding78D,		"../Assets/FBX Model/Building/Building78/78buildingD.jpg");
+	AddResourece(TextureTag::eBuilding100D,		"../Assets/FBX Model/Building/Building100/Building100D.jpg");
+	AddResourece(TextureTag::eBuilding103D,		"../Assets/FBX Model/Building/Building103/Building103D.jpg");
 	
+	AddResourece(MeshTag::eBuilding19,			"../Assets/FBX Model/Building/Building19/19building.model");
+	AddResourece(MeshTag::eBuilding20,			"../Assets/FBX Model/Building/Building20/20building.model");
+	AddResourece(MeshTag::eBuilding21,			"../Assets/FBX Model/Building/Building21/21building.model");
+	AddResourece(MeshTag::eBuilding22,			"../Assets/FBX Model/Building/Building22/22building.model");
+	AddResourece(MeshTag::eBuilding30,			"../Assets/FBX Model/Building/Building30/30building.model");
+	AddResourece(MeshTag::eBuilding33,			"../Assets/FBX Model/Building/Building33/33building.model");
+	AddResourece(MeshTag::eBuilding34,			"../Assets/FBX Model/Building/Building34/34building.model");
+	AddResourece(MeshTag::eBuilding77,			"../Assets/FBX Model/Building/Building77/77building.model");
+	AddResourece(MeshTag::eBuilding78,			"../Assets/FBX Model/Building/Building78/78building.model");
+	AddResourece(MeshTag::eBuilding100,			"../Assets/FBX Model/Building/Building100/Building100.model");
+	AddResourece(MeshTag::eBuilding103,			"../Assets/FBX Model/Building/Building103/Building103.model");
+	AddResourece(MeshTag::eBuilding104,			"../Assets/FBX Model/Building/Building104/Building104.model");
+
+	// Parking Lot
+	AddResourece(TextureTag::eParkingLotD,		"../Assets/FBX Model/ParkingLot/ParkingLotD.jpg");
+	AddResourece(MeshTag::eParkingLot,			"../Assets/FBX Model/ParkingLot/ParkingLot.model");
+
 	// ============== Road ============== //
 	AddResourece(TextureTag::eRoad1D,			"../Assets/FBX Model/Road/Road1D.dds");
 	AddResourece(TextureTag::eRoad1N,			"../Assets/FBX Model/Road/Road1N.dds");
@@ -143,6 +148,12 @@ void CResourceManager::LoadMapData()
 
 	AddResourece(TextureTag::eGrassD,			"../Assets/FBX Model/Etc/GrassD.jpg");
 
+	AddResourece(TextureTag::eBarricadeD,		"../Assets/FBX Model/Barricade/BarricadeD.jpg");
+	AddResourece(MeshTag::eBarricade,			"../Assets/FBX Model/Barricade/streetprops_barricade3.model");
+
+
+	AddResourece(TextureTag::eSideWalk1D,		"../Assets/FBX Model/SideWalk/5.jpg");
+	AddResourece(TextureTag::eSideWalk2D,		"../Assets/FBX Model/SideWalk/2.jpg");
 }
 
 void CResourceManager::LoadCharacterData()
@@ -157,7 +168,7 @@ void CResourceManager::LoadCharacterData()
 
 
 	AddResourece(MeshTag::eTerrorist,			"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
-//	AddResourece(MeshTag::eTerrorist,			"../Assets/FBX Model/Character/Terrorist/Idle.model");
+	AddResourece(MeshTag::eTerrorist_Arm,		"../Assets/FBX Model/Character/Terrorist/Terrorist(Arm).model");
 
 
 	AddResourece(MeshTag::eRifle,				"../Assets/FBX Model/Weapon/Rifle/rifle.model");

@@ -24,13 +24,16 @@ void CSkinnedObject::CreateObjectData(ID3D11Device *pd3dDevice)
 	m_pLowerController->SetAnimation(AnimationData::CharacterAnim::eIdle);
 }
 
-void CSkinnedObject::SetMesh(CFbxModelSkinnedMesh* mesh)
+void CSkinnedObject::SetMesh(CFbxModelSkinnedMesh* mesh, int index)
 {
-	CGameObject::SetMesh(mesh);
-	m_pSkinnedMesh = mesh;
+	CGameObject::SetMesh(mesh, index);
 
-	m_pUpperController->SetMesh(mesh);
-	m_pLowerController->SetMesh(mesh);
+	if (index == 0) {
+		m_pSkinnedMesh = mesh;
+
+		m_pUpperController->SetMesh(mesh);
+		m_pLowerController->SetMesh(mesh);
+	}
 }
 
 void CSkinnedObject::SetAnimation(AnimationData::CharacterAnim anim, float speed)

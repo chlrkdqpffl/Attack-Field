@@ -595,7 +595,7 @@ float4 PSInstancedLightingColor(VS_INSTANCED_LIGHTING_OUTPUT input) : SV_Target
 	input.normalW = normalize(input.normalW);
 	float4 cIllumination = Lighting(input.positionW, input.normalW);
 
-		return(cIllumination);
+	return(cIllumination);
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------

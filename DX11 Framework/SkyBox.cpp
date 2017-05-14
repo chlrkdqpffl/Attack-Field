@@ -54,8 +54,7 @@ void CSkyBox::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 
 	if (m_pShader) m_pShader->Render(pd3dDeviceContext, pCamera);
 
-	CSkyBoxMesh *pSkyBoxMesh = (CSkyBoxMesh *)m_ppMeshes[0];
-	pSkyBoxMesh->OnPrepareRender(pd3dDeviceContext);
+	m_vecMeshContainer[0]->OnPrepareRender(pd3dDeviceContext);
 
 #ifdef _WITH_SKYBOX_TEXTURE_ARRAY
 	m_pMaterial->m_pTexture->UpdateShaderVariable(pd3dDeviceContext);
