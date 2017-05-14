@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "UIObject.h"
 #include "MainScene.h"
-#include "ScreenShader.h"
+#include "UIShader.h"
 
 CUIObject::CUIObject(TextureTag tag) : m_tagTexture(tag)
 {
@@ -69,7 +69,7 @@ CUIObject* CUIManager::GetUIObject(TextureTag tag)
 
 void CUIManager::Initialize(ID3D11Device* pDevice)
 {
-	m_pUIShader = new CScreenShader();
+	m_pUIShader = new CUIShader();
 	m_pUIShader->CreateShader(pDevice);
 }
 
@@ -95,8 +95,24 @@ void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)
 		m_pBackGroundUI->Render(pDeviceContext);
 
 	for (auto& uiObj : m_vecUIObject) {
-		if (uiObj->GetActive())
+		if (uiObj->GetActive()) {
+
+			// Opacity Update
+			if (uiObj->GetOpacity() != m_fSettingOpacity) {
+				m_fSettingOpacity = uiObj->GetOpacity();
+
+				GLOBAL_MGR->g_vRenderOption.w = m_fSettingOpacity;
+
+				D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Map(GLOBAL_MGR->g_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+				XMFLOAT4 *pcbRenderOption = (XMFLOAT4 *)d3dMappedResource.pData;
+				*pcbRenderOption = GLOBAL_MGR->g_vRenderOption;
+				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
+
+			}
+
 			uiObj->Render(pDeviceContext);
+		}
 	}
 	pDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 	pDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);

@@ -48,7 +48,7 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	CScene::OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
-	static bool bTest = false;
+	static float test = 1.0f;
 	switch (nMessageID) {
 		case WM_KEYDOWN:
 			switch (wParam) {
@@ -88,10 +88,12 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_Z:
-				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eIdle);
+				test -= 0.1f;
+				m_pUIManager->GetUIObject(TextureTag::eDamagedCharacterUI)->SetOpacity(test);
 				break;
 			case VK_X:
-				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eRun);
+				test += 0.1f;
+				m_pUIManager->GetUIObject(TextureTag::eDamagedCharacterUI)->SetOpacity(test);
 				break;
 			case VK_C:
 				
@@ -1309,17 +1311,22 @@ void CMainScene::CreateUIImage()
 	
 	// Score
 	pUIObject = new CUIObject(TextureTag::eScoreUI);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ 600, 0 }, POINT{ 1000, 90 }, 0.0f);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 600, 0 }, POINT{ 1000, 90 }, 0.5f);
 	m_pUIManager->AddUIObject(pUIObject);
 
 	// Life
 	pUIObject = new CUIObject(TextureTag::eLifeUI);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ 10, FRAME_BUFFER_HEIGHT - 190 }, POINT{ 360, FRAME_BUFFER_HEIGHT - 10 }, 0.0f);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 10, FRAME_BUFFER_HEIGHT - 190 }, POINT{ 360, FRAME_BUFFER_HEIGHT - 10 }, 0.5f);
 	m_pUIManager->AddUIObject(pUIObject);
 
 	// Magazine
 	pUIObject = new CUIObject(TextureTag::eMagazineUI);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH - 260, FRAME_BUFFER_HEIGHT - 140 }, POINT{ FRAME_BUFFER_WIDTH - 10, FRAME_BUFFER_HEIGHT - 10}, 0.0f);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH - 260, FRAME_BUFFER_HEIGHT - 140 }, POINT{ FRAME_BUFFER_WIDTH - 10, FRAME_BUFFER_HEIGHT - 10}, 0.5f);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	// Damaged Character
+	pUIObject = new CUIObject(TextureTag::eDamagedCharacterUI);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.1f);
 	m_pUIManager->AddUIObject(pUIObject);
 }
 
