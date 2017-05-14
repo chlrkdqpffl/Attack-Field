@@ -100,7 +100,7 @@ void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)
 			// Opacity Update
 			if (uiObj->GetOpacity() != m_fSettingOpacity) {
 				m_fSettingOpacity = uiObj->GetOpacity();
-
+				
 				GLOBAL_MGR->g_vRenderOption.w = m_fSettingOpacity;
 
 				D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
@@ -109,6 +109,7 @@ void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)
 				*pcbRenderOption = GLOBAL_MGR->g_vRenderOption;
 				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
 
+				ShowXMFloat4(GLOBAL_MGR->g_vRenderOption);
 			}
 
 			uiObj->Render(pDeviceContext);

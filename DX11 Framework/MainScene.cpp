@@ -1264,7 +1264,30 @@ void CMainScene::CreateMapDataInstancingObject()
 		pObject = new CGameObject();
 		pObject->SetMesh(pMesh);
 		pObject->SetPosition(vecMapData[count].m_Position);
-		//	pObject->Rotate(vecMapData[count].m_Rotation);
+//		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+#pragma endregion
+
+#pragma region [StoneWall]
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall);
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall).size());
+	pMesh = new CCubeMeshTexturedIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
+
+	pInstancingShaders->SetMesh(pMesh);
+	pInstancingShaders->SetMaterial(1, TextureTag::eStoneWallD);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation.x - 90, vecMapData[count].m_Rotation.y - 180, vecMapData[count].m_Rotation.z);
 		pObject->CreateBoundingBox(m_pd3dDevice, pMesh);
 
 		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);
@@ -1311,22 +1334,23 @@ void CMainScene::CreateUIImage()
 	
 	// Score
 	pUIObject = new CUIObject(TextureTag::eScoreUI);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ 600, 0 }, POINT{ 1000, 90 }, 0.5f);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 600, 0 }, POINT{ 1000, 90 }, 0.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 
 	// Life
 	pUIObject = new CUIObject(TextureTag::eLifeUI);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ 10, FRAME_BUFFER_HEIGHT - 190 }, POINT{ 360, FRAME_BUFFER_HEIGHT - 10 }, 0.5f);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 10, FRAME_BUFFER_HEIGHT - 190 }, POINT{ 360, FRAME_BUFFER_HEIGHT - 10 }, 0.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 
 	// Magazine
 	pUIObject = new CUIObject(TextureTag::eMagazineUI);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH - 260, FRAME_BUFFER_HEIGHT - 140 }, POINT{ FRAME_BUFFER_WIDTH - 10, FRAME_BUFFER_HEIGHT - 10}, 0.5f);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH - 260, FRAME_BUFFER_HEIGHT - 140 }, POINT{ FRAME_BUFFER_WIDTH - 10, FRAME_BUFFER_HEIGHT - 10}, 0.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 
 	// Damaged Character
 	pUIObject = new CUIObject(TextureTag::eDamagedCharacterUI);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.1f);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.0f);
+	pUIObject->SetOpacity(0.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 }
 

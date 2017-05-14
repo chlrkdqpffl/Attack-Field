@@ -51,13 +51,13 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(1009294);
-//	_CrtSetBreakAlloc(1388119);
-//	_CrtSetBreakAlloc(289);
-//	_CrtSetBreakAlloc(205);		// 16
-//	_CrtSetBreakAlloc(206);		// 16
-//	_CrtSetBreakAlloc(210);		// 64
-	
+	//	_CrtSetBreakAlloc(1009294);
+	//	_CrtSetBreakAlloc(1388119);
+	//	_CrtSetBreakAlloc(289);
+	//	_CrtSetBreakAlloc(205);		// 16
+	//	_CrtSetBreakAlloc(206);		// 16
+	//	_CrtSetBreakAlloc(210);		// 64
+
 #endif
 
 	m_hInstance = hInstance;
@@ -70,7 +70,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	STATEOBJ_MGR->InitializeManager();
 	GLOBAL_MGR->InitializeManager();
 	TEXT_MGR->InitializeManager(m_pd3dDevice, L"Koverwatch");
-//	TEXT_MGR->InitializeManager(m_pd3dDevice, L"a반달곰");			// 폰트 여러개 만들 수 있음
+	//	TEXT_MGR->InitializeManager(m_pd3dDevice, L"a반달곰");			// 폰트 여러개 만들 수 있음
 	SCENE_MGR->InitializeManager();
 	TWBAR_MGR->InitializeManager();
 	COLLISION_MGR->InitializeManager();
@@ -79,7 +79,31 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	RESOURCE_MGR->InitializeManager();
 	SOUND_MGR->InitializeManager();
 	BuildObjects();
+
+	/*
+	//KYT '17.05.114
+	//PostProcessing
 	
+	m_pPostProcessing = new CPostFX();
+	m_pPostProcessing->Init(m_pd3dDevice, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+
+	int pos[2] = { 30, 150 };
+	int size[2] = { 320, 120 };
+	int color[3] = { 237, 180, 237 };
+
+	TwBar* twBar = TwNewBar("HDR");
+	TwDefine(" GLOBAL help='This example shows how to integrate AntTweakBar into a DirectX11 application.' "); // Message added to the help bar.
+	TwSetParam(twBar, NULL, "size", TW_PARAM_INT32, 2, size);
+	TwSetParam(twBar, NULL, "color", TW_PARAM_INT32, 3, color);
+	TwSetParam(twBar, NULL, "position", TW_PARAM_INT32, 2, pos);
+
+	TwAddVarRW(twBar, "MiddleGrey", TW_TYPE_FLOAT, &m_fMiddleGrey, "min=-1.5 max=10 step=0.05 keyincr=F9 keydecr=F10 help='Scale the object (1=original size).'"); // bar
+	TwAddVarRW(twBar, "BloomScale", TW_TYPE_FLOAT, &m_fBloomScale, "min=-5 max=5 step=0.05 keyincr=F7 keydecr=F8 help='Scale the object (1=original size).'"); // bar
+	TwAddVarRW(twBar, "HDR_fWhite", TW_TYPE_FLOAT, &m_fWhite, "min=-5 max=5 step=0.05 keyincr=F7 keydecr=F8 help='Scale the object (1=original size).'"); // bar
+	TwAddVarRW(twBar, "HDR_BloomThreshold", TW_TYPE_FLOAT, &m_fBloomThreshold, "min=-5 max=5 step=0.05 keyincr=F7 keydecr=F8 help='Scale the object (1=original size).'"); // bar
+
+	TwAddVarRW(twBar, "HDR", TW_TYPE_BOOL8, &m_bHDR, "key=l");
+	*/
 	return(true);
 }
 
@@ -106,6 +130,14 @@ void CGameFramework::OnDestroy()
 	COLLISION_MGR->ReleseInstance();
 	SOUND_MGR->ReleseInstance();
 	SERVER_MGR->ReleseInstance();
+
+
+	if (m_pPostProcessing)
+	{
+		m_pPostProcessing->Deinit();
+		delete m_pPostProcessing;
+	}
+	m_pPostProcessing = nullptr;
 
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtDumpMemoryLeaks();
@@ -353,6 +385,48 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 
 	DXUT_SetDebugName(m_pd3dSRVTexture, "SRVTexture");
 	DXUT_SetDebugName(m_pd3dUAVTexture, "UAVTexture");
+
+
+	D3D11_TEXTURE2D_DESC d3dTexture2DDesc;
+	::ZeroMemory(&d3dTexture2DDesc, sizeof(D3D11_TEXTURE2D_DESC));
+	d3dTexture2DDesc.Width = FRAME_BUFFER_WIDTH;
+	d3dTexture2DDesc.Height = FRAME_BUFFER_HEIGHT;
+	d3dTexture2DDesc.MipLevels = 1;
+	d3dTexture2DDesc.ArraySize = 1;
+	d3dTexture2DDesc.SampleDesc.Count = 1;
+	d3dTexture2DDesc.SampleDesc.Quality = 0;
+	d3dTexture2DDesc.Usage = D3D11_USAGE_DEFAULT;
+	d3dTexture2DDesc.CPUAccessFlags = 0;
+	d3dTexture2DDesc.MiscFlags = 0;
+	d3dTexture2DDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+
+	//----------------------------------------Render Desc-----------------------------------------//
+	D3D11_RENDER_TARGET_VIEW_DESC d3dRTVDesc;
+	d3dRTVDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	d3dRTVDesc.Texture2D.MipSlice = 0;
+	//d3dRTVDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	//----------------------------------------TextUre Desc-----------------------------------------//
+	
+	//----------------------------------------Resource Desc-----------------------------------------//
+	D3D11_SHADER_RESOURCE_VIEW_DESC d3dSRVDesc;
+	::ZeroMemory(&d3dSRVDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+	d3dSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	d3dSRVDesc.Texture2D.MipLevels = 1;
+	//d3dSRVDesc.Format = DXGI_FORMAT_R32_FLOAT;
+	//----------------------------------------Resource Desc-----------------------------------------//
+
+	d3dTexture2DDesc.Format = d3dSRVDesc.Format = d3dRTVDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+
+	m_pd3dDevice->CreateTexture2D(&d3dTexture2DDesc, nullptr, &m_pd3dtxtPost);
+	DXUT_SetDebugName(m_pd3dtxtPost, ("FrameWork m_pd3dtxtPost"));
+
+	m_pd3dDevice->CreateRenderTargetView(m_pd3dtxtPost, &d3dRTVDesc, &m_pd3drtvPost);
+	DXUT_SetDebugName(m_pd3drtvPost, ("FrameWork m_pd3drtvPost "));
+
+	m_pd3dDevice->CreateShaderResourceView(m_pd3dtxtPost, &d3dSRVDesc, &m_pd3dsrvPost);
+	DXUT_SetDebugName(m_pd3dsrvPost, ("FrameWork m_pd3dsrvPost "));
+
 
 	return(true);
 }
@@ -782,11 +856,45 @@ void CGameFramework::FrameAdvance()
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 	m_pCamera = SCENE_MGR->g_nowScene->GetPlayer()->GetCamera();
 
+	/*
+	if(m_bHDR)
+	{
+		m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3drtvPost, m_pd3dDepthStencilView);
+	}
+	else
+	{
+		m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3dRenderTargetView, m_pd3dDepthStencilView);
+	}
+	*/
 	SCENE_MGR->g_nowScene->Render(m_pd3dDeviceContext, m_pCamera);
-#ifdef _WITH_PLAYER_TOP
-	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-#endif
+	#ifdef _WITH_PLAYER_TOP
+		m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	#endif
 	
+		/*
+		//적응값 
+	float fAdaptationNorm;
+	static float fAdaptation = 1.0f;
+	static bool s_bFirstTime = true;
+	if (s_bFirstTime)
+	{
+		// On the first frame we want to fully adapt the new value so use 0
+		fAdaptationNorm = 0.0f;
+		s_bFirstTime = false;
+	}
+	else
+	{
+		// Normalize the adaptation time with the frame time (all in seconds)
+		// Never use a value higher or equal to 1 since that means no adaptation at all (keeps the old value)
+		fAdaptationNorm = (fAdaptation < 0.0001f ? 1.0f : m_GameTimer.GetTimeElapsed() / fAdaptation, 0.9999f);
+	}
+	m_pPostProcessing->SetParameters(m_fMiddleGrey, m_fWhite, fAdaptationNorm, m_fBloomThreshold, m_fBloomScale);
+	
+	if (m_bHDR)
+	{
+		m_pPostProcessing->PostProcessing(m_pd3dDeviceContext, m_pd3dsrvPost, m_pd3dRenderTargetView);
+	}
+	*/
 	SCENE_MGR->g_nowScene->RenderAllText(m_pd3dDeviceContext);		// 텍스트는 마지막에 렌더링
 
 // #if defined(DEBUG) || defined(_DEBUG)

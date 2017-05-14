@@ -109,6 +109,9 @@
     <Filter Include="Particle">
       <UniqueIdentifier>{212ba4fb-c602-4b82-bf63-ababc9048f83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Post">
+      <UniqueIdentifier>{5d2c2bdf-e817-4c56-84ee-645302ebd21a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -338,6 +341,9 @@
     </ClCompile>
     <ClCompile Include="UIShader.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="PostFX.cpp">
+      <Filter>Post</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -596,6 +602,9 @@
     <ClInclude Include="UIShader.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="PostFX.h">
+      <Filter>Post</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -616,6 +625,12 @@
     </FxCompile>
     <FxCompile Include="Shader HLSL File\Particle.fx">
       <Filter>Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="PostDownScaleFX.hlsl">
+      <Filter>Post</Filter>
+    </FxCompile>
+    <FxCompile Include="PostFX.hlsl">
+      <Filter>Post</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -666,6 +681,9 @@
     </None>
     <None Include="Shader HLSL File\UI.hlsli">
       <Filter>HLSL</Filter>
+    </None>
+    <None Include="Blur.hlsl">
+      <Filter>Post</Filter>
     </None>
   </ItemGroup>
 </Project>

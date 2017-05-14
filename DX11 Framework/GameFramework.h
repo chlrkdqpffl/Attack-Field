@@ -4,6 +4,7 @@
 //#include "TitleScene.h"
 //#include "MainScene.h"
 #include "ScreenShader.h"
+#include "PostFX.h"
 
 class CGameFramework
 {
@@ -51,23 +52,23 @@ private:
 
 	IDXGISwapChain					*m_pDXGISwapChain;
 	ID3D11RenderTargetView			*m_pd3dRenderTargetView;
-	ID3D11Device					*m_pd3dDevice			= nullptr;
-	ID3D11DeviceContext				*m_pd3dDeviceContext	= nullptr;
+	ID3D11Device					*m_pd3dDevice = nullptr;
+	ID3D11DeviceContext				*m_pd3dDeviceContext = nullptr;
 
 	// ----- Blurring ----- //
-	ID3D11ShaderResourceView		*m_pd3dSRVOffScreen		= nullptr;
-	ID3D11UnorderedAccessView		*m_pd3dUAVOffScreen		= nullptr;
-	ID3D11RenderTargetView			*m_pd3dRTVOffScreen		= nullptr;
+	ID3D11ShaderResourceView		*m_pd3dSRVOffScreen = nullptr;
+	ID3D11UnorderedAccessView		*m_pd3dUAVOffScreen = nullptr;
+	ID3D11RenderTargetView			*m_pd3dRTVOffScreen = nullptr;
 
-	ID3D11ShaderResourceView		*m_pd3dSRVTexture		= nullptr;
-	ID3D11UnorderedAccessView		*m_pd3dUAVTexture		= nullptr;
+	ID3D11ShaderResourceView		*m_pd3dSRVTexture = nullptr;
+	ID3D11UnorderedAccessView		*m_pd3dUAVTexture = nullptr;
 
 	float							m_fGaussianWeights[11];
-	ID3D11Buffer					*m_pd3dcbWeights		= nullptr;
-	CScreenShader					*m_pScreenShader		= nullptr;
+	ID3D11Buffer					*m_pd3dcbWeights = nullptr;
+	CScreenShader					*m_pScreenShader = nullptr;
 
-	ID3D11ComputeShader				*m_pHorizontalBlurShader	= nullptr;
-	ID3D11ComputeShader				*m_pVerticalBlurShader		= nullptr;
+	ID3D11ComputeShader				*m_pHorizontalBlurShader = nullptr;
+	ID3D11ComputeShader				*m_pVerticalBlurShader = nullptr;
 	UINT							m_nBlurCount = 0;
 	// -------------------- //
 
@@ -78,7 +79,7 @@ private:
 
 	CGameTimer						m_GameTimer;
 
-//	CPlayer							*m_pPlayer;
+	//	CPlayer							*m_pPlayer;
 	CCamera							*m_pCamera;
 
 	POINT							m_ptOldCursorPos;
@@ -87,11 +88,11 @@ private:
 
 	// Graphic Card Info
 	wstring							m_wsGraphicBrandName;
-	unsigned __int64				m_ui64VideoMemory		= 0;
+	unsigned __int64				m_ui64VideoMemory = 0;
 
 	// TweakBar
-	bool							m_bMouseBindFlag		= false;
-	bool							m_bTweakInit			= false;
+	bool							m_bMouseBindFlag = false;
+	bool							m_bTweakInit = false;
 
 	// FrameRate
 	UINT							m_nFrameRate = 0;
@@ -100,4 +101,22 @@ private:
 	// ResizeRatio
 	float							m_fResizeRatioX = 1.0f;
 	float							m_fResizeRatioY = 1.0f;
+
+	//KYT '17.05.114
+	/*
+		PostProcessing
+	*/
+	//--------------------------light render target----------------
+	ID3D11Texture2D					*m_pd3dtxtPost;
+	ID3D11ShaderResourceView		*m_pd3dsrvPost;
+	ID3D11RenderTargetView			*m_pd3drtvPost;
+	//--------------------------light render target----------------
+
+	CPostFX							*m_pPostProcessing{ nullptr };
+	float							m_fMiddleGrey{ 0.863f };
+	float							m_fWhite{ 1.53f };
+	float							m_fBloomThreshold {1.1f};
+	float							m_fBloomScale{ 0.74f };
+	bool							m_bHDR{ true };
+
 };
