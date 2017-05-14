@@ -1319,17 +1319,24 @@ void CMainScene::CreateUIImage()
 
 	// Magazine
 	pUIObject = new CUIObject(TextureTag::eMagazineUI);
+<<<<<<< HEAD
 
 	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH - 260, FRAME_BUFFER_HEIGHT - 140 }, POINT{ FRAME_BUFFER_WIDTH - 10, FRAME_BUFFER_HEIGHT - 10}, 0.5f);
 
+=======
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH - 260, FRAME_BUFFER_HEIGHT - 140 }, POINT{ FRAME_BUFFER_WIDTH - 10, FRAME_BUFFER_HEIGHT - 10}, 0.5f);
+>>>>>>> parent of 4bae047... - HDR ?íƒœê°€ ì¶”ê?
 	m_pUIManager->AddUIObject(pUIObject);
 
 	// Damaged Character
 	pUIObject = new CUIObject(TextureTag::eDamagedCharacterUI);
+<<<<<<< HEAD
 
 	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.0f);
 	pUIObject->SetOpacity(0.0f);
 
+=======
+>>>>>>> parent of 4bae047... - HDR ?íƒœê°€ ì¶”ê?
 	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.1f);
 	m_pUIManager->AddUIObject(pUIObject);
 
