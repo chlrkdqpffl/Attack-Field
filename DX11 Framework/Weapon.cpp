@@ -43,9 +43,6 @@ void CWeapon::Firing(XMVECTOR direction)
 		XMStoreFloat3(&packet->direction, direction);
 
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(packet));
-		static int count = 0;
-		count++;
-		cout << count << "총알 몇번 쐈냐" << endl;
 #else
 		if (COLLISION_MGR->RayCastCollisionToCharacter(info, firePosOffset, direction)) {
 			if (info.m_fDistance < m_fRange) {
@@ -54,7 +51,6 @@ void CWeapon::Firing(XMVECTOR direction)
 				CCharacterObject* hitCharacter = static_cast<CCharacterObject*>(info.m_pHitObject);
 				// Head Shot 판정
 				if (info.m_HitParts == ChracterBoundingBoxParts::eHead) {
-					cout << "헤드샷" << endl;
 					hitCharacter->SetIsHeadHit(true);
 					hitCharacter->DamagedCharacter(m_fDamage * 2.5f);
 				}
@@ -62,8 +58,6 @@ void CWeapon::Firing(XMVECTOR direction)
 					hitCharacter->DamagedCharacter(m_fDamage);
 
 				}
-				cout << "적중 후 체력 : " << hitCharacter->GetLife() << endl;
-
 			}
 		}
 #endif
@@ -74,7 +68,6 @@ void CWeapon::Firing(XMVECTOR direction)
 
 void CWeapon::Reloading()
 {
-	cout << "총알 재장전 완료" << endl;
 	m_nhasBulletCount = m_nMaxhasBulletCount;
 }
 

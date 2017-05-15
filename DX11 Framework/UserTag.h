@@ -146,7 +146,7 @@ enum class TextureTag
 
 	// UI
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
-	eCaptureArea, eAim, eMagazineUI, eLifeUI, eScoreUI,
+	eCaptureArea, eAim, eMagazineUI, eLifeUI, eScoreUI, eDamagedCharacterUI,
 
 	// Etc
 	eBusStopD, eStreetLampD, eBarricadeD,

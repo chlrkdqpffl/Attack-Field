@@ -42,7 +42,7 @@ cbuffer cbSkyBox : register(b4)                             // PS Set
 */
 cbuffer cbRenderOption : register(b5)                       // PS Set
 {
-    float4 gbRenderOption : packoffset(c0);                 // (x : Fog Render, y : BoundingBox Render )
+    float4 gbRenderOption : packoffset(c0);                 // (x : Fog Render, y : BoundingBox Render,    z : UI Opacity )
 };
 
 cbuffer cbSkinned : register(b7)							// VS Set

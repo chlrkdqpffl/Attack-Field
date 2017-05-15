@@ -1455,6 +1455,8 @@ void CMainScene::ModifiedSelectObject()
 void CMainScene::CalcTime()
 {
 	if (GetTickCount() - m_dwTime > 1000) {
+		if (m_nGameTime <= 0)
+			return;
 		m_nGameTime--;
 		m_dwTime = GetTickCount();
 	}
@@ -1524,7 +1526,6 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 
 	// ------ Final Scene Rendering ------ //
 	m_GBuffer->DeferredRender(pd3dDeviceContext);
-	m_pUIManager->RenderAll(pd3dDeviceContext);
 	// =============== Rendering Option =================== //
 
 	for (auto& lineObject : GLOBAL_MGR->g_vecLineContainer)
@@ -1535,6 +1536,8 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 
 	if (GLOBAL_MGR->g_vRenderOption.y)
 		RenderBoundingBox();
+
+	m_pUIManager->RenderAll(pd3dDeviceContext);
 
 	if (GLOBAL_MGR->g_bShowGBuffer) {
 		pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, nullptr);
@@ -1556,7 +1559,6 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	// ------ End Scene Rendering ------ //
 	m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 
-	m_pUIManager->RenderAll(pd3dDeviceContext);
 	// =============== Rendering Option =================== //
 
 	for (auto& lineObject : GLOBAL_MGR->g_vecLineContainer)
@@ -1567,7 +1569,10 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 
 	if (GLOBAL_MGR->g_vRenderOption.y)
 		RenderBoundingBox();
+
+	m_pUIManager->RenderAll(pd3dDeviceContext);
 #endif
+
 }
 
 void CMainScene::RenderBoundingBox()
