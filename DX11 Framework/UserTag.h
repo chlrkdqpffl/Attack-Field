@@ -149,7 +149,7 @@ enum class TextureTag
 	eCaptureArea, eAim, eMagazineUI, eLifeUI, eScoreUI, eDamagedCharacterUI,
 
 	// Etc
-	eBusStopD, eStreetLampD, eBarricadeD,
+	eBusStopD, eStreetLampD, eBarricadeD, eStoneWallD,
 
 	// Etc 2
 	eStoneD, eStoneN, eStone02D, eStone02N, eBricksD, eBricksN,
@@ -203,7 +203,7 @@ enum class ObjectTag
 
 	// Building
 	eBuilding19, eBuilding20, eBuilding21, eBuilding22, eBuilding30, eBuilding33, eBuilding34, eBuilding77, eBuilding78, eBuilding100, eBuilding103, eBuilding104,
-	eParkingLot, eHotel, 
+	eParkingLot, eHotel, eStoneWall,
 
 	// Etc
 	eBench, eGrass, eBusStop, eStreetLamp, eBarricade

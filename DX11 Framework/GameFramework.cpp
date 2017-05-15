@@ -627,8 +627,8 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers(); 
 	
-//	SceneTag startTag = SceneTag::eTitleScene;		// Title Scene 시작
-	SceneTag startTag = SceneTag::eMainScene;		// Main Scene 시작
+	SceneTag startTag = SceneTag::eTitleScene;		// Title Scene 시작
+//	SceneTag startTag = SceneTag::eMainScene;		// Main Scene 시작
 	switch (startTag) {
 		case SceneTag::eTitleScene:
 			SCENE_MGR->ChangeScene(SceneTag::eTitleScene);
@@ -714,9 +714,11 @@ void CGameFramework::ProcessInput()
 		}
 	}
 
-	// 플레이어 회전
-	if ((cxDelta != 0.0f) || (cyDelta != 0.0f))
-		SCENE_MGR->g_pPlayer->Rotate(cyDelta, cxDelta);
+	
+	if (SCENE_MGR->g_nowScene->GetSceneTag() == SceneTag::eMainScene) {
+		if ((cxDelta != 0.0f) || (cyDelta != 0.0f))
+			SCENE_MGR->g_pPlayer->Rotate(cyDelta, cxDelta);
+	}
 }
 
 void CGameFramework::UpdateObjects()

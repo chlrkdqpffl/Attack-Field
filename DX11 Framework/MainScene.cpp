@@ -88,10 +88,10 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_Z:
-				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eIdle);
+		//		m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eIdle);
 				break;
 			case VK_X:
-				m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eRun);
+		//		m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eRun);
 				break;
 			case VK_C:
 				
@@ -826,51 +826,37 @@ void CMainScene::CreateMapDataInstancingObject()
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 
-	// Cross Road
-	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eCrossRoad).size());
-
-	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eCrossRoad);
-	pFbxMesh->Initialize(m_pd3dDevice);
-	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eCrossRoadD);
-	pInstancingShaders->BuildObjects(m_pd3dDevice);
-	pInstancingShaders->CreateShader(m_pd3dDevice);
-
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCrossRoad);
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pObject = new CGameObject();
+		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eCrossRoad, vecMapData[count].m_Scale);
+		pFbxMesh->Initialize(m_pd3dDevice);
+
+		pObject->SetMaterial(1, TextureTag::eCrossRoadD);
 		pObject->SetMesh(pFbxMesh);
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
-		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);
-		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTangentTexture, pObject);
 	}
-	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
-
-	// Center Road
-	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eCenterRoad).size());
-
-	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eCenterRoad);
-	pFbxMesh->Initialize(m_pd3dDevice);
-	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eCenterRoadD);
-	pInstancingShaders->BuildObjects(m_pd3dDevice);
-	pInstancingShaders->CreateShader(m_pd3dDevice);
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCenterRoad);
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pObject = new CGameObject();
+		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eCenterRoad, vecMapData[count].m_Scale);
+		pFbxMesh->Initialize(m_pd3dDevice);
+
+		pObject->SetMaterial(1, TextureTag::eCenterRoadD);
 		pObject->SetMesh(pFbxMesh);
 		pObject->SetPosition(vecMapData[count].m_Position);
 		pObject->Rotate(vecMapData[count].m_Rotation);
-		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);
-		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTangentTexture, pObject);
 	}
-	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 #pragma endregion
 
 #pragma region [Building]
@@ -1178,6 +1164,7 @@ void CMainScene::CreateMapDataInstancingObject()
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 #pragma endregion
 
+	/*
 #pragma region [Street Lamp]
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp).size());
 
@@ -1195,12 +1182,27 @@ void CMainScene::CreateMapDataInstancingObject()
 		pObject->Rotate(vecMapData[count].m_Rotation);
 		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormal, pObject);
 		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 #pragma endregion
+*/
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eStreetLamp, vecMapData[count].m_Scale);
+		pFbxMesh->Initialize(m_pd3dDevice);
 
+		pObject->SetMesh(pFbxMesh);
+		pObject->CreateAxisObject(m_pd3dDevice);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormal, pObject);
+	}
 #pragma region [Barricade]
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eBarricade).size());
 
@@ -1263,6 +1265,29 @@ void CMainScene::CreateMapDataInstancingObject()
 		pObject->SetMesh(pMesh);
 		pObject->SetPosition(vecMapData[count].m_Position);
 		//	pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+#pragma endregion
+
+#pragma region [StoneWall]
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall);
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall).size());
+	pMesh = new CCubeMeshTexturedIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
+
+	pInstancingShaders->SetMesh(pMesh);
+	pInstancingShaders->SetMaterial(1, TextureTag::eStoneWallD);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation.x - 90, vecMapData[count].m_Rotation.y - 180, vecMapData[count].m_Rotation.z);
 		pObject->CreateBoundingBox(m_pd3dDevice, pMesh);
 
 		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);

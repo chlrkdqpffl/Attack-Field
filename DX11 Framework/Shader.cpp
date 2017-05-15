@@ -503,7 +503,9 @@ void CInstancedObjectsShader::SetMaterial(int textureCount, ...)
 
 void CInstancedObjectsShader::CreateShader(ID3D11Device *pd3dDevice)
 {
-	if (m_pMesh) CObjectsShader::CreateShader(pd3dDevice, m_pMesh->GetType());
+	//if (m_pMesh) CObjectsShader::CreateShader(pd3dDevice, m_pMesh->GetType());
+	if (m_pMesh) 
+		CShader::CreateShader(pd3dDevice);
 }
 
 void CInstancedObjectsShader::BuildObjects(ID3D11Device *pd3dDevice)

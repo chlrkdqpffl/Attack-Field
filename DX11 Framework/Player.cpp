@@ -252,7 +252,8 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 		break;
 	}
 
-	m_pCharacter->SetPitch(10.0f);		// 이는 1인칭으로 했을 때 바라보는 방향 각도가 살짝 아래에 있기 때문에 offset으로 넣은 값
+	if(m_pCharacter)
+		m_pCharacter->SetPitch(10.0f);		// 이는 1인칭으로 했을 때 바라보는 방향 각도가 살짝 아래에 있기 때문에 offset으로 넣은 값
 
 	if (nCurrentCameraTag == CameraTag::eSpaceShip)
 	{

@@ -45,6 +45,9 @@ void CMapDataManager::InitializeManager()
 	AddMapData(ObjectTag::eGrass,						"../Assets/MapData/Grass.txt");
 	AddMapData(ObjectTag::eSideWalk1,					"../Assets/MapData/SideWalk.txt");
 	AddMapData(ObjectTag::eSideWalk2,					"../Assets/MapData/SideWalk2.txt");
+	AddMapData(ObjectTag::eStoneWall, "../Assets/MapData/StoneWall1.txt");
+
+
 	cout << endl;
 	cout << "=============================== Map Data Loading Complete ==================================" << endl;
 	cout << "============================================================================================" << endl << endl;

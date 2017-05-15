@@ -24,7 +24,8 @@ void CResourceManager::LoadResourceTitleScene()
 {
 	// BackGround Image
 	AddResourece(TextureTag::eTitleBackGroundD,		"../Assets/Image/UI/TitleScene.jpg");
-	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene.jpg");
+//	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene.jpg");
+	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene2.jpg");
 
 	// Character
 //	AddResourece(MeshTag::eTerrorist,				"../Assets/FBX Model/Character/Terrorist/Terrorist(use).model");
@@ -155,6 +156,8 @@ void CResourceManager::LoadMapData()
 
 	AddResourece(TextureTag::eSideWalk1D,		"../Assets/FBX Model/SideWalk/5.jpg");
 	AddResourece(TextureTag::eSideWalk2D,		"../Assets/FBX Model/SideWalk/2.jpg");
+	AddResourece(TextureTag::eStoneWallD, "../Assets/FBX Model/StoneWall/stonewall_diff.jpg");
+
 }
 
 void CResourceManager::LoadCharacterData()
