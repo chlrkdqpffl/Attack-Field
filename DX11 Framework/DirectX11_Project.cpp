@@ -76,7 +76,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	SERVER_MGR->sethandle(hMainWnd);
 
 #ifdef	USE_SERVER
-	SERVER_MGR->Server_init();
+//	SERVER_MGR->Server_init();
 #endif
 	if (!gGameFramework.OnCreate(hInstance, hMainWnd)) return(FALSE);
 

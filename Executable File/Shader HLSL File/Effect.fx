@@ -42,12 +42,12 @@ cbuffer cbSkyBox : register(b4)                             // PS Set
 */
 cbuffer cbRenderOption : register(b5)                       // PS Set
 {
-    float4 gbRenderOption : packoffset(c0);                 // (x : Fog Render, y : BoundingBox Render )
+    float4 gbRenderOption : packoffset(c0);                 // (x : Fog Render, y : BoundingBox Render,    z : UI Opacity )
 };
 
 cbuffer cbSkinned : register(b7)							// VS Set
 {
-	matrix gBoneTransform[80];
+	matrix gBoneTransform[60];
 };
 
 Texture2D gtxDiffuse			: register(t0);
@@ -595,7 +595,7 @@ float4 PSInstancedLightingColor(VS_INSTANCED_LIGHTING_OUTPUT input) : SV_Target
 	input.normalW = normalize(input.normalW);
 	float4 cIllumination = Lighting(input.positionW, input.normalW);
 
-		return(cIllumination);
+	return(cIllumination);
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------

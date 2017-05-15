@@ -13,7 +13,7 @@ cbuffer cbWorldMatrix : register(b1)
 
 cbuffer cbSkinned : register(b7)
 {
-    matrix gBoneTransform[80];
+    matrix gBoneTransform[60];
 };
 
 Texture2D gtxDiffuse : register(t0);

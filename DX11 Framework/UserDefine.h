@@ -6,15 +6,15 @@
 
 
 #define USE_CONSOLE					// Open Console Windows
-//#define USE_SERVER
+#define USE_SERVER
 
 //#define USE_DEFERRD_RENDER
 
 #define PROJECT_NAME					L"DX11_Framework ("
 
 #ifdef USE_SERVER
-	#define FRAME_BUFFER_WIDTH				800
-	#define FRAME_BUFFER_HEIGHT				450
+	#define FRAME_BUFFER_WIDTH				1600 //800
+	#define FRAME_BUFFER_HEIGHT				900 //450
 #else
 	#define FRAME_BUFFER_WIDTH				1600
 	#define FRAME_BUFFER_HEIGHT				900

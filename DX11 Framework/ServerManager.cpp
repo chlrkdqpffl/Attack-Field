@@ -332,10 +332,10 @@ void CServerManager::error_display(char *msg, int err_num)
 void CServerManager::Server_init()
 {
 	std::cout << " ip ют╥б : ";
-	char ip[20] = "127.0.0.1";
-//	char ip[20] = "192.168.43.79";
+//	char ip[20] = "127.0.0.1";
+	char ip[20];// = "192.168.43.79";
 //	rewind(stdin);
-//	std::cin >> ip;
+	std::cin >> ip;
 
 	WSADATA wsa;
 	WSAStartup(MAKEWORD(2, 2), &wsa);

@@ -506,6 +506,8 @@ void CInstancedObjectsShader::CreateShader(ID3D11Device *pd3dDevice)
 	//if (m_pMesh) CObjectsShader::CreateShader(pd3dDevice, m_pMesh->GetType());
 	if (m_pMesh) 
 		CShader::CreateShader(pd3dDevice);
+
+	// 이부분 수정해야함 가로등 인스턴싱시 제대로 안됨
 }
 
 void CInstancedObjectsShader::BuildObjects(ID3D11Device *pd3dDevice)
