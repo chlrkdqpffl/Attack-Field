@@ -10,7 +10,6 @@ class CUIObject
 	POINT					m_ptEndPos;
 	bool					m_bActive = true;
 	TextureTag				m_tagTexture;
-	float					m_fOpacity = 1.0f;
 
 public:
 	CUIObject(TextureTag);
@@ -27,8 +26,6 @@ public:
 
 	void SetMaterial(CMaterial* pMaterial) { m_pMaterial = pMaterial; }
 	void SetActive(bool set) { m_bActive = set; }
-	void SetOpacity(float set) { m_fOpacity = set; }
-	float GetOpacity() const { return m_fOpacity; }
 };
 
 class CUIManager
@@ -36,7 +33,6 @@ class CUIManager
 	CShader					*m_pUIShader = nullptr;
 	CUIObject*				m_pBackGroundUI = nullptr;
 	vector<CUIObject*>		m_vecUIObject;
-	float					m_fSettingOpacity = 1.0f;
 
 public:
 	CUIManager();
@@ -46,6 +42,7 @@ public:
 	
 	TextureTag FindCollisionUIObject(POINT mousePos);
 	void AddUIObject(CUIObject* object) { m_vecUIObject.push_back(object); };
+
 	void RenderAll(ID3D11DeviceContext* pDeviceContext);
 
 	// ----- Get, Setter ----- //

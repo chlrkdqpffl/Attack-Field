@@ -336,9 +336,6 @@
     <ClCompile Include="ServerManager.cpp">
       <Filter>소스 파일\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="UIShader.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -593,9 +590,6 @@
     <ClInclude Include="ServerManager.h">
       <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="UIShader.h">
-      <Filter>UI</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -663,9 +657,6 @@
     </None>
     <None Include="Shader HLSL File\PostProcessing.hlsli">
       <Filter>HLSL\Deferred</Filter>
-    </None>
-    <None Include="Shader HLSL File\UI.hlsli">
-      <Filter>HLSL</Filter>
     </None>
   </ItemGroup>
 </Project>

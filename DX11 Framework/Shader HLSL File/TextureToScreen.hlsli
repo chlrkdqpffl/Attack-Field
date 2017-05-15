@@ -51,7 +51,5 @@ VS_OUTPUT VSTextureToScreen(VS_INPUT input)
 
 float4 PSTextureToScreen(VS_OUTPUT input) : SV_Target
 {
-    float4 cColor = gtxtDiffuse.Sample(gssDefault, input.texCoord);
-
-    return (cColor.xyzw);
+    return gtxtDiffuse.Sample(gssDefault, input.texCoord);
 }

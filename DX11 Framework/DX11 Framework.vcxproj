@@ -232,7 +232,6 @@
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="UIMesh.cpp" />
     <ClCompile Include="UIObject.cpp" />
-    <ClCompile Include="UIShader.cpp" />
     <ClCompile Include="WaterGridMesh.cpp" />
     <ClCompile Include="WaterShader.cpp" />
     <ClCompile Include="Weapon.cpp" />
@@ -319,7 +318,6 @@
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="UIMesh.h" />
     <ClInclude Include="UIObject.h" />
-    <ClInclude Include="UIShader.h" />
     <ClInclude Include="UserDefine.h" />
     <ClInclude Include="UserTag.h" />
     <ClInclude Include="WaterGridMesh.h" />
@@ -366,7 +364,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </None>
     <None Include="Shader HLSL File\TextureToScreen.hlsli" />
-    <None Include="Shader HLSL File\UI.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

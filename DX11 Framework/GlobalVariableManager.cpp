@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GlobalVariableManager.h"
 
-XMFLOAT4		CGlobalVariableManager::g_vRenderOption = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+XMFLOAT4		CGlobalVariableManager::g_vRenderOption = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 ID3D11Buffer*	CGlobalVariableManager::g_pd3dcbRenderOption = nullptr;
 
 bool			CGlobalVariableManager::g_bShowGBuffer = true;
