@@ -10,39 +10,46 @@ public:
 	virtual ~CCharacterObject();
 
 protected:
-	CStateMachine<CCharacterObject>*	m_pStateUpper = nullptr;
-	CStateMachine<CCharacterObject>*	m_pStateLower = nullptr;
+	CStateMachine<CCharacterObject>*   m_pStateUpper = nullptr;
+	CStateMachine<CCharacterObject>*   m_pStateLower = nullptr;
 
-	CPlayer*				m_pPlayer = nullptr;
-	CWeapon*				m_pWeapon = nullptr;
-	XMFLOAT3				m_f3FiringDirection = XMFLOAT3(0, 0, 1);
-	float					m_fPitch = 0.0f;
-	float					m_fYaw = 0.0f;
-	XMFLOAT3				m_f3Velocity = XMFLOAT3(0, 0, 0);
-	XMFLOAT3				m_f3RelativeVelocity = XMFLOAT3(0, 0, 0);
+	CPlayer*            m_pPlayer = nullptr;
+	CWeapon*            m_pWeapon = nullptr;
+	XMFLOAT3            m_f3FiringDirection = XMFLOAT3(0, 0, 1);
+	float               m_fPitch = 0.0f;
+	float               m_fYaw = 0.0f;
+
+	float               m_bfPitch = 0.0f;
+	float               m_bfYaw = 0.0f;
+
+	XMFLOAT3            m_f3Velocity = XMFLOAT3(0, 0, 0);
+	XMFLOAT3            m_f3RelativeVelocity = XMFLOAT3(0, 0, 0);
 
 	// ----- State Variable ----- //
-	bool					m_bIsFire = false;
-	bool					m_bIsJump = false;
-	bool					m_bIsReload = false;
-	bool					m_bIsRun = false;
-	bool					m_bIsDeath = false;
-	bool					m_bIsDeathHead = false;
-	bool					m_bIsHeadHit = false;
-	bool					m_bTempIsRun = false;	// 임시로 달리기 속력 맞추려고 넣은 변수 이므로 사용 금지 - 추후 수정
-	DWORD					m_dwWalkSoundWatingTime = 0;
-	bool					m_bIsRespawn = false;
+	bool				m_bIsFire = false;
+	bool				m_bIsJump = false;
+	bool				m_bIsReload = false;
+	bool				m_bIsRun = false;
+	bool				m_bIsDeath = false;
+	bool				m_bIsDeathHead = false;
+	bool				m_bIsHeadHit = false;
+	bool				m_bTempIsRun = false;   // 임시로 달리기 속력 맞추려고 넣은 변수 이므로 사용 금지 - 추후 수정
+	DWORD               m_dwWalkSoundWatingTime = 0;
+	bool				m_bIsRespawn = false;
+	bool				m_bIsDeadly = false;
+	bool				m_bIsDeadlyAttack = false;
 
 	// ----- Game System Variable ----- //
-	UINT					m_nServerID = 0;
-	UINT					m_nLife = 0;
-	UINT					m_nArmorPoint = 0;
+	UINT				m_nServerID = 0;
+	UINT				m_nLife = 0;
+	UINT				m_nArmorPoint = 0;
 
 	// ----- Parts Collision Variable ----- // 
 
-	BoundingOrientedBox		m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
-	XMMATRIX				m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
-	CBoundingBoxMesh		*m_pPartsBoundingBoxMesh[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
+	BoundingOrientedBox      m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
+	XMMATRIX            m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
+	CBoundingBoxMesh      *m_pPartsBoundingBoxMesh[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
+
 
 protected:
 	virtual void CreateWeapon(ID3D11Device *pd3dDevice) = 0;
@@ -81,8 +88,8 @@ public:
 		else
 			return m_pStateLower;
 	}
-	void SetVelocity(XMFLOAT3 velocity) { 
-		m_f3Velocity = velocity; 
+	void SetVelocity(XMFLOAT3 velocity) {
+		m_f3Velocity = velocity;
 		m_f3RelativeVelocity = velocity;
 	}
 	XMFLOAT3 GetVelocity()const { return m_f3Velocity; }
@@ -95,6 +102,12 @@ public:
 	float GetYaw() const { return m_fYaw; }
 	void SetPitch(float pitch) { m_fPitch = pitch; }
 	float GetPitch() const { return m_fPitch; }
+	void Setbfyaw(float byaw) { m_bfYaw = byaw; }
+	void Setbfpitch(float bpitch) { m_bfPitch = bpitch; }
+
+	float GetminusPitch() { return m_bfPitch - m_fPitch; }
+	float GetminusYaw() { return m_bfYaw - m_fYaw; }
+
 	XMFLOAT3 GetFireDirection() const { return m_f3FiringDirection; }
 	void SetFireDirection(XMFLOAT3 GetFireDirection) { m_f3FiringDirection = GetFireDirection; }
 	void SetPartsWorldMtx();
@@ -108,7 +121,7 @@ public:
 	}
 	void SetIsRun(bool set) { m_bIsRun = set; }
 	bool GetIsRun() const { return  m_bIsRun; }
-	void SetIsTempRun(bool set) { m_bTempIsRun = set;}
+	void SetIsTempRun(bool set) { m_bTempIsRun = set; }
 	bool GetIsTempRun() const { return m_bTempIsRun; }
 	void SetIsFire(bool set) { m_bIsFire = set; }
 	bool GetIsFire() const { return  m_bIsFire; }
@@ -122,13 +135,18 @@ public:
 	bool GetIsHeadHit() const { return m_bIsHeadHit; }
 	void SetIsRespawn(bool set) { m_bIsRespawn = set; }
 	bool GetIsRespawn() const { return m_bIsRespawn; }
+	void SetIsDeadly(bool set) { m_bIsDeadly = set; }
+	bool GetIsDeadly() const { return m_bIsDeadly; }
+	void SetIsDeadlyAttack(bool set) { m_bIsDeadlyAttack = set; }
+	bool GetIsDeadlyAttack() const { return m_bIsDeadlyAttack; }
+	
 
 	// ----- Game System Function ----- //
 	void SetLife(UINT life) { m_nLife = life; }
 	UINT GetLife() const { return m_nLife; }
 	void SetArmorPoint(UINT armorPoint) { m_nArmorPoint = armorPoint; }
 	UINT GetArmorPoint() const { return m_nArmorPoint; }
-	
+
 	void SetServerID(UINT id) { m_nServerID = id; }
 	UINT GetServerID() const { return m_nServerID; }
 	UINT GetWeaponBulletCount() const { return m_pWeapon->GetBulletCount(); }

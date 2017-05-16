@@ -27,7 +27,7 @@ public:
 
 	void SetMaterial(CMaterial* pMaterial) { m_pMaterial = pMaterial; }
 	void SetActive(bool set) { m_bActive = set; }
-	void SetOpacity(float set) { m_fOpacity = set; }
+	void AddOpacity(float set);
 	float GetOpacity() const { return m_fOpacity; }
 };
 

@@ -17,6 +17,7 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 
 	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
+
 		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam) * m_fResizeRatioX, HIWORD(lParam) * m_fResizeRatioY);
 
 		/*
@@ -48,7 +49,6 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	CScene::OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
-	static bool bTest = false;
 	switch (nMessageID) {
 		case WM_KEYDOWN:
 			switch (wParam) {
@@ -88,13 +88,13 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_Z:
-		//		m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eIdle);
+				m_vecCharacterContainer[0]->SetIsDeadly(false);
 				break;
 			case VK_X:
-		//		m_vecCharacterContainer.back()->SetAnimation(AnimationData::CharacterAnim::eRun);
+				m_vecCharacterContainer[0]->SetIsDeadly(true);
 				break;
 			case VK_C:
-				
+				m_vecCharacterContainer[0]->SetIsDeadlyAttack(true);
 				break;
 			case VK_V:
 				
@@ -336,7 +336,7 @@ void CMainScene::Initialize()
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
 
-	pCharacter->SetPosition(40.0f, 1.9f, 2.0f);
+	pCharacter->SetPosition(60.0f, 2.5f, 15.0f);
 
 	m_vecBBoxRenderContainer.push_back(pCharacter);
 	m_vecCharacterContainer.push_back(pCharacter);
@@ -1350,10 +1350,10 @@ void CMainScene::CreateUIImage()
 	// Damaged Character
 	pUIObject = new CUIObject(TextureTag::eDamagedCharacterUI);
 	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.0f);
-	pUIObject->SetOpacity(0.0f);
+	pUIObject->AddOpacity(-1.0f);
 
 	m_pUIManager->AddUIObject(pUIObject);
-
+	m_pDamageUI = pUIObject;
 }
 
 void CMainScene::ReleaseObjects()
@@ -1487,6 +1487,47 @@ void CMainScene::CalcTime()
 	}
 }
 
+void CMainScene::ShowDeadlyUI()
+{
+	if (!m_pPlayer->GetIsDeadly())
+		return;
+
+	static bool bIsReverse = false;
+	float opacityValue = 0.5f;
+
+	if (bIsReverse) {
+		m_pDamageUI->AddOpacity(-1 * opacityValue * m_fDeltaTime);
+
+		if (m_pDamageUI->GetOpacity() <= 0.0f)
+			bIsReverse = false;
+	}
+	else {
+		m_pDamageUI->AddOpacity(opacityValue * m_fDeltaTime);
+
+		if (m_pDamageUI->GetOpacity() >= 1.0f)
+			bIsReverse = true;
+	}
+}
+
+void CMainScene::ShowDeadlyAttackUI()
+{
+	if (!m_pPlayer->GetIsDeadlyAttack())
+		return;
+	static bool bIsDeadlyAttack = true;
+
+	if (bIsDeadlyAttack) {
+		m_pDamageUI->AddOpacity(1.0f);
+		bIsDeadlyAttack = false;
+	}
+
+	m_pDamageUI->AddOpacity(-1 * m_fDeltaTime);
+	
+	if (m_pDamageUI->GetOpacity() <= 0.0f) {
+		bIsDeadlyAttack = true;
+		m_pPlayer->SetIsDeadlyAttack(false);
+	}
+}
+
 void CMainScene::Update(float fDeltaTime)
 {
 	// 충돌 정보 갱신
@@ -1520,6 +1561,8 @@ void CMainScene::Update(float fDeltaTime)
 	m_pParticleSystem->Update(fDeltaTime, m_fGametime);
 
 	CalcTime();
+	ShowDeadlyAttackUI();
+	ShowDeadlyUI();
 }
 
 void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
@@ -1626,6 +1669,7 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	DWORD	 HP = m_pPlayer->GetPlayerLife();
 	DWORD	 ID = SERVER_MGR->GetId();
 
+	/*
 	XMVECTOR temp = XMVector3LengthEst(m_pPlayer->GetvPosition());
 	str = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")\n";
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 50, 0xFFFFFFFF, FW1_LEFT);
@@ -1638,7 +1682,7 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 
 	str = "ID : (" + to_string(ID) + ")\n";
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 500, 50, 0xFFFFFFFF, FW1_LEFT);
-
+	*/
 	// Draw Select Object
 	if (m_pSelectedObject) {
 		XMFLOAT3 pos = m_pSelectedObject->GetPosition();

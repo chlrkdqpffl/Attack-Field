@@ -211,7 +211,7 @@ bool CGameFramework::CreateDirect3DDisplay()
 		if (SUCCEEDED(hResult = D3D11CreateDevice(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext))) 
 #else
 		// 아래의 코드는 릴리즈 모드시 전체화면이 되지 않는 문제로 인하여 잠시 제거. 외장 그래픽으로 전체화면이 안됨!
-		//if (SUCCEEDED(hResult = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
+//		if (SUCCEEDED(hResult = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
 		if (SUCCEEDED(hResult = D3D11CreateDevice(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
 #endif
 			break;
@@ -627,8 +627,8 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers(); 
 	
-	SceneTag startTag = SceneTag::eTitleScene;		// Title Scene 시작
-//	SceneTag startTag = SceneTag::eMainScene;		// Main Scene 시작
+//	SceneTag startTag = SceneTag::eTitleScene;		// Title Scene 시작
+	SceneTag startTag = SceneTag::eMainScene;		// Main Scene 시작
 	switch (startTag) {
 		case SceneTag::eTitleScene:
 			SCENE_MGR->ChangeScene(SceneTag::eTitleScene);
@@ -836,9 +836,10 @@ void CGameFramework::RenderDebugText()
 	else if (fps < 30)										   
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 40, 1500, 20, 0xFF0000FF, FW1_LEFT);
 
-	// Graphic Crad Info
-	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_wsGraphicBrandName, 30, 1330, 830, 0xFF41FF3A, FW1_RIGHT);
-	TEXT_MGR->RenderText(m_pd3dDeviceContext, "Video Memory : " + to_string(m_ui64VideoMemory / 1048576) + "MB", 30, 1330, 860, 0xFF0000FF, FW1_RIGHT);
-
+	if (SCENE_MGR->g_nowScene->GetSceneTag() == SceneTag::eMainScene) {
+		// Graphic Crad Info
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, m_wsGraphicBrandName, 30, 1330, 830, 0xFF41FF3A, FW1_RIGHT);
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, "Video Memory : " + to_string(m_ui64VideoMemory / 1048576) + "MB", 30, 1330, 860, 0xFF0000FF, FW1_RIGHT);
+	}
 	m_pd3dDeviceContext->GSSetShader(nullptr, nullptr, 0);
 }

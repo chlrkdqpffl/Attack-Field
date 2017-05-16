@@ -52,6 +52,9 @@ void CLoadingScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCam
 	if (m_bIsLoadingComplete) {
 		RESOURCE_MGR->LoadResourceAll();
 		SCENE_MGR->ChangeScene(SceneTag::eMainScene);
+
+#ifdef USE_SERVER
 		SERVER_MGR->Server_init();
+#endif
 	}
 }

@@ -24,38 +24,40 @@ void CServerManager::processpacket(char *ptr)
 	static bool first_time = true;
 	int id = 0;
 
+
+
 	switch (ptr[1])
 	{
-	case 1:	//계속 받을때
-		{
-			sc_packet_pos*			my_Pos_packet;
-			my_Pos_packet = reinterpret_cast<sc_packet_pos *>(ptr);
-			id = my_Pos_packet->id;
-
-			if (id == m_myid)
-			{
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(my_Pos_packet->hp);
-			}
-			else
-			{
-				int i = 0;
-				for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
-				{
-					if (character->GetServerID() == id)
-						break;
-						i++;
-				}
-
-
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRelativeVelocity(my_Pos_packet->Animation);
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(my_Pos_packet->hp);
-			}
-		}
-		break;
-	case 2:	//처음 받았을때.
+	case 1:   //계속 받을때
 	{
-		sc_packet_put_player*	my_put_packet;
+		sc_packet_pos*         my_Pos_packet;
+		my_Pos_packet = reinterpret_cast<sc_packet_pos *>(ptr);
+		id = my_Pos_packet->id;
+
+		if (id == m_myid)
+		{
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(my_Pos_packet->hp);
+		}
+		else
+		{
+			int i = 0;
+			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+			{
+				if (character->GetServerID() == id)
+					break;
+				i++;
+			}
+
+
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRelativeVelocity(my_Pos_packet->Animation);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(my_Pos_packet->hp);
+		}
+	}
+	break;
+	case 2:   //처음 받았을때.
+	{
+		sc_packet_put_player*   my_put_packet;
 		my_put_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
 		id = my_put_packet->id;
 
@@ -85,7 +87,7 @@ void CServerManager::processpacket(char *ptr)
 		}
 		else
 		{
-			CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject();	//객체 생성
+			CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject();   //객체 생성
 			pCharObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
 			pCharObject->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 
@@ -102,10 +104,10 @@ void CServerManager::processpacket(char *ptr)
 			UINT index;
 			int i = 0;
 			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
-				if (character->GetServerID() == my_put_packet->id) {
-					index = i;
-				}
-				i++;
+			if (character->GetServerID() == my_put_packet->id) {
+			index = i;
+			}
+			i++;
 			}
 			*/
 
@@ -118,9 +120,9 @@ void CServerManager::processpacket(char *ptr)
 
 
 	break;
-	case 3:	//총알...
+	case 3:   //총알...
 	{
-		sc_bullet_fire*			my_put_bulletfire;
+		sc_bullet_fire*         my_put_bulletfire;
 		my_put_bulletfire = reinterpret_cast<sc_bullet_fire *>(ptr);
 		id = my_put_bulletfire->id;
 
@@ -140,11 +142,11 @@ void CServerManager::processpacket(char *ptr)
 					i++;
 				}
 				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_bulletfire->FireDirection);
-	//			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Firing();
+				//         SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Firing();
 			}
 		}
 	}
-		break;
+	break;
 
 	case 4:
 	{
@@ -155,20 +157,20 @@ void CServerManager::processpacket(char *ptr)
 		}
 	}
 	break;
-	case 5:	//rotate된 값 처리
+	case 5:   //rotate된 값 처리
 	{
-		sc_rotate_vector*		my_put_rotate;
+		sc_rotate_vector*      my_put_rotate;
 		my_put_rotate = reinterpret_cast<sc_rotate_vector *>(ptr);
 		id = my_put_rotate->id;
 
 		if (id == m_myid)
 		{
 
-	//		SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetRotate(my_put_rotate->x, my_put_rotate->y, 0);
+			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
 		}
 		else
 		{
-	
+
 			int i = 0;
 			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
 			{
@@ -180,11 +182,11 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
 		}
 	}
-		break;
+	break;
 
 	case 6:
 	{
-		SC_Collison*			my_collision;
+		SC_Collison*         my_collision;
 		my_collision = reinterpret_cast<SC_Collison*>(ptr);
 
 		// 서버로부터 받은 아이디를 컨테이너에서 같은 아이디를 찾으면 해당 객체가 충돌 객체가 된다.
@@ -221,7 +223,6 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(packet->m_nLife);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsHeadHit(packet->m_bIsHeadHit);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsDeath(packet->m_bIsAlive);
-			cout << packet->m_bIsAlive << endl;
 		}
 		else
 		{
@@ -235,10 +236,10 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->m_nLife);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsHeadHit(packet->m_bIsHeadHit);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsDeath(packet->m_bIsAlive);
-			cout << packet->m_bIsAlive << endl;
+
 		}
 	}
-		break;
+	break;
 	case 8:
 	{
 		SC_System_kill* packet;
@@ -250,14 +251,14 @@ void CServerManager::processpacket(char *ptr)
 		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(packet->m_nBlueTeamTotalKill));
 	}
 	break;
-	case 9:
+	case 9:   //게임 타이머
 	{
-		SC_Starting_Timer*	packet;
+		SC_Starting_Timer*   packet;
 		packet = reinterpret_cast<SC_Starting_Timer *>(ptr);
 		SCENE_MGR->g_pMainScene->SetGameTime(packet->Starting_timer);
 		break;
 	}
-	case 10:
+	case 10:   //재장전
 	{
 		sc_Reload* packet;
 		packet = reinterpret_cast<sc_Reload *>(ptr);
@@ -277,7 +278,61 @@ void CServerManager::processpacket(char *ptr)
 				i++;
 			}
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(packet->reload);
-			cout << packet->reload << endl;
+
+		}
+		break;
+	}
+	case 11:   //리스폰
+	{
+		SC_Respawn *packet;
+		packet = reinterpret_cast<SC_Respawn *>(ptr);
+		id = packet->id;
+		if (id == m_myid)
+		{
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsRespawn(packet->m_bIsRespawn);
+			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
+		}
+		else
+		{
+			int i = 0;
+			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+			{
+				if (character->GetServerID() == id)
+					break;
+				i++;
+			}
+
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRespawn(packet->m_bIsRespawn);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(packet->m_f3Position);
+		}
+		break;
+	}
+	case 12:   //달리기 애니메이션.
+	{
+		SC_Run *packet;
+		packet = reinterpret_cast<SC_Run *>(ptr);
+		id = packet->id;
+		if (id == m_myid)
+		{
+
+		}
+		else
+		{
+			int i = 0;
+			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+			{
+				if (character->GetServerID() == id)
+					break;
+				i++;
+			}
+
+			//if (packet->Run)
+			{
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(packet->Run);
+				//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Running();
+			}
+
+
 		}
 		break;
 	}
@@ -332,9 +387,9 @@ void CServerManager::error_display(char *msg, int err_num)
 void CServerManager::Server_init()
 {
 	std::cout << " ip 입력 : ";
-//	char ip[20] = "127.0.0.1";
-	char ip[20];// = "192.168.43.79";
-//	rewind(stdin);
+	char ip[20];//= "127.0.0.1";
+				//   char ip[20] = "192.168.43.79";
+				//   rewind(stdin);
 	std::cin >> ip;
 
 	WSADATA wsa;
@@ -388,4 +443,3 @@ void CServerManager::Sendpacket(unsigned char* Data)
 
 	//cout<<"packet type : " << (int)Data[1] << endl;
 }
-

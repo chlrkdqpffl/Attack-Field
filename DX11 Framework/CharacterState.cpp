@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CharacterState.h"
 
-void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)	//살았는지 확인 or 헤드샷 확인.
+void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
@@ -11,10 +11,12 @@ void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)	//살았는
 		pLowerFSM->ChangeState(CState_Death::GetInstance());
 		return;
 	}
-	//else if (pCharacter->GetCollisionParts() == ChracterBoundingBoxParts::eHead) {
 	else if(pCharacter->GetIsHeadHit()) {
 		pUpperFSM->ChangeState(CState_HeadHit::GetInstance());
 		return;
+	}
+	else if (pCharacter->GetLife() < 20) {
+		pCharacter->SetIsDeadly(true);		// Show Deadly UI
 	}
 }
 
@@ -110,7 +112,6 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 	
-	//cout << "하체 : walk" << endl;
 	// Check Run
 	if (pCharacter->GetIsRun()) {
 		if (!pCharacter->GetIsReload()) {
@@ -366,6 +367,8 @@ void CState_Death::ExitState(CCharacterObject* pCharacter, AnimationData::Parts 
 	if (type == AnimationData::Parts::LowerBody)
 		return;
 
+	pCharacter->SetIsDeadly(false);
+	pCharacter->SetIsRespawn(false);
 	pCharacter->SetIsDeath(false);
 #ifndef USE_SERVER
 	pCharacter->Revival(100);
@@ -377,6 +380,7 @@ void CState_Death::ExitState(CCharacterObject* pCharacter, AnimationData::Parts 
 void CState_HeadHit::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eHeadHit);
+	pCharacter->SetIsDeadlyAttack(true);
 }
 
 void CState_HeadHit::UpdateUpperBodyState(CCharacterObject* pCharacter)

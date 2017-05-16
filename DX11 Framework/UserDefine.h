@@ -6,7 +6,7 @@
 
 
 #define USE_CONSOLE					// Open Console Windows
-#define USE_SERVER
+//#define USE_SERVER
 
 //#define USE_DEFERRD_RENDER
 
@@ -19,6 +19,7 @@
 	#define FRAME_BUFFER_WIDTH				1600
 	#define FRAME_BUFFER_HEIGHT				900
 #endif
+
 
 #define CUBEMAP_RENDER_TARGET_WIDTH		1024
 #define CUBEMAP_RENDER_TARGET_HEIGHT	1024

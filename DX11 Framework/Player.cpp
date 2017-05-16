@@ -50,19 +50,16 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	if (m_wKeyState & static_cast<int>(KeyInput::eForward)) {
 		d3dxvShift += XMLoadFloat3(&m_d3dxvLook);
 		relativeVelocity += XMVectorSet(0, 0, 1, 0);
-
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eBackward)) {
 		d3dxvShift -= XMLoadFloat3(&m_d3dxvLook);
 		relativeVelocity += XMVectorSet(0, 0, -1, 0);
-
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeft)) {
 		d3dxvShift -= XMLoadFloat3(&m_d3dxvRight);
 		relativeVelocity += XMVectorSet(-1, 0, 0, 0);
-
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRight)) {
@@ -156,19 +153,18 @@ void CPlayer::Rotate(float x, float y)
 				fPitch = -40;
 			}
 			m_pCharacter->SetPitch(fPitch);
-			if (y != 0.0f) {
-				float fYaw = m_pCharacter->GetYaw();
-				fYaw += y;
-				if (fYaw > 360.0f) fYaw -= 360.0f;
-				if (fYaw < 0.0f) fYaw += 360.0f;
-				m_pCharacter->SetYaw(fYaw);
-
-				mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_d3dxvUp), XMConvertToRadians(y));
-				XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
-				XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
-			}
-			m_pCamera->Rotate(x, y, 0);
 		}
+		if (y != 0.0f) {
+			float fYaw = m_pCharacter->GetYaw();
+			fYaw += y;
+			if (fYaw > 360.0f) fYaw -= 360.0f;
+			if (fYaw < 0.0f) fYaw += 360.0f;
+			m_pCharacter->SetYaw(fYaw);
+			mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_d3dxvUp), XMConvertToRadians(y));
+			XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
+			XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
+		}
+		m_pCamera->Rotate(x, y, 0);
 	}
 	else if (nCurrentCameraTag == CameraTag::eSpaceShip)
 	{
@@ -192,13 +188,19 @@ void CPlayer::Rotate(float x, float y)
 	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
 
 #ifdef	USE_SERVER
-	cs_rotate *rotate = reinterpret_cast<cs_rotate *>(SERVER_MGR->GetSendbuffer());
-	rotate->cx = x;
-	rotate->cy = y;
-	rotate->size = sizeof(cs_rotate);
-	rotate->type = CS_ROTATE;
+	if (abs(m_pCharacter->GetminusPitch()) >= 1.0f || abs(m_pCharacter->GetminusYaw()) >= 1.0f)
+	{
+		cs_rotate *rotate = reinterpret_cast<cs_rotate *>(SERVER_MGR->GetSendbuffer());
+		rotate->cx = m_pCharacter->GetPitch();
+		rotate->cy = m_pCharacter->GetYaw();
+		rotate->size = sizeof(cs_rotate);
+		rotate->type = CS_ROTATE;
 
-	SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(rotate));
+		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(rotate));
+
+		m_pCharacter->Setbfpitch(abs(m_pCharacter->GetPitch()));   //이전값 저장
+		m_pCharacter->Setbfyaw(abs(m_pCharacter->GetYaw()));      //이전값 저장
+}
 #endif
 }
 
@@ -233,7 +235,6 @@ void CPlayer::Update(float fDeltaTime)
 	mtx._21 = m_d3dxvUp.x;			mtx._22 = m_d3dxvUp.y;			mtx._23 = m_d3dxvUp.z;
 	mtx._31 = m_d3dxvLook.x;		mtx._32 = m_d3dxvLook.y;		mtx._33 = m_d3dxvLook.z;
 	mtx._41 = m_d3dxvPosition.x;	mtx._42 = m_d3dxvPosition.y;	mtx._43 = m_d3dxvPosition.z;
-
 	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&mtx);
 }
 

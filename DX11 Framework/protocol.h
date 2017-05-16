@@ -1,84 +1,85 @@
 #pragma once
 
 
-#define CS_KEYTYPE		1
-#define CS_ROTATE		2
-#define	CS_WEAPONE		3
-#define CS_HEAD_HIT		4
+#define CS_KEYTYPE      1
+#define CS_ROTATE      2
+#define   CS_WEAPONE      3
+#define CS_HEAD_HIT      4
 
 
-#define RemovePlayer	6
+#define RemovePlayer   6
 
 
 
 #pragma pack(push, 1)
-struct cs_key_input {	//키버튼 받았을때 
+struct cs_key_input {   //키버튼 받았을때 
 
-	BYTE	size;					//1 2 12 2
-	volatile BYTE	type;
-	XMFLOAT3	 Animation;
-	WORD	key_button;
+	BYTE   size;               //1 2 12 2
+	volatile BYTE   type;
 
-	float	x;
-	float	y;
-	float	z;
+	XMFLOAT3    Animation;
+	WORD   key_button;
+
+	float   x;
+	float   y;
+	float   z;
 
 	XMFLOAT3 FireDirection;
 
 };
 
-struct cs_rotate {	//클라에서 화면을 움직였을때 
+struct cs_rotate {   //클라에서 화면을 움직였을때 
 
-	BYTE	size;
-	volatile BYTE	type;
+	BYTE   size;
+	volatile BYTE   type;
 
 	float cx;
 	float cy;
-	
+
 
 
 };
 
-struct sc_packet_put_player {	//서버에서 처음 접속했을때 위치값과 ID를 부여한다.
+struct sc_packet_put_player {   //서버에서 처음 접속했을때 위치값과 ID를 부여한다.
 
 	BYTE size;
 	volatile BYTE type;
 
-	WORD	id;
+	WORD   id;
 
 	float x;
 	float y;
 	float z;
 
-	XMFLOAT3	Animation;
+	XMFLOAT3   Animation;
 
-	BYTE	hp;
+	BYTE   hp;
 
-	BYTE	Goal;
-	BYTE	RED;
-	BYTE	Blue;
-	float	timer;
+	BYTE   Goal;
+	BYTE   RED;
+	BYTE   Blue;
+	float   timer;
 
 };
 
-struct sc_packet_pos	//서버에서 처리된 값을 클라에게 보낸다. 
+struct sc_packet_pos   //서버에서 처리된 값을 클라에게 보낸다. 
 {
 	BYTE size;
 	volatile BYTE type;
 
-	WORD	id;
+	WORD   id;
 
-	float	x;
-	float	y;
-	float	z;
+	float   x;
+	float   y;
+	float   z;
 
-	XMFLOAT3	Animation;
-	BYTE	hp;
+	XMFLOAT3   Animation;
+	BYTE   hp;
 
-	
+
 };
 
-struct sc_rotate_vector	
+struct sc_rotate_vector
 {
 	BYTE size;
 	BYTE type;
@@ -103,16 +104,16 @@ struct sc_bullet_fire
 };
 
 
-struct sc_packet_remove_player {	//접속이 종료되면 보내는 패킷이다.
+struct sc_packet_remove_player {   //접속이 종료되면 보내는 패킷이다.
 	BYTE size;
 	BYTE type;
 	WORD id;
 };
 
-struct cs_weapon {	//클라에서 무기의 정보를 보낸다.
+struct cs_weapon {   //클라에서 무기의 정보를 보낸다.
 	BYTE size;
 	BYTE type;
-	
+
 	XMFLOAT3 direction;
 	XMFLOAT3 position;
 
@@ -158,13 +159,14 @@ struct SC_System_kill
 	BYTE m_nRedTeamTotalKill;
 	BYTE m_nBlueTeamTotalKill;
 
-	//FLOAT Time;	//나중에 시간 넣어서 보내준다.
+	//FLOAT Time;   //나중에 시간 넣어서 보내준다.
 };
 
 struct SC_Respawn
 {
 	BYTE size;
 	BYTE type;
+	BYTE id;
 
 	BOOL m_bIsRespawn;
 	XMFLOAT3 m_f3Position;
@@ -187,6 +189,18 @@ struct sc_Reload
 	WORD id;
 
 	bool reload;
+
+};
+
+struct SC_Run
+{
+	BYTE size;
+	BYTE type;
+
+	WORD id;
+
+	bool Run;
+
 
 };
 

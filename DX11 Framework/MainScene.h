@@ -36,6 +36,8 @@ public:
 
 	void RenderBoundingBox();
 	void CalcTime();
+	void ShowDeadlyUI();
+	void ShowDeadlyAttackUI();
 
 	vector<CCharacterObject*> &GetCharcontainer() { return m_vecCharacterContainer; }
 	vector<CGameObject*>	&GetBbBoxcontainer()	{return m_vecBBoxRenderContainer; }
@@ -63,4 +65,5 @@ private:
 	UINT							m_nGameTime = 0;
 	UINT							m_nRedTeamTotalKill = 0;
 	UINT							m_nBlueTeamTotalKill = 0;
+	CUIObject*						m_pDamageUI = nullptr;
 };

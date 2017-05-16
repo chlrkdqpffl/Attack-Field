@@ -37,6 +37,12 @@ void CUIObject::Initialize(ID3D11Device* pDevice, POINT startPos, POINT endPos, 
 	m_pMesh = new CUIMesh(pDevice, m_ptStartPos, m_ptEndPos, zPos);
 }
 
+void CUIObject::AddOpacity(float set)
+{
+	m_fOpacity += set;
+	m_fOpacity = clamp(m_fOpacity, 0.0f, 1.0f);
+}
+
 void CUIObject::Render(ID3D11DeviceContext* pDeviceContext)
 {
 	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pDeviceContext);
