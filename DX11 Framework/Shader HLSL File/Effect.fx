@@ -282,6 +282,25 @@ struct VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT
 //	float2 texCoordShadow : TEXCOORD1;
 };
 
+struct VS_INSTANCED_TEXTURED_TANGENT_LIGHTING_INPUT
+{
+    float3 position : POSITION;
+    float3 normal : NORMAL;
+    float3 tangent : TANGENT;
+    float2 texCoord : TEXCOORD0;
+    float4x4 mtxTransform : INSTANCEPOS;
+};
+
+struct VS_INSTANCED_TEXTURED_TANGENT_LIGHTING_OUTPUT
+{
+    float4 position : SV_POSITION;
+    float3 positionW : POSITION;
+    float3 normalW : NORMAL;
+    float3 tangentW : TANGENT;
+    float2 texCoord : TEXCOORD0;
+};
+
+
 //-------------------------------------------------------------------------------------------------------------------------------
 
 struct VS_SKINNED_INPUT
@@ -565,7 +584,8 @@ float4 PSSkyBoxTexturedColor(VS_TEXTURED_OUTPUT input) : SV_Target
 #endif
 #endif
 
-//-------------------------------------------------------------------------------------------------------------------------------
+// ====================================================================================================== //
+// ============================================= Instancing ============================================= //
 VS_INSTANCED_DIFFUSED_OUTPUT VSInstancedDiffusedColor(VS_INSTANCED_DIFFUSED_INPUT input)
 {
 	VS_INSTANCED_DIFFUSED_OUTPUT output = (VS_INSTANCED_DIFFUSED_OUTPUT)0;
@@ -579,7 +599,6 @@ float4 PSInstancedDiffusedColor(VS_INSTANCED_DIFFUSED_OUTPUT input) : SV_Target
 	return(input.color);
 }
 
-//-------------------------------------------------------------------------------------------------------------------------------
 VS_INSTANCED_LIGHTING_OUTPUT VSInstancedLightingColor(VS_INSTANCED_LIGHTING_INPUT input)
 {
 	VS_INSTANCED_LIGHTING_OUTPUT output = (VS_INSTANCED_LIGHTING_OUTPUT)0;
@@ -598,7 +617,6 @@ float4 PSInstancedLightingColor(VS_INSTANCED_LIGHTING_OUTPUT input) : SV_Target
 	return(cIllumination);
 }
 
-//-------------------------------------------------------------------------------------------------------------------------------
 VS_INSTANCED_TEXTURED_OUTPUT VSInstancedTexturedColor(VS_INSTANCED_TEXTURED_INPUT input)
 {
 	VS_INSTANCED_TEXTURED_OUTPUT output = (VS_INSTANCED_TEXTURED_OUTPUT)0;
@@ -615,7 +633,6 @@ float4 PSInstancedTexturedColor(VS_INSTANCED_TEXTURED_OUTPUT input) : SV_Target
 	return(cColor);
 }
 
-//-------------------------------------------------------------------------------------------------------------------------------
 VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT VSInstancedTexturedLightingColor(VS_INSTANCED_TEXTURED_LIGHTING_INPUT input)
 {
 	VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT output = (VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT)0;
@@ -636,4 +653,27 @@ float4 PSInstancedTexturedLightingColor(VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT in
         cColor = Fog(cColor, input.positionW);
 
 	return(cColor);
+}
+
+VS_INSTANCED_TEXTURED_TANGENT_LIGHTING_OUTPUT VSInstancedTexturedTangentLighting(VS_INSTANCED_TEXTURED_TANGENT_LIGHTING_INPUT input)
+{
+    VS_INSTANCED_TEXTURED_TANGENT_LIGHTING_OUTPUT output = (VS_INSTANCED_TEXTURED_TANGENT_LIGHTING_OUTPUT) 0;
+    output.positionW = mul(float4(input.position, 1.0f), input.mtxTransform).xyz;
+    output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
+    output.normalW = mul(input.normal, (float3x3) input.mtxTransform);
+    output.tangentW = mul(input.tangent, (float3x3) input.mtxTransform);
+    output.texCoord = input.texCoord;
+    return (output);
+}
+
+float4 PSInstancedTexturedTangentLighting(VS_INSTANCED_TEXTURED_TANGENT_LIGHTING_OUTPUT input) : SV_Target
+{
+    float3 normalW = CalcNormal(input.normalW, input.tangentW, input.texCoord);
+    float4 cIllumination = Lighting(input.positionW, normalW);
+
+//    input.normalW = normalize(input.normalW);
+ //   float4 cIllumination = Lighting(input.positionW, input.normalW);
+    float4 cColor = gtxDiffuse.Sample(gssDefault, input.texCoord) * cIllumination;
+
+    return cColor;
 }

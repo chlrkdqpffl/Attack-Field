@@ -31,6 +31,7 @@ public:
 
 	void CreateMapDataObject();
 	void CreateMapDataInstancingObject();
+	void CreateTestingObject();
 	void ModifiedSelectObject();
 	void AddShaderObject(ShaderTag tag, CGameObject* pObject);
 

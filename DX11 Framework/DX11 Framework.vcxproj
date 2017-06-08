@@ -353,11 +353,13 @@
     <None Include="Shader HLSL File\BoundingBox.hlsli" />
     <None Include="Shader HLSL File\CharacterSkinnedNormal.hlsli" />
     <None Include="Shader HLSL File\common.hlsli" />
+    <None Include="Shader HLSL File\DeferredCharacterSkinnedNormal.hlsli" />
     <None Include="Shader HLSL File\DeferredShading.hlsli" />
     <None Include="Shader HLSL File\DisplacementMap.hlsli" />
     <None Include="Shader HLSL File\CharacterSkinned.hlsli" />
     <None Include="Shader HLSL File\Fog.hlsli" />
     <None Include="Shader HLSL File\GBuffer.hlsli" />
+    <None Include="Shader HLSL File\GBufferStructure.hlsli" />
     <None Include="Shader HLSL File\Light.hlsli" />
     <None Include="Shader HLSL File\Normal.hlsli" />
     <None Include="Shader HLSL File\NormalMap.hlsli" />

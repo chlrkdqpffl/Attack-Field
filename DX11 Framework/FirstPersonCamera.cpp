@@ -4,10 +4,8 @@
 CFirstPersonCamera::CFirstPersonCamera(CCamera *pCamera) : CCamera(pCamera)
 {
 	m_tagCamera = CameraTag::eFirstPerson;
-	if (pCamera)
-	{
-		if (pCamera->GetCameraTag() == CameraTag::eSpaceShip)
-		{
+	if (pCamera) {
+		if (pCamera->GetCameraTag() == CameraTag::eSpaceShip) {
 			XMStoreFloat3(&m_d3dxvUp, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 			m_d3dxvRight.y = 0.0f;
 			m_d3dxvLook.y = 0.0f;

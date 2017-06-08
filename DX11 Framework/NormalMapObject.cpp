@@ -4,7 +4,6 @@
 
 CNormalMapObject::CNormalMapObject()
 {
-//	AddRef();
 }
 
 CNormalMapObject::~CNormalMapObject()
@@ -31,7 +30,7 @@ void CNormalMapObject::CreateMaterial()
 
 void CNormalMapObject::CreateMesh(ID3D11Device *pd3dDevice)
 {
-	CMesh* pMesh = new CNormalMapCubeMesh(pd3dDevice, 200, 200, 200);
+	CMesh* pMesh = new CNormalMapCubeMesh(pd3dDevice, 20, 20, 20);
 //	CMesh* pMesh = new CCubeMeshTexturedIlluminated(pd3dDevice, 300, 300, 300);
 	SetMesh(pMesh);
 }
@@ -39,6 +38,5 @@ void CNormalMapObject::CreateMesh(ID3D11Device *pd3dDevice)
 void CNormalMapObject::CreateShader(ID3D11Device *pd3dDevice)
 {
 	m_pShader = new CNormalDisplaceMapShader();
-//	m_pShader = new CNormalMapShader();
 	m_pShader->CreateShader(pd3dDevice);
 }

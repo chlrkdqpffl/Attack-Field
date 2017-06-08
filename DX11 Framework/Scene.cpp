@@ -258,10 +258,6 @@ void CScene::Update(float fDeltaTime)
 	*/
 }
 
-void CScene::OnPreRender(ID3D11DeviceContext *pd3dDeviceContext)
-{
-}
-
 void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 {
 	if (m_pSkyBox)
@@ -270,6 +266,8 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 	// WireFrame Mode
 	if (GLOBAL_MGR->g_bShowWireFrame)
 		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
+	else 
+		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 
 	for (auto& object : m_vecObjectsContainer)
 		if(object->IsVisible(pCamera))
@@ -280,6 +278,6 @@ void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 	for (auto& instancedShaderObject : m_vecInstancedObjectsShaderContainer)
 		instancedShaderObject->Render(pd3dDeviceContext, pCamera);	
 
-	if (m_pSphereObject)
-		m_pSphereObject->Render(pd3dDeviceContext, pCamera);
+//	if (m_pSphereObject)
+//		m_pSphereObject->Render(pd3dDeviceContext, pCamera);
 }

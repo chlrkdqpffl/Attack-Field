@@ -149,16 +149,18 @@ void CCamera::UpdateConstantBuffer_CameraPos(ID3D11DeviceContext *pd3dDeviceCont
 	XMStoreFloat4(pcbCameraPosition, *pf3CameraPosition);
 	pd3dDeviceContext->Unmap(m_pd3dcbCameraPosition, 0);
 
-//	pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
-	pd3dDeviceContext->HSSetConstantBuffers(HS_CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
-	pd3dDeviceContext->DSSetConstantBuffers(DS_CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
-	pd3dDeviceContext->PSSetConstantBuffers(PS_CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
+//	pd3dDeviceContext->VSSetConstantBuffers(CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
+	pd3dDeviceContext->HSSetConstantBuffers(CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
+	pd3dDeviceContext->DSSetConstantBuffers(CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
+	pd3dDeviceContext->PSSetConstantBuffers(CB_SLOT_CAMERA_POSITION, 1, &m_pd3dcbCameraPosition);
 }
 
 void CCamera::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	UpdateConstantBuffer_ViewProjection(pd3dDeviceContext, &XMLoadFloat4x4(&m_d3dxmtxView), &XMLoadFloat4x4(&m_d3dxmtxProjection));
-	UpdateConstantBuffer_CameraPos(pd3dDeviceContext, &XMLoadFloat3(&m_d3dxvPosition));
+
+	if (!XMVector3Equal(XMLoadFloat3(&m_PrevPosition), XMLoadFloat3(&m_d3dxvPosition)))
+		UpdateConstantBuffer_CameraPos(pd3dDeviceContext, &XMLoadFloat3(&m_d3dxvPosition));
 }
 
 void CCamera::CalculateFrustumPlanes()

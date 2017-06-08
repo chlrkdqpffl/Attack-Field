@@ -51,8 +51,8 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(1009294);
-//	_CrtSetBreakAlloc(1388119);
+//	_CrtSetBreakAlloc(1287831);
+//	_CrtSetBreakAlloc(4060409);
 //	_CrtSetBreakAlloc(289);
 //	_CrtSetBreakAlloc(205);		// 16
 //	_CrtSetBreakAlloc(206);		// 16
@@ -741,8 +741,6 @@ void CGameFramework::FrameAdvance()
 	ProcessInput();
 	UpdateObjects();
 
-	SCENE_MGR->g_nowScene->OnPreRender(m_pd3dDeviceContext);
-	
 	/*
 	// 블러링
 	ID3D11RenderTargetView *pd3dRenderTargetView[1] = { m_pd3dRTVOffScreen };
@@ -788,8 +786,6 @@ void CGameFramework::FrameAdvance()
 #ifdef _WITH_PLAYER_TOP
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
-	
-	SCENE_MGR->g_nowScene->RenderAllText(m_pd3dDeviceContext);		// 텍스트는 마지막에 렌더링
 
 // #if defined(DEBUG) || defined(_DEBUG)
 	RenderDebugText();

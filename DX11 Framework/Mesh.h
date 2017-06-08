@@ -131,9 +131,9 @@ protected:
 	ID3D11Buffer					*m_pd3dNormalBuffer;
 public:
 	XMVECTOR CalculateTriAngleNormal(UINT nIndex0, UINT nIndex1, UINT nIndex2);
-	void SetTriAngleListVertexNormal(XMVECTOR *pd3dxvNormals);
-	void SetAverageVertexNormal(XMVECTOR *pd3dxvNormals, int nPrimitives, int nOffset, bool bStrip);
-	void CalculateVertexNormal(XMVECTOR *pd3dxvNormals);
+	void SetTriAngleListVertexNormal(XMFLOAT3 *pd3dxvNormals);
+	void SetAverageVertexNormal(XMFLOAT3 *pd3dxvNormals, int nPrimitives, int nOffset, bool bStrip);
+	void CalculateVertexNormal(XMFLOAT3*pd3dxvNormals);
 };
 
 //------------------------------------------------------------------------------------------------
@@ -172,14 +172,14 @@ protected:
 class CMeshNormalMap : public CMeshTexturedIlluminated
 {
 public:
-	CMeshNormalMap(ID3D11Device *pd3dDevice);
+	CMeshNormalMap();
 	virtual ~CMeshNormalMap();
 
 	XMVECTOR CalculateTriAngleTangent(UINT nIndex0, UINT nIndex1, UINT nIndex2);
 
-	void SetTriAngleListVertexTangent(XMVECTOR *pd3dxvTangents);
-	void SetAverageVertexTangent(XMVECTOR *pd3dxvTangents, int nPrimitives, int nOffset, bool bStrip);
-	void CalculateVertexTangent(XMVECTOR *pd3dxvTangents);
+	void SetTriAngleListVertexTangent(XMFLOAT3 *pd3dxvTangents);
+	void SetAverageVertexTangent(XMFLOAT3 *pd3dxvTangents, int nPrimitives, int nOffset, bool bStrip);
+	void CalculateVertexTangent(XMFLOAT3 *pd3dxvTangents);
 
 protected:
 	XMFLOAT2				*m_pTexCoords = nullptr;
@@ -254,9 +254,23 @@ public:
 	virtual ~CCubeMeshTexturedIlluminated();
 };
 
+class CCubeMeshTexturedTangenteIlluminated : public CMeshNormalMap
+{
+public:
+	CCubeMeshTexturedTangenteIlluminated(ID3D11Device *pd3dDevice, float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f);
+	virtual ~CCubeMeshTexturedTangenteIlluminated();
+};
+
 class CSphereMeshTexturedIlluminated : public CMeshTexturedIlluminated
 {
 public:
 	CSphereMeshTexturedIlluminated(ID3D11Device *pd3dDevice, float fRadius = 2.0f, int nSlices = 20, int nStacks = 20);
 	virtual ~CSphereMeshTexturedIlluminated();
+};
+
+class CCubePatchMesh : public CMeshNormalMap
+{
+public:
+	CCubePatchMesh(ID3D11Device *pd3dDevice, float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f);
+	virtual ~CCubePatchMesh();
 };

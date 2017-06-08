@@ -21,26 +21,27 @@ void CThirdPersonCamera::Update(float fDeltaTime)
 {
 	XMFLOAT4X4 mtxRotate;
 	XMStoreFloat4x4(&mtxRotate, XMMatrixIdentity());
-	XMFLOAT3 d3dxvRight = m_pPlayer->GetRight();
-	XMFLOAT3 d3dxvUp = m_pPlayer->GetUp();
-	XMFLOAT3 d3dxvLook = m_pPlayer->GetLook();
-	mtxRotate._11 = d3dxvRight.x; mtxRotate._21 = d3dxvUp.x; mtxRotate._31 = d3dxvLook.x;
-	mtxRotate._12 = d3dxvRight.y; mtxRotate._22 = d3dxvUp.y; mtxRotate._32 = d3dxvLook.y;
-	mtxRotate._13 = d3dxvRight.z; mtxRotate._23 = d3dxvUp.z; mtxRotate._33 = d3dxvLook.z;
+	XMFLOAT3 vRight = m_pPlayer->GetRight();
+	XMFLOAT3 vUp = m_pPlayer->GetUp();
+	XMFLOAT3 vLook = m_pPlayer->GetLook();
+	mtxRotate._11 = vRight.x; mtxRotate._21 = vUp.x; mtxRotate._31 = vLook.x;
+	mtxRotate._12 = vRight.y; mtxRotate._22 = vUp.y; mtxRotate._32 = vLook.y;
+	mtxRotate._13 = vRight.z; mtxRotate._23 = vUp.z; mtxRotate._33 = vLook.z;
 
-	XMVECTOR d3dxvOffset;
-	d3dxvOffset = XMVector3TransformCoord(XMLoadFloat3(&m_d3dxvOffset), XMLoadFloat4x4(&mtxRotate));
-	XMVECTOR d3dxvPosition = m_pPlayer->GetvPosition() + d3dxvOffset;
-	XMVECTOR d3dxvDirection = d3dxvPosition - XMLoadFloat3(&m_d3dxvPosition);
-	float fLength = XMVectorGetX(XMVector3Length(d3dxvDirection));
-	d3dxvDirection = XMVector3Normalize(d3dxvDirection);
+	XMVECTOR vOffset;
+	vOffset = XMVector3TransformCoord(XMLoadFloat3(&m_d3dxvOffset), XMLoadFloat4x4(&mtxRotate));
+	XMVECTOR vPosition = m_pPlayer->GetvPosition() + vOffset;
+	XMVECTOR vDirection = vPosition - XMLoadFloat3(&m_d3dxvPosition);
+	float fLength = XMVectorGetX(XMVector3Length(vDirection));
+	vDirection = XMVector3Normalize(vDirection);
 	float fTimeLagScale = (m_fTimeLag) ? fDeltaTime * (1.0f / m_fTimeLag) : 1.0f;
 	float fDistance = fLength * fTimeLagScale;
 	if (fDistance > fLength) fDistance = fLength;
 	if (fLength < 0.01f) fDistance = fLength;
+
 	if (fDistance > 0)
 	{
-		XMStoreFloat3(&m_d3dxvPosition, XMLoadFloat3(&m_d3dxvPosition) += d3dxvDirection * fDistance);
+		XMStoreFloat3(&m_d3dxvPosition, XMLoadFloat3(&m_d3dxvPosition) += vDirection * fDistance);
 		SetLookAt(m_pPlayer->GetvPosition());
 	}
 }

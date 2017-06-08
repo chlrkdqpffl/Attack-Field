@@ -49,7 +49,7 @@ bool CResourceManager::LoadResourceAll()
 	LoadMapData();
 	
 	cout << " ----- Environment Data -----" << endl;
-	LoadEnvironmentData();
+//	LoadEnvironmentData();
 	
 	cout << " ----- UI Data -----" << endl;
 	LoadUIData();
@@ -154,10 +154,10 @@ void CResourceManager::LoadMapData()
 	AddResourece(MeshTag::eBarricade,			"../Assets/FBX Model/Barricade/streetprops_barricade3.model");
 
 
-	AddResourece(TextureTag::eSideWalk1D,		"../Assets/FBX Model/SideWalk/5.jpg");
-	AddResourece(TextureTag::eSideWalk2D,		"../Assets/FBX Model/SideWalk/2.jpg");
-	AddResourece(TextureTag::eStoneWallD, "../Assets/FBX Model/StoneWall/stonewall_diff.jpg");
-
+	AddResourece(TextureTag::eSideWalk1D,		"../Assets/FBX Model/SideWalk/5Diffuse.jpg");
+	AddResourece(TextureTag::eSideWalk1ND,		"../Assets/FBX Model/SideWalk/5ND.dds");
+	AddResourece(TextureTag::eSideWalk2D,		"../Assets/FBX Model/SideWalk/2Diffuse.jpg");
+	AddResourece(TextureTag::eSideWalk2N,		"../Assets/FBX Model/SideWalk/2NorMap.png");
 }
 
 void CResourceManager::LoadCharacterData()
@@ -182,17 +182,19 @@ void CResourceManager::LoadCharacterData()
 
 void CResourceManager::LoadEtcData()
 {
-	AddResourece(TextureTag::eStoneD,		"../Assets/Image/Miscellaneous/stones.dds");
-	AddResourece(TextureTag::eStoneN,		"../Assets/Image/Miscellaneous/stones_nmap.dds");
-	AddResourece(TextureTag::eStone02D,		"../Assets/Image/Miscellaneous/Stone02_Diffuse.jpg");
-	AddResourece(TextureTag::eStone02N,		"../Assets/Image/Miscellaneous/Stone02_nmap.dds");
+	AddResourece(TextureTag::eStoneD,		"../Assets/Image/Miscellaneous/StonesD.dds");
+	AddResourece(TextureTag::eStoneND,		"../Assets/Image/Miscellaneous/StoneND.dds");
+	
+	AddResourece(TextureTag::eStoneWallD,	"../Assets/FBX Model/StoneWall/stonewall_diff.jpg");
+	AddResourece(TextureTag::eStoneWallN,	"../Assets/FBX Model/StoneWall/stonewall_norm.jpg");
+
 	AddResourece(TextureTag::eBricksD,		"../Assets/Image/Miscellaneous/bricks.dds");
 	AddResourece(TextureTag::eBricksN,		"../Assets/Image/Miscellaneous/bricks_nmap.dds");
 	AddResourece(TextureTag::eWallD,		"../Assets/Image/Miscellaneous/wall.jpg");
 	AddResourece(TextureTag::eWallND,		"../Assets/Image/Miscellaneous/wall_NM_height.dds");
 
 	AddResourece(MeshTag::eTest,			"../Assets/FBX Model/character.model");
-//	AddResourece(MeshTag::eTest2,			"../Assets/FBX Model/Character/Bumblebi_ani.model");
+
 }
 
 void CResourceManager::AddResourece(const TextureTag& textureTag, const string& source)

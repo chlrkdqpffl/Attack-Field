@@ -16,8 +16,6 @@ protected:
 	float						m_fSpeed = 0;
 	XMFLOAT3					m_d3dxvVelocity;
 	XMFLOAT3     				m_d3dxvGravity;
-	float           			m_fMaxVelocityXZ;
-	float           			m_fMaxVelocityY;
 	float           			m_fFriction;
 
 	LPVOID						m_pPlayerUpdatedContext = nullptr;
@@ -66,8 +64,7 @@ public:
 	void SetFloorCollision(bool isCollision) { m_bIsFloorCollision = isCollision; }
 	void SetSpeed(float fSpeed) { m_fSpeed = fSpeed; }
 	void SetFriction(float fFriction) { m_fFriction = fFriction; }
-	void SetMaxVelocityXZ(float fMaxVelocity) { m_fMaxVelocityXZ = fMaxVelocity; }
-	void SetMaxVelocityY(float fMaxVelocity) { m_fMaxVelocityY = fMaxVelocity; }
+
 	void SetvVelocity(XMVECTOR d3dxvVelocity) { XMStoreFloat3(&m_d3dxvVelocity, d3dxvVelocity); }
 	void SetVelocity(XMFLOAT3 d3dxvVelocity) { m_d3dxvVelocity = d3dxvVelocity; }
 	void SetPosition(XMVECTOR d3dxvPosition)

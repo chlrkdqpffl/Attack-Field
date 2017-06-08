@@ -212,49 +212,57 @@ void CShader::CreateShader(ID3D11Device *pd3dDevice, D3D11_INPUT_ELEMENT_DESC *p
 void CShader::CreateShader(ID3D11Device *pd3dDevice, ShaderTag shaderTag)
 {
 	LPCSTR pszVSShaderName = NULL, pszVSShaderModel = "vs_5_0", pszPSShaderName = NULL, pszPSShaderModel = "ps_5_0";
-	bool isDeferredShader = false;
+	m_tagShader = shaderTag;
 
 	switch (shaderTag) {
 	case ShaderTag::eColor:
-		m_tagShader = ShaderTag::eColor;
 		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_COLOR_ELEMENT;
 		break;
 	case ShaderTag::eNormal:
-		m_tagShader = ShaderTag::eNormal;
 		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT;
 		break;
 	case ShaderTag::eTexture:
-		m_tagShader = ShaderTag::eTexture;
 		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_TEXTURE_ELEMENT_0;
 		break;
 	case ShaderTag::eNormalTexture:
-		m_tagShader = ShaderTag::eNormalTexture;
 		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0;
-#ifdef USE_DEFERRD_RENDER
-		isDeferredShader = true;
-#endif
 		break;
 	case ShaderTag::eNormalTangentTexture:
-		m_tagShader = ShaderTag::eNormalTangentTexture;
 		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0;
 		break;
+	case ShaderTag::eDisplacementMapping:
+	{
+		// NormalDisplaceMapShader에서 사용중
+		assert("여기에 들어오면 안된다.");
+		return;
+	}
+		break;
 	case ShaderTag::eInstanceNormal:
-		m_tagShader = ShaderTag::eInstanceNormal;
 		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_INSTANCING_ELEMENT;
 		break;
 	case ShaderTag::eInstanceNormalTexture:
-		m_tagShader = ShaderTag::eInstanceNormalTexture;
 		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_INSTANCING_ELEMENT;
+		break;
+	case ShaderTag::eInstanceNormalTangentTexture:
+		m_nType = VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_INSTANCING_ELEMENT;
+		break;
+	case ShaderTag::eInstanceDisplacementMapping:
+	{
+		// NormalDisplaceMapShader에서 사용중
+		assert("여기에 들어오면 안된다.");
+		return;
+	}
 		break;
 	}
 
 	GetInputElementDesc(m_nType);
 	GetShaderName(m_nType, &pszVSShaderName, &pszVSShaderModel, &pszPSShaderName, &pszPSShaderModel);
 
-	if(isDeferredShader)
+#ifdef USE_DEFERRD_RENDER
 		CreateShader(pd3dDevice, NULL, 0, L"Shader HLSL File/DeferredShading.hlsli", pszVSShaderName, pszVSShaderModel, pszPSShaderName, pszPSShaderModel);
-	else
+#else
 		CreateShader(pd3dDevice, NULL, 0, L"Shader HLSL File/Effect.fx", pszVSShaderName, pszVSShaderModel, pszPSShaderName, pszPSShaderModel);
+#endif
 }
 
 void CShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
@@ -299,25 +307,46 @@ void CShader::GetInputElementDesc(UINT nVertexElementType)
 void CShader::GetShaderName(UINT nVertexElementType, LPCSTR *ppszVSShaderName, LPCSTR *ppszVSShaderModel, LPCSTR *ppszPSShaderName, LPCSTR *ppszPSShaderModel)
 {
 	int nInputElements = 0, nIndex = 0;
-	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_COLOR_ELEMENT)) { *ppszVSShaderName = "VSDiffusedColor", *ppszPSShaderName = "PSDiffusedColor"; }
-	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT)) { *ppszVSShaderName = "VSLightingColor", *ppszPSShaderName = "PSLightingColor"; }
-	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_TEXTURE_ELEMENT_0)) { *ppszVSShaderName = "VSTexturedColor", *ppszPSShaderName = "PSTexturedColor"; }
-	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_TEXTURE_ELEMENT_1)) { *ppszVSShaderName = "VSDetailTexturedColor", *ppszPSShaderName = "PSDetailTexturedColor"; }
-	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0)) { *ppszVSShaderName = "VSTexturedLightingColor", *ppszPSShaderName = "PSTexturedLightingColor"; }
+	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_COLOR_ELEMENT)) {
+		*ppszVSShaderName = "VSDiffusedColor", *ppszPSShaderName = "PSDiffusedColor";
+	}
+	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT)) {
+		*ppszVSShaderName = "VSLightingColor", *ppszPSShaderName = "PSLightingColor";
+	}
+	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_TEXTURE_ELEMENT_0)) { 
+		*ppszVSShaderName = "VSTexturedColor", *ppszPSShaderName = "PSTexturedColor";
+	}
+	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_TEXTURE_ELEMENT_1)) {
+		*ppszVSShaderName = "VSDetailTexturedColor", *ppszPSShaderName = "PSDetailTexturedColor"; 
+	}
+	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0)) { 
+		*ppszVSShaderName = "VSTexturedLightingColor", *ppszPSShaderName = "PSTexturedLightingColor";
+	}
 
-	// Deferrd Shader
-#ifdef USE_DEFERRD_RENDER
-	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0)) { *ppszVSShaderName = "VSDeferrdNormalTexture", *ppszPSShaderName = "PSDeferrdNormalTexture"; }
-#endif
-
-	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0)) { *ppszVSShaderName = "VSTexturedLightingTangent", *ppszPSShaderName = "PSTexturedLightingTangent"; }
-	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_TEXTURE_ELEMENT_1)) { *ppszVSShaderName = "VSDetailTexturedLightingColor", *ppszPSShaderName = "PSDetailTexturedLightingColor"; }
-	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_BONE_ID_ELEMENT | VERTEX_BONE_WEIGHT_ELEMENT)) { *ppszVSShaderName = "VSSkinnedLightingColor", *ppszPSShaderName = "PSLightingColor"; }
-	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_BONE_ID_ELEMENT | VERTEX_BONE_WEIGHT_ELEMENT)) { *ppszVSShaderName = "VSSkinnedTexturedLightingColor", *ppszPSShaderName = "PSSkinnedTexturedLightingColor"; }
-
+	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0)) { 
+		*ppszVSShaderName = "VSTexturedLightingTangent", *ppszPSShaderName = "PSTexturedLightingTangent";
+	}
+	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_TEXTURE_ELEMENT_1)) { 
+		*ppszVSShaderName = "VSDetailTexturedLightingColor", *ppszPSShaderName = "PSDetailTexturedLightingColor"; 
+	}
+	// Skinned
+	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_BONE_ID_ELEMENT | VERTEX_BONE_WEIGHT_ELEMENT)) { 
+		*ppszVSShaderName = "VSSkinnedLightingColor", *ppszPSShaderName = "PSLightingColor";
+	}
+	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_BONE_ID_ELEMENT | VERTEX_BONE_WEIGHT_ELEMENT)) {
+		*ppszVSShaderName = "VSSkinnedTexturedLightingColor", *ppszPSShaderName = "PSSkinnedTexturedLightingColor"; 
+	}
 	// Instancing
-	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_INSTANCING_ELEMENT)) { *ppszVSShaderName = "VSInstancedLightingColor", *ppszPSShaderName = "PSInstancedLightingColor"; }
-	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_INSTANCING_ELEMENT)) { *ppszVSShaderName = "VSInstancedTexturedLightingColor", *ppszPSShaderName = "PSInstancedTexturedLightingColor"; }
+	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_INSTANCING_ELEMENT)) {
+		*ppszVSShaderName = "VSInstancedLightingColor", *ppszPSShaderName = "PSInstancedLightingColor";
+	}
+	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_INSTANCING_ELEMENT)) { 
+		*ppszVSShaderName = "VSInstancedTexturedLightingColor", *ppszPSShaderName = "PSInstancedTexturedLightingColor";
+	}
+
+	if (nVertexElementType == (VERTEX_POSITION_ELEMENT | VERTEX_NORMAL_ELEMENT | VERTEX_TANGENT_ELEMENT | VERTEX_TEXTURE_ELEMENT_0 | VERTEX_INSTANCING_ELEMENT)) {
+		*ppszVSShaderName = "VSInstancedTexturedTangentLighting", *ppszPSShaderName = "PSInstancedTexturedTangentLighting";
+	}
 }
 
 void CShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
@@ -378,9 +407,24 @@ void CObjectsShader::AddObject(ShaderTag tag, CGameObject *pGameObject)
 	vecObjectContainer.reserve(100);
 	vecObjectContainer.push_back(pGameObject);
 	pGameObject->SetShaderTag(tag);
+	
+	CShader *pShader;
 
-	CShader *pShader = new CShader();
-	pShader->CreateShader(m_pd3dDevice, tag);
+	switch (tag) {
+	case ShaderTag::eDisplacementMapping:
+		pShader = new CNormalDisplaceMapShader();
+		pShader->CreateShader(m_pd3dDevice);
+		break;
+		
+	case ShaderTag::eInstanceDisplacementMapping:
+		pShader = new CNormalDisplaceMapInstancedShader();
+		pShader->CreateShader(m_pd3dDevice);
+		break;
+	default:
+		pShader = new CShader();
+		pShader->CreateShader(m_pd3dDevice, tag);
+		break;
+	}
 
 	m_mapShaderContainer.insert(make_pair(tag, pShader));
 	m_mapObjectContainer.insert(make_pair(tag, vecObjectContainer));
@@ -506,8 +550,6 @@ void CInstancedObjectsShader::CreateShader(ID3D11Device *pd3dDevice)
 	//if (m_pMesh) CObjectsShader::CreateShader(pd3dDevice, m_pMesh->GetType());
 	if (m_pMesh) 
 		CShader::CreateShader(pd3dDevice);
-
-	// 이부분 수정해야함 가로등 인스턴싱시 제대로 안됨
 }
 
 void CInstancedObjectsShader::BuildObjects(ID3D11Device *pd3dDevice)
@@ -538,28 +580,27 @@ void CInstancedObjectsShader::ReleaseObjects()
 
 void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
-
-	int nInstances = 0;
-	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	pd3dDeviceContext->Map(m_pd3dInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-	XMMATRIX *pd3dxmtxInstances = (XMMATRIX *)d3dMappedResource.pData;
-
 	for (auto shaderTag : m_mapObjectContainer) {
 		auto findShader = m_mapShaderContainer.find(shaderTag.first);
+
+		if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
 		findShader->second->OnPrepareRender(pd3dDeviceContext);
+
+		int nInstances = 0;
+		D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+		pd3dDeviceContext->Map(m_pd3dInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+		XMMATRIX *pd3dxmtxInstances = (XMMATRIX *)d3dMappedResource.pData;
 
 		for (auto object : shaderTag.second) {
 			if (object->IsVisible(pCamera))
 				pd3dxmtxInstances[nInstances++] = XMMatrixTranspose(object->m_mtxWorld);
 		}
+		pd3dDeviceContext->Unmap(m_pd3dInstanceBuffer, 0);
+
+		m_pMesh->RenderInstanced(pd3dDeviceContext, nInstances, 0);
 
 		findShader->second->OnPostRender(pd3dDeviceContext);
 	}
-
-	pd3dDeviceContext->Unmap(m_pd3dInstanceBuffer, 0);
-	
-	m_pMesh->RenderInstanced(pd3dDeviceContext, nInstances, 0);
 
 /*
 	// Bounding Box Rendering
@@ -576,6 +617,5 @@ void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCa
 		}
 		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 	}
-	*/
-	CShader::OnPostRender(pd3dDeviceContext);
+*/
 }

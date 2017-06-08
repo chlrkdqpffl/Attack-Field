@@ -224,7 +224,7 @@ XMVECTOR CMeshIlluminated::CalculateTriAngleNormal(UINT nIndex0, UINT nIndex1, U
 	return(d3dxvNormal);
 }
 
-void CMeshIlluminated::SetTriAngleListVertexNormal(XMVECTOR *pd3dxvNormals)
+void CMeshIlluminated::SetTriAngleListVertexNormal(XMFLOAT3 *pd3dxvNormals)
 {
 	XMVECTOR d3dxvNormal;
 	XMVECTOR *pd3dxvPositions = NULL;
@@ -233,15 +233,15 @@ void CMeshIlluminated::SetTriAngleListVertexNormal(XMVECTOR *pd3dxvNormals)
 	{
 		d3dxvNormal = CalculateTriAngleNormal((i * 3 + 0), (i * 3 + 1), (i * 3 + 2));
 		pd3dxvPositions = &XMLoadFloat3(m_pPositions) + (i * 3 + 0);
-		pd3dxvNormals[i * 3 + 0] = d3dxvNormal;
+		XMStoreFloat3(&pd3dxvNormals[i * 3 + 0], d3dxvNormal);
 		pd3dxvPositions = &XMLoadFloat3(m_pPositions) + (i * 3 + 1);
-		pd3dxvNormals[i * 3 + 1] = d3dxvNormal;
+		XMStoreFloat3(&pd3dxvNormals[i * 3 + 1], d3dxvNormal);
 		pd3dxvPositions = &XMLoadFloat3(m_pPositions) + (i * 3 + 2);
-		pd3dxvNormals[i * 3 + 2] = d3dxvNormal;
+		XMStoreFloat3(&pd3dxvNormals[i * 3 + 2], d3dxvNormal);
 	}
 }
 
-void CMeshIlluminated::SetAverageVertexNormal(XMVECTOR *pd3dxvNormals, int nPrimitives, int nOffset, bool bStrip)
+void CMeshIlluminated::SetAverageVertexNormal(XMFLOAT3 *pd3dxvNormals, int nPrimitives, int nOffset, bool bStrip)
 {
 	XMVECTOR d3dxvSumOfNormal = XMVectorZero();
 	XMVECTOR *pd3dxvPositions = NULL;
@@ -260,13 +260,13 @@ void CMeshIlluminated::SetAverageVertexNormal(XMVECTOR *pd3dxvNormals, int nPrim
 			if ((nIndex0 == j) || (nIndex1 == j) || (nIndex2 == j)) d3dxvSumOfNormal += CalculateTriAngleNormal(nIndex0, nIndex1, nIndex2);
 		}
 		d3dxvSumOfNormal = XMVector3Normalize(d3dxvSumOfNormal);
-		pd3dxvNormals[j] = d3dxvSumOfNormal;
+		XMStoreFloat3(&pd3dxvNormals[j], d3dxvSumOfNormal);
 		pd3dxvPositions = &XMLoadFloat3(m_pPositions) + j;
 
 	}
 }
 
-void CMeshIlluminated::CalculateVertexNormal(XMVECTOR *pd3dxvNormals)
+void CMeshIlluminated::CalculateVertexNormal(XMFLOAT3 *pd3dxvNormals)
 {
 	switch (m_d3dPrimitiveTopology)
 	{
@@ -323,7 +323,7 @@ CMeshTexturedIlluminated::~CMeshTexturedIlluminated()
 
 //------------------------------------------------------------------------------------------------
 
-CMeshNormalMap::CMeshNormalMap(ID3D11Device *pd3dDevice)
+CMeshNormalMap::CMeshNormalMap()
 {
 }
 
@@ -352,33 +352,33 @@ XMVECTOR CMeshNormalMap::CalculateTriAngleTangent(UINT nIndex0, UINT nIndex1, UI
 	tvVector.x = m_pTexCoords[nIndex2].x - m_pTexCoords[nIndex0].x;
 	tvVector.y = m_pTexCoords[nIndex2].y - m_pTexCoords[nIndex0].y;
 
-	den = 1.0f / (tuVector.x * tvVector.y - tuVector.y * tvVector.x);
+	den = (tuVector.x * tvVector.y - tuVector.y * tvVector.x);
 
-	vTangent.x = (tuVector.x * vector2.x - tvVector.x * vector1.x) * den;
-	vTangent.y = (tuVector.x * vector2.y - tvVector.x * vector1.y) * den;
-	vTangent.z = (tuVector.x * vector2.z - tvVector.x * vector1.z) * den;
+	vTangent.x = ((tvVector.y * vector1.x) + (-tvVector.x * vector2.x)) / den;
+	vTangent.y = ((tvVector.y * vector1.y) + (-tvVector.x * vector2.y)) / den;
+	vTangent.z = ((tvVector.y * vector1.z) + (-tvVector.x * vector2.z)) / den;
 
-	return(XMVector3Normalize(XMLoadFloat3(&vTangent)));
+	return XMVector3Normalize(XMLoadFloat3(&vTangent));
 }
 
-void CMeshNormalMap::SetTriAngleListVertexTangent(XMVECTOR *pd3dxvTangents)
+void CMeshNormalMap::SetTriAngleListVertexTangent(XMFLOAT3 *pd3dxvTangents)
 {
-	XMVECTOR d3dxvTangent;
+	XMVECTOR vTangent;
 	XMVECTOR *pd3dxvPositions = NULL;
 	int nPrimitives = m_nVertices / 3;
 	for (int i = 0; i < nPrimitives; i++)
 	{
-		d3dxvTangent = CalculateTriAngleTangent((i * 3 + 0), (i * 3 + 1), (i * 3 + 2));
+		vTangent = CalculateTriAngleTangent((i * 3 + 0), (i * 3 + 1), (i * 3 + 2));
 		pd3dxvPositions = &XMLoadFloat3(m_pPositions) + (i * 3 + 0);
-		pd3dxvTangents[i * 3 + 0] = d3dxvTangent;
+		XMStoreFloat3(&pd3dxvTangents[i * 3 + 0], vTangent);
 		pd3dxvPositions = &XMLoadFloat3(m_pPositions) + (i * 3 + 1);
-		pd3dxvTangents[i * 3 + 1] = d3dxvTangent;
+		XMStoreFloat3(&pd3dxvTangents[i * 3 + 1], vTangent);
 		pd3dxvPositions = &XMLoadFloat3(m_pPositions) + (i * 3 + 2);
-		pd3dxvTangents[i * 3 + 2] = d3dxvTangent;
+		XMStoreFloat3(&pd3dxvTangents[i * 3 + 2], vTangent);
 	}
 }
 
-void CMeshNormalMap::SetAverageVertexTangent(XMVECTOR *pd3dxvTangents, int nPrimitives, int nOffset, bool bStrip)
+void CMeshNormalMap::SetAverageVertexTangent(XMFLOAT3 *pd3dxvTangents, int nPrimitives, int nOffset, bool bStrip)
 {
 	XMVECTOR d3dxvSumOfTangent = XMVectorZero();
 	XMVECTOR *pd3dxvPositions = NULL;
@@ -394,16 +394,17 @@ void CMeshNormalMap::SetAverageVertexTangent(XMVECTOR *pd3dxvTangents, int nPrim
 			nIndex1 = (bStrip) ? (((i % 2) == 0) ? (i*nOffset + 1) : (i*nOffset + 0)) : (i*nOffset + 1);
 			if (m_pnIndices) nIndex1 = m_pnIndices[nIndex1];
 			nIndex2 = (m_pnIndices) ? m_pnIndices[i*nOffset + 2] : (i*nOffset + 2);
-			if ((nIndex0 == j) || (nIndex1 == j) || (nIndex2 == j)) d3dxvSumOfTangent += CalculateTriAngleTangent(nIndex0, nIndex1, nIndex2);
+			if ((nIndex0 == j) || (nIndex1 == j) || (nIndex2 == j)) 
+				d3dxvSumOfTangent += CalculateTriAngleTangent(nIndex0, nIndex1, nIndex2);
 		}
 		d3dxvSumOfTangent = XMVector3Normalize(d3dxvSumOfTangent);
-		pd3dxvTangents[j] = d3dxvSumOfTangent;
+		XMStoreFloat3(&pd3dxvTangents[j], d3dxvSumOfTangent);
 		pd3dxvPositions = &XMLoadFloat3(m_pPositions) + j;
 
 	}
 }
 
-void CMeshNormalMap::CalculateVertexTangent(XMVECTOR *pd3dxvTangents)
+void CMeshNormalMap::CalculateVertexTangent(XMFLOAT3 *pd3dxvTangents)
 {
 	switch (m_d3dPrimitiveTopology)
 	{
@@ -470,8 +471,6 @@ CCubeMeshDiffused::CCubeMeshDiffused(ID3D11Device *pd3dDevice, float fWidth, flo
 	UINT pnBufferOffsets[2] = { 0, 0 };
 	AssembleToVertexBuffer(2, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
 
-#define _WITH_CORRECT_STRIP
-#ifdef _WITH_CORRECT_STRIP
 	m_nIndices = 18;
 	m_pnIndices = new UINT[m_nIndices];
 
@@ -493,27 +492,6 @@ CCubeMeshDiffused::CCubeMeshDiffused(ID3D11Device *pd3dDevice, float fWidth, flo
 	m_pnIndices[15] = 5;//5,0,4 - ccw
 	m_pnIndices[16] = 0;
 	m_pnIndices[17] = 4;
-#else
-	m_nIndices = 16;
-	m_pnIndices = new UINT[m_nIndices];
-
-	m_pnIndices[0] = 5; //5,6,4 - cw
-	m_pnIndices[1] = 6; //6,4,7 - ccw
-	m_pnIndices[2] = 4; //4,7,0 - cw
-	m_pnIndices[3] = 7; //7,0,3 - ccw
-	m_pnIndices[4] = 0; //0,3,1 - cw
-	m_pnIndices[5] = 3; //3,1,2 - ccw
-	m_pnIndices[6] = 1; //1,2,3 - cw 
-	m_pnIndices[7] = 2; //2,3,7 - ccw
-	m_pnIndices[8] = 3; //3,7,2 - cw - Degenerated Index
-	m_pnIndices[9] = 7; //7,2,6 - ccw
-	m_pnIndices[10] = 2;//2,6,1 - cw
-	m_pnIndices[11] = 6;//6,1,5 - ccw
-	m_pnIndices[12] = 1;//1,5,0 - cw
-	m_pnIndices[13] = 5;//5,0,4 - ccw
-	m_pnIndices[14] = 0;
-	m_pnIndices[15] = 4;
-#endif
 
 	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
@@ -600,9 +578,6 @@ CCubeMeshIlluminated::CCubeMeshIlluminated(ID3D11Device *pd3dDevice, float fWidt
 	m_pPositions[6] = XMFLOAT3(+fx, -fy, +fz);
 	m_pPositions[7] = XMFLOAT3(-fx, -fy, +fz);
 
-	XMFLOAT3 pd3dxvNormals[8];
-	for (int i = 0; i < 8; i++) pd3dxvNormals[i] = XMFLOAT3(0.0f, 0.0f, 0.0f);
-
 	m_nIndices = 36;
 	m_pnIndices = new UINT[m_nIndices];
 
@@ -619,7 +594,8 @@ CCubeMeshIlluminated::CCubeMeshIlluminated(ID3D11Device *pd3dDevice, float fWidt
 	m_pnIndices[30] = 6; m_pnIndices[31] = 4; m_pnIndices[32] = 5;
 	m_pnIndices[33] = 7; m_pnIndices[34] = 4; m_pnIndices[35] = 6;
 
-	CalculateVertexNormal(&XMLoadFloat3(pd3dxvNormals));
+	XMFLOAT3 pd3dxvNormals[8];
+	CalculateVertexNormal(pd3dxvNormals);
 
 	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, pd3dxvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
@@ -979,134 +955,101 @@ CSphereMeshTextured::~CSphereMeshTextured()
 //------------------------------------------------------------------------------------------------
 CCubeMeshTexturedIlluminated::CCubeMeshTexturedIlluminated(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth)
 {
-	m_nVertices = 36;
+	m_nVertices = 24;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	float fx = fWidth*0.5f, fy = fHeight*0.5f, fz = fDepth*0.5f;
 
 	m_pPositions = new XMFLOAT3[m_nVertices];
-	int i = 0;
-	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
+	XMFLOAT2* pTexCoords = new XMFLOAT2[m_nVertices];
+	
+	// Fill in the front face vertex data.
+	m_pPositions[0] = XMFLOAT3(-fx, -fy, -fz); pTexCoords[0] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[1] = XMFLOAT3(-fx, +fy, -fz); pTexCoords[1] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[2] = XMFLOAT3(+fx, +fy, -fz); pTexCoords[2] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[3] = XMFLOAT3(+fx, -fy, -fz); pTexCoords[3] = XMFLOAT2(1.0f, 1.0f);
+											   
+	// Fill in the back face vertex data.	   
+	m_pPositions[4] = XMFLOAT3(-fx, -fy, +fz); pTexCoords[4] = XMFLOAT2(1.0f, 1.0f);
+	m_pPositions[5] = XMFLOAT3(+fx, -fy, +fz); pTexCoords[5] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[6] = XMFLOAT3(+fx, +fy, +fz); pTexCoords[6] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[7] = XMFLOAT3(-fx, +fy, +fz); pTexCoords[7] = XMFLOAT2(1.0f, 0.0f);
 
-	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
-	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
+	// Fill in the top face vertex data.
+	m_pPositions[8] = XMFLOAT3(-fx, +fy, -fz); pTexCoords[8] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[9] = XMFLOAT3(-fx, +fy, +fz); pTexCoords[9] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[10] = XMFLOAT3(+fx, +fy, +fz); pTexCoords[10] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[11] = XMFLOAT3(+fx, +fy, -fz); pTexCoords[11] = XMFLOAT2(1.0f, 1.0f);
 
-	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
+	// Fill in the bottom face vertex data.
+	m_pPositions[12] = XMFLOAT3(-fx, -fy, -fz); pTexCoords[12] = XMFLOAT2(1.0f, 1.0f);
+	m_pPositions[13] = XMFLOAT3(+fx, -fy, -fz); pTexCoords[13] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[14] = XMFLOAT3(+fx, -fy, +fz); pTexCoords[14] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[15] = XMFLOAT3(-fx, -fy, +fz); pTexCoords[15] = XMFLOAT2(1.0f, 0.0f);
 
-	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
-	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
+	// Fill in the left face vertex data.
+	m_pPositions[16] = XMFLOAT3(-fx, -fy, +fz); pTexCoords[16] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[17] = XMFLOAT3(-fx, +fy, +fz); pTexCoords[17] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[18] = XMFLOAT3(-fx, +fy, -fz); pTexCoords[18] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[19] = XMFLOAT3(-fx, -fy, -fz); pTexCoords[19] = XMFLOAT2(1.0f, 1.0f);
 
-	m_pPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
+	// Fill in the right face vertex data.
+	m_pPositions[20] = XMFLOAT3(+fx, -fy, -fz); pTexCoords[20] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[21] = XMFLOAT3(+fx, +fy, -fz); pTexCoords[21] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[22] = XMFLOAT3(+fx, +fy, +fz); pTexCoords[22] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[23] = XMFLOAT3(+fx, -fy, +fz); pTexCoords[23] = XMFLOAT2(1.0f, 1.0f);
+											   
+											   
+	m_nIndices = 36;						   
+	m_pnIndices = new UINT[m_nIndices];
 
-	m_pPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
-	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
+	// Fill in the front face index data
+	m_pnIndices[0] = 0; m_pnIndices[1] = 1; m_pnIndices[2] = 2;
+	m_pnIndices[3] = 0; m_pnIndices[4] = 2; m_pnIndices[5] = 3;
 
-	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
+	// Fill in the back face index data
+	m_pnIndices[6] = 4; m_pnIndices[7] = 5; m_pnIndices[8] = 6;
+	m_pnIndices[9] = 4; m_pnIndices[10] = 6; m_pnIndices[11] = 7;
 
-	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
-	m_pPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
+	// Fill in the top face index data
+	m_pnIndices[12] = 8; m_pnIndices[13] = 9; m_pnIndices[14] = 10;
+	m_pnIndices[15] = 8; m_pnIndices[16] = 10; m_pnIndices[17] = 11;
 
-	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
-	m_pPositions[i++] = XMFLOAT3(-fx, +fy, -fz);
-	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
+	// Fill in the bottom face index data
+	m_pnIndices[18] = 12; m_pnIndices[19] = 13; m_pnIndices[20] = 14;
+	m_pnIndices[21] = 12; m_pnIndices[22] = 14; m_pnIndices[23] = 15;
 
-	m_pPositions[i++] = XMFLOAT3(-fx, +fy, +fz);
-	m_pPositions[i++] = XMFLOAT3(-fx, -fy, -fz);
-	m_pPositions[i++] = XMFLOAT3(-fx, -fy, +fz);
+	// Fill in the left face index data
+	m_pnIndices[24] = 16; m_pnIndices[25] = 17; m_pnIndices[26] = 18;
+	m_pnIndices[27] = 16; m_pnIndices[28] = 18; m_pnIndices[29] = 19;
 
-	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, +fy, +fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
+	// Fill in the right face index data
+	m_pnIndices[30] = 20; m_pnIndices[31] = 21; m_pnIndices[32] = 22;
+	m_pnIndices[33] = 20; m_pnIndices[34] = 22; m_pnIndices[35] = 23;
 
-	m_pPositions[i++] = XMFLOAT3(+fx, +fy, -fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, -fy, +fz);
-	m_pPositions[i++] = XMFLOAT3(+fx, -fy, -fz);
-
-	XMFLOAT2 pd3dxvTexCoords[36];
-	i = 0;
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 1.0f);
-
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 1.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 1.0f);
-
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 1.0f);
-
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 1.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 1.0f);
-
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 1.0f);
-
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 1.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 1.0f);
-
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 1.0f);
-
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 1.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 1.0f);
-
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 1.0f);
-
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 1.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 1.0f);
-
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 1.0f);
-
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 0.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(1.0f, 1.0f);
-	pd3dxvTexCoords[i++] = XMFLOAT2(0.0f, 1.0f);
+	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
 
 	XMFLOAT3 pd3dxvNormals[36];
-	XMVECTOR pxm[36];
+	CalculateVertexNormal(pd3dxvNormals);
 	
-	for (int i = 0; i < 36; i++) pxm[i] = XMLoadFloat3(&pd3dxvNormals[i]);
-	CalculateVertexNormal(pxm);
-	for (int i = 0; i < 36; i++) XMStoreFloat3(&pd3dxvNormals[i], pxm[i]);
-
 	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, pd3dxvNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, pd3dxvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
-
-	ID3D11Buffer *pd3dBuffers[3] = { m_pd3dPositionBuffer, m_pd3dNormalBuffer, m_pd3dTexCoordBuffer };
-	UINT pnBufferStrides[3] = { sizeof(XMFLOAT3), sizeof(XMFLOAT3), sizeof(XMFLOAT2) };
-	UINT pnBufferOffsets[3] = { 0, 0, 0 };
-	AssembleToVertexBuffer(3, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
-
-	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
-	m_bcBoundingBox.Extents = { fx, fy, fz };
+	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, pTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
-	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
+
+	ID3D11Buffer *pd3dBuffers[] = { m_pd3dPositionBuffer, m_pd3dNormalBuffer, m_pd3dTexCoordBuffer };
+	UINT pnBufferStrides[] = { sizeof(XMFLOAT3), sizeof(XMFLOAT3), sizeof(XMFLOAT2) };
+	UINT pnBufferOffsets[] = { 0, 0, 0 };
+	AssembleToVertexBuffer(3, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
+	
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fx, fy, fz };
+
+	delete pTexCoords;
 }
 
 CCubeMeshTexturedIlluminated::~CCubeMeshTexturedIlluminated()
@@ -1183,3 +1126,221 @@ CSphereMeshTexturedIlluminated::~CSphereMeshTexturedIlluminated()
 }
 
 //------------------------------------------------------------------------------------------------
+
+CCubeMeshTexturedTangenteIlluminated::CCubeMeshTexturedTangenteIlluminated(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth)
+{
+	m_nVertices = 24;
+	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	
+	float fx = fWidth*0.5f, fy = fHeight*0.5f, fz = fDepth*0.5f;
+	
+	m_pPositions = new XMFLOAT3[m_nVertices];
+	m_pTexCoords = new XMFLOAT2[m_nVertices];
+
+	// Fill in the front face vertex data.
+	m_pPositions[0] = XMFLOAT3(-fx, -fy, -fz); m_pTexCoords[0] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[1] = XMFLOAT3(-fx, +fy, -fz); m_pTexCoords[1] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[2] = XMFLOAT3(+fx, +fy, -fz); m_pTexCoords[2] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[3] = XMFLOAT3(+fx, -fy, -fz); m_pTexCoords[3] = XMFLOAT2(1.0f, 1.0f);
+
+	// Fill in the back face vertex data.
+	m_pPositions[4] = XMFLOAT3(-fx, -fy, +fz); m_pTexCoords[4] = XMFLOAT2(1.0f, 1.0f);
+	m_pPositions[5] = XMFLOAT3(+fx, -fy, +fz); m_pTexCoords[5] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[6] = XMFLOAT3(+fx, +fy, +fz); m_pTexCoords[6] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[7] = XMFLOAT3(-fx, +fy, +fz); m_pTexCoords[7] = XMFLOAT2(1.0f, 0.0f);
+
+	// Fill in the top face vertex data.
+	m_pPositions[8] = XMFLOAT3(-fx, +fy, -fz); m_pTexCoords[8] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[9] = XMFLOAT3(-fx, +fy, +fz); m_pTexCoords[9] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[10] = XMFLOAT3(+fx, +fy, +fz); m_pTexCoords[10] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[11] = XMFLOAT3(+fx, +fy, -fz); m_pTexCoords[11] = XMFLOAT2(1.0f, 1.0f);
+
+	// Fill in the bottom face vertex data.
+	m_pPositions[12] = XMFLOAT3(-fx, -fy, -fz); m_pTexCoords[12] = XMFLOAT2(1.0f, 1.0f);
+	m_pPositions[13] = XMFLOAT3(+fx, -fy, -fz); m_pTexCoords[13] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[14] = XMFLOAT3(+fx, -fy, +fz); m_pTexCoords[14] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[15] = XMFLOAT3(-fx, -fy, +fz); m_pTexCoords[15] = XMFLOAT2(1.0f, 0.0f);
+
+	// Fill in the left face vertex data.
+	m_pPositions[16] = XMFLOAT3(-fx, -fy, +fz); m_pTexCoords[16] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[17] = XMFLOAT3(-fx, +fy, +fz); m_pTexCoords[17] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[18] = XMFLOAT3(-fx, +fy, -fz); m_pTexCoords[18] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[19] = XMFLOAT3(-fx, -fy, -fz); m_pTexCoords[19] = XMFLOAT2(1.0f, 1.0f);
+
+	// Fill in the right face vertex data.
+	m_pPositions[20] = XMFLOAT3(+fx, -fy, -fz); m_pTexCoords[20] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[21] = XMFLOAT3(+fx, +fy, -fz); m_pTexCoords[21] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[22] = XMFLOAT3(+fx, +fy, +fz); m_pTexCoords[22] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[23] = XMFLOAT3(+fx, -fy, +fz); m_pTexCoords[23] = XMFLOAT2(1.0f, 1.0f);
+
+	
+	m_nIndices = 36;
+	m_pnIndices = new UINT[m_nIndices];
+
+	// Fill in the front face index data
+	m_pnIndices[0] = 0; m_pnIndices[1] = 1; m_pnIndices[2] = 2;
+	m_pnIndices[3] = 0; m_pnIndices[4] = 2; m_pnIndices[5] = 3;
+
+	// Fill in the back face index data
+	m_pnIndices[6] = 4; m_pnIndices[7] = 5; m_pnIndices[8] = 6;
+	m_pnIndices[9] = 4; m_pnIndices[10] = 6; m_pnIndices[11] = 7;
+
+	// Fill in the top face index data
+	m_pnIndices[12] = 8; m_pnIndices[13] = 9; m_pnIndices[14] = 10;
+	m_pnIndices[15] = 8; m_pnIndices[16] = 10; m_pnIndices[17] = 11;
+	
+	// Fill in the bottom face index data
+	m_pnIndices[18] = 12; m_pnIndices[19] = 13; m_pnIndices[20] = 14;
+	m_pnIndices[21] = 12; m_pnIndices[22] = 14; m_pnIndices[23] = 15;
+
+	// Fill in the left face index data
+	m_pnIndices[24] = 16; m_pnIndices[25] = 17; m_pnIndices[26] = 18;
+	m_pnIndices[27] = 16; m_pnIndices[28] = 18; m_pnIndices[29] = 19;
+
+	// Fill in the right face index data
+	m_pnIndices[30] = 20; m_pnIndices[31] = 21; m_pnIndices[32] = 22;
+	m_pnIndices[33] = 20; m_pnIndices[34] = 22; m_pnIndices[35] = 23;
+
+	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
+
+	m_pNormals = new XMFLOAT3[m_nVertices];
+	m_pTangents = new XMFLOAT3[m_nVertices];
+	CalculateVertexNormal(m_pNormals);
+	CalculateVertexTangent(m_pTangents);
+	
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dTangentBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pTangents, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, m_pTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
+	DXUT_SetDebugName(m_pd3dTangentBuffer, "Tangent");
+	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
+
+	ID3D11Buffer *pd3dBuffers[] = { m_pd3dPositionBuffer, m_pd3dNormalBuffer, m_pd3dTangentBuffer, m_pd3dTexCoordBuffer };
+	UINT pnBufferStrides[] = { sizeof(XMFLOAT3), sizeof(XMFLOAT3), sizeof(XMFLOAT3), sizeof(XMFLOAT2) };
+	UINT pnBufferOffsets[] = { 0, 0, 0, 0 };
+	AssembleToVertexBuffer(4, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
+
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fx, fy, fz };
+
+	delete[] m_pTexCoords;
+	delete[] m_pNormals;
+	delete[] m_pTangents;
+}
+
+CCubeMeshTexturedTangenteIlluminated::~CCubeMeshTexturedTangenteIlluminated()
+{
+}
+
+CCubePatchMesh::CCubePatchMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth)
+{
+	m_nVertices = 24;
+	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST;
+
+	float fx = fWidth*0.5f, fy = fHeight*0.5f, fz = fDepth*0.5f;
+
+	m_pPositions = new XMFLOAT3[m_nVertices];
+	m_pTexCoords = new XMFLOAT2[m_nVertices];
+
+	// Fill in the front face vertex data.
+	m_pPositions[0] = XMFLOAT3(-fx, -fy, -fz); m_pTexCoords[0] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[1] = XMFLOAT3(-fx, +fy, -fz); m_pTexCoords[1] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[2] = XMFLOAT3(+fx, +fy, -fz); m_pTexCoords[2] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[3] = XMFLOAT3(+fx, -fy, -fz); m_pTexCoords[3] = XMFLOAT2(1.0f, 1.0f);
+
+	// Fill in the back face vertex data.
+	m_pPositions[4] = XMFLOAT3(-fx, -fy, +fz); m_pTexCoords[4] = XMFLOAT2(1.0f, 1.0f);
+	m_pPositions[5] = XMFLOAT3(+fx, -fy, +fz); m_pTexCoords[5] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[6] = XMFLOAT3(+fx, +fy, +fz); m_pTexCoords[6] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[7] = XMFLOAT3(-fx, +fy, +fz); m_pTexCoords[7] = XMFLOAT2(1.0f, 0.0f);
+
+	// Fill in the top face vertex data.
+	m_pPositions[8] = XMFLOAT3(-fx, +fy, -fz); m_pTexCoords[8] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[9] = XMFLOAT3(-fx, +fy, +fz); m_pTexCoords[9] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[10] = XMFLOAT3(+fx, +fy, +fz); m_pTexCoords[10] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[11] = XMFLOAT3(+fx, +fy, -fz); m_pTexCoords[11] = XMFLOAT2(1.0f, 1.0f);
+
+	// Fill in the bottom face vertex data.
+	m_pPositions[12] = XMFLOAT3(-fx, -fy, -fz); m_pTexCoords[12] = XMFLOAT2(1.0f, 1.0f);
+	m_pPositions[13] = XMFLOAT3(+fx, -fy, -fz); m_pTexCoords[13] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[14] = XMFLOAT3(+fx, -fy, +fz); m_pTexCoords[14] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[15] = XMFLOAT3(-fx, -fy, +fz); m_pTexCoords[15] = XMFLOAT2(1.0f, 0.0f);
+
+	// Fill in the left face vertex data.
+	m_pPositions[16] = XMFLOAT3(-fx, -fy, +fz); m_pTexCoords[16] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[17] = XMFLOAT3(-fx, +fy, +fz); m_pTexCoords[17] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[18] = XMFLOAT3(-fx, +fy, -fz); m_pTexCoords[18] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[19] = XMFLOAT3(-fx, -fy, -fz); m_pTexCoords[19] = XMFLOAT2(1.0f, 1.0f);
+
+	// Fill in the right face vertex data.
+	m_pPositions[20] = XMFLOAT3(+fx, -fy, -fz); m_pTexCoords[20] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[21] = XMFLOAT3(+fx, +fy, -fz); m_pTexCoords[21] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[22] = XMFLOAT3(+fx, +fy, +fz); m_pTexCoords[22] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[23] = XMFLOAT3(+fx, -fy, +fz); m_pTexCoords[23] = XMFLOAT2(1.0f, 1.0f);
+
+
+	m_nIndices = 36;
+	m_pnIndices = new UINT[m_nIndices];
+
+	// Fill in the front face index data
+	m_pnIndices[0] = 0; m_pnIndices[1] = 1; m_pnIndices[2] = 2;
+	m_pnIndices[3] = 0; m_pnIndices[4] = 2; m_pnIndices[5] = 3;
+
+	// Fill in the back face index data
+	m_pnIndices[6] = 4; m_pnIndices[7] = 5; m_pnIndices[8] = 6;
+	m_pnIndices[9] = 4; m_pnIndices[10] = 6; m_pnIndices[11] = 7;
+
+	// Fill in the top face index data
+	m_pnIndices[12] = 8; m_pnIndices[13] = 9; m_pnIndices[14] = 10;
+	m_pnIndices[15] = 8; m_pnIndices[16] = 10; m_pnIndices[17] = 11;
+
+	// Fill in the bottom face index data
+	m_pnIndices[18] = 12; m_pnIndices[19] = 13; m_pnIndices[20] = 14;
+	m_pnIndices[21] = 12; m_pnIndices[22] = 14; m_pnIndices[23] = 15;
+
+	// Fill in the left face index data
+	m_pnIndices[24] = 16; m_pnIndices[25] = 17; m_pnIndices[26] = 18;
+	m_pnIndices[27] = 16; m_pnIndices[28] = 18; m_pnIndices[29] = 19;
+
+	// Fill in the right face index data
+	m_pnIndices[30] = 20; m_pnIndices[31] = 21; m_pnIndices[32] = 22;
+	m_pnIndices[33] = 20; m_pnIndices[34] = 22; m_pnIndices[35] = 23;
+
+	m_pd3dIndexBuffer = CreateBuffer(pd3dDevice, sizeof(UINT), m_nIndices, m_pnIndices, D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	DXUT_SetDebugName(m_pd3dIndexBuffer, "Index");
+
+	m_pNormals = new XMFLOAT3[m_nVertices];
+	m_pTangents = new XMFLOAT3[m_nVertices];
+	CalculateVertexNormal(m_pNormals);
+	CalculateVertexTangent(m_pTangents);
+
+	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dTangentBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pTangents, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, m_pTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
+
+	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
+	DXUT_SetDebugName(m_pd3dNormalBuffer, "Normal");
+	DXUT_SetDebugName(m_pd3dTangentBuffer, "Tangent");
+	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
+
+	ID3D11Buffer *pd3dBuffers[] = { m_pd3dPositionBuffer, m_pd3dNormalBuffer, m_pd3dTangentBuffer, m_pd3dTexCoordBuffer };
+	UINT pnBufferStrides[] = { sizeof(XMFLOAT3), sizeof(XMFLOAT3), sizeof(XMFLOAT3), sizeof(XMFLOAT2) };
+	UINT pnBufferOffsets[] = { 0, 0, 0, 0 };
+	AssembleToVertexBuffer(4, pd3dBuffers, pnBufferStrides, pnBufferOffsets);
+
+	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
+	m_bcBoundingBox.Extents = { fx, fy, fz };
+
+	delete[] m_pTexCoords;
+	delete[] m_pNormals;
+	delete[] m_pTangents;
+}
+
+CCubePatchMesh::~CCubePatchMesh()
+{
+}

@@ -2,7 +2,7 @@
 #include "NormalMapCubeMesh.h"
 
 
-CNormalMapCubeMesh::CNormalMapCubeMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth) : CMeshNormalMap(pd3dDevice)
+CNormalMapCubeMesh::CNormalMapCubeMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth)
 {
 	m_nVertices = 36;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST;
@@ -109,19 +109,12 @@ CNormalMapCubeMesh::CNormalMapCubeMesh(ID3D11Device *pd3dDevice, float fWidth, f
 	m_pTexCoords[i++] = XMFLOAT2(1.0f, 1.0f);
 	m_pTexCoords[i++] = XMFLOAT2(0.0f, 1.0f);
 
-	XMVECTOR normal[36], tangent[36];
-
+	XMVECTOR tangent[36];
+	
 	m_pNormals = new XMFLOAT3[36];
 	m_pTangents = new XMFLOAT3[36];
-
-	CalculateVertexNormal(normal);
-	for (int i = 0; i < 36; i++) 
-		XMStoreFloat3(&m_pNormals[i], normal[i]);
-
-	CalculateVertexTangent(tangent);
-	for (int i = 0; i < 36; i++) {
-		XMStoreFloat3(&m_pTangents[i], tangent[i]);
-	}
+	CalculateVertexNormal(m_pNormals);
+	CalculateVertexTangent(m_pTangents);
 
 	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dNormalBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pNormals, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);

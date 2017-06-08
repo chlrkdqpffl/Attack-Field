@@ -52,6 +52,23 @@ void CAntTweakBarManager::InitializeManager()
 
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Number", TW_TYPE_INT32, &g_nSelect, "group = SelectObject");
 
+	// Tesslation Option
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Min Distance", TW_TYPE_FLOAT, &g_tessOption.g_fMinDistance, "group = TesslationOption step=3");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Max Distance", TW_TYPE_FLOAT, &g_tessOption.g_fMaxDistance, "group = TesslationOption step=3");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Max TessFactor", TW_TYPE_FLOAT, &g_tessOption.g_fMaxTessFactor, "group = TesslationOption step=1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Min TessFactor", TW_TYPE_FLOAT, &g_tessOption.g_fMinTessFactor, "group = TesslationOption step=1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Height Scale", TW_TYPE_FLOAT, &g_tessOption.g_fHeightScale, "group = TesslationOption step=0.1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "MipLevel Interval", TW_TYPE_FLOAT, &g_tessOption.g_fMipLevelInterval, "group = TesslationOption step=1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Max Mip Level", TW_TYPE_FLOAT, &g_tessOption.g_fMaxMipLevel, "group = TesslationOption step=1");
+
+	g_tessOption.g_fMinDistance = 140.0f;
+	g_tessOption.g_fMaxDistance = 50.0f;
+	g_tessOption.g_fMinTessFactor = 1;
+	g_tessOption.g_fMaxTessFactor = 6;
+	g_tessOption.g_fMipLevelInterval = 20;
+	g_tessOption.g_fMaxMipLevel = 6.0f;
+	g_tessOption.g_fHeightScale = 0.3f;
+
 	TwDefine("TweakBar/AnimationOption opened = false ");
 	TwDefine("TweakBar/SelectObject opened = false ");
 	TwDefine("TweakBar/Option opened = false ");

@@ -44,10 +44,10 @@ enum class SceneTag {
 
 enum class ShaderTag {
 	eNone,
-	eColor, eNormal, eTexture, eNormalTexture, eNormalTangentTexture,
+	eColor, eNormal, eTexture, eNormalTexture, eNormalTangentTexture, eDisplacementMapping,
 
 	// Instancing
-	eInstanceNormal, eInstanceNormalTexture, eInstanceNormalTangentTexture
+	eInstanceNormal, eInstanceNormalTexture, eInstanceNormalTangentTexture, eInstanceDisplacementMapping
 };
 
 enum class ChracterBoundingBoxParts 
@@ -143,16 +143,17 @@ enum class TextureTag
 	eRoad1D, eRoad2D, eCenterRoadD, eCrossRoadD,
 	eRoad1N, eRoad2N, eCenterRoadN, eCrossRoadN,
 	eSideWalk1D, eSideWalk2D,
+	eSideWalk1ND, eSideWalk2N,
 
 	// UI
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
 	eCaptureArea, eAim, eMagazineUI, eLifeUI, eScoreUI, eDamagedCharacterUI,
 
 	// Etc
-	eBusStopD, eStreetLampD, eBarricadeD, eStoneWallD,
+	eBusStopD, eStreetLampD, eBarricadeD, eStoneWallD, eStoneWallN,
 
 	// Etc 2
-	eStoneD, eStoneN, eStone02D, eStone02N, eBricksD, eBricksN,
+	eStoneD, eStoneND, eBricksD, eBricksN,
 	eWallD, eWallND
 };
 

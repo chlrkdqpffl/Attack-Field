@@ -667,5 +667,11 @@
     <None Include="Shader HLSL File\UI.hlsli">
       <Filter>HLSL</Filter>
     </None>
+    <None Include="Shader HLSL File\DeferredCharacterSkinnedNormal.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\GBufferStructure.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
   </ItemGroup>
 </Project>

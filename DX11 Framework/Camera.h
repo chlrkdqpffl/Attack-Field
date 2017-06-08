@@ -17,6 +17,8 @@ class CPlayer;
 class CCamera
 {
 protected:
+	XMFLOAT3						m_PrevPosition = XMFLOAT3(0, 0, 0);
+
 	XMFLOAT3						m_d3dxvPosition;
 	XMFLOAT3						m_d3dxvRight;
 	XMFLOAT3						m_d3dxvUp;
@@ -37,6 +39,7 @@ protected:
 
 	static ID3D11Buffer				*m_pd3dcbCamera;
 	static ID3D11Buffer				*m_pd3dcbCameraPosition;
+
 public:
 	CCamera(CCamera *pCamera);
 	virtual ~CCamera();
@@ -105,6 +108,7 @@ public:
 
 	virtual void Move(const XMVECTOR& d3dxvShift)
 	{ 
+		m_PrevPosition = m_d3dxvPosition;
 		XMVECTOR v = XMLoadFloat3(&m_d3dxvPosition);
 		v += d3dxvShift;
 		XMStoreFloat3(&m_d3dxvPosition, v);

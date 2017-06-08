@@ -21,6 +21,7 @@ public:
 	XMFLOAT3 g_xmf3SelectObjectPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3 g_xmf3SelectObjectRotate = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
+	TessOption	g_tessOption;
 public:
 	CAntTweakBarManager();
 	virtual ~CAntTweakBarManager();

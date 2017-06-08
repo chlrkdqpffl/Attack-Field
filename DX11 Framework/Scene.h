@@ -88,7 +88,6 @@ public:
 
 	virtual void Update(float fDeltaTime);
 
-	virtual void OnPreRender(ID3D11DeviceContext *pd3dDeviceContext);
 	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera);
 	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext) {};
 

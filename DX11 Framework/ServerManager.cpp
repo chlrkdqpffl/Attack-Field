@@ -386,12 +386,13 @@ void CServerManager::error_display(char *msg, int err_num)
 
 void CServerManager::Server_init()
 {
-	std::cout << " ip 입력 : ";
-	char ip[20];//= "127.0.0.1";
-				//   char ip[20] = "192.168.43.79";
-				//   rewind(stdin);
-	std::cin >> ip;
-
+#ifdef USE_LOOPBACKADDRESS
+	char ip[20] = "127.0.0.1";
+#elif
+	char ip[20];		
+	cout << " ip 입력 : ";
+	cin >> ip;
+#endif
 	WSADATA wsa;
 	WSAStartup(MAKEWORD(2, 2), &wsa);
 	g_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, 0);

@@ -22,14 +22,13 @@ Max Resource(Texture, Buffer)	: 128
 #define VS_CB_SLOT_PROJECTION				0x05
 #define VS_CB_SLOT_SHADOW					0x06
 #define VS_CB_SLOT_BONETRANSFORM			0x07
-#define VS_CB_SLOT_CAMERA_POSITION			10
+#define CB_SLOT_CAMERA_POSITION				10
 
 // Hull Shader
-#define HS_CB_SLOT_CAMERA_POSITION			10
 
 // Domain Shader
 #define DS_CB_SLOT_CAMERA_VIEW_PROJECTION	0x00
-#define DS_CB_SLOT_CAMERA_POSITION			10
+#define HSDS_CB_SLOT_TESS_OPTION			0x01
 
 // Geometry Shader
 #define GS_CB_SLOT_CAMERA_VIEW_PROJECTION	0x00
@@ -45,9 +44,6 @@ Max Resource(Texture, Buffer)	: 128
 #define PS_CB_SLOT_SKYBOX					0x04
 #define PS_CB_SLOT_RENDEROPTION				0x05
 #define PS_CB_SLOT_GBUFFER_UNPACK			0x06
-
-#define PS_CB_SLOT_CAMERA_POSITION			10
-
 
 // ============================================ //
 // ================== Slot ==================== //

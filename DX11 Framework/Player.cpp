@@ -15,14 +15,12 @@ CPlayer::CPlayer(CCharacterObject* pCharacter)
 
 	m_d3dxvVelocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_d3dxvGravity = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_fMaxVelocityXZ = 0.0f;
-	m_fMaxVelocityY = 0.0f;
 	m_fFriction = 0.0f;
 
 	// 임시
 //	m_fSpeed = 50;
-//	m_fSpeed = 30;
-	m_fSpeed = 5;	// 자연스러운 속도
+	m_fSpeed = 30;
+//	m_fSpeed = 5;	// 자연스러운 속도
 	count = 0;
 }
 
@@ -75,9 +73,9 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
 		if (m_pCharacter->GetIsTempRun()) {		// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
-//			d3dxvShift *= 3;
-			d3dxvShift += XMLoadFloat3(&m_d3dxvLook) * 3;
-			relativeVelocity += XMVectorSet(0, 0, 3, 0);
+			d3dxvShift *= 3;
+//			d3dxvShift += XMLoadFloat3(&m_d3dxvLook) * 3;
+//			relativeVelocity += XMVectorSet(0, 0, 3, 0);
 		}
 		m_pCharacter->Running();
 	}
@@ -236,6 +234,12 @@ void CPlayer::Update(float fDeltaTime)
 	mtx._31 = m_d3dxvLook.x;		mtx._32 = m_d3dxvLook.y;		mtx._33 = m_d3dxvLook.z;
 	mtx._41 = m_d3dxvPosition.x;	mtx._42 = m_d3dxvPosition.y;	mtx._43 = m_d3dxvPosition.z;
 	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&mtx);
+
+
+//	cout << "Player  : "; ShowXMFloat3(GetLook());
+//	cout << "Camera  : "; ShowXMFloat3(m_pCamera->GetLook());
+//	cout << "차이 : "; ShowXMVector(GetvPosition() - m_pCamera->GetvPosition());
+//	cout << endl;
 }
 
 CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag)
