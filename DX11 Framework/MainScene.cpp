@@ -9,6 +9,7 @@ CMainScene::CMainScene()
 CMainScene::~CMainScene()
 {
 	delete(m_GBuffer);
+	delete(m_pLightManager);
 }
 
 bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -186,7 +187,9 @@ void CMainScene::Initialize()
 
 	m_GBuffer = new CGBuffer();
 	m_GBuffer->Initialize(m_pd3dDevice);
-
+	m_pLightManager = new CLightManager();
+	m_pLightManager->Initialize(m_pd3dDevice);
+	m_pLightManager->SetGBuffer(m_GBuffer);
 //	m_pSphereObject = new CSphereObject();
 //	m_pSphereObject->CreateObjectData(m_pd3dDevice);
 //	m_vecObjectsContainer.push_back(m_pSphereObject);
@@ -777,7 +780,7 @@ void CMainScene::CreateMapDataInstancingObject()
 
 	AddShaderObject(ShaderTag::eNormal, pObject);
 #pragma endregion
-	/*
+	
 #pragma region [Road]
 	// ==============================   Road   ============================== //
 	// Road1
@@ -788,7 +791,6 @@ void CMainScene::CreateMapDataInstancingObject()
 	pInstancingShaders->SetMesh(pFbxMesh);
 	pInstancingShaders->SetMaterial(1, TextureTag::eRoad1D);
 
-	이게 빌드오브젝트 하고 크리에이트 쉐이더 하는 것이 맞는건가? 어셈블 하는 부분 다시 확인하기
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
 
@@ -841,7 +843,7 @@ void CMainScene::CreateMapDataInstancingObject()
 
 		pObject->CreateBoundingBox(m_pd3dDevice);
 
-		AddShaderObject(ShaderTag::eNormalTangentTexture, pObject);
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCenterRoad);
@@ -857,10 +859,10 @@ void CMainScene::CreateMapDataInstancingObject()
 
 		pObject->CreateBoundingBox(m_pd3dDevice);
 
-		AddShaderObject(ShaderTag::eNormalTangentTexture, pObject);
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
 #pragma endregion
-*/
+
 #pragma region [Building]
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBuilding19);
 	for (int count = 0; count < vecMapData.size(); ++count) {
@@ -1435,6 +1437,8 @@ void CMainScene::ReleaseObjects()
 
 	for (auto& object : m_vecCharacterContainer)
 		SafeDelete(object);
+
+	m_pLightManager->DeInitialize();
 }
 
 void CMainScene::AddShaderObject(ShaderTag tag, CGameObject* pObject)
@@ -1665,6 +1669,11 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthReadOnlyDSV());
 
 	// ------ Final Scene Rendering ------ //
+	m_pLightManager->DoLighting(pd3dDeviceContext);
+
+	if (GLOBAL_MGR->g_bShowLightVolume)
+		m_pLightManager->DrawLightVolume(pd3dDeviceContext);
+
 	m_GBuffer->DeferredRender(pd3dDeviceContext);
 #endif
 
@@ -1715,8 +1724,8 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 
 	// Draw Position
 	XMFLOAT3 playerPos = m_pPlayer->GetPosition();
-	DWORD	 HP = m_pPlayer->GetPlayerLife();
-	DWORD	 ID = SERVER_MGR->GetId();
+	DWORD HP = m_pPlayer->GetPlayerLife();
+	DWORD ID = SERVER_MGR->GetId();
 
 	
 	str = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")\n";

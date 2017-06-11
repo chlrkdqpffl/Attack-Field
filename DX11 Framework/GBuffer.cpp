@@ -207,8 +207,7 @@ void CGBuffer::OnPrepareForUnpack(ID3D11DeviceContext* pd3dImmediateContext)
 	D3D11_MAPPED_SUBRESOURCE MappedResource;
 	HR(pd3dImmediateContext->Map(m_pGBufferUnpackCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource));
 	CB_GBUFFER_UNPACK* pGBufferUnpackCB = (CB_GBUFFER_UNPACK*)MappedResource.pData;
-	 
-
+	
 	XMFLOAT4X4 pProj;
 	XMStoreFloat4x4(&pProj, SCENE_MGR->g_pCamera->GetProjectionMatrix());
 	pGBufferUnpackCB->m_vPerspectiveValues.x = 1.0f / pProj.m[0][0];

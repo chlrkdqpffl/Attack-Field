@@ -29,6 +29,7 @@ Max Resource(Texture, Buffer)	: 128
 // Domain Shader
 #define DS_CB_SLOT_CAMERA_VIEW_PROJECTION	0x00
 #define HSDS_CB_SLOT_TESS_OPTION			0x01
+#define DS_CB_SLOT_LIGHT					0x02
 
 // Geometry Shader
 #define GS_CB_SLOT_CAMERA_VIEW_PROJECTION	0x00
@@ -44,6 +45,7 @@ Max Resource(Texture, Buffer)	: 128
 #define PS_CB_SLOT_SKYBOX					0x04
 #define PS_CB_SLOT_RENDEROPTION				0x05
 #define PS_CB_SLOT_GBUFFER_UNPACK			0x06
+#define PS_CB_SLOT_LIGHT					0x07
 
 // ============================================ //
 // ================== Slot ==================== //

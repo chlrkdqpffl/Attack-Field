@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "BoundingBoxShader.h"
 #include "GBuffer.h"
-
+#include "LightManager.h"
 
 class CMainScene : public CScene 
 {
@@ -60,6 +60,7 @@ private:
 	vector<CCharacterObject*>		m_vecCharacterContainer;
 
 	CGBuffer*						m_GBuffer = nullptr;
+	CLightManager*					m_pLightManager = nullptr;
 
 	// ----- Game System ----- //
 	DWORD							m_dwTime = 0;

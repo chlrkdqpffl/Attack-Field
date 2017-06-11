@@ -28,6 +28,11 @@ public:
 	ID3D11DepthStencilView* GetDepthReadOnlyDSV() const { return m_DepthStencilReadOnlyDSV; }
 	ID3D11DepthStencilView* GetDepthDSV() const { return m_DepthStencilDSV; }
 
+	ID3D11ShaderResourceView* GetDepthView() { return m_DepthStencilSRV; }
+	ID3D11ShaderResourceView* GetDiffuseView() { return m_DiffuseSpecIntensitySRV; }
+	ID3D11ShaderResourceView* GetNormalView() { return m_NormalSRV; }
+	ID3D11ShaderResourceView* GetSpecPowerView() { return m_SpecPowerSRV; }
+
 private:
 	ID3D11Buffer*	m_pGBufferUnpackCB					= nullptr;
 

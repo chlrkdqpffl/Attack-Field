@@ -32,7 +32,7 @@ CShader::~CShader()
 	if (m_pd3dInputElementDescs) delete[] m_pd3dInputElementDescs;
 }
 
-void CShader::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader, D3D11_INPUT_ELEMENT_DESC *pd3dInputElements, UINT nElements, ID3D11InputLayout **ppd3dInputLayout)
+void CShader::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader, D3D11_INPUT_ELEMENT_DESC *pd3dInputElements, UINT nElements, ID3D11InputLayout **ppd3dInputLayout)
 {
 	HRESULT hResult;
 
@@ -42,7 +42,7 @@ void CShader::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFil
 #endif
 
 	ID3DBlob *pd3dVertexShaderBlob = NULL, *pd3dErrorBlob = NULL;
-	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dVertexShaderBlob, &pd3dErrorBlob, NULL)))
+	if (SUCCEEDED(hResult = D3DX11CompileFromFile(wstrFileName.c_str(), NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dVertexShaderBlob, &pd3dErrorBlob, NULL)))
 	{
 		HR(pd3dDevice->CreateVertexShader(pd3dVertexShaderBlob->GetBufferPointer(), pd3dVertexShaderBlob->GetBufferSize(), NULL, ppd3dVertexShader));
 		HR(pd3dDevice->CreateInputLayout(pd3dInputElements, nElements, pd3dVertexShaderBlob->GetBufferPointer(), pd3dVertexShaderBlob->GetBufferSize(), ppd3dInputLayout));
@@ -58,11 +58,39 @@ void CShader::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFil
 			MessageBox(NULL, wstr, L"Shader Error !", MB_OK);
 		}
 		else
-			MessageBox(NULL, L"ShaderName is NULL!!", pszFileName, MB_OK);
+			MessageBox(NULL, L"ShaderName is NULL!!", wstrFileName.c_str(), MB_OK);
 	}
 }
 
-void CShader::CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11PixelShader **ppd3dPixelShader)
+void CShader::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader)
+{
+	HRESULT hResult;
+
+	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined(DEBUG) || defined(_DEBUG)
+	dwShaderFlags |= D3DCOMPILE_DEBUG;
+#endif
+
+	ID3DBlob *pd3dVertexShaderBlob = NULL, *pd3dErrorBlob = NULL;
+	if (SUCCEEDED(hResult = D3DX11CompileFromFile(wstrFileName.c_str(), NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dVertexShaderBlob, &pd3dErrorBlob, NULL)))
+	{
+		HR(pd3dDevice->CreateVertexShader(pd3dVertexShaderBlob->GetBufferPointer(), pd3dVertexShaderBlob->GetBufferSize(), NULL, ppd3dVertexShader));
+		
+		pd3dVertexShaderBlob->Release();
+
+		DXUT_SetDebugName(*ppd3dVertexShader, pszShaderName);
+	}
+	else {
+		if (pszShaderName) {
+			WCHAR* wstr = ConverCtoWC(pszShaderName);
+			MessageBox(NULL, wstr, L"Shader Error !", MB_OK);
+		}
+		else
+			MessageBox(NULL, L"ShaderName is NULL!!", wstrFileName.c_str(), MB_OK);
+	}
+}
+
+void CShader::CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11PixelShader **ppd3dPixelShader)
 {
 	HRESULT hResult;
 
@@ -72,7 +100,7 @@ void CShader::CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFile
 #endif
 
 	ID3DBlob *pd3dPixelShaderBlob = NULL, *pd3dErrorBlob = NULL;
-	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dPixelShaderBlob, &pd3dErrorBlob, NULL)))
+	if (SUCCEEDED(hResult = D3DX11CompileFromFile(wstrFileName.c_str(), NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dPixelShaderBlob, &pd3dErrorBlob, NULL)))
 	{
 		HR(pd3dDevice->CreatePixelShader(pd3dPixelShaderBlob->GetBufferPointer(), pd3dPixelShaderBlob->GetBufferSize(), NULL, ppd3dPixelShader));
 		pd3dPixelShaderBlob->Release();
@@ -84,11 +112,11 @@ void CShader::CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFile
 			MessageBox(NULL, wstr, L"Shader Error !", MB_OK);
 		}
 		else
-			MessageBox(NULL, L"ShaderName is NULL!!", pszFileName, MB_OK);
+			MessageBox(NULL, L"ShaderName is NULL!!", wstrFileName.c_str(), MB_OK);
 	}
 }
 
-void CShader::CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader)
+void CShader::CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader)
 {
 	HRESULT hResult;
 
@@ -98,7 +126,7 @@ void CShader::CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszF
 #endif
 
 	ID3DBlob *pd3dPixelShaderBlob = NULL, *pd3dErrorBlob = NULL;
-	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dPixelShaderBlob, &pd3dErrorBlob, NULL)))
+	if (SUCCEEDED(hResult = D3DX11CompileFromFile(wstrFileName.c_str(), NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dPixelShaderBlob, &pd3dErrorBlob, NULL)))
 	{
 		HR(pd3dDevice->CreateGeometryShader(pd3dPixelShaderBlob->GetBufferPointer(), pd3dPixelShaderBlob->GetBufferSize(), NULL, ppd3dGeometryShader));
 		pd3dPixelShaderBlob->Release();
@@ -111,11 +139,11 @@ void CShader::CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszF
 			MessageBox(NULL, wstr, L"Shader Error !", MB_OK);
 		}
 		else
-			MessageBox(NULL, L"ShaderName is NULL!!", pszFileName, MB_OK);
+			MessageBox(NULL, L"ShaderName is NULL!!", wstrFileName.c_str(), MB_OK);
 	}
 }
 
-void CShader::CreateComputeShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11ComputeShader **ppd3dComputeShader)
+void CShader::CreateComputeShaderFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11ComputeShader **ppd3dComputeShader)
 {
 	HRESULT hResult;
 
@@ -125,7 +153,7 @@ void CShader::CreateComputeShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFi
 #endif
 
 	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
-	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
+	if (SUCCEEDED(hResult = D3DX11CompileFromFile(wstrFileName.c_str(), NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
 	{
 		HR(pd3dDevice->CreateComputeShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dComputeShader));
 		pd3dShaderBlob->Release();
@@ -138,11 +166,11 @@ void CShader::CreateComputeShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFi
 			MessageBox(NULL, wstr, L"Shader Error !", MB_OK);
 		}
 		else
-			MessageBox(NULL, L"ShaderName is NULL!!", pszFileName, MB_OK);
+			MessageBox(NULL, L"ShaderName is NULL!!", wstrFileName.c_str(), MB_OK);
 	}
 }
 
-void CShader::CreateHullShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11HullShader **ppd3dHullShader)
+void CShader::CreateHullShaderFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11HullShader **ppd3dHullShader)
 {
 	HRESULT hResult;
 
@@ -152,7 +180,7 @@ void CShader::CreateHullShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileN
 #endif
 
 	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
-	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
+	if (SUCCEEDED(hResult = D3DX11CompileFromFile(wstrFileName.c_str(), NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
 	{
 		HR(pd3dDevice->CreateHullShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dHullShader));
 		pd3dShaderBlob->Release();
@@ -164,11 +192,11 @@ void CShader::CreateHullShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileN
 			MessageBox(NULL, wstr, L"Shader Error !", MB_OK);
 		}
 		else
-			MessageBox(NULL, L"ShaderName is NULL!!", pszFileName, MB_OK);
+			MessageBox(NULL, L"ShaderName is NULL!!", wstrFileName.c_str(), MB_OK);
 	}
 }
 
-void CShader::CreateDomainShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11DomainShader **ppd3dDomainShader)
+void CShader::CreateDomainShaderFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11DomainShader **ppd3dDomainShader)
 {
 	HRESULT hResult;
 
@@ -178,7 +206,7 @@ void CShader::CreateDomainShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFil
 #endif
 
 	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
-	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
+	if (SUCCEEDED(hResult = D3DX11CompileFromFile(wstrFileName.c_str(), NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
 	{
 		HR(pd3dDevice->CreateDomainShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dDomainShader));
 		pd3dShaderBlob->Release();
@@ -190,7 +218,7 @@ void CShader::CreateDomainShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFil
 			MessageBox(NULL, wstr, L"Shader Error !", MB_OK);
 		}
 		else
-			MessageBox(NULL, L"ShaderName is NULL!!", pszFileName, MB_OK);
+			MessageBox(NULL, L"ShaderName is NULL!!", wstrFileName.c_str(), MB_OK);
 	}
 }
 
@@ -200,6 +228,7 @@ void CShader::CreateShader(ID3D11Device *pd3dDevice, UINT nType)
 	GetInputElementDesc(m_nType);
 	LPCSTR pszVSShaderName = NULL, pszVSShaderModel = "vs_5_0", pszPSShaderName = NULL, pszPSShaderModel = "ps_5_0";
 	GetShaderName(m_nType, &pszVSShaderName, &pszVSShaderModel, &pszPSShaderName, &pszPSShaderModel);
+
 	CreateShader(pd3dDevice, NULL, 0, L"Shader HLSL File/Effect.fx", pszVSShaderName, pszVSShaderModel, pszPSShaderName, pszPSShaderModel);
 }
 

@@ -1,5 +1,5 @@
 
-//	fxc /E VSTexturedLightingColor /T vs_5_0 /Od /Zi /Fo CompiledShader.fxo DeferredShading.hlsli
+//	fxc /E PSTexturedLightingColor /T ps_5_0 /Od /Zi /Fo CompiledShader.fxo DeferredShading.hlsli
 #include "Normal.hlsli"
 #include "GBufferStructure.hlsli"
 

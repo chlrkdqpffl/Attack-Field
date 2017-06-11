@@ -109,6 +109,9 @@
     <Filter Include="Particle">
       <UniqueIdentifier>{212ba4fb-c602-4b82-bf63-ababc9048f83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HLSL\Deferred\Light">
+      <UniqueIdentifier>{d60721e4-64b1-451f-8ea6-8cc8c2f99d4e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -338,6 +341,9 @@
     </ClCompile>
     <ClCompile Include="UIShader.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -596,6 +602,9 @@
     <ClInclude Include="UIShader.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -672,6 +681,15 @@
     </None>
     <None Include="Shader HLSL File\GBufferStructure.hlsli">
       <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\PointLight.hlsli">
+      <Filter>HLSL\Deferred\Light</Filter>
+    </None>
+    <None Include="Shader HLSL File\SpotLight.hlsli">
+      <Filter>HLSL\Deferred\Light</Filter>
+    </None>
+    <None Include="Shader HLSL File\DirLight.hlsli">
+      <Filter>HLSL\Deferred\Light</Filter>
     </None>
   </ItemGroup>
 </Project>

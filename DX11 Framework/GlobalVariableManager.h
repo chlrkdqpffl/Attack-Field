@@ -42,6 +42,7 @@ public:
 	static bool								g_bShowGBuffer;
 	static bool								g_bShowWorldAxis;
 	static bool								g_bShowWireFrame;
+	bool									g_bShowLightVolume = false;
 
 	vector<CLineObject*>					g_vecLineContainer;
 };

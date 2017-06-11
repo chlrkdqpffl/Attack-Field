@@ -173,6 +173,9 @@
     <ClCompile Include="GBuffer.cpp" />
     <ClCompile Include="GBufferShader.cpp" />
     <ClCompile Include="GlobalVariableManager.cpp" />
+    <ClCompile Include="LightManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="LineObject.cpp" />
     <ClCompile Include="LoadingScene.cpp" />
     <ClCompile Include="MapDataManager.cpp" />
@@ -258,6 +261,7 @@
     <ClInclude Include="GBuffer.h" />
     <ClInclude Include="GBufferShader.h" />
     <ClInclude Include="GlobalVariableManager.h" />
+    <ClInclude Include="LightManager.h" />
     <ClInclude Include="LineObject.h" />
     <ClInclude Include="LoadingScene.h" />
     <ClInclude Include="MapDataManager.h" />
@@ -355,6 +359,7 @@
     <None Include="Shader HLSL File\common.hlsli" />
     <None Include="Shader HLSL File\DeferredCharacterSkinnedNormal.hlsli" />
     <None Include="Shader HLSL File\DeferredShading.hlsli" />
+    <None Include="Shader HLSL File\DirLight.hlsli" />
     <None Include="Shader HLSL File\DisplacementMap.hlsli" />
     <None Include="Shader HLSL File\CharacterSkinned.hlsli" />
     <None Include="Shader HLSL File\Fog.hlsli" />
@@ -363,7 +368,9 @@
     <None Include="Shader HLSL File\Light.hlsli" />
     <None Include="Shader HLSL File\Normal.hlsli" />
     <None Include="Shader HLSL File\NormalMap.hlsli" />
+    <None Include="Shader HLSL File\PointLight.hlsli" />
     <None Include="Shader HLSL File\PostProcessing.hlsli" />
+    <None Include="Shader HLSL File\SpotLight.hlsli" />
     <None Include="Shader HLSL File\Terrain.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </None>

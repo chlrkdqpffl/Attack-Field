@@ -75,7 +75,12 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				GLOBAL_MGR->g_bShowGBuffer= !GLOBAL_MGR->g_bShowGBuffer;
 				break;
 			}
-		
+			case '6':
+			{
+				cout << "Show LightVolume" << endl;
+				GLOBAL_MGR->g_bShowLightVolume = !GLOBAL_MGR->g_bShowLightVolume;
+				break;
+			}
 		}
 		break;
 	case WM_KEYUP:
