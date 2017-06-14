@@ -65,6 +65,10 @@ void CSkyBox::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 	m_pMaterial->m_pTexture->UpdateSamplerShaderVariable(pd3dDeviceContext, 0, PS_SAMPLER_SLOT_SKYBOX);
 #endif
 #endif
+
+	ID3D11DepthStencilState* prevDepthStencilState; UINT prevStencil;
+	pd3dDeviceContext->OMGetDepthStencilState(&prevDepthStencilState, &prevStencil);
+
 	pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 1);
 
 	for (int i = 0; i < 6; i++)
@@ -83,5 +87,5 @@ void CSkyBox::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 		pd3dDeviceContext->DrawIndexed(4, 0, i * 4);
 	}
 
-	pd3dDeviceContext->OMSetDepthStencilState(NULL, 1);
+	pd3dDeviceContext->OMSetDepthStencilState(prevDepthStencilState, prevStencil);
 }

@@ -72,6 +72,7 @@ void CAntTweakBarManager::InitializeManager()
 	TwDefine("TweakBar/AnimationOption opened = false ");
 	TwDefine("TweakBar/SelectObject opened = false ");
 	TwDefine("TweakBar/Option opened = false ");
+	TwDefine("TweakBar/TesslationOption opened = false ");
 }
 
 void CAntTweakBarManager::ReleseManager()

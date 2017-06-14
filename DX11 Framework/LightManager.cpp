@@ -2,12 +2,14 @@
 #include "GBuffer.h"
 #include "LightManager.h"
 
-CLightManager::CLightManager() :m_bShowLightVolume(false),
+CLightManager::CLightManager() :
 	m_pDirLightVertexShader(NULL), m_pDirLightPixelShader(NULL), m_pDirLightCB(NULL),
 	m_pPointLightVertexShader(NULL), m_pPointLightHullShader(NULL), m_pPointLightDomainShader(NULL), m_pPointLightPixelShader(NULL),
 	m_pPointLightDomainCB(NULL), m_pPointLightPixelCB(NULL),
 	m_pSpotLightVertexShader(NULL), m_pSpotLightHullShader(NULL), m_pSpotLightDomainShader(NULL), m_pSpotLightPixelShader(NULL),
 	m_pSpotLightDomainCB(NULL), m_pSpotLightPixelCB(NULL),
+	m_pCapsuleLightVertexShader(NULL), m_pCapsuleLightHullShader(NULL), m_pCapsuleLightDomainShader(NULL), m_pCapsuleLightPixelShader(NULL),
+	m_pCapsuleLightDomainCB(NULL), m_pCapsuleLightPixelCB(NULL),
 	m_pDebugLightPixelShader(NULL),
 	m_pNoDepthWriteLessStencilMaskState(NULL), m_pNoDepthWriteGreatherStencilMaskState(NULL),
 	m_pAdditiveBlendState(NULL), m_pNoDepthClipFrontRS(NULL), m_pWireframeRS(NULL)
@@ -46,41 +48,43 @@ void CLightManager::Initialize(ID3D11Device *pd3dDevice)
 	HR( pd3dDevice->CreateBuffer( &cbDesc, NULL, &m_pSpotLightPixelCB ) );
 	DXUT_SetDebugName( m_pSpotLightPixelCB, "Spot Light Pixel CB" );
 
+	cbDesc.ByteWidth = sizeof(CB_CAPSULE_LIGHT_DOMAIN);
+	HR(pd3dDevice->CreateBuffer(&cbDesc, NULL, &m_pCapsuleLightDomainCB));
+	DXUT_SetDebugName(m_pCapsuleLightDomainCB, "Capsule Light Domain CB");
+
+	cbDesc.ByteWidth = sizeof(CB_CAPSULE_LIGHT_PIXEL);
+	HR(pd3dDevice->CreateBuffer(&cbDesc, NULL, &m_pCapsuleLightPixelCB));
+	DXUT_SetDebugName(m_pCapsuleLightPixelCB, "Capsule Light Pixel CB");
+
 	wstring strFileName;
 	// Directional Light Shader
 	strFileName = L"Shader HLSL File/DirLight.hlsli";
 	CShader::CreateVertexShaderFromFile(pd3dDevice, strFileName, "DirLightVS", "vs_5_0", &m_pDirLightVertexShader);
-	DXUT_SetDebugName(m_pDirLightVertexShader, "Directional Light VS");
 	CShader::CreatePixelShaderFromFile(pd3dDevice, strFileName, "DirLightPS", "ps_5_0", &m_pDirLightPixelShader);
-	DXUT_SetDebugName(m_pDirLightPixelShader, "Directional Light PS");
-
 	// Point Light Shader
 	strFileName = L"Shader HLSL File/PointLight.hlsli";
 	CShader::CreateVertexShaderFromFile(pd3dDevice, strFileName, "PointLightVS", "vs_5_0", &m_pPointLightVertexShader);
-	DXUT_SetDebugName(m_pPointLightVertexShader, "Point Light VS");
 	CShader::CreateHullShaderFromFile(pd3dDevice, strFileName, "PointLightHS", "hs_5_0", &m_pPointLightHullShader);
-	DXUT_SetDebugName(m_pPointLightHullShader, "Point Light HS");
 	CShader::CreateDomainShaderFromFile(pd3dDevice, strFileName, "PointLightDS", "ds_5_0", &m_pPointLightDomainShader);
-	DXUT_SetDebugName(m_pPointLightDomainShader, "Point Light DS");
 	CShader::CreatePixelShaderFromFile(pd3dDevice, strFileName, "PointLightPS", "ps_5_0", &m_pPointLightPixelShader);
-	DXUT_SetDebugName(m_pPointLightPixelShader, "Point Light PS");
 
 	// Spot Light Shader
 	strFileName = L"Shader HLSL File/SpotLight.hlsli";
 	CShader::CreateVertexShaderFromFile(pd3dDevice, strFileName, "SpotLightVS", "vs_5_0", &m_pSpotLightVertexShader);
-	DXUT_SetDebugName(m_pSpotLightVertexShader, "Spot Light VS");
 	CShader::CreateHullShaderFromFile(pd3dDevice, strFileName, "SpotLightHS", "hs_5_0", &m_pSpotLightHullShader);
-	DXUT_SetDebugName(m_pSpotLightHullShader, "Spot Light HS");
 	CShader::CreateDomainShaderFromFile(pd3dDevice, strFileName, "SpotLightDS", "ds_5_0", &m_pSpotLightDomainShader);
-	DXUT_SetDebugName(m_pSpotLightDomainShader, "Spot Light DS");
 	CShader::CreatePixelShaderFromFile(pd3dDevice, strFileName, "SpotLightPS", "ps_5_0", &m_pSpotLightPixelShader);
-	DXUT_SetDebugName(m_pSpotLightPixelShader, "Spot Light PS");
+
+	// Capsule Light Shader
+	strFileName = L"Shader HLSL File/CapsuleLight.hlsli";
+	CShader::CreateVertexShaderFromFile(pd3dDevice, strFileName, "CapsuleLightVS", "vs_5_0", &m_pCapsuleLightVertexShader);
+	CShader::CreateHullShaderFromFile(pd3dDevice, strFileName, "CapsuleLightHS", "hs_5_0", &m_pCapsuleLightHullShader);
+	CShader::CreateDomainShaderFromFile(pd3dDevice, strFileName, "CapsuleLightDS", "ds_5_0", &m_pCapsuleLightDomainShader);
+	CShader::CreatePixelShaderFromFile(pd3dDevice, strFileName, "CapsuleLightPS", "ps_5_0", &m_pCapsuleLightPixelShader);
 
 	// Light Volume Debug Shader
 	strFileName = L"Shader HLSL File/Common.hlsli";
 	CShader::CreatePixelShaderFromFile(pd3dDevice, strFileName, "DebugLightPS", "ps_5_0", &m_pDebugLightPixelShader);
-	DXUT_SetDebugName(m_pDebugLightPixelShader, "Debug Light Volume PS");
-
 
 	D3D11_DEPTH_STENCIL_DESC descDepth;
 	descDepth.DepthEnable = TRUE;
@@ -156,6 +160,12 @@ void CLightManager::DeInitialize()
 	ReleaseCOM(m_pSpotLightPixelShader);
 	ReleaseCOM(m_pSpotLightDomainCB);
 	ReleaseCOM(m_pSpotLightPixelCB);
+	ReleaseCOM(m_pCapsuleLightVertexShader);
+	ReleaseCOM(m_pCapsuleLightHullShader);
+	ReleaseCOM(m_pCapsuleLightDomainShader);
+	ReleaseCOM(m_pCapsuleLightPixelShader);
+	ReleaseCOM(m_pCapsuleLightDomainCB);
+	ReleaseCOM(m_pCapsuleLightPixelCB);
 	ReleaseCOM(m_pDebugLightPixelShader);
 	ReleaseCOM(m_pNoDepthWriteLessStencilMaskState);
 	ReleaseCOM(m_pNoDepthWriteGreatherStencilMaskState);
@@ -176,7 +186,7 @@ void CLightManager::DoLighting(ID3D11DeviceContext* pd3dImmediateContext)
 	
 	// Set the GBuffer views
 	ID3D11ShaderResourceView* arrViews[4] = {m_pGBuffer->GetDepthView(), m_pGBuffer->GetDiffuseView(), m_pGBuffer->GetNormalView(), m_pGBuffer->GetSpecPowerView()};
-	pd3dImmediateContext->PSSetShaderResources(0, 4, arrViews);
+	pd3dImmediateContext->PSSetShaderResources(PS_TEXTRUE_SLOT_GBUFFER, 4, arrViews);
 
 	// Do the directional light
 	DirectionalLight(pd3dImmediateContext);
@@ -196,24 +206,14 @@ void CLightManager::DoLighting(ID3D11DeviceContext* pd3dImmediateContext)
 	pd3dImmediateContext->RSSetState(m_pNoDepthClipFrontRS);
 
 	// Do the rest of the lights
-	for(std::vector<LIGHT>::iterator itrCurLight = m_arrLights.begin(); itrCurLight != m_arrLights.end(); itrCurLight++)
-	{
-		if((*itrCurLight).eLightType == TYPE_POINT)
-		{
-			PointLight(pd3dImmediateContext, (*itrCurLight).vPosition, (*itrCurLight).fRange, (*itrCurLight).vColor, false);
-		}
-		else if((*itrCurLight).eLightType == TYPE_SPOT)
-		{
-			SpotLight(pd3dImmediateContext, (*itrCurLight).vPosition, (*itrCurLight).vDirection, (*itrCurLight).fRange, (*itrCurLight).fInnerAngle,
-				(*itrCurLight).fOuterAngle, (*itrCurLight).vColor, false);
-		}
+	for (auto light : m_arrLights) {
+		if(light.eLightType == TYPE_POINT)
+			PointLight(pd3dImmediateContext, light.vPosition, light.fRange, light.vColor, false);
+		else if (light.eLightType == TYPE_SPOT)
+			SpotLight(pd3dImmediateContext, light.vPosition, light.vDirection, light.fRange, light.fInnerAngle, light.fOuterAngle, light.vColor, false);
+		else if (light.eLightType == TYPE_CAPSULE)
+			CapsuleLight(pd3dImmediateContext, light.vPosition, light.vDirection, light.fRange, light.fLength, light.vColor, false);
 	}
-
-	// Cleanup
-	pd3dImmediateContext->VSSetShader(NULL, NULL, 0);
-	pd3dImmediateContext->HSSetShader(NULL, NULL, 0);
-	pd3dImmediateContext->DSSetShader(NULL, NULL, 0);
-	pd3dImmediateContext->PSSetShader(NULL, NULL, 0);
 
 	// Restore the states
 	pd3dImmediateContext->OMSetBlendState(pPrevBlendState, prevBlendFactor, prevSampleMask);
@@ -222,6 +222,12 @@ void CLightManager::DoLighting(ID3D11DeviceContext* pd3dImmediateContext)
 	ReleaseCOM( pPrevRSState );
 	pd3dImmediateContext->OMSetDepthStencilState(pPrevDepthState, nPrevStencil);
 	ReleaseCOM( pPrevDepthState );
+
+	// Cleanup
+	pd3dImmediateContext->VSSetShader(NULL, NULL, 0);
+	pd3dImmediateContext->HSSetShader(NULL, NULL, 0);
+	pd3dImmediateContext->DSSetShader(NULL, NULL, 0);
+	pd3dImmediateContext->PSSetShader(NULL, NULL, 0);
 
 	// Cleanup
 	ZeroMemory(arrViews, sizeof(arrViews));
@@ -235,17 +241,13 @@ void CLightManager::DrawLightVolume(ID3D11DeviceContext* pd3dImmediateContext)
 	pd3dImmediateContext->RSGetState(&pPrevRSState);
 	pd3dImmediateContext->RSSetState(m_pWireframeRS);
 
-	for(std::vector<LIGHT>::iterator itrCurLight = m_arrLights.begin(); itrCurLight != m_arrLights.end(); itrCurLight++)
-	{
-		if((*itrCurLight).eLightType == TYPE_POINT)
-		{
-			PointLight(pd3dImmediateContext, (*itrCurLight).vPosition, (*itrCurLight).fRange, (*itrCurLight).vColor, true);
-		}
-		else if((*itrCurLight).eLightType == TYPE_SPOT)
-		{
-			SpotLight(pd3dImmediateContext, (*itrCurLight).vPosition, (*itrCurLight).vDirection, (*itrCurLight).fRange, (*itrCurLight).fInnerAngle,
-				(*itrCurLight).fOuterAngle, (*itrCurLight).vColor, true);
-		}
+	for (auto light : m_arrLights) {
+		if (light.eLightType == TYPE_POINT)
+			PointLight(pd3dImmediateContext, light.vPosition, light.fRange, light.vColor, true);
+		else if (light.eLightType == TYPE_SPOT)
+			SpotLight(pd3dImmediateContext, light.vPosition, light.vDirection, light.fRange, light.fInnerAngle, light.fOuterAngle, light.vColor, true);
+		else if (light.eLightType == TYPE_CAPSULE)
+			CapsuleLight(pd3dImmediateContext, light.vPosition, light.vDirection, light.fRange, light.fLength, light.vColor, true);
 	}
 
 	// Cleanup
@@ -405,4 +407,63 @@ void CLightManager::SpotLight(ID3D11DeviceContext* pd3dImmediateContext, const X
 	pd3dImmediateContext->PSSetShader(bWireframe ? m_pDebugLightPixelShader : m_pSpotLightPixelShader, NULL, 0);
 
 	pd3dImmediateContext->Draw(1, 0);
+}
+
+void CLightManager::CapsuleLight(ID3D11DeviceContext* pd3dImmediateContext, const XMFLOAT3& vPos, const XMFLOAT3& vDir, float fRange, float fLen, const XMFLOAT3& vColor, bool bWireframe)
+{
+	// Rotate and translate matrix from capsule local space to lights world space
+	XMVECTOR vUp = (vDir.y > 0.9 || vDir.y < -0.9) ? XMVectorSet(0.0f, 0.0f, vDir.y, 0.0f) : XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	XMVECTOR vRight = XMVector3Cross(vUp, XMLoadFloat3(&vDir));
+	vRight = XMVector3NormalizeEst(vRight);
+	vUp = XMVector3Cross(XMLoadFloat3(&vDir), vRight);
+	vUp = XMVector3NormalizeEst(vUp);
+
+	XMVECTOR vCenterPos = XMLoadFloat3(&vPos) + 0.5f * XMLoadFloat3(&vDir) * fLen;
+	XMVECTOR vAt = vCenterPos + XMLoadFloat3(&vDir) * fLen;
+
+	XMFLOAT3 f3Right; XMStoreFloat3(&f3Right, vRight);
+	XMFLOAT3 f3Up; XMStoreFloat3(&f3Up, vUp);
+	XMFLOAT3 f3CenterPos; XMStoreFloat3(&f3CenterPos, vCenterPos);
+	
+	XMMATRIX m_LightWorldTransRotate; 
+	m_LightWorldTransRotate = XMMatrixSet(f3Right.x, f3Right.y, f3Right.z, 0.0f,
+		f3Up.x, f3Up.y, f3Up.z, 0.0f,
+		vDir.x, vDir.y, vDir.z, 0.0f,
+		f3CenterPos.x, f3CenterPos.y, f3CenterPos.z, 1.0f);
+
+	XMMATRIX mView = SCENE_MGR->g_pCamera->GetViewMatrix();
+	XMMATRIX mProj = SCENE_MGR->g_pCamera->GetProjectionMatrix();
+	XMMATRIX mWorldViewProjection = m_LightWorldTransRotate * mView * mProj;
+
+	D3D11_MAPPED_SUBRESOURCE MappedResource;
+	HR(pd3dImmediateContext->Map(m_pCapsuleLightDomainCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource));
+	CB_CAPSULE_LIGHT_DOMAIN* pCapsuleLightDomainCB = (CB_CAPSULE_LIGHT_DOMAIN*)MappedResource.pData;
+	XMStoreFloat4x4(&pCapsuleLightDomainCB->WolrdViewProj, XMMatrixTranspose(mWorldViewProjection));
+	pCapsuleLightDomainCB->HalfCapsuleLen = 0.5f * fLen;
+	pCapsuleLightDomainCB->CapsuleRange = fRange;
+	pd3dImmediateContext->Unmap(m_pCapsuleLightDomainCB, 0);
+	pd3dImmediateContext->DSSetConstantBuffers(DS_CB_SLOT_LIGHT, 1, &m_pCapsuleLightDomainCB);
+
+	HR(pd3dImmediateContext->Map(m_pCapsuleLightPixelCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource));
+	CB_CAPSULE_LIGHT_PIXEL* pCapsuleLightPixelCB = (CB_CAPSULE_LIGHT_PIXEL*)MappedResource.pData;
+	pCapsuleLightPixelCB->CapsuleLightPos = vPos;
+	pCapsuleLightPixelCB->CapsuleLightRangeRcp = 1.0f / fRange;
+	pCapsuleLightPixelCB->CapsuleDir = vDir;
+	pCapsuleLightPixelCB->CapsuleLen = fLen;
+	pCapsuleLightPixelCB->CapsuleColor = GammaToLinear(vColor);
+	pd3dImmediateContext->Unmap(m_pCapsuleLightPixelCB, 0);
+	pd3dImmediateContext->PSSetConstantBuffers(PS_CB_SLOT_LIGHT, 1, &m_pCapsuleLightPixelCB);
+
+	pd3dImmediateContext->IASetInputLayout(NULL);
+	pd3dImmediateContext->IASetVertexBuffers(0, 0, NULL, NULL, NULL);
+	pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST);
+
+	// Set the shaders
+	pd3dImmediateContext->VSSetShader(m_pCapsuleLightVertexShader, NULL, 0);
+	pd3dImmediateContext->HSSetShader(m_pCapsuleLightHullShader, NULL, 0);
+	pd3dImmediateContext->DSSetShader(m_pCapsuleLightDomainShader, NULL, 0);
+	pd3dImmediateContext->GSSetShader(NULL, NULL, 0);
+	pd3dImmediateContext->PSSetShader(bWireframe ? m_pDebugLightPixelShader : m_pCapsuleLightPixelShader, NULL, 0);
+
+	pd3dImmediateContext->Draw(2, 0);
 }

@@ -51,6 +51,25 @@ struct CB_SPOT_LIGHT_PIXEL
 	XMFLOAT3 SpotColor;
 	float SpotCosConeAttRange;
 };
+
+
+struct CB_CAPSULE_LIGHT_DOMAIN
+{
+	XMFLOAT4X4 WolrdViewProj;
+	float HalfCapsuleLen;
+	float CapsuleRange;
+	float pad[2];
+};
+
+struct CB_CAPSULE_LIGHT_PIXEL
+{
+	XMFLOAT3 CapsuleLightPos;
+	float CapsuleLightRangeRcp;
+	XMFLOAT3 CapsuleDir;
+	float CapsuleLen;
+	XMFLOAT3 CapsuleColor;
+	float pad;
+};
 #pragma pack(pop)
 
 class CLightManager
@@ -73,11 +92,11 @@ public:
 	}
 
 	// Set the directional light values
-	void SetDirectional(const XMFLOAT3& vDirectionalDir, const XMFLOAT3& vDirectionalCorol)
+	void SetDirectional(const XMFLOAT3& vDirectionalDir, const XMFLOAT3& vDirectionalColor)
 	{
 		XMVECTOR normal = XMLoadFloat3(&vDirectionalDir);
 		XMStoreFloat3(&m_vDirectionalDir, XMVector3NormalizeEst(normal));
-		m_vDirectionalColor = vDirectionalCorol;
+		m_vDirectionalColor = vDirectionalColor;
 	}
 
 	// Clear the lights from the previous frame
@@ -156,11 +175,9 @@ private:
 	// Do the directional light calculation
 	void DirectionalLight(ID3D11DeviceContext* pd3dImmediateContext);
 
-	// Based on the value of bWireframe, either do the lighting or render the volume
 	void PointLight(ID3D11DeviceContext* pd3dImmediateContext, const XMFLOAT3& vPos ,float fRange, const XMFLOAT3& vColor, bool bWireframe);
-	
-	// Based on the value of bWireframe, either do the lighting or render the volume
 	void SpotLight(ID3D11DeviceContext* pd3dImmediateContext, const XMFLOAT3& vPos, const XMFLOAT3& vDir, float fRange, float fInnerAngle, float fOuterAngle, const XMFLOAT3& vColor, bool bWireframe);
+	void CapsuleLight(ID3D11DeviceContext* pd3dImmediateContext, const XMFLOAT3& vPos, const XMFLOAT3& vDir, float fRange, float fLen, const XMFLOAT3& vColor, bool bWireframe);
 
 	// Directional light
 	ID3D11VertexShader* m_pDirLightVertexShader;
@@ -183,6 +200,14 @@ private:
 	ID3D11Buffer* m_pSpotLightDomainCB;
 	ID3D11Buffer* m_pSpotLightPixelCB;
 
+	// Capsule light
+	ID3D11VertexShader* m_pCapsuleLightVertexShader;
+	ID3D11HullShader* m_pCapsuleLightHullShader;
+	ID3D11DomainShader* m_pCapsuleLightDomainShader;
+	ID3D11PixelShader* m_pCapsuleLightPixelShader;
+	ID3D11Buffer* m_pCapsuleLightDomainCB;
+	ID3D11Buffer* m_pCapsuleLightPixelCB;
+
 	// Light volume debug shader
 	ID3D11PixelShader* m_pDebugLightPixelShader;
 
@@ -199,16 +224,13 @@ private:
 	// Wireframe render state for light volume debugging
 	ID3D11RasterizerState* m_pWireframeRS;
 
-	// Visualize the lights volume
-	bool m_bShowLightVolume;
-
 	// Ambient light information
-	XMFLOAT3 m_vAmbientLowerColor;
-	XMFLOAT3 m_vAmbientUpperColor;
+	XMFLOAT3 m_vAmbientLowerColor = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 m_vAmbientUpperColor = XMFLOAT3(0, 0, 0);
 
 	// Directional light information
-	XMFLOAT3 m_vDirectionalDir;
-	XMFLOAT3 m_vDirectionalColor;
+	XMFLOAT3 m_vDirectionalDir = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 m_vDirectionalColor = XMFLOAT3(0, 0, 0);
 
 	// Linked list with the active lights
 	std::vector<LIGHT> m_arrLights;

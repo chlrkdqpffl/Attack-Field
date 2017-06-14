@@ -43,7 +43,7 @@ CGBuffer::~CGBuffer()
 	ReleaseCOM(m_pDeferrdPixelShader);
 }
 
-void CGBuffer::Initialize(ID3D11Device* pDevice)
+void CGBuffer::Initialize(ID3D11Device* pDevice, UINT width, UINT height)
 {
 	// Texture formats
 	static const DXGI_FORMAT depthStencilTextureFormat = DXGI_FORMAT_R24G8_TYPELESS;
@@ -67,8 +67,8 @@ void CGBuffer::Initialize(ID3D11Device* pDevice)
 	// ========================= Create Texture 2D =============================== //
 	D3D11_TEXTURE2D_DESC d3dTexture2DDesc;
 	::ZeroMemory(&d3dTexture2DDesc, sizeof(D3D11_TEXTURE2D_DESC));
-	d3dTexture2DDesc.Width = FRAME_BUFFER_WIDTH;
-	d3dTexture2DDesc.Height = FRAME_BUFFER_HEIGHT;
+	d3dTexture2DDesc.Width = width;
+	d3dTexture2DDesc.Height = height;
 	d3dTexture2DDesc.MipLevels = 1;
 	d3dTexture2DDesc.ArraySize = 1;
 	d3dTexture2DDesc.SampleDesc.Count = 1;
@@ -145,6 +145,20 @@ void CGBuffer::Initialize(ID3D11Device* pDevice)
 	HR(pDevice->CreateShaderResourceView(m_SpecPowerRT, &d3dSRVDesc, &m_SpecPowerSRV));
 	DXUT_SetDebugName(m_SpecPowerSRV, "GBuffer - Spec Power SRV");
 
+	// ================================= Create Depth Stencil State ===================================== //
+	D3D11_DEPTH_STENCIL_DESC descDepth;
+	descDepth.DepthEnable = TRUE;
+	descDepth.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	descDepth.DepthFunc = D3D11_COMPARISON_LESS;
+	descDepth.StencilEnable = TRUE;
+	descDepth.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+	descDepth.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+	const D3D11_DEPTH_STENCILOP_DESC stencilMarkOp = { D3D11_STENCIL_OP_REPLACE, D3D11_STENCIL_OP_REPLACE, D3D11_STENCIL_OP_REPLACE, D3D11_COMPARISON_ALWAYS };
+	descDepth.FrontFace = stencilMarkOp;
+	descDepth.BackFace = stencilMarkOp;
+	HR (pDevice->CreateDepthStencilState(&descDepth, &m_DepthStencilState));
+	DXUT_SetDebugName(m_DepthStencilState, "GBuffer - Depth Stencil Mark DS");
+
 	// ================================= Create Constant Buffers ===================================== //
 	D3D11_BUFFER_DESC cbDesc;
 	ZeroMemory(&cbDesc, sizeof(cbDesc));
@@ -174,17 +188,7 @@ void CGBuffer::Initialize(ID3D11Device* pDevice)
 	m_pSpecShader = new CGBufferShader(GBufferType::eSpec);
 	m_pSpecShader->CreateShader(pDevice);
 
-
-	ID3D11InputLayout *pd3dVertexLayout;
-	D3D11_INPUT_ELEMENT_DESC d3dInputElements[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
-	UINT nElements = ARRAYSIZE(d3dInputElements);
-	
-	CShader::CreateVertexShaderFromFile(pDevice, L"Shader HLSL File/PostProcessing.hlsli", "VSPostProcessing", "vs_5_0", &m_pDeferrdVertexShader, d3dInputElements, nElements, &pd3dVertexLayout);
-	pd3dVertexLayout->Release();
-	
+	CShader::CreateVertexShaderFromFile(pDevice, L"Shader HLSL File/PostProcessing.hlsli", "VSPostProcessing", "vs_5_0", &m_pDeferrdVertexShader);
 	CShader::CreatePixelShaderFromFile(pDevice, L"Shader HLSL File/PostProcessing.hlsli", "PSPostProcessing", "ps_5_0", &m_pDeferrdPixelShader);
 }
 

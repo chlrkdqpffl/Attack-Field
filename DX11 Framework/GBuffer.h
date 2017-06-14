@@ -16,7 +16,7 @@ public:
 	CGBuffer();
 	virtual ~CGBuffer();
 
-	void Initialize(ID3D11Device* pDevice);
+	void Initialize(ID3D11Device* pDevice, UINT width, UINT height);
 	void OnPreRender(ID3D11DeviceContext* pd3dImmediateContext);
 	void OnPostRender(ID3D11DeviceContext* pd3dImmediateContext);
 	void OnPrepareForUnpack(ID3D11DeviceContext* pd3dImmediateContext);

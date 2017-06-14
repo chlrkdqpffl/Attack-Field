@@ -465,6 +465,8 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	switch (nMessageID) {
 	case WM_SIZE:
 	{
+		SCENE_MGR->g_nowScene->OnChangedWindowsSize(hWnd, nMessageID, wParam, lParam);
+
 		m_nWndClientSize.x = LOWORD(lParam);
 		m_nWndClientSize.y = HIWORD(lParam);
 	

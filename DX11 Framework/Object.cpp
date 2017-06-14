@@ -685,7 +685,6 @@ void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 
 	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &m_mtxWorld);
 
-	pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 0);
 	if (m_pd3dBlendState) pd3dDeviceContext->OMSetBlendState(m_pd3dBlendState, NULL, 0xffffffff);
 
 	RenderMesh(pd3dDeviceContext, pCamera);
@@ -696,7 +695,6 @@ void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 	}
 
 	if (m_pShader) m_pShader->OnPostRender(pd3dDeviceContext);
-	if (m_pd3dDepthStencilState) pd3dDeviceContext->OMSetDepthStencilState(NULL, 0);
 	if (m_pd3dBlendState) pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
 }
 

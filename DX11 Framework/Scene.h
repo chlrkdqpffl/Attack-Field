@@ -72,6 +72,7 @@ public:
 	virtual bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	virtual bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	virtual void OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMaterial, int nIndex = 0) {};
+	virtual void OnChangedWindowsSize(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {};
 
 	virtual void Initialize() = 0;
 	virtual void ReleaseObjects();
@@ -96,7 +97,6 @@ public:
 	XMFLOAT2 ObjectPositionConvertToScreen(XMFLOAT3 d3dxvObjPos);
 
 	// ----- Get, Setter ----- // 
-	CHeightMapTerrain *GetTerrain() const {	return m_pTerrain; }
 	void SetResizeRatio(float x, float y) { m_fResizeRatioX = x, m_fResizeRatioY = y; }
 	
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
@@ -126,7 +126,6 @@ protected:
 
 	// Environment
 	CSkyBox								*m_pSkyBox		= nullptr;
-	CHeightMapTerrain					*m_pTerrain		= nullptr;
 
 	// Particle
 	float								m_fGametime		= 0.0f;

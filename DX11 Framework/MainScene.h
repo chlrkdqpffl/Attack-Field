@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "BoundingBoxShader.h"
 #include "GBuffer.h"
+#include "PostFX.h"
 #include "LightManager.h"
 
 class CMainScene : public CScene 
@@ -13,6 +14,7 @@ public:
 	virtual bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) override;
 	virtual bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) override;
 	virtual void OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMaterial, int nIndex = 0);
+	virtual void OnChangedWindowsSize(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
 	virtual void Initialize() override;
 	virtual void CreateTweakBars();
@@ -48,7 +50,12 @@ public:
 	void SetBlueTeamKill(UINT kill) { m_nBlueTeamTotalKill = kill; }
 
 private:
-	float							m_fGlobalAmbient	= 0.0f;
+	// Light Info
+	XMFLOAT3						m_f3DirectionalAmbientLowerColor = XMFLOAT3(0, 0, 0);
+	XMFLOAT3						m_f3DirectionalAmbientUpperColor = XMFLOAT3(0, 0, 0);
+	XMFLOAT3						m_f3DirectionalDirection = XMFLOAT3(0, 0, 0);
+	XMFLOAT3						m_f3DirectionalColor = XMFLOAT3(0, 0, 0);
+
 	ID3D11Buffer					*m_pd3dcbLights		= nullptr;
 
 
@@ -59,8 +66,14 @@ private:
 	vector<CGameObject*>			m_vecBBoxRenderContainer;
 	vector<CCharacterObject*>		m_vecCharacterContainer;
 
-	CGBuffer*						m_GBuffer = nullptr;
+	// Deferred Rendering
 	CLightManager*					m_pLightManager = nullptr;
+	CGBuffer*						m_GBuffer = nullptr;
+	CPostFX*						m_PostFX = nullptr;
+
+	ID3D11Texture2D*				m_pHDRTexture = nullptr;
+	ID3D11RenderTargetView*			m_HDRRTV = nullptr;
+	ID3D11ShaderResourceView*		m_HDRSRV = nullptr;
 
 	// ----- Game System ----- //
 	DWORD							m_dwTime = 0;

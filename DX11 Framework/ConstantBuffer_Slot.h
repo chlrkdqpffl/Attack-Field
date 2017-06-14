@@ -37,7 +37,7 @@ Max Resource(Texture, Buffer)	: 128
 
 // Computer Shader
 #define CS_SLOT_WEIGHTS						0x00
-
+#define CS_CB_SLOT_DownScale				0x01
 // Pixel Shader
 #define PS_CB_SLOT_LIGHT					0x00
 #define PS_CB_SLOT_MATERIAL					0x01

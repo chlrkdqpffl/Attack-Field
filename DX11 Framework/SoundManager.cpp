@@ -49,6 +49,8 @@ void CSoundManager::InitializeManager()
 	System_Create(&g_pSystem);
 	g_pSystem->init(64, FMOD_INIT_NORMAL, 0);
 	LoadAllSound();
+
+	//VolumeControl(0.2f); 왜 적용안되지?
 }
 
 void CSoundManager::ReleseManager()

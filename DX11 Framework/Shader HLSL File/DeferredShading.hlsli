@@ -133,7 +133,7 @@ PS_GBUFFER_OUTPUT PSLightingColor(VS_LIGHTING_OUTPUT input)
 
     PS_GBUFFER_OUTPUT output = (PS_GBUFFER_OUTPUT) 0;
 
-    output.DiffuseSpecInt = float4(0, 0, 0, g_SpecIntensity);
+    output.DiffuseSpecInt = float4(0.8f, 0.8f, 0.8f, g_SpecIntensity);
     output.Normal = float4(input.normalW * 0.5 + 0.5, 0.0);
     output.SpecPow = float4(SpecPowerNorm, 0.0, 0.0, 0.0);
 

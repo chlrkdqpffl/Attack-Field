@@ -119,8 +119,6 @@ void CScene::CreatePlayer()
 void CScene::ReleaseObjects()
 {
 	SafeDelete(m_pSkyBox);
-	SafeDelete(m_pTerrain);
-	
 	SafeDelete(m_pWorldCenterAxis);
 
 	for (auto& object : m_vecObjectsContainer)
@@ -239,7 +237,6 @@ void CScene::Update(float fDeltaTime)
 	m_fDeltaTime = fDeltaTime;
 
 	if(m_pSkyBox) m_pSkyBox->Update(fDeltaTime);
-	if(m_pTerrain) m_pTerrain->Update(fDeltaTime);
 	if(GLOBAL_MGR->g_bShowWorldAxis) m_pWorldCenterAxis->Update(fDeltaTime);
 
 	for (auto& object : m_vecObjectsContainer) {

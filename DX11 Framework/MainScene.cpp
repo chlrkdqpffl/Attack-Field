@@ -4,12 +4,24 @@
 CMainScene::CMainScene()
 {
 	m_tagScene = SceneTag::eMainScene;
+	TWBAR_MGR->g_xmf3SelectObjectRotate = XMFLOAT3(45, 40, 30);
+	//TWBAR_MGR->g_xmf3SelectObjectRotate = XMFLOAT3(20, 85, 30);
+	TWBAR_MGR->g_xmf3SelectObjectPosition = XMFLOAT3(56, 10, 23);
+
+	m_f3DirectionalColor = XMFLOAT3(0.85f, 0.8f, 0.8f);
+	m_f3DirectionalDirection = XMFLOAT3(1.0f, -1.0f, 1.0f);
+	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 }
 
 CMainScene::~CMainScene()
 {
 	delete(m_GBuffer);
 	delete(m_pLightManager);
+
+	ReleaseCOM(m_pHDRTexture);
+	ReleaseCOM(m_HDRRTV);
+	ReleaseCOM(m_HDRSRV);
 }
 
 bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -127,6 +139,46 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 	return(false);
 }
 
+void CMainScene::OnChangedWindowsSize(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+{
+	ReleaseCOM(m_pHDRTexture);
+	ReleaseCOM(m_HDRRTV);
+	ReleaseCOM(m_HDRSRV);
+
+	D3D11_TEXTURE2D_DESC dtd = {
+		LOWORD(lParam), HIWORD(lParam),
+		1, //UINT MipLevels;
+		1, //UINT ArraySize;
+		DXGI_FORMAT_R16G16B16A16_TYPELESS, //DXGI_FORMAT Format;
+		1, //DXGI_SAMPLE_DESC SampleDesc;
+		0,
+		D3D11_USAGE_DEFAULT,//D3D11_USAGE Usage;
+		D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE,//UINT BindFlags;
+		0,//UINT CPUAccessFlags;
+		0//UINT MiscFlags;    
+};
+	HR(m_pd3dDevice->CreateTexture2D(&dtd, NULL, &m_pHDRTexture));
+	DXUT_SetDebugName(m_pHDRTexture, "HDR Light Accumulation Texture");
+
+	D3D11_RENDER_TARGET_VIEW_DESC rtsvd =
+	{
+		DXGI_FORMAT_R16G16B16A16_FLOAT, D3D11_RTV_DIMENSION_TEXTURE2D
+	};
+	HR(m_pd3dDevice->CreateRenderTargetView(m_pHDRTexture, &rtsvd, &m_HDRRTV));
+	DXUT_SetDebugName(m_HDRRTV, "HDR Light Accumulation RTV");
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC dsrvd = 
+	{
+		DXGI_FORMAT_R16G16B16A16_FLOAT,	D3D11_SRV_DIMENSION_TEXTURE2D, 0, 0 
+	};
+	dsrvd.Texture2D.MipLevels = 1;
+	HR(m_pd3dDevice->CreateShaderResourceView(m_pHDRTexture, &dsrvd, &m_HDRSRV));
+	DXUT_SetDebugName(m_HDRSRV, "HDR Light Accumulation SRV");
+
+	m_GBuffer->Initialize(m_pd3dDevice, LOWORD(lParam), HIWORD(lParam));
+	m_PostFX->Initialize(m_pd3dDevice, LOWORD(lParam), HIWORD(lParam));
+}
+
 void CMainScene::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMaterial, int nIndex)
 {
 #ifdef _WITH_SKYBOX_TEXTURE_ARRAY
@@ -186,7 +238,8 @@ void CMainScene::Initialize()
 	m_pBoundingBoxShader->CreateShader(m_pd3dDevice);
 
 	m_GBuffer = new CGBuffer();
-	m_GBuffer->Initialize(m_pd3dDevice);
+	m_PostFX = new CPostFX();
+
 	m_pLightManager = new CLightManager();
 	m_pLightManager->Initialize(m_pd3dDevice);
 	m_pLightManager->SetGBuffer(m_GBuffer);
@@ -1168,9 +1221,10 @@ void CMainScene::CreateMapDataInstancingObject()
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 #pragma endregion
 
+	
+#pragma region [Street Lamp]
 	/*
 	// 텍스쳐가 없어서 현재는 인스턴싱을 안쓰고 있음 - FBX Mesh는 텍스쳐까지 포함된 버퍼를 가지므로
-#pragma region [Street Lamp]
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp).size());
 
 	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eStreetLamp);
@@ -1192,7 +1246,7 @@ void CMainScene::CreateMapDataInstancingObject()
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 #pragma endregion
-	
+	*/
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pObject = new CGameObject();
@@ -1208,7 +1262,8 @@ void CMainScene::CreateMapDataInstancingObject()
 
 		AddShaderObject(ShaderTag::eNormal, pObject);
 	}
-	*/
+#pragma endregion
+
 #pragma region [Barricade]
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eBarricade).size());
 
@@ -1372,13 +1427,22 @@ void CMainScene::CreateTweakBars()
 {
 	TwBar *tweakBar = TWBAR_MGR->g_tweakBar;
 
-	TwAddVarRW(tweakBar, "Light direction", TW_TYPE_DIR3F, &m_pLights->m_pLights[0].m_d3dxvDirection, "group = Light opened = true axisz = -z");
-	TwAddVarRW(tweakBar, "Global Ambient", TW_TYPE_FLOAT, &m_fGlobalAmbient, "group = Light min = 0 max = 1 step = 0.05");
+	TwAddVarRW(tweakBar, "Light direction", TW_TYPE_DIR3F, &m_f3DirectionalDirection, "group = Light opened = true axisz = -z");
+	TwAddVarRW(tweakBar, "Directional Color X", TW_TYPE_FLOAT, &m_f3DirectionalColor.x, "group = Light min = 0 max = 1 step = 0.05");
+	TwAddVarRW(tweakBar, "Directional Color Y", TW_TYPE_FLOAT, &m_f3DirectionalColor.y, "group = Light min = 0 max = 1 step = 0.05");
+	TwAddVarRW(tweakBar, "Directional Color Z", TW_TYPE_FLOAT, &m_f3DirectionalColor.z, "group = Light min = 0 max = 1 step = 0.05");
+
+
+	TwAddVarRW(tweakBar, "Ambient Upper Color X", TW_TYPE_FLOAT, &m_f3DirectionalAmbientUpperColor.x, "group = Light min = 0 max = 1 step = 0.05");
+	TwAddVarRW(tweakBar, "Ambient Upper Color Y", TW_TYPE_FLOAT, &m_f3DirectionalAmbientUpperColor.y, "group = Light min = 0 max = 1 step = 0.05");
+	TwAddVarRW(tweakBar, "Ambient Upper Color Z", TW_TYPE_FLOAT, &m_f3DirectionalAmbientUpperColor.z, "group = Light min = 0 max = 1 step = 0.05");
+	TwAddVarRW(tweakBar, "Ambient Lower Color X", TW_TYPE_FLOAT, &m_f3DirectionalAmbientLowerColor.x, "group = Light min = 0 max = 1 step = 0.05");
+	TwAddVarRW(tweakBar, "Ambient Lower Color Y", TW_TYPE_FLOAT, &m_f3DirectionalAmbientLowerColor.y, "group = Light min = 0 max = 1 step = 0.05");
+	TwAddVarRW(tweakBar, "Ambient Lower Color Z", TW_TYPE_FLOAT, &m_f3DirectionalAmbientLowerColor.z, "group = Light min = 0 max = 1 step = 0.05");
+
 	
-	// Option
-	TwAddVarRW(tweakBar, "RGB Axis Option", TW_TYPE_BOOLCPP, &GLOBAL_MGR->g_bShowWorldAxis, "group = Option");
-	
-	TwDefine("TweakBar/Light opened=false ");
+
+	TwDefine("TweakBar/Light opened=true ");
 	/*
 	// Add variables to the tweak bar
 	TwAddVarCB(tweakBar, "Level", TW_TYPE_INT32, SetSpongeLevelCB, GetSpongeLevelCB, NULL, "min=0 max=3 group=Sponge keyincr=l keydecr=L");
@@ -1466,7 +1530,7 @@ void CMainScene::CreateConstantBuffers()
 
 void CMainScene::UpdateConstantBuffers(LIGHTS *pLights)
 {
-	m_pLights->m_d3dxcGlobalAmbient = XMFLOAT4(m_fGlobalAmbient, m_fGlobalAmbient, m_fGlobalAmbient, 1.0f);
+//	m_pLights->m_d3dxcGlobalAmbient = XMFLOAT4(m_fGlobalAmbient, m_fGlobalAmbient, m_fGlobalAmbient, 1.0f);
 
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	m_pd3dDeviceContext->Map(m_pd3dcbLights, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
@@ -1488,6 +1552,20 @@ void CMainScene::ReleaseConstantBuffers()
 
 void CMainScene::CreateLights()
 {
+	vector<MapData> vecMapData;
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
+	
+	for (auto light : vecMapData) {
+		XMFLOAT3 pos = light.m_Position;
+		pos.y += 10;
+		m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
+	}
+
+	//m_pLightManager->AddSpotLight(XMFLOAT3(56, 10, 23), XMFLOAT3(0, -1, 0),  30, 35, 30, XMFLOAT3(1, 1, 1));
+	//m_pLightManager->AddSpotLight(TWBAR_MGR->g_xmf3SelectObjectPosition, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
+	//m_pLightManager->AddPointLight(TWBAR_MGR->g_xmf3SelectObjectPosition, TWBAR_MGR->g_xmf3SelectObjectRotate.x, XMFLOAT3(1, 1, 1));
+
+	/*
 	m_pLights = new LIGHTS;
 	::ZeroMemory(m_pLights, sizeof(LIGHTS));
 
@@ -1537,18 +1615,21 @@ void CMainScene::CreateLights()
 	m_pLights->m_pLights[3].m_fFalloff = 20.0f;
 	m_pLights->m_pLights[3].m_fPhi = (float)cos(D3DXToRadian(40.0f));
 	m_pLights->m_pLights[3].m_fTheta = (float)cos(D3DXToRadian(15.0f)); 
+	*/
 }
 
 void CMainScene::ModifiedSelectObject()
 {
 	XMFLOAT3 pos = m_pSelectedObject->GetPosition();
 
-	TWBAR_MGR->g_xmf3SelectObjectPosition = pos;
+//	TWBAR_MGR->g_xmf3SelectObjectPosition = pos;
 	
 //	m_pSelectedObject->SetPosition(TWBAR_MGR->g_xmf3SelectObjectPosition);
 //	m_pSelectedObject->SetRotate(TWBAR_MGR->g_xmf3SelectObjectRotate);
 	
-//	ShowXMFloat3(TWBAR_MGR->g_xmf3SelectObjectRotate);
+	cout << "Select Object Postion : "; ShowXMFloat3(pos);
+
+	m_pSelectedObject = nullptr;
 }
 
 void CMainScene::CalcTime()
@@ -1612,8 +1693,8 @@ void CMainScene::Update(float fDeltaTime)
 
 	CScene::Update(fDeltaTime);
 
-//	if (m_pSelectedObject)
-//		ModifiedSelectObject();
+	if (m_pSelectedObject)
+		ModifiedSelectObject();
 
 	for (auto& object : m_vecCharacterContainer)
 		object->Update(fDeltaTime);
@@ -1629,30 +1710,42 @@ void CMainScene::Update(float fDeltaTime)
 		XMStoreFloat3(&m_pLights->m_pLights[3].m_d3dxvPosition, m_pPlayer->GetvPosition() + XMVectorSet(0.0f, 80.0f, 0.0f, 0.0f));
 	}
 
+
 	// Light Shader Update
 	if (m_pLights && m_pd3dcbLights) UpdateConstantBuffers(m_pLights);
+	
+	m_pLightManager->SetAmbient(m_f3DirectionalAmbientLowerColor, m_f3DirectionalAmbientUpperColor);
+	m_pLightManager->SetDirectional(m_f3DirectionalDirection, m_f3DirectionalColor);
+
 
 	// Particle
 	m_fGametime += fDeltaTime;
 	m_pParticleSystem->Update(fDeltaTime, m_fGametime);
 
+	// Timer
 	CalcTime();
+
+	// UI Effect
 	ShowDeadlyAttackUI();
 	ShowDeadlyUI();
+
+
+	m_pLightManager->ClearLights();
+	CreateLights();
 }
 
 void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
 #ifdef USE_DEFERRD_RENDER
 	// =============== Deferred Rendering ================== //
+	if (GLOBAL_MGR->g_bEnablePostFX) {
+		float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
+		m_pd3dDeviceContext->ClearRenderTargetView(m_HDRRTV, fClearColor);
+	}
 	m_GBuffer->OnPreRender(pd3dDeviceContext);
 #endif
 	// ------ Start Scene Rendering ------ //
 	CScene::Render(pd3dDeviceContext, pCamera);
-
-	if (m_pTerrain)
-		if (m_pTerrain->IsVisible(pCamera))
-			m_pTerrain->Render(pd3dDeviceContext, pCamera);
 
 	m_pParticleSystem->Render(pd3dDeviceContext);
 
@@ -1666,15 +1759,18 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	m_GBuffer->OnPostRender(pd3dDeviceContext);
 	m_GBuffer->OnPrepareForUnpack(pd3dDeviceContext);
 
-	pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthReadOnlyDSV());
-
+	pd3dDeviceContext->OMSetRenderTargets(1, GLOBAL_MGR->g_bEnablePostFX ? &m_HDRRTV : &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthReadOnlyDSV());
 	// ------ Final Scene Rendering ------ //
+//	m_GBuffer->DeferredRender(pd3dDeviceContext);
 	m_pLightManager->DoLighting(pd3dDeviceContext);
 
 	if (GLOBAL_MGR->g_bShowLightVolume)
 		m_pLightManager->DrawLightVolume(pd3dDeviceContext);
 
-	m_GBuffer->DeferredRender(pd3dDeviceContext);
+	if (GLOBAL_MGR->g_bEnablePostFX) {
+		m_PostFX->PostProcessing(pd3dDeviceContext, m_HDRSRV, SCENE_MGR->g_pd3dRenderTargetView);
+		pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthDSV());
+	}
 #endif
 
 	// =============== Rendering Option =================== //

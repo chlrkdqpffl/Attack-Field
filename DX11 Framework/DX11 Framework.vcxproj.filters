@@ -345,6 +345,9 @@
     <ClCompile Include="LightManager.cpp">
       <Filter>소스 파일\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="PostFX.cpp">
+      <Filter>Deferred</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -605,6 +608,9 @@
     <ClInclude Include="LightManager.h">
       <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="PostFX.h">
+      <Filter>Deferred</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -690,6 +696,15 @@
     </None>
     <None Include="Shader HLSL File\DirLight.hlsli">
       <Filter>HLSL\Deferred\Light</Filter>
+    </None>
+    <None Include="Shader HLSL File\CapsuleLight.hlsli">
+      <Filter>HLSL\Deferred\Light</Filter>
+    </None>
+    <None Include="Shader HLSL File\PostFX.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\PostDownScaleFX.hlsli">
+      <Filter>HLSL\Deferred</Filter>
     </None>
   </ItemGroup>
 </Project>

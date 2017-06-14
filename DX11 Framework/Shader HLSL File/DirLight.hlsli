@@ -1,8 +1,5 @@
 #include "common.hlsli"
 //     fxc /E DirLightPS /T ps_5_0 /Od /Zi /Fo CompiledShader.fxo DirLight.hlsli
-/////////////////////////////////////////////////////////////////////////////
-// shader input/output structure
-/////////////////////////////////////////////////////////////////////////////
 
 cbuffer cbDirLight : register(b7)
 {
@@ -26,7 +23,7 @@ static const float2 arrBasePos[4] =
 struct VS_OUTPUT
 {
     float4 Position : SV_Position; // vertex position 
-    float2 cpPos : TEXCOORD0;
+    float2 texCoord : TEXCOORD0;
 };
 
 VS_OUTPUT DirLightVS(uint VertexID : SV_VertexID)
@@ -34,7 +31,7 @@ VS_OUTPUT DirLightVS(uint VertexID : SV_VertexID)
     VS_OUTPUT Output;
 
     Output.Position = float4(arrBasePos[VertexID].xy, 0.0, 1.0);
-    Output.cpPos = Output.Position.xy;
+    Output.texCoord = Output.Position.xy;
 
     return Output;
 }
@@ -73,17 +70,15 @@ float3 CalcDirectional(float3 position, Material material)
     return finalColor * material.diffuseColor.rgb;
 }
 
-float4 DirLightPS(VS_OUTPUT In) : SV_TARGET
+float4 DirLightPS(VS_OUTPUT input) : SV_TARGET
 {
-	// Unpack the GBuffer
-    SURFACE_DATA gbd = UnpackGBuffer_Loc(In.Position.xy);
+    SURFACE_DATA GBufferData = UnpackGBuffer_Loc(input.Position.xy);
 	
-	// Convert the data into the material structure
     Material mat;
-    MaterialFromGBuffer(gbd, mat);
+    MaterialFromGBuffer(GBufferData, mat);
 
 	// Reconstruct the world position
-    float3 position = CalcWorldPos(In.cpPos, gbd.LinearDepth);
+    float3 position = CalcWorldPos(input.texCoord, GBufferData.LinearDepth);
 
 	// Calculate the ambient color
     float3 finalColor = CalcAmbient(mat.normal, mat.diffuseColor.rgb);
