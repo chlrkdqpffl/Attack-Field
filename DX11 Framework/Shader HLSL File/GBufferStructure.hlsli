@@ -1,7 +1,7 @@
 
-static const float2 g_SpecPowerRange = { 10.0, 250.0 };
-static const float g_SpecPower = 250.f;
-static const float g_SpecIntensity = 0.25f;
+static const float2 g_SpecPowerRange = { 10.0, 100.0 };
+static const float g_SpecPower = 10.f;
+static const float g_SpecIntensity = 0.1f;
 
 
 struct PS_GBUFFER_OUTPUT

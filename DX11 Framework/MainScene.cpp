@@ -1531,13 +1531,14 @@ void CMainScene::CreateConstantBuffers()
 void CMainScene::UpdateConstantBuffers(LIGHTS *pLights)
 {
 //	m_pLights->m_d3dxcGlobalAmbient = XMFLOAT4(m_fGlobalAmbient, m_fGlobalAmbient, m_fGlobalAmbient, 1.0f);
-
+/*
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	m_pd3dDeviceContext->Map(m_pd3dcbLights, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	LIGHTS *pcbLight = (LIGHTS *)d3dMappedResource.pData;
 	memcpy(pcbLight, pLights, sizeof(LIGHTS));
 	m_pd3dDeviceContext->Unmap(m_pd3dcbLights, 0);
 	m_pd3dDeviceContext->PSSetConstantBuffers(PS_CB_SLOT_LIGHT, 1, &m_pd3dcbLights);
+	*/
 }
 
 void CMainScene::ReleaseConstantBuffers()
@@ -1730,6 +1731,24 @@ void CMainScene::Update(float fDeltaTime)
 	ShowDeadlyUI();
 
 
+
+	// Deferred
+	float fAdaptationNorm;
+	static bool s_bFirstTime = true;
+	if (s_bFirstTime)
+	{
+		// On the first frame we want to fully adapt the new value so use 0
+		fAdaptationNorm = 0.0f;
+		s_bFirstTime = false;
+	}
+	else
+	{
+		// Normalize the adaptation time with the frame time (all in seconds)
+		// Never use a value higher or equal to 1 since that means no adaptation at all (keeps the old value)
+	//	fAdaptationNorm = min(g_fAdaptation < 0.0001f ? 1.0f : fElapsedTime / g_fAdaptation, 0.9999f);			// 1부터 10까지가 샘플 프로그램임
+		fAdaptationNorm = fDeltaTime / 3;			// 1부터 10까지가 샘플 프로그램임
+	}
+	m_PostFX->SetParameters(TWBAR_MGR->g_xmf3Offset.x, TWBAR_MGR->g_xmf3Offset.y, fAdaptationNorm);
 	m_pLightManager->ClearLights();
 	CreateLights();
 }
@@ -1740,6 +1759,7 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	// =============== Deferred Rendering ================== //
 	if (GLOBAL_MGR->g_bEnablePostFX) {
 		float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
+		//float fClearColor[4] = { 0.9f, 0.9f, 0.9f, 1.0f };
 		m_pd3dDeviceContext->ClearRenderTargetView(m_HDRRTV, fClearColor);
 	}
 	m_GBuffer->OnPreRender(pd3dDeviceContext);

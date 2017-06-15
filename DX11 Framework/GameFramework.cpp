@@ -125,7 +125,7 @@ bool CGameFramework::CreateDirect3DDisplay()
 	dxgiSwapChainDesc.BufferCount = 1;
 	dxgiSwapChainDesc.BufferDesc.Width = m_nWndClientSize.x;
 	dxgiSwapChainDesc.BufferDesc.Height = m_nWndClientSize.y;
-	dxgiSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	dxgiSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
 	dxgiSwapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
 	dxgiSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	dxgiSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -255,6 +255,7 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	
 	ID3D11Texture2D *pd3dBackBuffer;
 	if (FAILED(hResult = m_pDXGISwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID *)&pd3dBackBuffer))) return(false);
+	DXUT_SetDebugName(pd3dBackBuffer, "MainRenderTargetTexture2D");
 	if (FAILED(hResult = m_pd3dDevice->CreateRenderTargetView(pd3dBackBuffer, NULL, &m_pd3dRenderTargetView))) return(false);
 	if (pd3dBackBuffer) pd3dBackBuffer->Release();
 

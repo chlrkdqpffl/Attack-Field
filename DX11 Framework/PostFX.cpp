@@ -2,12 +2,16 @@
 #include "PostFX.h"
 
 CPostFX::CPostFX() : 
-	m_fMiddleGrey(0.0025f), m_fWhite(1.5f),
+	m_fMiddleGrey(0.25f), m_fWhite(1.5f),
 	m_pDownScale1DBuffer(NULL), m_pDownScale1DUAV(NULL), m_pDownScale1DSRV(NULL),
 	m_pDownScaleCB(NULL), m_pFinalPassCB(NULL),
 	m_pAvgLumBuffer(NULL), m_pAvgLumUAV(NULL), m_pAvgLumSRV(NULL),
+	m_pPrevAvgLumBuffer(NULL), m_pPrevAvgLumUAV(NULL), m_pPrevAvgLumSRV(NULL),
 	m_pDownScaleFirstPassCS(NULL), m_pDownScaleSecondPassCS(NULL), m_pFullScreenQuadVS(NULL), m_pFinalPassPS(NULL)
 {
+	TWBAR_MGR->g_xmf3Offset.x = 0.0025f;
+	TWBAR_MGR->g_xmf3Offset.y = 1.5f;
+
 }
 
 CPostFX::~CPostFX()
@@ -18,7 +22,7 @@ CPostFX::~CPostFX()
 void CPostFX::Initialize(ID3D11Device* pDevice, UINT width, UINT height)
 {
 	Deinit();
-
+	
 	// Find the amount of thread groups needed for the downscale operation
 	m_nWidth = width;
 	m_nHeight = height;
@@ -54,16 +58,25 @@ void CPostFX::Initialize(ID3D11Device* pDevice, UINT width, UINT height)
 	DXUT_SetDebugName( m_pDownScale1DSRV, "PostFX - Down Scale 1D SRV" );
 
 	bufferDesc.ByteWidth = sizeof(float);
-	HR(pDevice->CreateBuffer( &bufferDesc, NULL, &m_pAvgLumBuffer ) );
-	DXUT_SetDebugName( m_pAvgLumBuffer, "PostFX - Average Luminance Buffer" );
-	
+	HR(pDevice->CreateBuffer(&bufferDesc, NULL, &m_pAvgLumBuffer));
+	DXUT_SetDebugName(m_pAvgLumBuffer, "PostFX - Average Luminance Buffer");
+
+	HR(pDevice->CreateBuffer(&bufferDesc, NULL, &m_pPrevAvgLumBuffer));
+	DXUT_SetDebugName(m_pPrevAvgLumBuffer, "PostFX - Previous Average Luminance Buffer");
+
 	DescUAV.Buffer.NumElements = 1;
-	HR(pDevice->CreateUnorderedAccessView( m_pAvgLumBuffer, &DescUAV, &m_pAvgLumUAV ) );
-	DXUT_SetDebugName( m_pAvgLumUAV, "PostFX - Average Luminance UAV" );
+	HR(pDevice->CreateUnorderedAccessView(m_pAvgLumBuffer, &DescUAV, &m_pAvgLumUAV));
+	DXUT_SetDebugName(m_pAvgLumUAV, "PostFX - Average Luminance UAV");
+
+	HR(pDevice->CreateUnorderedAccessView(m_pPrevAvgLumBuffer, &DescUAV, &m_pPrevAvgLumUAV));
+	DXUT_SetDebugName(m_pPrevAvgLumUAV, "PostFX - Previous Average Luminance UAV");
 
 	dsrvd.Buffer.NumElements = 1;
-	HR(pDevice->CreateShaderResourceView( m_pAvgLumBuffer, &dsrvd, &m_pAvgLumSRV ) );
-	DXUT_SetDebugName( m_pAvgLumSRV, "PostFX - Average Luminance SRV" );
+	HR(pDevice->CreateShaderResourceView(m_pAvgLumBuffer, &dsrvd, &m_pAvgLumSRV));
+	DXUT_SetDebugName(m_pAvgLumSRV, "PostFX - Average Luminance SRV");
+
+	HR(pDevice->CreateShaderResourceView(m_pPrevAvgLumBuffer, &dsrvd, &m_pPrevAvgLumSRV));
+	DXUT_SetDebugName(m_pPrevAvgLumSRV, "PostFX - Previous Average Luminance SRV");
 
 	ZeroMemory( &bufferDesc, sizeof(bufferDesc) );
 	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -94,18 +107,21 @@ void CPostFX::Initialize(ID3D11Device* pDevice, UINT width, UINT height)
 
 void CPostFX::Deinit()
 {
-	ReleaseCOM( m_pDownScale1DBuffer );
-	ReleaseCOM( m_pDownScale1DUAV );
-	ReleaseCOM( m_pDownScale1DSRV );
-	ReleaseCOM( m_pDownScaleCB );
-	ReleaseCOM( m_pFinalPassCB );
-	ReleaseCOM( m_pAvgLumBuffer );
-	ReleaseCOM( m_pAvgLumUAV );
-	ReleaseCOM( m_pAvgLumSRV );
-	ReleaseCOM( m_pDownScaleFirstPassCS );
-	ReleaseCOM( m_pDownScaleSecondPassCS );
-	ReleaseCOM( m_pFullScreenQuadVS );
-	ReleaseCOM( m_pFinalPassPS );
+	ReleaseCOM(m_pDownScale1DBuffer);
+	ReleaseCOM(m_pDownScale1DUAV);
+	ReleaseCOM(m_pDownScale1DSRV);
+	ReleaseCOM(m_pDownScaleCB);
+	ReleaseCOM(m_pFinalPassCB);
+	ReleaseCOM(m_pAvgLumBuffer);
+	ReleaseCOM(m_pAvgLumUAV);
+	ReleaseCOM(m_pAvgLumSRV);
+	ReleaseCOM(m_pPrevAvgLumBuffer);
+	ReleaseCOM(m_pPrevAvgLumUAV);
+	ReleaseCOM(m_pPrevAvgLumSRV);
+	ReleaseCOM(m_pDownScaleFirstPassCS);
+	ReleaseCOM(m_pDownScaleSecondPassCS);
+	ReleaseCOM(m_pFullScreenQuadVS);
+	ReleaseCOM(m_pFinalPassPS);
 }
 
 void CPostFX::PostProcessing(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResourceView* pHDRSRV, ID3D11RenderTargetView* pLDRRTV)
@@ -119,33 +135,44 @@ void CPostFX::PostProcessing(ID3D11DeviceContext* pd3dImmediateContext, ID3D11Sh
 	rt[0] = pLDRRTV;
 	pd3dImmediateContext->OMSetRenderTargets( 1, rt, NULL );
 	FinalPass(pd3dImmediateContext, pHDRSRV);
+
+	// Swap the previous frame average luminance
+	ID3D11Buffer* pTempBuffer = m_pAvgLumBuffer;
+	ID3D11UnorderedAccessView* pTempUAV = m_pAvgLumUAV;
+	ID3D11ShaderResourceView* p_TempSRV = m_pAvgLumSRV;
+	m_pAvgLumBuffer = m_pPrevAvgLumBuffer;
+	m_pAvgLumUAV = m_pPrevAvgLumUAV;
+	m_pAvgLumSRV = m_pPrevAvgLumSRV;
+	m_pPrevAvgLumBuffer = pTempBuffer;
+	m_pPrevAvgLumUAV = pTempUAV;
+	m_pPrevAvgLumSRV = p_TempSRV;
 }
 
 void CPostFX::DownScale(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResourceView* pHDRSRV)
 {
 	// Output
 	ID3D11UnorderedAccessView* arrUAVs[1] = { m_pDownScale1DUAV };
-	pd3dImmediateContext->CSSetUnorderedAccessViews( 0, 1, arrUAVs, (UINT*)(&arrUAVs) );
+	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 1, arrUAVs, (UINT*)(&arrUAVs));
 
 	// Input
-	ID3D11ShaderResourceView* arrViews[1] = {pHDRSRV};
+	ID3D11ShaderResourceView* arrViews[2] = { pHDRSRV, NULL };
 	pd3dImmediateContext->CSSetShaderResources(0, 1, arrViews);
 
 	// Constants
 	D3D11_MAPPED_SUBRESOURCE MappedResource;
 	pd3dImmediateContext->Map(m_pDownScaleCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource);
-	TDownScaleCB* pDownScale = (TDownScaleCB*)MappedResource.pData; 
-	pDownScale->nWidth = m_nWidth  / 4;
+	TDownScaleCB* pDownScale = (TDownScaleCB*)MappedResource.pData;
+	pDownScale->nWidth = m_nWidth / 4;
 	pDownScale->nHeight = m_nHeight / 4;
 	pDownScale->nTotalPixels = pDownScale->nWidth * pDownScale->nHeight;
 	pDownScale->nGroupSize = m_nDownScaleGroups;
+	pDownScale->fAdaptation = m_fAdaptation;
 	pd3dImmediateContext->Unmap(m_pDownScaleCB, 0);
 	ID3D11Buffer* arrConstBuffers[1] = { m_pDownScaleCB };
 	pd3dImmediateContext->CSSetConstantBuffers(CS_CB_SLOT_DownScale, 1, arrConstBuffers);
 
-
 	// Shader
-	pd3dImmediateContext->CSSetShader( m_pDownScaleFirstPassCS, NULL, 0 );
+	pd3dImmediateContext->CSSetShader(m_pDownScaleFirstPassCS, NULL, 0);
 
 	// Execute the downscales first pass with enough groups to cover the entire full res HDR buffer
 	pd3dImmediateContext->Dispatch(m_nDownScaleGroups, 1, 1);
@@ -154,31 +181,31 @@ void CPostFX::DownScale(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderR
 	// Second pass - reduce to a single pixel
 
 	// Outoput
-	ZeroMemory(arrUAVs, sizeof(arrUAVs));
 	arrUAVs[0] = m_pAvgLumUAV;
-	pd3dImmediateContext->CSSetUnorderedAccessViews( 0, 1, arrUAVs, (UINT*)(&arrUAVs) );
+	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 1, arrUAVs, (UINT*)(&arrUAVs));
 
 	// Input
 	arrViews[0] = m_pDownScale1DSRV;
-	pd3dImmediateContext->CSSetShaderResources(0, 1, arrViews);
+	arrViews[1] = m_pPrevAvgLumSRV;
+	pd3dImmediateContext->CSSetShaderResources(0, 2, arrViews);
 
 	// Constants
 	pd3dImmediateContext->CSSetConstantBuffers(0, 1, arrConstBuffers);
 
 	// Shader
-	pd3dImmediateContext->CSSetShader( m_pDownScaleSecondPassCS, NULL, 0 );
+	pd3dImmediateContext->CSSetShader(m_pDownScaleSecondPassCS, NULL, 0);
 
 	// Excute with a single group - this group has enough threads to process all the pixels
 	pd3dImmediateContext->Dispatch(1, 1, 1);
 
 	// Cleanup
-	pd3dImmediateContext->CSSetShader( NULL, NULL, 0 );
+	pd3dImmediateContext->CSSetShader(NULL, NULL, 0);
 	ZeroMemory(arrConstBuffers, sizeof(arrConstBuffers));
 	pd3dImmediateContext->CSSetConstantBuffers(0, 1, arrConstBuffers);
 	ZeroMemory(arrViews, sizeof(arrViews));
-	pd3dImmediateContext->CSSetShaderResources(0, 1, arrViews);
+	pd3dImmediateContext->CSSetShaderResources(0, 2, arrViews);
 	ZeroMemory(arrUAVs, sizeof(arrUAVs));
-	pd3dImmediateContext->CSSetUnorderedAccessViews( 0, 1, arrUAVs, (UINT*)(&arrUAVs) );
+	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 1, arrUAVs, (UINT*)(&arrUAVs));
 }
 
 void CPostFX::FinalPass(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResourceView* pHDRSRV)
@@ -190,13 +217,17 @@ void CPostFX::FinalPass(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderR
 	D3D11_MAPPED_SUBRESOURCE MappedResource;
 	pd3dImmediateContext->Map(m_pFinalPassCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource);
 	TFinalPassCB* pFinalPass = (TFinalPassCB*)MappedResource.pData; 
-	pFinalPass->fMiddleGrey = m_fMiddleGrey;
-	pFinalPass->fLumWhiteSqr = m_fWhite;
+//	pFinalPass->fMiddleGrey = m_fMiddleGrey;
+//	pFinalPass->fLumWhiteSqr = m_fWhite;
+	pFinalPass->fMiddleGrey = TWBAR_MGR->g_xmf3Offset.x;
+	pFinalPass->fLumWhiteSqr = TWBAR_MGR->g_xmf3Offset.y;
 	pFinalPass->fLumWhiteSqr *= pFinalPass->fMiddleGrey; // Scale by the middle grey value
 	pFinalPass->fLumWhiteSqr *= pFinalPass->fLumWhiteSqr; // Squre
 	pd3dImmediateContext->Unmap(m_pFinalPassCB, 0);
 	ID3D11Buffer* arrConstBuffers[1] = { m_pFinalPassCB };
-	pd3dImmediateContext->PSSetConstantBuffers(0, 1, arrConstBuffers);
+	pd3dImmediateContext->PSSetConstantBuffers(PS_CB_SLOT_TONEMAPPING, 1, arrConstBuffers);
+
+	ShowXMFloat3(TWBAR_MGR->g_xmf3Offset);
 
 	pd3dImmediateContext->IASetInputLayout( NULL );
 	pd3dImmediateContext->IASetVertexBuffers(0, 0, NULL, NULL, NULL);

@@ -39,13 +39,14 @@ Max Resource(Texture, Buffer)	: 128
 #define CS_SLOT_WEIGHTS						0x00
 #define CS_CB_SLOT_DownScale				0x01
 // Pixel Shader
-#define PS_CB_SLOT_LIGHT					0x00
+//#define PS_CB_SLOT_LIGHT					0x00
 #define PS_CB_SLOT_MATERIAL					0x01
 #define PS_CB_SLOT_TERRAIN					0x03
 #define PS_CB_SLOT_SKYBOX					0x04
 #define PS_CB_SLOT_RENDEROPTION				0x05
 #define PS_CB_SLOT_GBUFFER_UNPACK			0x06
 #define PS_CB_SLOT_LIGHT					0x07
+#define PS_CB_SLOT_TONEMAPPING				0x08
 
 // ============================================ //
 // ================== Slot ==================== //

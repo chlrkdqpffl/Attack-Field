@@ -42,7 +42,7 @@ VS_OUTPUT FullScreenQuadVS(uint VertexID : SV_VertexID)
 // Pixel shader
 //-----------------------------------------------------------------------------------------
 
-cbuffer FinalPassConstants : register(b0)
+cbuffer FinalPassConstants : register(b8)
 {
 	// Tone mapping
     float MiddleGrey : packoffset(c0);

@@ -32,6 +32,8 @@ protected:
 	XMFLOAT4X4						m_d3dxmtxView;
 	XMFLOAT4X4						m_d3dxmtxProjection;
 
+
+
 	D3D11_VIEWPORT					m_d3dViewport;
 
 	CPlayer							*m_pPlayer;
