@@ -87,17 +87,21 @@ void CAntTweakBarManager::ReleseManager()
 void CAntTweakBarManager::CreateHDROption()
 {
 
-	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Middle Grey", TW_TYPE_FLOAT, &g_fMiddleGrey, "group = HDR step=0.01");
-	TwAddVarRW(TWBAR_MGR->g_tweakBar, "White", TW_TYPE_FLOAT, &g_fWhite, "group = HDR step=0.01");
-	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Adaptation", TW_TYPE_FLOAT, &g_fAdaptation, "group = HDR step=0.25");
-	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Bloom Threshold", TW_TYPE_FLOAT, &g_fBloomThreshold, "group = HDR step=0.1");
-	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Bloom Scale", TW_TYPE_FLOAT, &g_fBloomScale, "group = HDR step=0.1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Middle Grey", TW_TYPE_FLOAT, &g_OptionHDR.g_fMiddleGrey, "group = HDR step=0.01");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "White", TW_TYPE_FLOAT, &g_OptionHDR.g_fWhite, "group = HDR step=0.01");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Adaptation", TW_TYPE_FLOAT, &g_OptionHDR.g_fAdaptation, "group = HDR step=0.25");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Bloom Threshold", TW_TYPE_FLOAT, &g_OptionHDR.g_fBloomThreshold, "group = HDR step=0.1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Bloom Scale", TW_TYPE_FLOAT, &g_OptionHDR.g_fBloomScale, "group = HDR step=0.1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "DOF Far Start", TW_TYPE_FLOAT, &g_OptionHDR.g_fDOFFarStart, "group = HDR step=5");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "DOF Far Range", TW_TYPE_FLOAT, &g_OptionHDR.g_fDOFFarRange, "group = HDR step=5");
 
 	TwDefine("TweakBar/HDR opened = false ");
 
-	g_fMiddleGrey = 0.0025f;
-	g_fWhite = 1.5f;
-	g_fAdaptation = 3.0f;
-	g_fBloomThreshold = 1.1f;
-	g_fBloomScale = 0.74f;
+	g_OptionHDR.g_fMiddleGrey = 0.0025f;
+	g_OptionHDR.g_fWhite = 1.5f;
+	g_OptionHDR.g_fAdaptation = 3.0f;
+	g_OptionHDR.g_fBloomThreshold = 1.1f;
+	g_OptionHDR.g_fBloomScale = 0.74f;
+	g_OptionHDR.g_fDOFFarStart = 40.0f;
+	g_OptionHDR.g_fDOFFarRange = 60.0f;
 }

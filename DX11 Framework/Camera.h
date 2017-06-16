@@ -33,7 +33,8 @@ protected:
 	XMFLOAT4X4						m_d3dxmtxProjection;
 
 
-
+	float							m_fNearPlane = 0.0f;
+	float							m_fFarPlane = 0.0f;
 	D3D11_VIEWPORT					m_d3dViewport;
 
 	CPlayer							*m_pPlayer;
@@ -82,7 +83,9 @@ public:
 	XMVECTOR GetvRight() const { return(XMLoadFloat3(&m_d3dxvRight)); }
 	XMVECTOR GetvUp() const { return(XMLoadFloat3(&m_d3dxvUp)); }
 	XMVECTOR GetvLook() const { return(XMLoadFloat3(&m_d3dxvLook)); }
-	
+	float GetNearPlane() const { return m_fNearPlane; }
+	float GetFarPlane() const { return m_fFarPlane; }
+
 	void SetOffset(XMFLOAT3 offset)
 	{
 		m_d3dxvOffset = offset;

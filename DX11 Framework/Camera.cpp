@@ -76,6 +76,9 @@ void CCamera::SetLookAt(XMVECTOR& d3dxvLookAt)
 
 void CCamera::GenerateProjectionMatrix(float fNearPlaneDistance, float fFarPlaneDistance, float fAspectRatio, float fFOVAngle)
 {
+	m_fNearPlane = fNearPlaneDistance;
+	m_fFarPlane = fFarPlaneDistance;
+
 	XMStoreFloat4x4(&m_d3dxmtxProjection, 
 		XMMatrixPerspectiveFovLH(XMConvertToRadians(fFOVAngle), fAspectRatio, fNearPlaneDistance, fFarPlaneDistance));
 }

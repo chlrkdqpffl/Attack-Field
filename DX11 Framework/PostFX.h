@@ -11,13 +11,8 @@ public:
 	void Deinit();
 
 	// Entry point for post processing
-	void PostProcessing(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResourceView* pHDRSRV, ID3D11RenderTargetView* pLDRRTV);
-
-	void SetParameters(float fMiddleGrey, float fWhite, float fAdaptation, float fBloomThreshold, float fBloomScale)
-	{
-		m_fMiddleGrey = fMiddleGrey; m_fWhite = fWhite; m_fAdaptation = fAdaptation; m_fBloomThreshold = fBloomThreshold; m_fBloomScale = fBloomScale;
-	}
-
+	void PostProcessing(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResourceView* pHDRSRV, ID3D11ShaderResourceView* pDepthSRV, ID3D11RenderTargetView* pLDRRTV);
+	void SetParameters(float fMiddleGrey, float fWhite, float fAdaptation, float fBloomThreshold, float fBloomScale, float fDOFFarStart, float fDOFFarRange);
 private:
 
 	// Down scale the full size HDR image
@@ -31,7 +26,7 @@ private:
 
 
 	// Final pass that composites all the post processing calculations
-	void FinalPass(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResourceView* pHDRSRV);
+	void FinalPass(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResourceView* pHDRSRV, ID3D11ShaderResourceView* pDepthSRV);
 
 	// Downscaled scene texture
 	ID3D11Texture2D* m_pDownScaleRT;
@@ -53,6 +48,11 @@ private:
 	ID3D11UnorderedAccessView* m_pDownScale1DUAV;
 	ID3D11ShaderResourceView* m_pDownScale1DSRV;
 
+	// blurred scene texture
+	ID3D11Texture2D* m_pBlurredSceneRT;
+	ID3D11ShaderResourceView* m_pBlurredSceneSRV;
+	ID3D11UnorderedAccessView* m_pBlurredSceneUAV;
+
 	// Average luminance
 	ID3D11Buffer* m_pAvgLumBuffer;
 	ID3D11UnorderedAccessView* m_pAvgLumUAV;
@@ -71,6 +71,8 @@ private:
 	float m_fAdaptation;
 	float m_fBloomThreshold;
 	float m_fBloomScale;
+	float m_fDOFFarStart;
+	float m_fDOFFarRangeRcp;
 
 	typedef struct
 	{
@@ -80,7 +82,7 @@ private:
 		UINT nGroupSize;
 		float fAdaptation;
 		float fBloomThreshold;
-		UINT pad[2];
+		float ProjectionValues[2];
 	} TDownScaleCB;
 	ID3D11Buffer* m_pDownScaleCB;
 
@@ -90,6 +92,9 @@ private:
 		float fLumWhiteSqr;
 		float fBloomScale;
 		UINT pad;
+		float ProjectionValues[2];
+		float fDOFFarStart;
+		float fDOFFarRangeRcp;
 	} TFinalPassCB;
 	ID3D11Buffer* m_pFinalPassCB;
 

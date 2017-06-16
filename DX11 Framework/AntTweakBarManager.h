@@ -1,6 +1,17 @@
 #pragma once
 #include "SingletonManager.h"
 
+struct OptionHDR
+{
+	float g_fMiddleGrey = 0.0f;
+	float g_fWhite = 0.0f;
+	float g_fAdaptation = 0.0f;
+	float g_fBloomThreshold = 0.0f;
+	float g_fBloomScale = 0.0f;
+	float g_fDOFFarStart = 0.0f;
+	float g_fDOFFarRange = 0.0f;
+};
+
 class CAntTweakBarManager : public CSingletonManager<CAntTweakBarManager>
 {
 public:
@@ -24,11 +35,7 @@ public:
 	TessOption	g_tessOption;
 
 	// HDR Option
-	float g_fMiddleGrey = 0.0f;
-	float g_fWhite = 0.0f;
-	float g_fAdaptation = 0.0f;
-	float g_fBloomThreshold = 0.0f;
-	float g_fBloomScale = 0.0f;
+	OptionHDR g_OptionHDR;
 
 public:
 	CAntTweakBarManager();

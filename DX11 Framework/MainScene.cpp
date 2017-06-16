@@ -1746,10 +1746,11 @@ void CMainScene::Update(float fDeltaTime)
 	{
 		// Normalize the adaptation time with the frame time (all in seconds)
 		// Never use a value higher or equal to 1 since that means no adaptation at all (keeps the old value)
-		fAdaptationNorm = min(TWBAR_MGR->g_fAdaptation < 0.0001f ? 1.0f : fDeltaTime / TWBAR_MGR->g_fAdaptation, 0.9999f);
+		fAdaptationNorm = min(TWBAR_MGR->g_OptionHDR.g_fAdaptation < 0.0001f ? 1.0f : fDeltaTime / TWBAR_MGR->g_OptionHDR.g_fAdaptation, 0.9999f);
 	//	fAdaptationNorm = fDeltaTime / 3;			// 1부터 10까지가 샘플 프로그램임
 	}
-	m_PostFX->SetParameters(TWBAR_MGR->g_fMiddleGrey, TWBAR_MGR->g_fWhite, fAdaptationNorm, TWBAR_MGR->g_fBloomThreshold, TWBAR_MGR->g_fBloomScale);
+	m_PostFX->SetParameters(TWBAR_MGR->g_OptionHDR.g_fMiddleGrey, TWBAR_MGR->g_OptionHDR.g_fWhite, fAdaptationNorm, 
+		TWBAR_MGR->g_OptionHDR.g_fBloomThreshold, TWBAR_MGR->g_OptionHDR.g_fBloomScale, TWBAR_MGR->g_OptionHDR.g_fDOFFarStart, TWBAR_MGR->g_OptionHDR.g_fDOFFarRange);
 	m_pLightManager->ClearLights();
 	CreateLights();
 }
@@ -1789,7 +1790,7 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 		m_pLightManager->DrawLightVolume(pd3dDeviceContext);
 
 	if (GLOBAL_MGR->g_bEnablePostFX) {
-		m_PostFX->PostProcessing(pd3dDeviceContext, m_HDRSRV, SCENE_MGR->g_pd3dRenderTargetView);
+		m_PostFX->PostProcessing(pd3dDeviceContext, m_HDRSRV, m_GBuffer->GetDepthView(), SCENE_MGR->g_pd3dRenderTargetView);
 		pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthDSV());
 	}
 #endif

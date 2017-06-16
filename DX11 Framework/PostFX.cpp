@@ -5,6 +5,7 @@ CPostFX::CPostFX() :
 	m_fMiddleGrey(0.0025f), m_fWhite(1.5f), m_fBloomThreshold(2.0), m_fBloomScale(0.1f),
 	m_pDownScaleRT(NULL), m_pDownScaleSRV(NULL), m_pDownScaleUAV(NULL),
 	m_pBloomRT(NULL), m_pBloomSRV(NULL), m_pBloomUAV(NULL),
+	m_pBlurredSceneRT(NULL), m_pBlurredSceneSRV(NULL), m_pBlurredSceneUAV(NULL),
 	m_pDownScale1DBuffer(NULL), m_pDownScale1DUAV(NULL), m_pDownScale1DSRV(NULL),
 	m_pDownScaleCB(NULL), m_pFinalPassCB(NULL), m_pBlurCB(NULL),
 	m_pAvgLumBuffer(NULL), m_pAvgLumUAV(NULL), m_pAvgLumSRV(NULL),
@@ -101,6 +102,18 @@ void CPostFX::Initialize(ID3D11Device* pDevice, UINT width, UINT height)
 
 	HR(pDevice->CreateUnorderedAccessView(m_pBloomRT, &DescUAV, &m_pBloomUAV));
 	DXUT_SetDebugName(m_pBloomUAV, "PostFX - Bloom UAV");
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Allocate blurred scene target
+	HR(pDevice->CreateTexture2D(&dtd, NULL, &m_pBlurredSceneRT));
+	DXUT_SetDebugName(m_pBlurredSceneRT, "PostFX - Blurred Scene RT");
+
+	HR(pDevice->CreateShaderResourceView(m_pBlurredSceneRT, &dsrvd, &m_pBlurredSceneSRV));
+	DXUT_SetDebugName(m_pBlurredSceneSRV, "PostFX - Blurred Scene SRV");
+
+	HR(pDevice->CreateUnorderedAccessView(m_pBlurredSceneRT, &DescUAV, &m_pBlurredSceneUAV));
+	DXUT_SetDebugName(m_pBlurredSceneUAV, "PostFX - Blurred Scene UAV");
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Allocate down scaled luminance buffer
 	D3D11_BUFFER_DESC bufferDesc;
@@ -209,6 +222,9 @@ void CPostFX::Deinit()
 	ReleaseCOM(m_pBloomRT);
 	ReleaseCOM(m_pBloomSRV);
 	ReleaseCOM(m_pBloomUAV);
+	ReleaseCOM(m_pBlurredSceneRT);
+	ReleaseCOM(m_pBlurredSceneSRV);
+	ReleaseCOM(m_pBlurredSceneUAV);
 	ReleaseCOM(m_pDownScale1DBuffer);
 	ReleaseCOM(m_pDownScale1DUAV);
 	ReleaseCOM(m_pDownScale1DSRV);
@@ -230,7 +246,7 @@ void CPostFX::Deinit()
 	ReleaseCOM(m_pFinalPassPS);
 }
 
-void CPostFX::PostProcessing(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResourceView* pHDRSRV, ID3D11RenderTargetView* pLDRRTV)
+void CPostFX::PostProcessing(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResourceView* pHDRSRV, ID3D11ShaderResourceView* pDepthSRV, ID3D11RenderTargetView* pLDRRTV)
 {
 	// Constants
 	D3D11_MAPPED_SUBRESOURCE MappedResource;
@@ -242,6 +258,9 @@ void CPostFX::PostProcessing(ID3D11DeviceContext* pd3dImmediateContext, ID3D11Sh
 	pDownScale->nGroupSize = m_nDownScaleGroups;
 	pDownScale->fAdaptation = m_fAdaptation;
 	pDownScale->fBloomThreshold = m_fBloomThreshold;
+	float fQ = SCENE_MGR->g_pCamera->GetViewport().MaxDepth / (SCENE_MGR->g_pCamera->GetViewport().MaxDepth - SCENE_MGR->g_pCamera->GetViewport().MinDepth);
+	pDownScale->ProjectionValues[0] = -SCENE_MGR->g_pCamera->GetViewport().MinDepth * fQ;
+	pDownScale->ProjectionValues[1] = -fQ;
 	pd3dImmediateContext->Unmap(m_pDownScaleCB, 0);
 	ID3D11Buffer* arrConstBuffers[1] = { m_pDownScaleCB };
 	pd3dImmediateContext->CSSetConstantBuffers(0, 1, arrConstBuffers);
@@ -254,9 +273,6 @@ void CPostFX::PostProcessing(ID3D11DeviceContext* pd3dImmediateContext, ID3D11Sh
 	// Bloom
 	Bloom(pd3dImmediateContext);
 
-	// Blur the bloom values
-	Blur(pd3dImmediateContext, m_pTempSRV[0], m_pBloomUAV);
-
 	// Cleanup
 	ZeroMemory(&arrConstBuffers, sizeof(arrConstBuffers));
 	pd3dImmediateContext->CSSetConstantBuffers(0, 1, arrConstBuffers);
@@ -264,7 +280,7 @@ void CPostFX::PostProcessing(ID3D11DeviceContext* pd3dImmediateContext, ID3D11Sh
 	// Do the final pass
 	rt[0] = pLDRRTV;
 	pd3dImmediateContext->OMSetRenderTargets(1, rt, NULL);
-	FinalPass(pd3dImmediateContext, pHDRSRV);
+	FinalPass(pd3dImmediateContext, pHDRSRV, pDepthSRV);
 
 	// Swap the previous frame average luminance
 	ID3D11Buffer* pTempBuffer = m_pAvgLumBuffer;
@@ -278,15 +294,28 @@ void CPostFX::PostProcessing(ID3D11DeviceContext* pd3dImmediateContext, ID3D11Sh
 	m_pPrevAvgLumSRV = p_TempSRV;
 }
 
+void CPostFX::SetParameters(float fMiddleGrey, float fWhite, float fAdaptation, float fBloomThreshold, float fBloomScale, float fDOFFarStart, float fDOFFarRange)
+{
+	m_fMiddleGrey = fMiddleGrey;
+	m_fWhite = fWhite;
+	m_fAdaptation = fAdaptation;
+	m_fBloomThreshold = fBloomThreshold;
+	m_fBloomScale = fBloomScale;
+
+	// Far DOF can always be on because we can just set the far value to the far plane
+	m_fDOFFarStart = fDOFFarStart;
+	m_fDOFFarRangeRcp = 1.0f / max(fDOFFarRange, 0.001f);
+}
+
 void CPostFX::DownScale(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResourceView* pHDRSRV)
 {
 	// Output
 	ID3D11UnorderedAccessView* arrUAVs[2] = { m_pDownScale1DUAV, m_pDownScaleUAV };
-	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 2, arrUAVs, NULL);
+	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 2, arrUAVs, (UINT*)(&arrUAVs));
 
 	// Input
 	ID3D11ShaderResourceView* arrViews[2] = { pHDRSRV, NULL };
-	pd3dImmediateContext->CSSetShaderResources(0, 1, arrViews);
+	pd3dImmediateContext->CSSetShaderResources(0, 2, arrViews);
 
 	// Shader
 	pd3dImmediateContext->CSSetShader(m_pDownScaleFirstPassCS, NULL, 0);
@@ -300,7 +329,7 @@ void CPostFX::DownScale(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderR
 	// Outoput
 	ZeroMemory(arrUAVs, sizeof(arrUAVs));
 	arrUAVs[0] = m_pAvgLumUAV;
-	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 2, arrUAVs, NULL);
+	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 2, arrUAVs, (UINT*)(&arrUAVs));
 
 	// Input
 	arrViews[0] = m_pDownScale1DSRV;
@@ -329,7 +358,7 @@ void CPostFX::Bloom(ID3D11DeviceContext* pd3dImmediateContext)
 
 	// Output
 	ID3D11UnorderedAccessView* arrUAVs[1] = { m_pTempUAV[0] };
-	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 1, arrUAVs, NULL);
+	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 1, arrUAVs, (UINT*)(&arrUAVs));
 
 	// Shader
 	pd3dImmediateContext->CSSetShader(m_pBloomRevealCS, NULL, 0);
@@ -342,17 +371,20 @@ void CPostFX::Bloom(ID3D11DeviceContext* pd3dImmediateContext)
 	ZeroMemory(arrViews, sizeof(arrViews));
 	pd3dImmediateContext->CSSetShaderResources(0, 2, arrViews);
 	ZeroMemory(arrUAVs, sizeof(arrUAVs));
-	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 1, arrUAVs, NULL);
+	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 1, arrUAVs, (UINT*)(&arrUAVs));
+
+	// Blur the bloom values
+	Blur(pd3dImmediateContext, m_pTempSRV[0], m_pBloomUAV);
 }
 
 void CPostFX::Blur(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResourceView* pInput, ID3D11UnorderedAccessView* pOutput)
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Second pass - horizontal gaussian filter
+	// Second pass - horizontal Gaussian filter
 
 	// Output
 	ID3D11UnorderedAccessView* arrUAVs[1] = { m_pTempUAV[1] };
-	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 1, arrUAVs, NULL);
+	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 1, arrUAVs, (UINT*)(&arrUAVs));
 
 	// Input
 	ID3D11ShaderResourceView* arrViews[1] = { pInput };
@@ -365,11 +397,11 @@ void CPostFX::Blur(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResour
 	pd3dImmediateContext->Dispatch((UINT)ceil((m_nWidth / 4.0f) / (128.0f - 12.0f)), (UINT)ceil(m_nHeight / 4.0f), 1);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	// First pass - vertical gaussian filter
+	// First pass - vertical Gaussian filter
 
 	// Output
 	arrUAVs[0] = pOutput;
-	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 1, arrUAVs, NULL);
+	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 1, arrUAVs, (UINT*)(&arrUAVs));
 
 	// Input
 	arrViews[0] = m_pTempSRV[1];
@@ -386,13 +418,13 @@ void CPostFX::Blur(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResour
 	ZeroMemory(arrViews, sizeof(arrViews));
 	pd3dImmediateContext->CSSetShaderResources(0, 1, arrViews);
 	ZeroMemory(arrUAVs, sizeof(arrUAVs));
-	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 1, arrUAVs, NULL);
+	pd3dImmediateContext->CSSetUnorderedAccessViews(0, 1, arrUAVs, (UINT*)(&arrUAVs));
 }
 
-void CPostFX::FinalPass(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResourceView* pHDRSRV)
+void CPostFX::FinalPass(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderResourceView* pHDRSRV, ID3D11ShaderResourceView* pDepthSRV)
 {
-	ID3D11ShaderResourceView* arrViews[3] = { pHDRSRV, m_pAvgLumSRV, m_pBloomSRV };
-	pd3dImmediateContext->PSSetShaderResources(0, 3, arrViews);
+	ID3D11ShaderResourceView* arrViews[6] = { pHDRSRV, m_pAvgLumSRV, m_pBloomSRV, m_pDownScaleSRV, pDepthSRV };
+	pd3dImmediateContext->PSSetShaderResources(0, 6, arrViews);
 
 	// Constants
 	D3D11_MAPPED_SUBRESOURCE MappedResource;
@@ -400,9 +432,15 @@ void CPostFX::FinalPass(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderR
 	TFinalPassCB* pFinalPass = (TFinalPassCB*)MappedResource.pData;
 	pFinalPass->fMiddleGrey = m_fMiddleGrey;
 	pFinalPass->fLumWhiteSqr = m_fWhite;
-	pFinalPass->fLumWhiteSqr *= pFinalPass->fMiddleGrey; // Scale by the middle grey value
+	pFinalPass->fLumWhiteSqr *= pFinalPass->fMiddleGrey; // Scale by the middle gray value
 	pFinalPass->fLumWhiteSqr *= pFinalPass->fLumWhiteSqr; // Square
 	pFinalPass->fBloomScale = m_fBloomScale;
+	CCamera* pCamera = SCENE_MGR->g_pCamera;
+	float fQ = pCamera->GetFarPlane() / (pCamera->GetFarPlane() - pCamera->GetNearPlane());
+	pFinalPass->ProjectionValues[0] = -pCamera->GetNearPlane()* fQ;
+	pFinalPass->ProjectionValues[1] = -fQ;
+	pFinalPass->fDOFFarStart = m_fDOFFarStart;
+	pFinalPass->fDOFFarRangeRcp = m_fDOFFarRangeRcp;
 	pd3dImmediateContext->Unmap(m_pFinalPassCB, 0);
 	ID3D11Buffer* arrConstBuffers[1] = { m_pFinalPassCB };
 	pd3dImmediateContext->PSSetConstantBuffers(PS_CB_SLOT_TONEMAPPING, 1, arrConstBuffers);
@@ -423,9 +461,10 @@ void CPostFX::FinalPass(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderR
 
 	// Cleanup
 	ZeroMemory(arrViews, sizeof(arrViews));
-	pd3dImmediateContext->PSSetShaderResources(0, 3, arrViews);
+	pd3dImmediateContext->PSSetShaderResources(0, 6, arrViews);
 	ZeroMemory(arrConstBuffers, sizeof(arrConstBuffers));
 	pd3dImmediateContext->PSSetConstantBuffers(0, 1, arrConstBuffers);
 	pd3dImmediateContext->VSSetShader(NULL, NULL, 0);
 	pd3dImmediateContext->PSSetShader(NULL, NULL, 0);
+	ZeroMemory(arrViews, sizeof(arrViews));
 }
