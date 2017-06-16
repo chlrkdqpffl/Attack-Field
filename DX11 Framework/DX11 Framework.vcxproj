@@ -355,6 +355,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shader HLSL File\Blur.hlsli" />
     <None Include="Shader HLSL File\Blurring.hlsli" />
     <None Include="Shader HLSL File\BoundingBox.hlsli" />
     <None Include="Shader HLSL File\CapsuleLight.hlsli" />

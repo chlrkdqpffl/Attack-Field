@@ -706,5 +706,8 @@
     <None Include="Shader HLSL File\PostDownScaleFX.hlsli">
       <Filter>HLSL\Deferred</Filter>
     </None>
+    <None Include="Shader HLSL File\Blur.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
   </ItemGroup>
 </Project>

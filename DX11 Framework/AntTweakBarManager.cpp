@@ -75,9 +75,29 @@ void CAntTweakBarManager::InitializeManager()
 	TwDefine("TweakBar/TesslationOption opened = false ");
 
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Post FX", TW_TYPE_BOOLCPP, &GLOBAL_MGR->g_bEnablePostFX, "");
+
+	CreateHDROption();
 }
 
 void CAntTweakBarManager::ReleseManager()
 {
 	TwTerminate();
+}
+
+void CAntTweakBarManager::CreateHDROption()
+{
+
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Middle Grey", TW_TYPE_FLOAT, &g_fMiddleGrey, "group = HDR step=0.01");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "White", TW_TYPE_FLOAT, &g_fWhite, "group = HDR step=0.01");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Adaptation", TW_TYPE_FLOAT, &g_fAdaptation, "group = HDR step=0.25");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Bloom Threshold", TW_TYPE_FLOAT, &g_fBloomThreshold, "group = HDR step=0.1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Bloom Scale", TW_TYPE_FLOAT, &g_fBloomScale, "group = HDR step=0.1");
+
+	TwDefine("TweakBar/HDR opened = false ");
+
+	g_fMiddleGrey = 0.0025f;
+	g_fWhite = 1.5f;
+	g_fAdaptation = 3.0f;
+	g_fBloomThreshold = 1.1f;
+	g_fBloomScale = 0.74f;
 }

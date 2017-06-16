@@ -1,7 +1,9 @@
 Texture2D<float4> HDRTex : register(t0);
 StructuredBuffer<float> AvgLum : register(t1);
+Texture2D<float4> BloomTex : register(t2);
 
 SamplerState PointSampler : register(s0);
+SamplerState LinearSampler : register(s1);
 
 static const float2 arrBasePos[4] =
 {
@@ -47,6 +49,7 @@ cbuffer FinalPassConstants : register(b8)
 	// Tone mapping
     float MiddleGrey : packoffset(c0);
     float LumWhiteSqr : packoffset(c0.y);
+    float BloomScale : packoffset(c0.z);
 }
 
 static const float3 LUM_FACTOR = float3(0.299, 0.587, 0.114);
@@ -69,6 +72,9 @@ float4 FinalPassPS(VS_OUTPUT In) : SV_TARGET
 
 	// Tone mapping
     color = ToneMapping(color);
+
+    // Add the bloom contribution
+    color += BloomScale * BloomTex.Sample(LinearSampler, In.UV.xy).xyz;
 
 	// Output the LDR value
     return float4(color, 1.0);

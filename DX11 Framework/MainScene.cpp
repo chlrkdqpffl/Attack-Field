@@ -18,6 +18,7 @@ CMainScene::~CMainScene()
 {
 	delete(m_GBuffer);
 	delete(m_pLightManager);
+	delete(m_PostFX);
 
 	ReleaseCOM(m_pHDRTexture);
 	ReleaseCOM(m_HDRRTV);
@@ -1745,10 +1746,10 @@ void CMainScene::Update(float fDeltaTime)
 	{
 		// Normalize the adaptation time with the frame time (all in seconds)
 		// Never use a value higher or equal to 1 since that means no adaptation at all (keeps the old value)
-	//	fAdaptationNorm = min(g_fAdaptation < 0.0001f ? 1.0f : fElapsedTime / g_fAdaptation, 0.9999f);			// 1부터 10까지가 샘플 프로그램임
-		fAdaptationNorm = fDeltaTime / 3;			// 1부터 10까지가 샘플 프로그램임
+		fAdaptationNorm = min(TWBAR_MGR->g_fAdaptation < 0.0001f ? 1.0f : fDeltaTime / TWBAR_MGR->g_fAdaptation, 0.9999f);
+	//	fAdaptationNorm = fDeltaTime / 3;			// 1부터 10까지가 샘플 프로그램임
 	}
-	m_PostFX->SetParameters(TWBAR_MGR->g_xmf3Offset.x, TWBAR_MGR->g_xmf3Offset.y, fAdaptationNorm);
+	m_PostFX->SetParameters(TWBAR_MGR->g_fMiddleGrey, TWBAR_MGR->g_fWhite, fAdaptationNorm, TWBAR_MGR->g_fBloomThreshold, TWBAR_MGR->g_fBloomScale);
 	m_pLightManager->ClearLights();
 	CreateLights();
 }
