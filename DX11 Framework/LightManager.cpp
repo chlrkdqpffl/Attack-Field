@@ -372,6 +372,10 @@ void CLightManager::SpotLight(ID3D11DeviceContext* pd3dImmediateContext, const X
 	XMMATRIX mProj = SCENE_MGR->g_pCamera->GetProjectionMatrix();
 	XMMATRIX mWorldViewProjection = mLightWorldScale * m_LightWorldTransRotate * mView * mProj;
 
+//	cout << "ºä : ";  ShowXMMatrix(mView);
+//	cout << "ÇÁ·ÎÁ§¼Ç: ";  ShowXMMatrix(mView);
+// 	cout << "----------------------------"<<endl;
+
 	// Write the matrix to the domain shader constant buffer
 	D3D11_MAPPED_SUBRESOURCE MappedResource;
 	HR( pd3dImmediateContext->Map( m_pSpotLightDomainCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource ) );

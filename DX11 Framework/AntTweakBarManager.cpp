@@ -97,8 +97,8 @@ void CAntTweakBarManager::CreateHDROption()
 
 	TwDefine("TweakBar/HDR opened = false ");
 
-	g_OptionHDR.g_fMiddleGrey = 0.0025f;
-	g_OptionHDR.g_fWhite = 1.5f;
+	g_OptionHDR.g_fMiddleGrey = 1.0f;
+	g_OptionHDR.g_fWhite = 2.0f;
 	g_OptionHDR.g_fAdaptation = 3.0f;
 	g_OptionHDR.g_fBloomThreshold = 1.1f;
 	g_OptionHDR.g_fBloomScale = 0.74f;

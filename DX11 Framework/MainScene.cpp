@@ -1562,8 +1562,9 @@ void CMainScene::CreateLights()
 		pos.y += 10;
 		m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
 	}
-
+	
 	//m_pLightManager->AddSpotLight(XMFLOAT3(56, 10, 23), XMFLOAT3(0, -1, 0),  30, 35, 30, XMFLOAT3(1, 1, 1));
+//	m_pLightManager->AddSpotLight(XMFLOAT3(50, 10, 3), XMFLOAT3(0, -1, 0), 30, 35, 30, XMFLOAT3(1, 1, 1));
 	//m_pLightManager->AddSpotLight(TWBAR_MGR->g_xmf3SelectObjectPosition, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
 	//m_pLightManager->AddPointLight(TWBAR_MGR->g_xmf3SelectObjectPosition, TWBAR_MGR->g_xmf3SelectObjectRotate.x, XMFLOAT3(1, 1, 1));
 

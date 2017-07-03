@@ -47,6 +47,7 @@ void CCharacterObject::Firing()
 	else
 		m_bIsReload = true;
 }
+
 void CCharacterObject::Walking()
 {
 	if (GetTickCount() - m_dwWalkSoundWatingTime > 1000) {
@@ -107,7 +108,13 @@ void CCharacterObject::OnCollisionCheck()
 			rayDirection = XMVector3Normalize(rayDirection);
 
 			int collisionObjectCount = staticObject->GetMesh()->CheckRayIntersection(&rayPosition, &rayDirection, &info);
-
+/*
+			static int test = 0;
+			if (test != collisionObjectCount) {
+				cout << "Ãæµ¹Ã¼ °¹¼ö : " << collisionObjectCount << endl;
+				test = collisionObjectCount;
+			}
+			*/
 			if (collisionObjectCount) {
 				if (info.m_fDistance < 4) {
 					XMVECTOR slidingVec = velocity - XMVector3Dot(velocity, XMLoadFloat3(&info.m_f3HitNormal)) * XMLoadFloat3(&info.m_f3HitNormal);
