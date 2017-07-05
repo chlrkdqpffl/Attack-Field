@@ -100,7 +100,7 @@ void CScene::Initialize()
 
 void CScene::CreatePlayer()
 {
-	m_pPlayerCharacter = new CTerroristCharacterObject();
+	m_pPlayerCharacter = new CTerroristCharacterObject(TeamType::eRedTeam);
 	m_pPlayerCharacter->CreateObjectData(m_pd3dDevice);
 	// 이거 두개 추가.
 

@@ -2,7 +2,8 @@
 #include "TerroristCharacterObject.h"
 
 
-CTerroristCharacterObject::CTerroristCharacterObject()
+CTerroristCharacterObject::CTerroristCharacterObject(TeamType team)
+	:CCharacterObject(team)
 {
 	m_tagMesh = MeshTag::eTerrorist;
 }
@@ -38,7 +39,13 @@ void CTerroristCharacterObject::CreateMaterial()
 
 	CMaterial* pMaterial = new CMaterial();
 
-	pCharacterTexture->SetTexture(0, TextureTag::eTerroristD);
+	if (m_tagTeam == TeamType::eRedTeam)
+		pCharacterTexture->SetTexture(0, TextureTag::eTerroristD_Red);
+	else if (m_tagTeam == TeamType::eBlueTeam)
+		pCharacterTexture->SetTexture(0, TextureTag::eTerroristD_Blue);
+	else 
+		cout << "Terrorist Team 미설정 - 텍스쳐 오류 발생!" << endl;
+
 	pCharacterTexture->SetTexture(1, TextureTag::eTerroristND);
 	pCharacterTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
 

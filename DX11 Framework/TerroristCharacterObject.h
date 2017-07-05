@@ -7,7 +7,7 @@
 class CTerroristCharacterObject : public CCharacterObject
 {
 public:
-	CTerroristCharacterObject();
+	CTerroristCharacterObject(TeamType team);
 	virtual ~CTerroristCharacterObject();
 
 	virtual void CreateMaterial() override;

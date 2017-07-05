@@ -6,7 +6,7 @@
 class CCharacterObject : public CSkinnedObject
 {
 public:
-	CCharacterObject();
+	CCharacterObject(TeamType team);
 	virtual ~CCharacterObject();
 
 protected:

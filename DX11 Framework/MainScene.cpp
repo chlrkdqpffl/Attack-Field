@@ -387,7 +387,7 @@ void CMainScene::Initialize()
 	 
 #ifndef USE_SERVER
 	// ==== Test용 - 총 메쉬 오프셋 찾기용 ==== //
-	CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject();
+	CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject(TeamType::eBlueTeam);
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
 

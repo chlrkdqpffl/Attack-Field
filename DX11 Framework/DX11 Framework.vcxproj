@@ -181,7 +181,9 @@
     <ClCompile Include="MapDataManager.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="NormalDisplaceMapShader.cpp" />
-    <ClCompile Include="PoliceCharacterObject.cpp" />
+    <ClCompile Include="PoliceCharacterObject.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="PostFX.cpp" />
     <ClCompile Include="RifleBullet.cpp" />
     <ClCompile Include="RifleGunWeapon.cpp" />
@@ -283,7 +285,9 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PoliceCharacterObject.h" />
+    <ClInclude Include="PoliceCharacterObject.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="PostFX.h" />
     <ClInclude Include="protocol.h" />
     <ClInclude Include="Resource.h" />

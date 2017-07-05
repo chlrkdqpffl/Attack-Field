@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "CharacterObject.h"
 
-CCharacterObject::CCharacterObject()
+CCharacterObject::CCharacterObject(TeamType team)
 {
 	for (int i = 0; i < static_cast<int>(ChracterBoundingBoxParts::ePartsCount); ++i)
 		m_pPartsBoundingBoxMesh[i] = nullptr;
 
+	m_tagTeam = team;
 	Revival(100);
 }
 

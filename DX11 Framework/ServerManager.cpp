@@ -87,7 +87,7 @@ void CServerManager::processpacket(char *ptr)
 		}
 		else
 		{
-			CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject();   //梓端 持失
+			CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject(TeamType::eRedTeam);   //梓端 持失
 			pCharObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
 			pCharObject->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 

@@ -29,7 +29,7 @@ void CPoliceCharacterObject::CreateMaterial()
 	CTexture *pCharacterTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
 
 	m_pMaterial = new CMaterial();
-	pCharacterTexture->SetTexture(0, TextureTag::eTerroristD);
+//	pCharacterTexture->SetTexture(0, TextureTag::eTerroristD);
 //	pCharacterTexture->SetTexture(1, TextureTag::eTerroristND);
 	pCharacterTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
 

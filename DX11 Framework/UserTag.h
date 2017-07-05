@@ -127,7 +127,7 @@ enum class TextureTag
 	// Model
 	eDarkFighterD, eDarkFighterN,
 
-	eTerroristD, eTerroristND,
+	eTerroristD_Red, eTerroristD_Blue, eTerroristND,
 	ePoliceD,
 	eRifleD, eRifleN,
 
