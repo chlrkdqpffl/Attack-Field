@@ -113,7 +113,8 @@ void CScene::CreatePlayer()
 	m_pPlayerCharacter->SetPlayer(m_pPlayer);
 
 	SCENE_MGR->g_pPlayer = m_pPlayer;
-	m_pPlayer->SetPosition(XMVectorSet(60.0f, 2.5f, 0.0f, 0.0f));
+	//m_pPlayer->SetPosition(XMVectorSet(60.0f, 2.5f, 0.0f, 0.0f));
+	m_pPlayer->SetPosition(XMVectorSet(160.0f, 2.5f, 90.0f, 0.0f));
 }
 
 void CScene::ReleaseObjects()

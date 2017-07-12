@@ -44,5 +44,6 @@ public:
 	virtual void InitializeManager() override;
 	virtual void ReleseManager() override;
 
+	void CreateTessOption();
 	void CreateHDROption();
 };

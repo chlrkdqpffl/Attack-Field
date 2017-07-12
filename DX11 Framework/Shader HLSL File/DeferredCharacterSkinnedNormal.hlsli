@@ -88,6 +88,7 @@ PS_GBUFFER_OUTPUT PSSkinnedTexturedBumpedLightingColor(VS_SKINNED_OUTPUT input)
 
     output.DiffuseSpecInt = float4(DiffuseColor, g_SpecIntensity);
     output.Normal = float4(normalW * 0.5 + 0.5, 0.0);
+   // output.Normal = float4(1,1,1, 0.0);
     output.SpecPow = float4(SpecPowerNorm, 0.0, 0.0, 0.0);
 
     return output;

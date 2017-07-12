@@ -52,6 +52,17 @@ void CAntTweakBarManager::InitializeManager()
 
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Number", TW_TYPE_INT32, &g_nSelect, "group = SelectObject");
 
+	CreateTessOption();
+	CreateHDROption();
+}
+
+void CAntTweakBarManager::ReleseManager()
+{
+	TwTerminate();
+}
+
+void CAntTweakBarManager::CreateTessOption()
+{
 	// Tesslation Option
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Min Distance", TW_TYPE_FLOAT, &g_tessOption.g_fMinDistance, "group = TesslationOption step=3");
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Max Distance", TW_TYPE_FLOAT, &g_tessOption.g_fMaxDistance, "group = TesslationOption step=3");
@@ -73,19 +84,11 @@ void CAntTweakBarManager::InitializeManager()
 	TwDefine("TweakBar/SelectObject opened = false ");
 	TwDefine("TweakBar/Option opened = false ");
 	TwDefine("TweakBar/TesslationOption opened = false ");
-
-	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Post FX", TW_TYPE_BOOLCPP, &GLOBAL_MGR->g_bEnablePostFX, "");
-
-	CreateHDROption();
-}
-
-void CAntTweakBarManager::ReleseManager()
-{
-	TwTerminate();
 }
 
 void CAntTweakBarManager::CreateHDROption()
 {
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Post FX", TW_TYPE_BOOLCPP, &GLOBAL_MGR->g_bEnablePostFX, "");
 
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Middle Grey", TW_TYPE_FLOAT, &g_OptionHDR.g_fMiddleGrey, "group = HDR step=0.01");
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "White", TW_TYPE_FLOAT, &g_OptionHDR.g_fWhite, "group = HDR step=0.01");

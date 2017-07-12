@@ -74,6 +74,7 @@ void CTerrainPlayer::OnApplyGravity(float fDeltaTime)
 	float groundHeight = 0.0f;
 	if (m_bIsFloorCollision) {
 		groundHeight = m_pCharacter->GetCollisionInfo().m_pHitObject->GetBoundingOBox().Center.y + m_pCharacter->GetCollisionInfo().m_pHitObject->GetBoundingOBox().Extents.y;
+		cout << "¶¥ ³ôÀÌ : " << groundHeight << endl;
 		m_fGravityTimeElapsed = 0.0f;
 		m_d3dxvVelocity.y = 0.0f;
 

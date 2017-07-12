@@ -10,8 +10,11 @@ CMainScene::CMainScene()
 
 	m_f3DirectionalColor = XMFLOAT3(0.85f, 0.8f, 0.8f);
 	m_f3DirectionalDirection = XMFLOAT3(1.0f, -1.0f, 1.0f);
-	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
-	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
+//	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
+//	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
+
+	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.9f, 0.9f, 0.9f);
+	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.9f, 0.9f, 0.9f);
 }
 
 CMainScene::~CMainScene()
@@ -1222,7 +1225,6 @@ void CMainScene::CreateMapDataInstancingObject()
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 #pragma endregion
 
-	
 #pragma region [Street Lamp]
 	/*
 	// 텍스쳐가 없어서 현재는 인스턴싱을 안쓰고 있음 - FBX Mesh는 텍스쳐까지 포함된 버퍼를 가지므로
@@ -1555,14 +1557,24 @@ void CMainScene::ReleaseConstantBuffers()
 void CMainScene::CreateLights()
 {
 	vector<MapData> vecMapData;
+	XMFLOAT3 pos;
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
 	
+	
 	for (auto light : vecMapData) {
-		XMFLOAT3 pos = light.m_Position;
+		pos = light.m_Position;
 		pos.y += 10;
+
 		m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
 	}
 	
+	// Player above Light
+	/*
+	XMStoreFloat3(&pos, m_pPlayer->GetvLook() * TWBAR_MGR->g_xmf3Offset.x);
+	XMStoreFloat3(&pos, XMLoadFloat3(& pos) + m_pPlayer->GetvPosition());
+	pos.y += TWBAR_MGR->g_xmf3Offset.y;
+	m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
+	*/
 	//m_pLightManager->AddSpotLight(XMFLOAT3(56, 10, 23), XMFLOAT3(0, -1, 0),  30, 35, 30, XMFLOAT3(1, 1, 1));
 //	m_pLightManager->AddSpotLight(XMFLOAT3(50, 10, 3), XMFLOAT3(0, -1, 0), 30, 35, 30, XMFLOAT3(1, 1, 1));
 	//m_pLightManager->AddSpotLight(TWBAR_MGR->g_xmf3SelectObjectPosition, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
@@ -1731,8 +1743,6 @@ void CMainScene::Update(float fDeltaTime)
 	// UI Effect
 	ShowDeadlyAttackUI();
 	ShowDeadlyUI();
-
-
 
 	// Deferred
 	float fAdaptationNorm;
