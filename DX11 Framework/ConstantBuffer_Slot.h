@@ -47,6 +47,7 @@ Max Resource(Texture, Buffer)	: 128
 #define PS_CB_SLOT_GBUFFER_UNPACK			0x06
 #define PS_CB_SLOT_LIGHT					0x07
 #define PS_CB_SLOT_TONEMAPPING				0x08
+#define PS_CB_SLOT_PARTICLE					0x09
 
 // ============================================ //
 // ================== Slot ==================== //

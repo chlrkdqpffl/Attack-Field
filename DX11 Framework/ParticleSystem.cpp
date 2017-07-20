@@ -80,7 +80,7 @@ void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceV
 	m_d3dxvEmitPosition = XMFLOAT3(0, 0, 0);
 	m_d3dxvEmitDirection = XMFLOAT3(0, 0, 0);
 
-	CreateParticle(pd3dDevice, XMFLOAT3(1028, 250, 1028), XMFLOAT3(0, 1, 0), XMFLOAT3(0, 1, 0));
+	CreateParticle(pd3dDevice, XMFLOAT3(160.0f, 4, 90.0f), XMFLOAT3(0, 1, 0), XMFLOAT3(0, 1, 0));
 }
 void CParticleSystem::CreateParticle(ID3D11Device *pd3dDevice, XMFLOAT3& Position, XMFLOAT3& Direction, XMFLOAT3& Accelerater)
 {
@@ -195,11 +195,10 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 	pd3dDeviceContext->OMSetBlendState(m_pd3dBlendState, nullptr, 0xffffffff);
 
 	pd3dDeviceContext->PSSetSamplers(0, 1, &STATEOBJ_MGR->g_pPointWarpSS);
-	pd3dDeviceContext->PSSetShaderResources(5, 1, &m_pd3dsrvTextureArray);
+	pd3dDeviceContext->PSSetShaderResources(PS_CB_SLOT_PARTICLE, 1, &m_pd3dsrvTextureArray);
 
 	pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dDrawVertexBuffer, &m_nStride, &m_nOffset);
 	pd3dDeviceContext->DrawAuto();
-
 
 	// Clear
 	pd3dDeviceContext->GSSetShader(nullptr, nullptr, 0);

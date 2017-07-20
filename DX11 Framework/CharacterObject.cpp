@@ -109,7 +109,9 @@ void CCharacterObject::OnCollisionCheck()
 			rayDirection = XMVector3Normalize(rayDirection);
 
 			int collisionObjectCount = staticObject->GetMesh()->CheckRayIntersection(&rayPosition, &rayDirection, &info);
-/*
+			
+			
+			/*
 			static int test = 0;
 			if (test != collisionObjectCount) {
 				cout << "Ãæµ¹Ã¼ °¹¼ö : " << collisionObjectCount << endl;

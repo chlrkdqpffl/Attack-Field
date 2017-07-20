@@ -121,7 +121,8 @@ void CResourceManager::LoadMapData()
 
 	// Parking Lot
 	AddResourece(TextureTag::eParkingLotD,		"../Assets/FBX Model/ParkingLot/ParkingLotD.jpg");
-	AddResourece(MeshTag::eParkingLot,			"../Assets/FBX Model/ParkingLot/ParkingLot.model");
+	//AddResourece(MeshTag::eParkingLot,			"../Assets/FBX Model/ParkingLot/ParkingLot.model");
+	AddResourece(MeshTag::eParkingLot,			"../Assets/FBX Model/ParkingLot/parkinglot2.model");
 
 	// ============== Road ============== //
 	AddResourece(TextureTag::eRoad1D,			"../Assets/FBX Model/Road/Road1D.dds");

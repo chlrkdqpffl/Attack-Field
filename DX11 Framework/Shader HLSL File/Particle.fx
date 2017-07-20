@@ -26,7 +26,7 @@ cbuffer cbParticleInfo  : register(b1)  // GS Buffer.
 };
 
 Texture1D gtxtRandomTexture         : register(t0);
-Texture2D gtxtParticleTextureArray  : register(t5);
+Texture2D gtxtParticleTextureArray  : register(t9);
 SamplerState gParticleSamplerState  : register(s0);
 
 struct PARTICLE_INPUT
