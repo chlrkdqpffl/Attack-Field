@@ -1777,7 +1777,7 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	}
 	m_GBuffer->OnPreRender(pd3dDeviceContext);
 #endif
-	// ------ Start Scene Rendering ------ //
+	// ------ Start Scene Rendering ------ // 
 	CScene::Render(pd3dDeviceContext, pCamera);
 
 	m_pParticleSystem->Render(pd3dDeviceContext);
@@ -1793,8 +1793,9 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	m_GBuffer->OnPrepareForUnpack(pd3dDeviceContext);
 
 	pd3dDeviceContext->OMSetRenderTargets(1, GLOBAL_MGR->g_bEnablePostFX ? &m_HDRRTV : &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthReadOnlyDSV());
+
 	// ------ Final Scene Rendering ------ //
-//	m_GBuffer->DeferredRender(pd3dDeviceContext);
+	m_GBuffer->DeferredRender(pd3dDeviceContext);
 	m_pLightManager->DoLighting(pd3dDeviceContext);
 
 	if (GLOBAL_MGR->g_bShowLightVolume)
