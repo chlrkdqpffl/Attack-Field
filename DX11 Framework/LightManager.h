@@ -82,7 +82,7 @@ public:
 	void Initialize(ID3D11Device *pd3dDevice);
 	void DeInitialize();
 
-//	void Update();
+	//	void Update();
 
 	// Set the ambient values
 	void SetAmbient(const XMFLOAT3& vAmbientLowerColor, const XMFLOAT3& vAmbientUpperColor)
@@ -175,7 +175,7 @@ private:
 	// Do the directional light calculation
 	void DirectionalLight(ID3D11DeviceContext* pd3dImmediateContext);
 
-	void PointLight(ID3D11DeviceContext* pd3dImmediateContext, const XMFLOAT3& vPos ,float fRange, const XMFLOAT3& vColor, bool bWireframe);
+	void PointLight(ID3D11DeviceContext* pd3dImmediateContext, const XMFLOAT3& vPos, float fRange, const XMFLOAT3& vColor, bool bWireframe);
 	void SpotLight(ID3D11DeviceContext* pd3dImmediateContext, const XMFLOAT3& vPos, const XMFLOAT3& vDir, float fRange, float fInnerAngle, float fOuterAngle, const XMFLOAT3& vColor, bool bWireframe);
 	void CapsuleLight(ID3D11DeviceContext* pd3dImmediateContext, const XMFLOAT3& vPos, const XMFLOAT3& vDir, float fRange, float fLen, const XMFLOAT3& vColor, bool bWireframe);
 

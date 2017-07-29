@@ -23,30 +23,30 @@ CLightManager::~CLightManager()
 void CLightManager::Initialize(ID3D11Device *pd3dDevice)
 {
 	// Create constant buffers
-    D3D11_BUFFER_DESC cbDesc;
-    ZeroMemory( &cbDesc, sizeof(cbDesc) );
-    cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-    cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbDesc.ByteWidth = sizeof( CB_DIRECTIONAL );
-    HR(pd3dDevice->CreateBuffer( &cbDesc, NULL, &m_pDirLightCB ) );
-    DXUT_SetDebugName( m_pDirLightCB, "Directional Light CB" );
+	D3D11_BUFFER_DESC cbDesc;
+	ZeroMemory(&cbDesc, sizeof(cbDesc));
+	cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbDesc.ByteWidth = sizeof(CB_DIRECTIONAL);
+	HR(pd3dDevice->CreateBuffer(&cbDesc, NULL, &m_pDirLightCB));
+	DXUT_SetDebugName(m_pDirLightCB, "Directional Light CB");
 
-	cbDesc.ByteWidth = sizeof( CB_POINT_LIGHT_DOMAIN );
-	HR( pd3dDevice->CreateBuffer( &cbDesc, NULL, &m_pPointLightDomainCB ) );
-	DXUT_SetDebugName( m_pPointLightDomainCB, "Point Light Domain CB" );
+	cbDesc.ByteWidth = sizeof(CB_POINT_LIGHT_DOMAIN);
+	HR(pd3dDevice->CreateBuffer(&cbDesc, NULL, &m_pPointLightDomainCB));
+	DXUT_SetDebugName(m_pPointLightDomainCB, "Point Light Domain CB");
 
-	cbDesc.ByteWidth = sizeof( CB_POINT_LIGHT_PIXEL );
-	HR( pd3dDevice->CreateBuffer( &cbDesc, NULL, &m_pPointLightPixelCB ) );
-	DXUT_SetDebugName( m_pPointLightPixelCB, "Point Light Pixel CB" );
+	cbDesc.ByteWidth = sizeof(CB_POINT_LIGHT_PIXEL);
+	HR(pd3dDevice->CreateBuffer(&cbDesc, NULL, &m_pPointLightPixelCB));
+	DXUT_SetDebugName(m_pPointLightPixelCB, "Point Light Pixel CB");
 
-	cbDesc.ByteWidth = sizeof( CB_SPOT_LIGHT_DOMAIN );
-	HR( pd3dDevice->CreateBuffer( &cbDesc, NULL, &m_pSpotLightDomainCB ) );
-	DXUT_SetDebugName( m_pSpotLightDomainCB, "Spot Light Domain CB" );
+	cbDesc.ByteWidth = sizeof(CB_SPOT_LIGHT_DOMAIN);
+	HR(pd3dDevice->CreateBuffer(&cbDesc, NULL, &m_pSpotLightDomainCB));
+	DXUT_SetDebugName(m_pSpotLightDomainCB, "Spot Light Domain CB");
 
-	cbDesc.ByteWidth = sizeof( CB_SPOT_LIGHT_PIXEL );
-	HR( pd3dDevice->CreateBuffer( &cbDesc, NULL, &m_pSpotLightPixelCB ) );
-	DXUT_SetDebugName( m_pSpotLightPixelCB, "Spot Light Pixel CB" );
+	cbDesc.ByteWidth = sizeof(CB_SPOT_LIGHT_PIXEL);
+	HR(pd3dDevice->CreateBuffer(&cbDesc, NULL, &m_pSpotLightPixelCB));
+	DXUT_SetDebugName(m_pSpotLightPixelCB, "Spot Light Pixel CB");
 
 	cbDesc.ByteWidth = sizeof(CB_CAPSULE_LIGHT_DOMAIN);
 	HR(pd3dDevice->CreateBuffer(&cbDesc, NULL, &m_pCapsuleLightDomainCB));
@@ -96,12 +96,12 @@ void CLightManager::Initialize(ID3D11Device *pd3dDevice)
 	const D3D11_DEPTH_STENCILOP_DESC noSkyStencilOp = { D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_COMPARISON_EQUAL };
 	descDepth.FrontFace = noSkyStencilOp;
 	descDepth.BackFace = noSkyStencilOp;
-	HR( pd3dDevice->CreateDepthStencilState(&descDepth, &m_pNoDepthWriteLessStencilMaskState) );
-	DXUT_SetDebugName( m_pNoDepthWriteLessStencilMaskState, "Depth Test Less / No Write, Stencil Mask DS" );
+	HR(pd3dDevice->CreateDepthStencilState(&descDepth, &m_pNoDepthWriteLessStencilMaskState));
+	DXUT_SetDebugName(m_pNoDepthWriteLessStencilMaskState, "Depth Test Less / No Write, Stencil Mask DS");
 
 	descDepth.DepthFunc = D3D11_COMPARISON_GREATER_EQUAL;
-	HR( pd3dDevice->CreateDepthStencilState(&descDepth, &m_pNoDepthWriteGreatherStencilMaskState) );
-	DXUT_SetDebugName( m_pNoDepthWriteGreatherStencilMaskState, "Depth Test Greather / No Write, Stencil Mask DS" );
+	HR(pd3dDevice->CreateDepthStencilState(&descDepth, &m_pNoDepthWriteGreatherStencilMaskState));
+	DXUT_SetDebugName(m_pNoDepthWriteGreatherStencilMaskState, "Depth Test Greather / No Write, Stencil Mask DS");
 
 	// Create the additive blend state
 	D3D11_BLEND_DESC descBlend;
@@ -115,9 +115,9 @@ void CLightManager::Initialize(ID3D11Device *pd3dDevice)
 		D3D11_COLOR_WRITE_ENABLE_ALL,
 	};
 	for (UINT i = 0; i < D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
-		descBlend.RenderTarget[ i ] = defaultRenderTargetBlendDesc;
-	HR( pd3dDevice->CreateBlendState(&descBlend, &m_pAdditiveBlendState) );
-	DXUT_SetDebugName( m_pAdditiveBlendState, "Additive Alpha BS" );
+		descBlend.RenderTarget[i] = defaultRenderTargetBlendDesc;
+	HR(pd3dDevice->CreateBlendState(&descBlend, &m_pAdditiveBlendState));
+	DXUT_SetDebugName(m_pAdditiveBlendState, "Additive Alpha BS");
 
 	D3D11_RASTERIZER_DESC descRast = {
 		D3D11_FILL_SOLID,
@@ -132,15 +132,15 @@ void CLightManager::Initialize(ID3D11Device *pd3dDevice)
 		FALSE
 	};
 	descRast.CullMode = D3D11_CULL_FRONT;
-	HR( pd3dDevice->CreateRasterizerState(&descRast, &m_pNoDepthClipFrontRS) );
-	DXUT_SetDebugName( m_pNoDepthClipFrontRS, "No Depth Clip Front RS" );
+	HR(pd3dDevice->CreateRasterizerState(&descRast, &m_pNoDepthClipFrontRS));
+	DXUT_SetDebugName(m_pNoDepthClipFrontRS, "No Depth Clip Front RS");
 
 	descRast.DepthClipEnable = TRUE;
 	descRast.CullMode = D3D11_CULL_BACK;
 	//descRast.CullMode = D3D11_CULL_NONE;
 	descRast.FillMode = D3D11_FILL_WIREFRAME;
-	HR( pd3dDevice->CreateRasterizerState(&descRast, &m_pWireframeRS) );
-	DXUT_SetDebugName( m_pWireframeRS, "Wireframe RS" );
+	HR(pd3dDevice->CreateRasterizerState(&descRast, &m_pWireframeRS));
+	DXUT_SetDebugName(m_pWireframeRS, "Wireframe RS");
 }
 
 void CLightManager::DeInitialize()
@@ -183,9 +183,9 @@ void CLightManager::DoLighting(ID3D11DeviceContext* pd3dImmediateContext)
 
 	// Set the depth state for the directional light
 	pd3dImmediateContext->OMSetDepthStencilState(m_pNoDepthWriteLessStencilMaskState, 1);
-	
+
 	// Set the GBuffer views
-	ID3D11ShaderResourceView* arrViews[4] = {m_pGBuffer->GetDepthView(), m_pGBuffer->GetDiffuseView(), m_pGBuffer->GetNormalView(), m_pGBuffer->GetSpecPowerView()};
+	ID3D11ShaderResourceView* arrViews[4] = { m_pGBuffer->GetDepthView(), m_pGBuffer->GetDiffuseView(), m_pGBuffer->GetNormalView(), m_pGBuffer->GetSpecPowerView() };
 	pd3dImmediateContext->PSSetShaderResources(PS_TEXTRUE_SLOT_GBUFFER, 4, arrViews);
 
 	// Do the directional light
@@ -193,11 +193,11 @@ void CLightManager::DoLighting(ID3D11DeviceContext* pd3dImmediateContext)
 
 	// Once we are done with the directional light, turn on the blending
 	ID3D11BlendState* pPrevBlendState;
-	FLOAT prevBlendFactor[ 4 ];
-    UINT prevSampleMask;
+	FLOAT prevBlendFactor[4];
+	UINT prevSampleMask;
 	pd3dImmediateContext->OMGetBlendState(&pPrevBlendState, prevBlendFactor, &prevSampleMask);
 	pd3dImmediateContext->OMSetBlendState(m_pAdditiveBlendState, prevBlendFactor, prevSampleMask);
-	
+
 	// Set the depth state for the rest of the lights
 	pd3dImmediateContext->OMSetDepthStencilState(m_pNoDepthWriteGreatherStencilMaskState, 1);
 
@@ -207,7 +207,7 @@ void CLightManager::DoLighting(ID3D11DeviceContext* pd3dImmediateContext)
 
 	// Do the rest of the lights
 	for (auto light : m_arrLights) {
-		if(light.eLightType == TYPE_POINT)
+		if (light.eLightType == TYPE_POINT)
 			PointLight(pd3dImmediateContext, light.vPosition, light.fRange, light.vColor, false);
 		else if (light.eLightType == TYPE_SPOT)
 			SpotLight(pd3dImmediateContext, light.vPosition, light.vDirection, light.fRange, light.fInnerAngle, light.fOuterAngle, light.vColor, false);
@@ -217,11 +217,11 @@ void CLightManager::DoLighting(ID3D11DeviceContext* pd3dImmediateContext)
 
 	// Restore the states
 	pd3dImmediateContext->OMSetBlendState(pPrevBlendState, prevBlendFactor, prevSampleMask);
-	ReleaseCOM( pPrevBlendState );
+	ReleaseCOM(pPrevBlendState);
 	pd3dImmediateContext->RSSetState(pPrevRSState);
-	ReleaseCOM( pPrevRSState );
+	ReleaseCOM(pPrevRSState);
 	pd3dImmediateContext->OMSetDepthStencilState(pPrevDepthState, nPrevStencil);
-	ReleaseCOM( pPrevDepthState );
+	ReleaseCOM(pPrevDepthState);
 
 	// Cleanup
 	pd3dImmediateContext->VSSetShader(NULL, NULL, 0);
@@ -258,15 +258,15 @@ void CLightManager::DrawLightVolume(ID3D11DeviceContext* pd3dImmediateContext)
 
 	// Restore the states
 	pd3dImmediateContext->RSSetState(pPrevRSState);
-	ReleaseCOM( pPrevRSState );
+	ReleaseCOM(pPrevRSState);
 }
 
 void CLightManager::DirectionalLight(ID3D11DeviceContext* pd3dImmediateContext)
 {
 	// Fill the directional and ambient values constant buffer
 	D3D11_MAPPED_SUBRESOURCE MappedResource;
-	HR( pd3dImmediateContext->Map( m_pDirLightCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource ) );
-	CB_DIRECTIONAL* pDirectionalValuesCB = ( CB_DIRECTIONAL* )MappedResource.pData;
+	HR(pd3dImmediateContext->Map(m_pDirLightCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource));
+	CB_DIRECTIONAL* pDirectionalValuesCB = (CB_DIRECTIONAL*)MappedResource.pData;
 
 	XMFLOAT3 ambientUpperColor = GammaToLinear(m_vAmbientUpperColor);
 	XMFLOAT3 ambientLowerColor = GammaToLinear(m_vAmbientLowerColor);
@@ -278,14 +278,14 @@ void CLightManager::DirectionalLight(ID3D11DeviceContext* pd3dImmediateContext)
 	pDirectionalValuesCB->vDirToLight.y = -m_vDirectionalDir.y;
 	pDirectionalValuesCB->vDirToLight.z = -m_vDirectionalDir.z;
 	pDirectionalValuesCB->vDirectionalColor = GammaToLinear(m_vDirectionalColor);
-	pd3dImmediateContext->Unmap( m_pDirLightCB, 0 );
-	pd3dImmediateContext->PSSetConstantBuffers(PS_CB_SLOT_LIGHT, 1, &m_pDirLightCB );
+	pd3dImmediateContext->Unmap(m_pDirLightCB, 0);
+	pd3dImmediateContext->PSSetConstantBuffers(PS_CB_SLOT_LIGHT, 1, &m_pDirLightCB);
 
 	// Primitive settings
-	pd3dImmediateContext->IASetInputLayout( NULL );
+	pd3dImmediateContext->IASetInputLayout(NULL);
 	pd3dImmediateContext->IASetVertexBuffers(0, 0, NULL, NULL, NULL);
-	pd3dImmediateContext->IASetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
-	
+	pd3dImmediateContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
 	// Set the shaders
 	pd3dImmediateContext->VSSetShader(m_pDirLightVertexShader, NULL, 0);
 	pd3dImmediateContext->GSSetShader(NULL, NULL, 0);
@@ -298,36 +298,36 @@ void CLightManager::DirectionalLight(ID3D11DeviceContext* pd3dImmediateContext)
 	pd3dImmediateContext->PSSetShaderResources(4, 1, arrRV);
 	pd3dImmediateContext->VSSetShader(NULL, NULL, 0);
 	pd3dImmediateContext->PSSetShader(NULL, NULL, 0);
-	pd3dImmediateContext->IASetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+	pd3dImmediateContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void CLightManager::PointLight(ID3D11DeviceContext* pd3dImmediateContext, const XMFLOAT3& vPos ,float fRange, const XMFLOAT3& vColor, bool bWireframe)
+void CLightManager::PointLight(ID3D11DeviceContext* pd3dImmediateContext, const XMFLOAT3& vPos, float fRange, const XMFLOAT3& vColor, bool bWireframe)
 {
 	XMMATRIX mLightWorldScale = XMMatrixScaling(fRange, fRange, fRange);
 	XMMATRIX mLightWorldTrans = XMMatrixTranslation(vPos.x, vPos.y, vPos.z);
-	
+
 	XMMATRIX mView = SCENE_MGR->g_pCamera->GetViewMatrix();
 	XMMATRIX mProj = SCENE_MGR->g_pCamera->GetProjectionMatrix();
 	XMMATRIX mWorldViewProjection = mLightWorldScale * mLightWorldTrans * mView * mProj;
 
 	D3D11_MAPPED_SUBRESOURCE MappedResource;
-	HR( pd3dImmediateContext->Map( m_pPointLightDomainCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource ) );
-	CB_POINT_LIGHT_DOMAIN* pPointLightDomainCB = ( CB_POINT_LIGHT_DOMAIN* )MappedResource.pData;
+	HR(pd3dImmediateContext->Map(m_pPointLightDomainCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource));
+	CB_POINT_LIGHT_DOMAIN* pPointLightDomainCB = (CB_POINT_LIGHT_DOMAIN*)MappedResource.pData;
 	XMStoreFloat4x4(&pPointLightDomainCB->WolrdViewProj, XMMatrixTranspose(mWorldViewProjection));
-	pd3dImmediateContext->Unmap( m_pPointLightDomainCB, 0 );
-	pd3dImmediateContext->DSSetConstantBuffers(DS_CB_SLOT_LIGHT, 1, &m_pPointLightDomainCB );
+	pd3dImmediateContext->Unmap(m_pPointLightDomainCB, 0);
+	pd3dImmediateContext->DSSetConstantBuffers(DS_CB_SLOT_LIGHT, 1, &m_pPointLightDomainCB);
 
-	HR( pd3dImmediateContext->Map( m_pPointLightPixelCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource ) );
-	CB_POINT_LIGHT_PIXEL* pPointLightPixelCB = ( CB_POINT_LIGHT_PIXEL* )MappedResource.pData;
+	HR(pd3dImmediateContext->Map(m_pPointLightPixelCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource));
+	CB_POINT_LIGHT_PIXEL* pPointLightPixelCB = (CB_POINT_LIGHT_PIXEL*)MappedResource.pData;
 	pPointLightPixelCB->PointLightPos = vPos;
 	pPointLightPixelCB->PointLightRangeRcp = 1.0f / fRange;
 	pPointLightPixelCB->PointColor = GammaToLinear(vColor);
-	pd3dImmediateContext->Unmap( m_pPointLightPixelCB, 0 );
-	pd3dImmediateContext->PSSetConstantBuffers(PS_CB_SLOT_LIGHT, 1, &m_pPointLightPixelCB );
+	pd3dImmediateContext->Unmap(m_pPointLightPixelCB, 0);
+	pd3dImmediateContext->PSSetConstantBuffers(PS_CB_SLOT_LIGHT, 1, &m_pPointLightPixelCB);
 
-	pd3dImmediateContext->IASetInputLayout( NULL );
+	pd3dImmediateContext->IASetInputLayout(NULL);
 	pd3dImmediateContext->IASetVertexBuffers(0, 0, NULL, NULL, NULL);
-	pd3dImmediateContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST);
+	pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST);
 
 	// Set the shaders
 	pd3dImmediateContext->VSSetShader(m_pPointLightVertexShader, NULL, 0);
@@ -372,22 +372,22 @@ void CLightManager::SpotLight(ID3D11DeviceContext* pd3dImmediateContext, const X
 	XMMATRIX mProj = SCENE_MGR->g_pCamera->GetProjectionMatrix();
 	XMMATRIX mWorldViewProjection = mLightWorldScale * m_LightWorldTransRotate * mView * mProj;
 
-//	cout << "ºä : ";  ShowXMMatrix(mView);
-//	cout << "ÇÁ·ÎÁ§¼Ç: ";  ShowXMMatrix(mView);
-// 	cout << "----------------------------"<<endl;
+	//	cout << "ºä : ";  ShowXMMatrix(mView);
+	//	cout << "ÇÁ·ÎÁ§¼Ç: ";  ShowXMMatrix(mView);
+	// 	cout << "----------------------------"<<endl;
 
 	// Write the matrix to the domain shader constant buffer
 	D3D11_MAPPED_SUBRESOURCE MappedResource;
-	HR( pd3dImmediateContext->Map( m_pSpotLightDomainCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource ) );
-	CB_SPOT_LIGHT_DOMAIN* pSpotLightDomainCB = ( CB_SPOT_LIGHT_DOMAIN* )MappedResource.pData;
+	HR(pd3dImmediateContext->Map(m_pSpotLightDomainCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource));
+	CB_SPOT_LIGHT_DOMAIN* pSpotLightDomainCB = (CB_SPOT_LIGHT_DOMAIN*)MappedResource.pData;
 	XMStoreFloat4x4(&pSpotLightDomainCB->WolrdViewProj, XMMatrixTranspose(mWorldViewProjection));
 	pSpotLightDomainCB->fSinAngle = fSinOuterAngle;
 	pSpotLightDomainCB->fCosAngle = fCosOuterAngle;
-	pd3dImmediateContext->Unmap( m_pSpotLightDomainCB, 0 );
-	pd3dImmediateContext->DSSetConstantBuffers(DS_CB_SLOT_LIGHT, 1, &m_pSpotLightDomainCB );
+	pd3dImmediateContext->Unmap(m_pSpotLightDomainCB, 0);
+	pd3dImmediateContext->DSSetConstantBuffers(DS_CB_SLOT_LIGHT, 1, &m_pSpotLightDomainCB);
 
-	HR( pd3dImmediateContext->Map( m_pSpotLightPixelCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource ) );
-	CB_SPOT_LIGHT_PIXEL* pSpotLightPixelCB = ( CB_SPOT_LIGHT_PIXEL* )MappedResource.pData;
+	HR(pd3dImmediateContext->Map(m_pSpotLightPixelCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource));
+	CB_SPOT_LIGHT_PIXEL* pSpotLightPixelCB = (CB_SPOT_LIGHT_PIXEL*)MappedResource.pData;
 	pSpotLightPixelCB->SpotLightPos = vPos;
 	pSpotLightPixelCB->SpotLightRangeRcp = 1.0f / fRange;
 	pSpotLightPixelCB->vDirToLight.x = -vDir.x;
@@ -396,12 +396,12 @@ void CLightManager::SpotLight(ID3D11DeviceContext* pd3dImmediateContext, const X
 	pSpotLightPixelCB->SpotCosOuterCone = fCosOuterAngle;
 	pSpotLightPixelCB->SpotColor = GammaToLinear(vColor);
 	pSpotLightPixelCB->SpotCosConeAttRange = fCosInnerAngle - fCosOuterAngle;
-	pd3dImmediateContext->Unmap( m_pSpotLightPixelCB, 0 );
-	pd3dImmediateContext->PSSetConstantBuffers(PS_CB_SLOT_LIGHT, 1, &m_pSpotLightPixelCB );
+	pd3dImmediateContext->Unmap(m_pSpotLightPixelCB, 0);
+	pd3dImmediateContext->PSSetConstantBuffers(PS_CB_SLOT_LIGHT, 1, &m_pSpotLightPixelCB);
 
-	pd3dImmediateContext->IASetInputLayout( NULL );
+	pd3dImmediateContext->IASetInputLayout(NULL);
 	pd3dImmediateContext->IASetVertexBuffers(0, 0, NULL, NULL, NULL);
-	pd3dImmediateContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST);
+	pd3dImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST);
 
 	// Set the shaders
 	pd3dImmediateContext->VSSetShader(m_pSpotLightVertexShader, NULL, 0);
@@ -428,8 +428,8 @@ void CLightManager::CapsuleLight(ID3D11DeviceContext* pd3dImmediateContext, cons
 	XMFLOAT3 f3Right; XMStoreFloat3(&f3Right, vRight);
 	XMFLOAT3 f3Up; XMStoreFloat3(&f3Up, vUp);
 	XMFLOAT3 f3CenterPos; XMStoreFloat3(&f3CenterPos, vCenterPos);
-	
-	XMMATRIX m_LightWorldTransRotate; 
+
+	XMMATRIX m_LightWorldTransRotate;
 	m_LightWorldTransRotate = XMMatrixSet(f3Right.x, f3Right.y, f3Right.z, 0.0f,
 		f3Up.x, f3Up.y, f3Up.z, 0.0f,
 		vDir.x, vDir.y, vDir.z, 0.0f,

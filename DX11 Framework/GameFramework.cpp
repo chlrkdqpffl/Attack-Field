@@ -467,7 +467,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	case WM_SIZE:
 	{
 		SCENE_MGR->g_nowScene->OnChangedWindowsSize(hWnd, nMessageID, wParam, lParam);
-
+		SCENE_MGR->g_lParam = lParam;
 		m_nWndClientSize.x = LOWORD(lParam);
 		m_nWndClientSize.y = HIWORD(lParam);
 	
@@ -630,8 +630,8 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers(); 
 	
-//	SceneTag startTag = SceneTag::eTitleScene;		// Title Scene 시작
-	SceneTag startTag = SceneTag::eMainScene;		// Main Scene 시작
+	SceneTag startTag = SceneTag::eTitleScene;		// Title Scene 시작
+//	SceneTag startTag = SceneTag::eMainScene;		// Main Scene 시작
 	switch (startTag) {
 		case SceneTag::eTitleScene:
 			SCENE_MGR->ChangeScene(SceneTag::eTitleScene);
