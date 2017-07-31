@@ -377,7 +377,9 @@ void CMainScene::Initialize()
 	m_vecObjectsContainer.push_back(pCaptureAreaObject);
 #pragma endregion 
 */
+
 #pragma region [Create Test - NomalMapping]	
+
 	
 	CNormalMapObject* normalMapObject = new CNormalMapObject();
 	normalMapObject->CreateObjectData(m_pd3dDevice);
@@ -404,7 +406,7 @@ void CMainScene::Initialize()
 
 #pragma region [Particle System]
 	m_pParticleSystem = new CParticleSystem();
-	m_pParticleSystem->Initialize(m_pd3dDevice, NULL, m_pParticleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 200);
+	m_pParticleSystem->Initialize(m_pd3dDevice, NULL, m_pParticleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 100);
 	m_pParticleSystem->CreateShader(m_pd3dDevice);
 #pragma endregion
 
@@ -1489,7 +1491,6 @@ void CMainScene::CreateUIImage()
 	pUIObject = new CUIObject(TextureTag::eDamagedCharacterUI);
 	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.0f);
 	pUIObject->AddOpacity(-1.0f);
-
 	m_pUIManager->AddUIObject(pUIObject);
 	m_pDamageUI = pUIObject;
 }

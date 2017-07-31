@@ -177,6 +177,8 @@ int CGameObject::PickObjectByRayIntersection(XMVECTOR *pd3dxvPickPosition, XMMAT
 
 void CGameObject::SetPosition(float x, float y, float z, bool isLocal)
 {
+	m_f3PrevPosition = GetPosition();
+
 	XMFLOAT4X4 mtx; 
 	if (isLocal) {
 		XMStoreFloat4x4(&mtx, m_mtxLocal);
@@ -192,6 +194,8 @@ void CGameObject::SetPosition(float x, float y, float z, bool isLocal)
 
 void CGameObject::SetPosition(XMVECTOR d3dxvPosition, bool isLocal)
 {
+	m_f3PrevPosition = GetPosition();
+
 	XMFLOAT4 f4vPosition;
 	XMStoreFloat4(&f4vPosition, d3dxvPosition);
 	SetPosition(f4vPosition.x, f4vPosition.y, f4vPosition.z, isLocal);
@@ -199,6 +203,8 @@ void CGameObject::SetPosition(XMVECTOR d3dxvPosition, bool isLocal)
 
 void CGameObject::SetPosition(XMFLOAT3 pos, bool isLocal)
 {
+	m_f3PrevPosition = GetPosition();
+
 	XMFLOAT4X4 mtx;
 	if (isLocal) {
 		XMStoreFloat4x4(&mtx, m_mtxLocal);

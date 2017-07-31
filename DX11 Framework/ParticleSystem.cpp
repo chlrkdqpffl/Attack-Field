@@ -63,6 +63,7 @@ void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceV
 {
 	m_pd3dsrvTextureArray = pd3dsrvTexArray;
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &m_pd3dsrvTextureArray, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/blood.dds"), NULL, NULL, &m_pd3dsrvTextureArray, NULL);
 	//D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/snow.png"), NULL, NULL, &m_pd3dsrvTextureArray, NULL);
 
 	//랜덤값을 위한 텍스쳐
@@ -80,7 +81,7 @@ void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceV
 	m_d3dxvEmitPosition = XMFLOAT3(0, 0, 0);
 	m_d3dxvEmitDirection = XMFLOAT3(0, 0, 0);
 
-	CreateParticle(pd3dDevice, XMFLOAT3(160.0f, 4, 90.0f), XMFLOAT3(0, 1, 0), XMFLOAT3(0, 1, 0));
+	CreateParticle(pd3dDevice, XMFLOAT3(50.0f, 1, -20.0f), XMFLOAT3(0, 1, 0), XMFLOAT3(0, 1, 0));
 }
 void CParticleSystem::CreateParticle(ID3D11Device *pd3dDevice, XMFLOAT3& Position, XMFLOAT3& Direction, XMFLOAT3& Accelerater)
 {
@@ -143,8 +144,8 @@ void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice)
 
 void CParticleSystem::Update(float fTimeStep, float fGameTime)
 {
-	m_fGameTime = fGameTime;
 	m_fTimeStep = fTimeStep;
+	m_fGameTime = fGameTime;
 }
 
 void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
@@ -166,7 +167,7 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 
 	pd3dDeviceContext->OMSetDepthStencilState(m_pd3dSODepthStencilState, 0);
 	pd3dDeviceContext->GSSetSamplers(0, 1, &STATEOBJ_MGR->g_pPointWarpSS);
-	pd3dDeviceContext->GSSetShaderResources(0, 1, &m_pd3dsrvRandomTexture);
+	pd3dDeviceContext->GSSetShaderResources(GS_TEXTURE_SLOT_RANDOM, 1, &m_pd3dsrvRandomTexture);
 
 	if (m_bInitializeParticle)
 	{

@@ -8,6 +8,8 @@ CCharacterObject::CCharacterObject(TeamType team)
 
 	m_tagTeam = team;
 	Revival(100);
+
+	m_strID = "Test " + to_string(m_nObjectId);
 }
 
 CCharacterObject::~CCharacterObject()

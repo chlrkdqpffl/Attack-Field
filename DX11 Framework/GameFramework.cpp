@@ -630,8 +630,8 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers(); 
 	
-	SceneTag startTag = SceneTag::eTitleScene;		// Title Scene 시작
-//	SceneTag startTag = SceneTag::eMainScene;		// Main Scene 시작
+//	SceneTag startTag = SceneTag::eTitleScene;		// Title Scene 시작
+	SceneTag startTag = SceneTag::eMainScene;		// Main Scene 시작
 	switch (startTag) {
 		case SceneTag::eTitleScene:
 			SCENE_MGR->ChangeScene(SceneTag::eTitleScene);
@@ -790,9 +790,9 @@ void CGameFramework::FrameAdvance()
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
 
-// #if defined(DEBUG) || defined(_DEBUG)
+#if defined(DEBUG) || defined(_DEBUG)
 	RenderDebugText();
-// #endif
+#endif
 
 	// Draw tweak bars
 	if (true == m_bMouseBindFlag) {
