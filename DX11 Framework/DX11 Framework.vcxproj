@@ -378,10 +378,12 @@
     <None Include="Shader HLSL File\Light.hlsli" />
     <None Include="Shader HLSL File\Normal.hlsli" />
     <None Include="Shader HLSL File\NormalMap.hlsli" />
+    <None Include="Shader HLSL File\ParticleCommon.hlsli" />
     <None Include="Shader HLSL File\PointLight.hlsli" />
     <None Include="Shader HLSL File\PostDownScaleFX.hlsli" />
     <None Include="Shader HLSL File\PostFX.hlsli" />
     <None Include="Shader HLSL File\PostProcessing.hlsli" />
+    <None Include="Shader HLSL File\Rain.hlsli" />
     <None Include="Shader HLSL File\SpotLight.hlsli" />
     <None Include="Shader HLSL File\Terrain.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

@@ -66,17 +66,14 @@ public:
 	void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
 	void ParticleRestart() { m_bInitializeParticle = true; }
-
 	
 	void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
-	void CreateShader(ID3D11Device *pd3dDevice);
-	void CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader, D3D11_INPUT_ELEMENT_DESC *pd3dInputLayout, UINT nElements, ID3D11InputLayout **ppd3dVertexLayout);
-	void CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11PixelShader **ppd3dPixelShader);
-	void CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader);
-	void CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dSOGeometryShader);
+	void CreateShader(ID3D11Device *pd3dDevice, const wstring& wstring);
+	void CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, const wstring& pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dSOGeometryShader);
 
 	ID3D11ShaderResourceView* CreateTexture2DArraySRV(ID3D11Device *pd3dDevice, _TCHAR(*ppstrFilePaths)[128], UINT nTextures);
 
+	void SetEmitPosition(XMVECTOR pos) { XMStoreFloat3(&m_d3dxvEmitPosition,pos); }
 };
 

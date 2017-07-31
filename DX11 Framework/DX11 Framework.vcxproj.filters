@@ -112,6 +112,9 @@
     <Filter Include="HLSL\Deferred\Light">
       <UniqueIdentifier>{d60721e4-64b1-451f-8ea6-8cc8c2f99d4e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HLSL\Particle">
+      <UniqueIdentifier>{1c9e3f60-39a8-49eb-ac48-b7811887cfa4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -708,6 +711,12 @@
     </None>
     <None Include="Shader HLSL File\Blur.hlsli">
       <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\Rain.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
+    <None Include="Shader HLSL File\ParticleCommon.hlsli">
+      <Filter>HLSL\Particle</Filter>
     </None>
   </ItemGroup>
 </Project>

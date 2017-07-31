@@ -2,13 +2,7 @@
 #include "stdafx.h"
 #include "ParticleSystem.h"
 
-#define PARTICLE_TYPE_EMITTER 0
-#define PARTICLES			  500	
-
-float R(float a, float b) {
-	return(a + (float)(rand() / (float)RAND_MAX) * (b - a));
-
-}
+float R(float a, float b) {	return(a + (float)(rand() / (float)RAND_MAX) * (b - a));}
 
 CParticleSystem::CParticleSystem()
 {
@@ -62,11 +56,6 @@ CParticleSystem::~CParticleSystem()
 void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceView* pd3dsrvTexArray, ID3D11ShaderResourceView* pd3dsrvRandomTexture, UINT nMaxParticles)
 {
 	m_pd3dsrvTextureArray = pd3dsrvTexArray;
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &m_pd3dsrvTextureArray, NULL);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/blood.dds"), NULL, NULL, &m_pd3dsrvTextureArray, NULL);
-	//D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/snow.png"), NULL, NULL, &m_pd3dsrvTextureArray, NULL);
-
-	//랜덤값을 위한 텍스쳐
 	m_pd3dsrvRandomTexture = pd3dsrvRandomTexture;
 
 	m_nMaxParticles = nMaxParticles;
@@ -81,7 +70,7 @@ void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceV
 	m_d3dxvEmitPosition = XMFLOAT3(0, 0, 0);
 	m_d3dxvEmitDirection = XMFLOAT3(0, 0, 0);
 
-	CreateParticle(pd3dDevice, XMFLOAT3(50.0f, 1, -20.0f), XMFLOAT3(0, 1, 0), XMFLOAT3(0, 1, 0));
+	CreateParticle(pd3dDevice, XMFLOAT3(60.0f, 3, 10.0f), XMFLOAT3(0, 1, 0), XMFLOAT3(0, 1, 0));
 }
 void CParticleSystem::CreateParticle(ID3D11Device *pd3dDevice, XMFLOAT3& Position, XMFLOAT3& Direction, XMFLOAT3& Accelerater)
 {
@@ -94,7 +83,7 @@ void CParticleSystem::CreateParticle(ID3D11Device *pd3dDevice, XMFLOAT3& Positio
 	CreateShaderVariables(pd3dDevice);	
 }
 
-void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice)
+void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice, const wstring& wstring)
 {
 	D3D11_INPUT_ELEMENT_DESC d3dInputLayout[] =
 	{
@@ -105,23 +94,11 @@ void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice)
 		{ "AGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
-	CreateVertexShaderFromFile(pd3dDevice, L"Shader HLSL File/Particle.fx", "VSParticleStreamOut", "vs_5_0", &m_pd3dSOVertexShader, d3dInputLayout, 5, &m_pd3dVertexLayout);
-	CreateVertexShaderFromFile(pd3dDevice, L"Shader HLSL File/Particle.fx", "VSParticleDraw", "vs_5_0", &m_pd3dVertexShader, d3dInputLayout, 5, &m_pd3dVertexLayout);
-	CreateGeometryShaderFromFile(pd3dDevice, L"Shader HLSL File/Particle.fx", "GSParticleDraw", "gs_5_0", &m_pd3dGeometryShader);
-	CreateSOGeometryShaderFromFile(pd3dDevice, L"Shader HLSL File/Particle.fx", "GSParticleStreamOut", "gs_5_0", &m_pd3dSOGeometryShader);
-	CreatePixelShaderFromFile(pd3dDevice, L"Shader HLSL File/Particle.fx", "PSParticleDraw", "ps_5_0", &m_pd3dPixelShader);
-
-	// 깊이 스텐실 상태 설정
-	//D3D11_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
-	//ZeroMemory(&d3dDepthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	//d3dDepthStencilDesc.DepthEnable = false;
-	//d3dDepthStencilDesc.StencilEnable = false;
-	//d3dDepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	//pd3dDevice->CreateDepthStencilState(&d3dDepthStencilDesc, &m_pd3dSODepthStencilState);
-	//d3dDepthStencilDesc.DepthEnable = true;
-	//d3dDepthStencilDesc.StencilEnable = false;
-	//d3dDepthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	//pd3dDevice->CreateDepthStencilState(&d3dDepthStencilDesc, &m_pd3dDepthStencilState);
+	CShader::CreateVertexShaderFromFile(pd3dDevice, wstring, "VSParticleStreamOut", "vs_5_0", &m_pd3dSOVertexShader, d3dInputLayout, 5, &m_pd3dVertexLayout);
+	CShader::CreateVertexShaderFromFile(pd3dDevice, wstring, "VSParticleDraw", "vs_5_0", &m_pd3dVertexShader, d3dInputLayout, 5, &m_pd3dVertexLayout);
+	CShader::CreateGeometryShaderFromFile(pd3dDevice, wstring, "GSParticleDraw", "gs_5_0", &m_pd3dGeometryShader);
+	CreateSOGeometryShaderFromFile(pd3dDevice, wstring, "GSParticleStreamOut", "gs_5_0", &m_pd3dSOGeometryShader);
+	CShader::CreatePixelShaderFromFile(pd3dDevice, wstring, "PSParticleDraw", "ps_5_0", &m_pd3dPixelShader);
 
 	// 블렌드 상태 설정
 	D3D11_BLEND_DESC d3dBlendStateDesc;
@@ -243,81 +220,6 @@ ID3D11ShaderResourceView* CParticleSystem::CreateRandomTexture1DSRV(ID3D11Device
 	return(pd3dsrvTexture);
 }
 
-void CParticleSystem::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader,	D3D11_INPUT_ELEMENT_DESC *pd3dInputLayout, UINT nElements, ID3D11InputLayout **ppd3dVertexLayout)
-{
-	HRESULT hResult;
-
-	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
-#if defined(DEBUG) || defined(_DEBUG)
-	dwShaderFlags |= D3DCOMPILE_DEBUG;
-#endif
-	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
-	/*파일(pszFileName)에서 쉐이더 함수(pszShaderName)를 컴파일하여 컴파일된 쉐이더 코드의 메모리 주소(pd3dShaderBlob)를 반환한다.*/
-	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel,
-		dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
-	{
-		//컴파일된 쉐이더 코드의 메모리 주소에서 정점-쉐이더를 생성한다. 
-		pd3dDevice->CreateVertexShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dVertexShader);
-		//컴파일된 쉐이더 코드의 메모리 주소와 입력 레이아웃에서 정점 레이아웃을 생성한다. 
-		pd3dDevice->CreateInputLayout(pd3dInputLayout, nElements,
-			pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), ppd3dVertexLayout);
-		pd3dShaderBlob->Release();
-	}
-	else
-	{
-		MessageBox(NULL, L"VSERROR", L"VSERROR", MB_OK);
-		exit(0);
-	}
-}
-
-void CParticleSystem::CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11PixelShader **ppd3dPixelShader)
-{
-	HRESULT hResult;
-
-	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
-#if defined(DEBUG) || defined(_DEBUG)
-	dwShaderFlags |= D3DCOMPILE_DEBUG;
-#endif
-
-	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
-	/*파일(pszFileName)에서 쉐이더 함수(pszShaderName)를 컴파일하여 컴파일된 쉐이더 코드의 메모리 주소(pd3dShaderBlob)를 반환한다.*/
-	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
-	{
-		//컴파일된 쉐이더 코드의 메모리 주소에서 픽셀-쉐이더를 생성한다. 
-		pd3dDevice->CreatePixelShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dPixelShader);
-		pd3dShaderBlob->Release();
-	}
-	else
-	{
-		MessageBox(NULL, L"PSERROR", L"PSERROR", MB_OK);
-		exit(0);
-	}
-}
-
-void CParticleSystem::CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader)
-{
-	HRESULT hResult;
-
-	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
-#if defined(DEBUG) || defined(_DEBUG)
-	dwShaderFlags |= D3DCOMPILE_DEBUG;
-#endif
-
-	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
-	/*파일(pszFileName)에서 쉐이더 함수(pszShaderName)를 컴파일하여 컴파일된 쉐이더 코드의 메모리 주소(pd3dShaderBlob)를 반환한다.*/
-	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL))) {
-		//컴파일된 쉐이더 코드의 메모리 주소에서 픽셀-쉐이더를 생성한다. 
-		pd3dDevice->CreateGeometryShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dGeometryShader);
-
-		DXUT_SetDebugName(*ppd3dGeometryShader, "ParticleGS");
-		pd3dShaderBlob->Release();
-	}
-	else {
-		MessageBox(NULL, L"GS ERROR", L"GS ERROR", MB_OK);
-		exit(0);
-	}
-}
-
 void CParticleSystem::CreateShaderVariables(ID3D11Device *pd3dDevice)
 {
 	D3D11_BUFFER_DESC d3dBufferDesc;
@@ -334,7 +236,7 @@ void CParticleSystem::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	DXUT_SetDebugName(m_pd3dInitialVertexBuffer, "InitialVertex");
 
 	m_nStride = sizeof(CParticleVertex);
-	d3dBufferDesc.ByteWidth = sizeof(CParticleVertex) * m_nMaxParticles;//PARTICLES = 500
+	d3dBufferDesc.ByteWidth = sizeof(CParticleVertex) * m_nMaxParticles;
 	d3dBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dStreamOutVertexBuffer);
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dDrawVertexBuffer);
@@ -368,7 +270,7 @@ void CParticleSystem::UpdateShaderVariables(ID3D11DeviceContext* pd3dDeviceConte
 	pd3dDeviceContext->GSSetConstantBuffers(GS_CB_SLOT_PARTICLE, 1, &m_pd3dcbParticleInfo);
 }
 
-void CParticleSystem::CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader)
+void CParticleSystem::CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, const wstring& pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader)
 {
 	HRESULT hResult;
 	
@@ -390,7 +292,7 @@ void CParticleSystem::CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, W
 
 	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
 	/*파일(pszFileName)에서 쉐이더 함수(pszShaderName)를 컴파일하여 컴파일된 쉐이더 코드의 메모리 주소(pd3dShaderBlob)를 반환한다.*/
-	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
+	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName.c_str(), NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
 	{
 		pd3dDevice->CreateGeometryShaderWithStreamOutput(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(),
 			pSODecls,			// 스트림아웃 디클러레이션
