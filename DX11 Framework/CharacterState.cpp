@@ -135,7 +135,7 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardRight);
 		}
 		else {
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Forward);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Forward, 1.2f);
 		}
 	}
 	// Backward
@@ -147,7 +147,7 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardRight);
 		}
 		else {
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Backward);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Backward, 1.2f);
 		}
 	}
 	else {

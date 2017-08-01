@@ -13,8 +13,8 @@ CMainScene::CMainScene()
 //	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 //	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 
-	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.9f, 0.9f, 0.9f);
-	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.9f, 0.9f, 0.9f);
+	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.25f, 0.25f, 0.25f);
+	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.8f, 0.8f, 0.8f);
 }
 
 CMainScene::~CMainScene()
@@ -379,14 +379,14 @@ void CMainScene::Initialize()
 */
 
 #pragma region [Create Test - NomalMapping]	
-
+	/*
 	
 	CNormalMapObject* normalMapObject = new CNormalMapObject();
 	normalMapObject->CreateObjectData(m_pd3dDevice);
 
 	normalMapObject->SetPosition(10, 0, 100);
 	m_vecObjectsContainer.push_back(normalMapObject);
-	
+	*/
 #pragma endregion 
 
 	 

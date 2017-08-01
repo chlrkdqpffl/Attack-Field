@@ -5,7 +5,7 @@ XMFLOAT4		CGlobalVariableManager::g_vRenderOption = XMFLOAT4(0.0f, 0.0f, 0.0f, 1
 ID3D11Buffer*	CGlobalVariableManager::g_pd3dcbRenderOption = nullptr;
 ID3D11Buffer*	CGlobalVariableManager::g_pd3dcbTessOption = nullptr;
 
-bool			CGlobalVariableManager::g_bShowGBuffer = true;
+bool			CGlobalVariableManager::g_bShowGBuffer = false;
 bool			CGlobalVariableManager::g_bShowWorldAxis = false;
 bool			CGlobalVariableManager::g_bShowWireFrame = false;
 

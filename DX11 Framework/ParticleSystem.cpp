@@ -70,7 +70,7 @@ void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceV
 	m_d3dxvEmitPosition = XMFLOAT3(0, 0, 0);
 	m_d3dxvEmitDirection = XMFLOAT3(0, 0, 0);
 
-	CreateParticle(pd3dDevice, XMFLOAT3(60.0f, 3, 10.0f), XMFLOAT3(0, 1, 0), XMFLOAT3(0, 1, 0));
+	CreateParticle(pd3dDevice, XMFLOAT3(60.0f, 30, 10.0f), XMFLOAT3(0, 1, 0), XMFLOAT3(0, 1, 0));
 }
 void CParticleSystem::CreateParticle(ID3D11Device *pd3dDevice, XMFLOAT3& Position, XMFLOAT3& Direction, XMFLOAT3& Accelerater)
 {
