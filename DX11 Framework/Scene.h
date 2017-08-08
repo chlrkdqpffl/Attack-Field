@@ -130,6 +130,7 @@ protected:
 	// Particle
 	float								m_fGametime		= 0.0f;
 	CParticleSystem						*m_pParticleSystem = nullptr;
+	CParticleSystem						*m_pRainParitlcleSystem = nullptr;
 
 
 	float								m_fDeltaTime = 0.0f;
