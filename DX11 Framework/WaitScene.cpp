@@ -26,7 +26,7 @@ void CWaitScene::CreateUIImage()
 
 	// Death
 	CUIObject* pDeathMatch = new CUIObject(TextureTag::eDeath);
-	pDeathMatch->Initialize(m_pd3dDevice, POINT{ 0,0 }, POINT{ FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT }, 0.0f);
+	pDeathMatch->Initialize(m_pd3dDevice, POINT{ 0,0 }, POINT{ FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT  }, 0.0f);
 	m_pUIManager->AddUIObject(pDeathMatch);
 
 	CUIObject* pOccupyMatch = new CUIObject(TextureTag::eOccupy);
@@ -54,7 +54,7 @@ void CWaitScene::CreatePlayer()
 
 
 
-void CWaitScene::IsOnCursorUI(POINT mousePos)
+void CWaitScene::IsOnCursorUI(POINT mousePos, HWND hwnd)
 {
 	auto findTag = m_pUIManager->FindCollisionUIObject(mousePos);
 
@@ -72,11 +72,11 @@ void CWaitScene::IsOnCursorUI(POINT mousePos)
 bool CWaitScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	POINT mousePos{ LOWORD(lParam), HIWORD(lParam) };
-	IsOnCursorUI(mousePos);
+	IsOnCursorUI(mousePos, hWnd);
 
 	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
-		IsCollisionUI(mousePos);
+		IsCollisionUI(mousePos , hWnd);
 		break;
 	case WM_MOUSEMOVE:
 
@@ -89,11 +89,11 @@ bool CWaitScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 	return(false);
 }
 
-void CWaitScene::IsCollisionUI(POINT mousePos)
+void CWaitScene::IsCollisionUI(POINT mousePos , HWND hwnd)
 {
 	switch (m_tagCursorSelectUI) {
 	case TextureTag::eDeath:
-
+	
 		SCENE_MGR->ChangeScene(SceneTag::eLoadingScene);
 
 		break;
@@ -110,7 +110,7 @@ void CWaitScene::IsCollisionUI(POINT mousePos)
 }
 
 
-void CWaitScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
+void CWaitScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera, HWND hwnd)
 {
 	m_pUIManager->RenderAll(pd3dDeviceContext);
 }

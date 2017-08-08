@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "MainScene.h"
+#include "protocol.h"
 
 CMainScene::CMainScene()
 {
@@ -13,8 +14,8 @@ CMainScene::CMainScene()
 //	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 //	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 
-	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.25f, 0.25f, 0.25f);
-	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.8f, 0.8f, 0.8f);
+	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.9f, 0.9f, 0.9f);
+	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.9f, 0.9f, 0.9f);
 }
 
 CMainScene::~CMainScene()
@@ -104,6 +105,20 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayer->SetGravityTimeElpased(0.0f);
 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
+				break;
+			case VK_F5:
+
+
+				break;
+			case VK_F6: //서버에게 게임이 끝났다는걸 알려주고 씬변환 해준다..
+				cs_temp_exit packet;
+				packet.size = sizeof(cs_temp_exit);
+				packet.type = 7;
+	
+				SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+				
+				
+				//m_pPlayer->SetKeyDown(KeyInput::eExit);
 				break;
 			case VK_Z:
 			
@@ -344,11 +359,20 @@ void CMainScene::Initialize()
 #pragma endregion
 	*/
 	
-#pragma region [Create Character]
+#pragma region [Create Character]	//여기 넣어야한다.
 	CScene::CreatePlayer();
 	m_vecBBoxRenderContainer.push_back(m_pPlayerCharacter);
 	m_vecCharacterContainer.push_back(m_pPlayerCharacter);
 
+	
+
+	cs_Gamemode packet;
+
+	packet.size = sizeof(cs_Gamemode);
+	packet.mode = 1;
+	packet.type = 5;
+	
+	SERVER_MGR->Sendpacket(reinterpret_cast<BYTE *>(&packet));
 #pragma endregion 
 
 	/*
@@ -377,16 +401,14 @@ void CMainScene::Initialize()
 	m_vecObjectsContainer.push_back(pCaptureAreaObject);
 #pragma endregion 
 */
-
 #pragma region [Create Test - NomalMapping]	
-	/*
 	
 	CNormalMapObject* normalMapObject = new CNormalMapObject();
 	normalMapObject->CreateObjectData(m_pd3dDevice);
 
 	normalMapObject->SetPosition(10, 0, 100);
 	m_vecObjectsContainer.push_back(normalMapObject);
-	*/
+	
 #pragma endregion 
 
 	 
@@ -405,19 +427,9 @@ void CMainScene::Initialize()
 #endif
 
 #pragma region [Particle System]
-	ID3D11ShaderResourceView* pParticleTexture = nullptr;
-
 	m_pParticleSystem = new CParticleSystem();
-	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
-	m_pParticleSystem->Initialize(m_pd3dDevice, pParticleTexture, m_pParticleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 100);
-	m_pParticleSystem->CreateShader(m_pd3dDevice, L"Shader HLSL File/Particle.fx");
-
-	m_pRainParitlcleSystem = new CParticleSystem();
-	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/raindrop.dds"), NULL, NULL, &pParticleTexture, NULL);
-	m_pRainParitlcleSystem->Initialize(m_pd3dDevice, pParticleTexture, m_pRainParitlcleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 10000);
-	m_pRainParitlcleSystem->CreateShader(m_pd3dDevice, L"Shader HLSL File/Rain.hlsli");
-
-
+	m_pParticleSystem->Initialize(m_pd3dDevice, NULL, m_pParticleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 200);
+	m_pParticleSystem->CreateShader(m_pd3dDevice);
 #pragma endregion
 
 //	CreateMapDataObject();
@@ -1501,6 +1513,7 @@ void CMainScene::CreateUIImage()
 	pUIObject = new CUIObject(TextureTag::eDamagedCharacterUI);
 	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.0f);
 	pUIObject->AddOpacity(-1.0f);
+
 	m_pUIManager->AddUIObject(pUIObject);
 	m_pDamageUI = pUIObject;
 }
@@ -1511,7 +1524,6 @@ void CMainScene::ReleaseObjects()
 	ReleaseConstantBuffers();
 
 	SafeDelete(m_pParticleSystem);
-	SafeDelete(m_pRainParitlcleSystem);
 	SafeDelete(m_pBoundingBoxShader);
 
 	for (auto& object : m_vecCharacterContainer)
@@ -1749,9 +1761,6 @@ void CMainScene::Update(float fDeltaTime)
 	m_fGametime += fDeltaTime;
 	m_pParticleSystem->Update(fDeltaTime, m_fGametime);
 
-	m_pRainParitlcleSystem->SetEmitPosition(m_pCamera->GetvPosition() + XMVectorSet(0.0f, -3.0f, 1, 0.0f));
-	m_pRainParitlcleSystem->Update(fDeltaTime, m_fGametime);
-
 	// Timer
 	CalcTime();
 
@@ -1781,7 +1790,7 @@ void CMainScene::Update(float fDeltaTime)
 	CreateLights();
 }
 
-void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
+void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera, HWND hwnd)
 {
 #ifdef USE_DEFERRD_RENDER
 	// =============== Deferred Rendering ================== //
@@ -1793,10 +1802,9 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	m_GBuffer->OnPreRender(pd3dDeviceContext);
 #endif
 	// ------ Start Scene Rendering ------ // 
-	CScene::Render(pd3dDeviceContext, pCamera);
+	CScene::Render(pd3dDeviceContext, pCamera, hwnd);
 
 	m_pParticleSystem->Render(pd3dDeviceContext);
-	m_pRainParitlcleSystem->Render(pd3dDeviceContext);
 
 	for (auto& object : m_vecCharacterContainer)
 		object->Render(m_pd3dDeviceContext, m_pCamera);

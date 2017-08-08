@@ -21,8 +21,8 @@ void CTitleScene::Initialize()
 void CTitleScene::CreatePlayer()
 {
 	/*
-	카메라만 필요하지만 캐릭터까지 만들어 주는데 이는 수정이 필요한 부분
-	현재는 무조건 플레이어를 거쳐서 카메라를 만들어 준다.
+		카메라만 필요하지만 캐릭터까지 만들어 주는데 이는 수정이 필요한 부분
+		현재는 무조건 플레이어를 거쳐서 카메라를 만들어 준다.
 	*/
 
 
@@ -99,7 +99,7 @@ void CTitleScene::CreateUIImage()
 
 }
 
-void CTitleScene::IsOnCursorUI(POINT mousePos)
+void CTitleScene::IsOnCursorUI(POINT mousePos, HWND hWnd)
 {
 	auto findTag = m_pUIManager->FindCollisionUIObject(mousePos);
 
@@ -148,7 +148,7 @@ void CTitleScene::IsOnCursorUI(POINT mousePos)
 	}
 }
 
-void CTitleScene::IsCollisionUI(POINT mousePos)
+void CTitleScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 {
 	switch (m_tagCursorSelectUI) {
 	case TextureTag::eStartButtonOn:
@@ -230,11 +230,11 @@ void CTitleScene::IsCollisionUI(POINT mousePos)
 bool CTitleScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	POINT mousePos{ LOWORD(lParam), HIWORD(lParam) };
-	IsOnCursorUI(mousePos);
+	IsOnCursorUI(mousePos, hWnd);
 
 	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
-		IsCollisionUI(mousePos);
+		IsCollisionUI(mousePos, hWnd);
 		break;
 	case WM_MOUSEMOVE:
 		break;
@@ -248,7 +248,8 @@ bool CTitleScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 
 bool CTitleScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-
+	static int i = 0;
+	static int j = 0;
 	if (nMessageID == WM_CHAR)
 	{
 		if (wParam != VK_BACK)
@@ -256,20 +257,20 @@ bool CTitleScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			if (m_Idclick)
 			{
 
-				m_ID += wParam;
+				m_ID[i] = wParam;
+				i++;
 
-
-				if (m_ID.size() > 9)
-					m_ID.pop_back();
+				if (i > 9)
+					i = 9;
 
 			}
 			else if (!m_Idclick)
 			{
-				m_Password+= wParam;
+				m_Password[j] = wParam;
+				j++;
 
-
-				if (m_Password.size() > 9)
-					m_Password.pop_back();
+				if (j > 9)
+					j = 9;
 			}
 		}
 	}
@@ -279,26 +280,34 @@ bool CTitleScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		{
 			if (m_Idclick)
 			{
-				m_ID.pop_back();
+				i--;
+				if (i < 0)
+					i = 0;
+				m_ID[i] = '\0';
 			}
 			else if (!m_Idclick)
 			{
-				m_Password.pop_back();
+				j--;
+				if (j < 0)
+					j = 0;
+				m_Password[j] = '\0';
 			}
 		}
 
 	}
-
+	
 	return false;
 }
 
-void CTitleScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
+void CTitleScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera, HWND hwnd)
 {
+
+
 
 	m_pUIManager->RenderAll(pd3dDeviceContext);
 
-	TEXT_MGR->RenderText(m_pd3dDeviceContext, (string)m_ID, 40, 1000, 450, 0xFFFFFFFF, FW1_LEFT);
-	TEXT_MGR->RenderText(m_pd3dDeviceContext, (string)m_Password, 40, 1000, 650, 0xFFFFFFFE, FW1_LEFT);
 
 
+	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_ID, 40, 1000, 450, 0xFFFFFFFF, FW1_LEFT);
+	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_Password, 40, 1000, 650, 0xFFFFFFFF, FW1_LEFT);
 }

@@ -85,11 +85,11 @@ public:
 	virtual void CreateUIImage() {};
 	virtual void CreateTweakBars() {};
 	virtual void CreatePlayer();
-	virtual void IsCollisionUI(POINT mousePos) {};
+	virtual void IsCollisionUI(POINT mousePos , HWND hwnd) {};
 
 	virtual void Update(float fDeltaTime);
 
-	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera);
+	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera, HWND hwnd);
 	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext) {};
 
 public:
@@ -130,7 +130,6 @@ protected:
 	// Particle
 	float								m_fGametime		= 0.0f;
 	CParticleSystem						*m_pParticleSystem = nullptr;
-	CParticleSystem						*m_pRainParitlcleSystem = nullptr;
 
 
 	float								m_fDeltaTime = 0.0f;
