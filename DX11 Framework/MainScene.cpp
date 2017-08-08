@@ -1873,10 +1873,10 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	DWORD HP = m_pPlayer->GetPlayerLife();
 	DWORD ID = SERVER_MGR->GetId();
 
-#ifdef DEVELOP_MODE
+	
 	str = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")\n";
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 50, 0xFFFFFFFF, FW1_LEFT);
-#endif
+
 //	str = "원점으로부터의 거리 : (" + to_string(XMVectorGetX(temp)) + ")\n";		// 3D 사운드 용
 //	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 90, 0xFFFFFFFF, FW1_LEFT);
 
