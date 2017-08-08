@@ -32,9 +32,8 @@ Max Resource(Texture, Buffer)	: 128
 #define DS_CB_SLOT_LIGHT					0x02
 
 // Geometry Shader
-//											0x00	FW Lib에서 사용하는 것으로 추정
+#define GS_CB_SLOT_CAMERA_VIEW_PROJECTION	0x00
 #define GS_CB_SLOT_PARTICLE					0x01
-#define GS_CB_SLOT_CAMERA_VIEW_PROJECTION	0x02
 
 // Computer Shader
 #define CS_SLOT_WEIGHTS						0x00
@@ -55,8 +54,6 @@ Max Resource(Texture, Buffer)	: 128
 // Texture
 
 #define CS_TEXTURE_SLOT_BLUR				0x00
-
-#define GS_TEXTURE_SLOT_RANDOM				0x00
 
 #define PS_TEXTURE_SLOT_DIFFUSE				0x00
 //		PS_TEXTURE_SLOT_NORMAL				0x01

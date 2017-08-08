@@ -76,7 +76,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	SERVER_MGR->sethandle(hMainWnd);
 
 #ifdef	USE_SERVER
-	SERVER_MGR->Server_init();
+	//SERVER_MGR->Server_init();
 #endif
 	if (!gGameFramework.OnCreate(hInstance, hMainWnd)) return(FALSE);
 
@@ -101,6 +101,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case WM_MOUSEMOVE:
         case WM_KEYDOWN:
         case WM_KEYUP:
+		case WM_CHAR:
 			gGameFramework.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
 			break;
 		case WM_COMMAND:

@@ -54,7 +54,7 @@ void CLoadingScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCam
 		SCENE_MGR->ChangeScene(SceneTag::eMainScene);
 		SCENE_MGR->g_pMainScene->OnChangedWindowsSize(0, 0, 0, SCENE_MGR->g_lParam);
 #ifdef USE_SERVER
-		SERVER_MGR->Server_init();
+		//SERVER_MGR->Server_init();
 #endif
 	}
 }

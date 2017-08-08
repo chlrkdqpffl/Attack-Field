@@ -5,9 +5,7 @@
 //#define FRAME_BUFFER_HEIGHT				768
 
 
-//#define DEVELOP_MODE
-
-#define USE_CONSOLE					// Open Console Windows
+//#define USE_CONSOLE					// Open Console Windows
 //#define USE_SERVER
 #define USE_LOOPBACKADDRESS			// auto 127.0.0.1
 

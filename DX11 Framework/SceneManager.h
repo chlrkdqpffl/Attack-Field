@@ -4,6 +4,7 @@
 #include "TitleScene.h"
 #include "LoadingScene.h"
 #include "MainScene.h"
+#include "WaitScene.h"
 
 class CSceneManager : public CSingletonManager<CSceneManager>
 {
@@ -16,6 +17,7 @@ public:
 	CPlayer							*g_pPlayer		= nullptr;
 	ID3D11RenderTargetView			*g_pd3dRenderTargetView = nullptr;
 	ID3D11DepthStencilView			*g_pd3dDepthStencilView = nullptr;
+	bool							m_loginfail = false;
 	float							g_fDeltaTime	= 0.0f;
 	LPARAM							g_lParam			= 0;
 

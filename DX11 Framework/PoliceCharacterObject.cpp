@@ -2,9 +2,6 @@
 #include "PoliceCharacterObject.h"
 
 
-CPoliceCharacterObject::CPoliceCharacterObject()
-{
-}
 
 CPoliceCharacterObject::~CPoliceCharacterObject()
 {

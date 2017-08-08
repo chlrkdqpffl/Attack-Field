@@ -26,12 +26,12 @@ CGameFramework::CGameFramework()
 
 
 //#if defined(DEBUG) || defined(_DEBUG)
-	#ifdef USE_CONSOLE
+	//#ifdef USE_CONSOLE
 		AllocConsole();
 		freopen("CONOUT$", "wt", stdout);
 		freopen("CONIN$", "rt", stdin);
 		std::ios::sync_with_stdio();
-	#endif
+//	#endif
 //#endif
 #ifdef USE_SERVER
 	m_bMouseBindFlag = true;
@@ -498,6 +498,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 		break;
 	case WM_KEYDOWN:
 	case WM_KEYUP:
+	case WM_CHAR:
 		OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	}
@@ -630,11 +631,8 @@ void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers(); 
 	
-#ifdef DEVELOP_MODE
-	SceneTag startTag = SceneTag::eMainScene;		// Main Scene 시작
-#else
 	SceneTag startTag = SceneTag::eTitleScene;		// Title Scene 시작
-#endif 
+//	SceneTag startTag = SceneTag::eMainScene;		// Main Scene 시작
 	switch (startTag) {
 		case SceneTag::eTitleScene:
 			SCENE_MGR->ChangeScene(SceneTag::eTitleScene);
@@ -793,9 +791,9 @@ void CGameFramework::FrameAdvance()
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
 
-#if defined(DEBUG) || defined(_DEBUG)
+// #if defined(DEBUG) || defined(_DEBUG)
 	RenderDebugText();
-#endif
+// #endif
 
 	// Draw tweak bars
 	if (true == m_bMouseBindFlag) {

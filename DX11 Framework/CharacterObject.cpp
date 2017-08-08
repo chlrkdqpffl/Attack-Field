@@ -8,8 +8,6 @@ CCharacterObject::CCharacterObject(TeamType team)
 
 	m_tagTeam = team;
 	Revival(100);
-
-	m_strID = "Test " + to_string(m_nObjectId);
 }
 
 CCharacterObject::~CCharacterObject()
@@ -121,7 +119,7 @@ void CCharacterObject::OnCollisionCheck()
 			}
 			*/
 			if (collisionObjectCount) {
-				if (info.m_fDistance < 4) {
+				if (info.m_fDistance < 2) {
 					XMVECTOR slidingVec = velocity - XMVector3Dot(velocity, XMLoadFloat3(&info.m_f3HitNormal)) * XMLoadFloat3(&info.m_f3HitNormal);
 
 					// ----- 슬라이딩 벡터 충돌 ----- //
@@ -175,6 +173,7 @@ void CCharacterObject::OnCollisionCheck()
 	// ------------------------------ //
 	*/
 } 
+
 
 void CCharacterObject::SetRotate(float fPitch, float fYaw, float fRoll, bool isLocal)
 {

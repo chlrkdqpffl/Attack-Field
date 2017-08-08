@@ -28,6 +28,9 @@ void CSceneManager::ChangeScene(SceneTag tagScene)
 	case SceneTag::eTitleScene:
 		pScene = new CTitleScene();
 		break;
+	case SceneTag::eWaitScene:
+		pScene = new CWaitScene();
+		break;
 	case SceneTag::eLoadingScene:
 		pScene = new CLoadingScene();
 		break;

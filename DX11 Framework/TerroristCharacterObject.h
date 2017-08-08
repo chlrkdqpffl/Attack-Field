@@ -1,6 +1,5 @@
 #pragma once
-#include "CharacterObject.h"
-#include "CharacterNormalShader.h"
+#include "CharacterObject.h" 
 #include "RifleGunWeapon.h"
 #include "BoundingBoxMesh.h"
 

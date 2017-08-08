@@ -33,6 +33,7 @@
 // ========== System ========== 
 #include "ParticleSystem.h"
 
+
 #define MAX_LIGHTS			4 //Multiple of 4
 #define POINT_LIGHT			1.0f
 #define SPOT_LIGHT			2.0f
@@ -129,7 +130,7 @@ protected:
 	// Particle
 	float								m_fGametime		= 0.0f;
 	CParticleSystem						*m_pParticleSystem = nullptr;
-	CParticleSystem						*m_pRainParitlcleSystem = nullptr;
+
 
 	float								m_fDeltaTime = 0.0f;
 	CPlayer								*m_pPlayer = nullptr;
@@ -141,5 +142,6 @@ protected:
 	vector<CGameObject*>				m_vecObjectsContainer;
 	vector<CInstancedObjectsShader*>	m_vecInstancedObjectsShaderContainer;
 	CObjectsShader						m_vecShaderObjectContainer;
+
 	CSphereObject*						m_pSphereObject = nullptr;
 };

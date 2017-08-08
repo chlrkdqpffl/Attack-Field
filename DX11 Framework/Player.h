@@ -22,6 +22,7 @@ protected:
 
 	CCamera						*m_pCamera	= nullptr;
 	WORD						m_wKeyState = 0;
+	WORD						m_Befroe_KeyState = 0;
 	CCharacterObject			*m_pCharacter = nullptr;
 	bool						m_bIsFloorCollision = false;
 	float						m_fGravityTimeElapsed  = 0.0f;

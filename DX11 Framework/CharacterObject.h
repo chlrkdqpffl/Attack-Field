@@ -40,7 +40,6 @@ protected:
 	bool				m_bIsDeadlyAttack = false;
 
 	// ----- Game System Variable ----- //
-	string				m_strID;
 	UINT				m_nServerID = 0;
 	UINT				m_nLife = 0;
 	UINT				m_nArmorPoint = 0;
@@ -98,9 +97,6 @@ public:
 	XMFLOAT3 GetRelativeVelocity()const { return m_f3RelativeVelocity; }
 	XMVECTOR GetRelativevVelocity()const { return XMLoadFloat3(&m_f3RelativeVelocity); }
 
-
-	void SetID(string id) { m_strID = id; }
-	string GetID() const{ return m_strID; }
 	void SetYaw(float yaw) { m_fYaw = yaw; }
 	float GetYaw() const { return m_fYaw; }
 	void SetPitch(float pitch) { m_fPitch = pitch; }
@@ -144,6 +140,10 @@ public:
 	bool GetIsDeadly() const { return m_bIsDeadly; }
 	void SetIsDeadlyAttack(bool set) { m_bIsDeadlyAttack = set; }
 	bool GetIsDeadlyAttack() const { return m_bIsDeadlyAttack; }
+	void SetTagTeam(TeamType &Team) { 
+		m_tagTeam = Team; 
+
+	}
 	
 
 	// ----- Game System Function ----- //
@@ -156,4 +156,5 @@ public:
 	UINT GetServerID() const { return m_nServerID; }
 	UINT GetWeaponBulletCount() const { return m_pWeapon->GetBulletCount(); }
 	UINT GetWeaponMaxBulletCount() const { return m_pWeapon->GetMaxBulletCount(); }
+	
 };

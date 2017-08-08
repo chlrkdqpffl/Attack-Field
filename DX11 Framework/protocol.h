@@ -51,6 +51,8 @@ struct sc_packet_put_player {   //서버에서 처음 접속했을때 위치값과 ID를 부여한�
 	float y;
 	float z;
 
+	BYTE Team;
+
 	XMFLOAT3   Animation;
 
 	BYTE   hp;
@@ -67,7 +69,8 @@ struct sc_packet_pos   //서버에서 처리된 값을 클라에게 보낸다.
 	BYTE size;
 	volatile BYTE type;
 
-	WORD   id;
+	WORD	id;
+	WORD	key_button;
 
 	float   x;
 	float   y;
@@ -203,5 +206,49 @@ struct SC_Run
 
 
 };
+
+struct cs_Gamemode
+{
+	BYTE size;
+	BYTE type;
+	BYTE mode;
+
+};
+
+struct cs_temp_exit
+{
+	BYTE size;
+	BYTE type;
+
+};
+
+struct cs_login
+{
+	BYTE size;
+	BYTE type;
+
+	DWORD strlen;
+	DWORD passstrlen;
+
+	char id[10];
+	char password[10];
+};
+
+struct SC_login_CONNECT
+{
+	BYTE size;
+	BYTE type;
+	WORD id;
+	bool connect;
+};
+
+struct sc_temp_exit
+{
+	BYTE id;
+	BYTE size;
+	BYTE type;
+};
+
+
 
 #pragma pack(pop)

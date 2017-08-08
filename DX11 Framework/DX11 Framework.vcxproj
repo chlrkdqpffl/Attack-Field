@@ -240,6 +240,7 @@
     <ClCompile Include="UIMesh.cpp" />
     <ClCompile Include="UIObject.cpp" />
     <ClCompile Include="UIShader.cpp" />
+    <ClCompile Include="WaitScene.cpp" />
     <ClCompile Include="WaterGridMesh.cpp" />
     <ClCompile Include="WaterShader.cpp" />
     <ClCompile Include="Weapon.cpp" />
@@ -334,6 +335,7 @@
     <ClInclude Include="UIShader.h" />
     <ClInclude Include="UserDefine.h" />
     <ClInclude Include="UserTag.h" />
+    <ClInclude Include="WaitScene.h" />
     <ClInclude Include="WaterGridMesh.h" />
     <ClInclude Include="WaterShader.h" />
     <ClInclude Include="Weapon.h" />
@@ -378,12 +380,10 @@
     <None Include="Shader HLSL File\Light.hlsli" />
     <None Include="Shader HLSL File\Normal.hlsli" />
     <None Include="Shader HLSL File\NormalMap.hlsli" />
-    <None Include="Shader HLSL File\ParticleCommon.hlsli" />
     <None Include="Shader HLSL File\PointLight.hlsli" />
     <None Include="Shader HLSL File\PostDownScaleFX.hlsli" />
     <None Include="Shader HLSL File\PostFX.hlsli" />
     <None Include="Shader HLSL File\PostProcessing.hlsli" />
-    <None Include="Shader HLSL File\Rain.hlsli" />
     <None Include="Shader HLSL File\SpotLight.hlsli" />
     <None Include="Shader HLSL File\Terrain.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

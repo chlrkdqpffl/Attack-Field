@@ -14,12 +14,12 @@ enum class KeyInput
 	eRight			= 0x08,
 	eRun			= 0x10,
 	eReload			= 0x20,
+	
 
 	// Mouse
 	eLeftMouse		= 0x100,
 	eRightMouse		= 0x200,
 	eMouseWheel		= 0x400,		// 휠 위아래는 추후 구현
-
 };
 
 enum class CameraTag 
@@ -39,7 +39,7 @@ enum class TeamType
 };
 
 enum class SceneTag {
-	eNone, eTitleScene, eLoadingScene, eMainScene
+	eNone, eTitleScene, eLoadingScene, eMainScene, eWaitScene
 };
 
 enum class ShaderTag {
@@ -154,7 +154,10 @@ enum class TextureTag
 
 	// Etc 2
 	eStoneD, eStoneND, eBricksD, eBricksN,
-	eWallD, eWallND
+	eWallD, eWallND,
+
+	//임시 UI
+	eID, ePassword, eIDClick, ePasswordClick, eLogin, eDeath, eOccupy
 };
 
 
@@ -173,6 +176,7 @@ enum class MeshTag
 	// --------------------------------------------------------- // 
 
 	ePolice,
+
 	// Character
 	eDarkFighter, eRifle,
 
