@@ -633,7 +633,7 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="Shader HLSL File\Particle.fx">
-      <Filter>Particle</Filter>
+      <Filter>HLSL\Particle</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

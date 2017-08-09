@@ -70,7 +70,7 @@ void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceV
 	m_d3dxvEmitPosition = XMFLOAT3(0, 0, 0);
 	m_d3dxvEmitDirection = XMFLOAT3(0, 0, 0);
 
-	CreateParticle(pd3dDevice, XMFLOAT3(60.0f, 30, 10.0f), XMFLOAT3(0, 1, 0), XMFLOAT3(0, 1, 0));
+	CreateParticle(pd3dDevice, XMFLOAT3(60.0f, 5, 10.0f), XMFLOAT3(0, 1, 0), XMFLOAT3(0, 1, 0));
 }
 void CParticleSystem::CreateParticle(ID3D11Device *pd3dDevice, XMFLOAT3& Position, XMFLOAT3& Direction, XMFLOAT3& Accelerater)
 {
@@ -90,8 +90,8 @@ void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice, const wstring& wstr
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "VELOCITY", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TYPE", 0, DXGI_FORMAT_R32_UINT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "AGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "AGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TYPE", 0, DXGI_FORMAT_R32_UINT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	CShader::CreateVertexShaderFromFile(pd3dDevice, wstring, "VSParticleStreamOut", "vs_5_0", &m_pd3dSOVertexShader, d3dInputLayout, 5, &m_pd3dVertexLayout);
@@ -103,7 +103,7 @@ void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice, const wstring& wstr
 	// 블렌드 상태 설정
 	D3D11_BLEND_DESC d3dBlendStateDesc;
 	ZeroMemory(&d3dBlendStateDesc, sizeof(D3D11_BLEND_DESC));
-	d3dBlendStateDesc.IndependentBlendEnable = false;
+	d3dBlendStateDesc.IndependentBlendEnable = true;
 	ZeroMemory(&d3dBlendStateDesc.RenderTarget[0], sizeof(D3D11_RENDER_TARGET_BLEND_DESC));
 	d3dBlendStateDesc.AlphaToCoverageEnable = true;
 	d3dBlendStateDesc.RenderTarget[0].BlendEnable = true;

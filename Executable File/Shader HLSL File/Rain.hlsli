@@ -7,11 +7,6 @@ cbuffer cbFixed
     float3 gAccelW = { -1.0f, -9.8f, 0.0f };
 };
 
-cbuffer cbTestVariable : register(b3)
-{
-    float4 g_f4Var : packoffset(c0);
-};
-
 
 PARTICLE_INPUT VSParticleStreamOut(PARTICLE_INPUT vin)
 {
@@ -41,12 +36,8 @@ void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTIC
                 vRandom.z *= 10;
                 vRandom.y = 20.0f;
                 */
-               // float3 vRandom = 10.0f * RandVec3((float) i / 5.0f);
-               // vRandom.y = 5.0f;
-
-                float3 vRandom = 5 * RandVec3((float) i / 5.0f);
+                float3 vRandom = 10.0f * RandVec3((float) i / 5.0f);
                 vRandom.y = 5.0f;
-
 
                 PARTICLE_INPUT particle = (PARTICLE_INPUT) 0;
                 particle.position = gvParticleEmitPosition.xyz + vRandom;
@@ -93,7 +84,7 @@ VertexOut VSParticleDraw(PARTICLE_INPUT vin)
 
 	// 상수 가속 공식.
     vout.PosW = vin.position + float3(0.0f, -3.0f * 3.0f * (t * 20), 0.0f); // 0.5f*t*t*gAccelW + t*vin.InitialVelW + vin.InitialPosW;
- //   vout.PosW = 0.5f * t * t * gAccelW + t * vin.velocity + vin.position;
+  //  vout.PosW = 0.5f * t * t * gAccelW + t * vin.velocity + vin.position;
 	
     vout.Type = vin.type;
 
@@ -114,7 +105,7 @@ void GSParticleDraw(point VertexOut gin[1], inout LineStream<GeoOut> lineStream)
     {
 		// 선분이 가속도 방향으로 기울어지게 한다.
         float3 p0 = gin[0].PosW;
-        float3 p1 = gin[0].PosW + 0.08f * float3(0.0f, -9.8f * 3.0f, 0.0f);
+        float3 p1 = gin[0].PosW + 0.1f * float3(0.0f, -9.8f * 3.0f, 0.0f);
 
         matrix mtxViewProjection = mul(gmtxView, gmtxProjection);
         GeoOut v0;

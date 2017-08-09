@@ -57,6 +57,7 @@ private:
 	XMFLOAT3						m_f3DirectionalColor = XMFLOAT3(0, 0, 0);
 
 	ID3D11Buffer					*m_pd3dcbLights		= nullptr;
+	ID3D11Buffer					*m_pd3dcbTestVariable = nullptr;
 
 
 	// Bounding Box Render

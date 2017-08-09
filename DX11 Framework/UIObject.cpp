@@ -101,7 +101,7 @@ void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)
 		m_pBackGroundUI->Render(pDeviceContext);
 
 	for (auto& uiObj : m_vecUIObject) {
-		if (uiObj->GetActive()) {
+		if (uiObj->GetActive()) { 
 
 			// Opacity Update
 			if (uiObj->GetOpacity() != m_fSettingOpacity) {

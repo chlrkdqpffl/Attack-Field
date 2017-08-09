@@ -1,8 +1,8 @@
 #include "Light.hlsli"
 #include "Normal.hlsli"
-#include "Fog.hlsli"
+//#include "Fog.hlsli"
 
-//    fxc /E PS_NormalDisplace /T ps_5_0 /Od /Zi /Fo CompiledShader.fxo DisplacementMap.hlsli
+//    fxc /E VS_NormalDisplace /T vs_5_0 /Od /Zi /Fo CompiledShader.fxo DisplacementMap.hlsli
 
 cbuffer cbViewProjectionMatrix : register(b0) // VS Set
 {
@@ -20,24 +20,47 @@ cbuffer cbRenderOption : register(b5) // PS Set
     float4 gbRenderOption : packoffset(c0); // (x : Fog)
 };
 
+cbuffer cbTessOption : register(b1)     // HS, DS Set
+{
+    float g_fMinTessDistance;
+    float g_fMaxTessDistance;
+    float g_fMinTessFactor;
+    float g_fMaxTessFactor;
+
+    float g_fMipLevelInterval;
+    float g_fMaxMipLevel;
+    float g_fHeightScale;
+    float padding;
+};
+
 Texture2D gtxtDiffuseMap : register(t0);
 
 SamplerState gssDefault : register(s0);
 
+/*
 static const float gfMinDistance        = 10;
-static const float gfMaxDistance        = 500;
+static const float gfMaxDistance        = 50;
 static const float gfMinTessFactor      = 1;
-static const float gfMaxTessFactor      = 20;
+static const float gfMaxTessFactor      = 5;
 static const float gfMipLevelInterval   = 20;
 static const float gfMaxMipLevel        = 6.0f;
-static const float gfHeightScale        = 7.0f;
-
+static const float gfHeightScale        = 0.3f;
+*/
 struct VS_NormalDisplace_Input
 {
     float3 positionL : POSITION;
     float3 normalL   : NORMAL;
     float3 tangentL  : TANGENT;
     float2 texCoord  : TEXCOORD;
+};
+
+struct VS_InstancedNormalDisplace_Input
+{
+    float3 positionL : POSITION;
+    float3 normalL : NORMAL;
+    float3 tangentL : TANGENT;
+    float2 texCoord : TEXCOORD;
+    float4x4 mtxTransform : INSTANCEPOS;
 };
 
 struct VS_NormalDisplace_Output
@@ -47,6 +70,7 @@ struct VS_NormalDisplace_Output
     float3 tangentW  : TANGENT;
     float2 texCoord  : TEXCOORD;
 };
+
 
 VS_NormalDisplace_Output VS_NormalDisplace(VS_NormalDisplace_Input input)
 {
@@ -60,16 +84,24 @@ VS_NormalDisplace_Output VS_NormalDisplace(VS_NormalDisplace_Input input)
     return output;
 }
 
+VS_NormalDisplace_Output VS_InstancedNormalDisplace(VS_InstancedNormalDisplace_Input input)
+{
+    VS_NormalDisplace_Output output = (VS_NormalDisplace_Output) 0;
+    
+    output.positionW = mul(float4(input.positionL, 1.0f), input.mtxTransform);
+    output.normalW = mul(input.normalL, (float3x3) gmtxWorld);
+    output.tangentW = mul(input.tangentL, (float3x3) gmtxWorld);
+    output.texCoord = input.texCoord;
+
+    return output;
+}
+
 float CalcTessFactor(float3 posW)
 {
     float fDistToCamera = distance(posW, gvCameraPosition.xyz);
+    float tess = saturate((g_fMinTessDistance - fDistToCamera) / (g_fMinTessDistance - g_fMaxTessDistance));
 
-	// max norm in xz plane (useful to see detail levels from a bird's eye).
-	//float d = max( abs(p.x-gEyePosW.x), abs(p.z-gEyePosW.z) );
-	
-    float fTessFactor = saturate((fDistToCamera - gfMinDistance) / (gfMaxDistance - gfMinDistance));
-	
-    return pow(2, (lerp(gfMaxTessFactor, gfMinTessFactor, fTessFactor)));
+    return g_fMinTessFactor + tess * (g_fMaxTessFactor - g_fMinTessFactor);
 }
 
 struct HSC_Output
@@ -87,7 +119,7 @@ HSC_Output ConstantHS(InputPatch<VS_NormalDisplace_Output, 3> patch, uint nPatch
     float3 e2 = 0.5f * (patch[0].positionW + patch[1].positionW);
 
     float3 c = 0.25f * (patch[0].positionW + patch[1].positionW + patch[2].positionW);
-
+    
     output.fTessEdges[0] = CalcTessFactor(e0);
     output.fTessEdges[1] = CalcTessFactor(e1);
     output.fTessEdges[2] = CalcTessFactor(e2);
@@ -144,10 +176,10 @@ DS_Output DS_NormalDisplace(HSC_Output input, float3 uv : SV_DomainLocation, Out
     output.normalW = normalize(output.normalW);
 
     float fDistToCamera = distance(output.positionW, gvCameraPosition.xyz);
-    float fMipLevel = clamp(((fDistToCamera - gfMipLevelInterval) / gfMipLevelInterval), 0.0f, gfMaxMipLevel);
+    float fMipLevel = clamp(((fDistToCamera - g_fMipLevelInterval) / g_fMipLevelInterval), 0.0f, g_fMaxMipLevel);
     float fHeight = gtxtNormalMap.SampleLevel(gssDefault, output.texCoord, fMipLevel).a;
 
-    output.positionW += (gfHeightScale * (fHeight - 1.0f)) * output.normalW;
+    output.positionW += (g_fHeightScale * (1.0f - fHeight)) * output.normalW;
     output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
 
     return output;
@@ -159,8 +191,8 @@ float4 PS_NormalDisplace(DS_Output input) : SV_Target
     float4 cIllumination = Lighting(input.positionW, normalW);
     float4 cColor = gtxtDiffuseMap.Sample(gssDefault, input.texCoord) * cIllumination;
 
-    if (gbRenderOption.x == 1.0f)
-        cColor = Fog(cColor, input.positionW);
+ //   if (gbRenderOption.x == 1.0f)
+  //      cColor = Fog(cColor, input.positionW);
 
     return cColor;
 }

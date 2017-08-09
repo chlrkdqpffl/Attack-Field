@@ -24,7 +24,6 @@ cbuffer cbParticleInfo : register(b1) // GS Buffer
     float3 gvAcceleration;
 };
 
-
 cbuffer cbViewMatrix : register(b2) // GS Buffer
 {
     matrix gmtxView : packoffset(c0);
@@ -41,8 +40,8 @@ struct PARTICLE_INPUT
     float3 position : POSITION;
     float3 velocity : VELOCITY;
     float2 size : SIZE;
-    float age : AGE;
     uint type : TYPE;
+    float age : AGE;
 };
 
 struct PARTICLE_OUTPUT

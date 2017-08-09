@@ -54,6 +54,15 @@ void CAntTweakBarManager::InitializeManager()
 
 	CreateTessOption();
 	CreateHDROption();
+
+
+
+	// Test Variable
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Test Var X", TW_TYPE_FLOAT, &g_xmf4TestVariable.x, "step=0.2");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Test Var Y", TW_TYPE_FLOAT, &g_xmf4TestVariable.y, "step=0.2");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Test Var Z", TW_TYPE_FLOAT, &g_xmf4TestVariable.z, "");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Test Var W", TW_TYPE_FLOAT, &g_xmf4TestVariable.w, "");
+	
 }
 
 void CAntTweakBarManager::ReleseManager()

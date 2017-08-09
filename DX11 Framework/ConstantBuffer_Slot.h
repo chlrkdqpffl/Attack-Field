@@ -35,6 +35,7 @@ Max Resource(Texture, Buffer)	: 128
 //											0x00	FW Lib에서 사용하는 것으로 추정
 #define GS_CB_SLOT_PARTICLE					0x01
 #define GS_CB_SLOT_CAMERA_VIEW_PROJECTION	0x02
+#define GS_CB_SLOT_TEST						0x03
 
 // Computer Shader
 #define CS_SLOT_WEIGHTS						0x00

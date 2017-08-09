@@ -88,6 +88,7 @@ public:
 	UINT GetPlayerArmorPoint() const { return m_pCharacter->GetArmorPoint(); }
 	void SetPlayerlife(UINT hp) { m_pCharacter->SetLife(hp); }
 	bool GetIsDeadly() const { return m_pCharacter->GetIsDeadly(); }
+	void SetIsDeadly(bool set) { m_pCharacter->SetIsDeadly(set); }
 	bool GetIsDeadlyAttack() const { return m_pCharacter->GetIsDeadlyAttack(); }
 	void SetIsDeadlyAttack(bool set) const { m_pCharacter->SetIsDeadlyAttack(set); }
 };

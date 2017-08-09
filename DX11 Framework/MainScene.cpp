@@ -105,6 +105,8 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
+			case VK_F5:
+				break;
 			case VK_Z:
 			
 				break;
@@ -409,7 +411,7 @@ void CMainScene::Initialize()
 
 	m_pParticleSystem = new CParticleSystem();
 	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
-	m_pParticleSystem->Initialize(m_pd3dDevice, pParticleTexture, m_pParticleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 100);
+	m_pParticleSystem->Initialize(m_pd3dDevice, pParticleTexture, m_pParticleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 500);
 	m_pParticleSystem->CreateShader(m_pd3dDevice, L"Shader HLSL File/Particle.fx");
 
 	m_pRainParitlcleSystem = new CParticleSystem();
@@ -1475,6 +1477,7 @@ void CMainScene::CreateUIImage()
 	m_pUIManager = new CUIManager();
 	m_pUIManager->Initialize(m_pd3dDevice);
 	CUIObject* pUIObject;
+
 	// Aim
 	pUIObject = new CUIObject(TextureTag::eAim);
 	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 3, FRAME_BUFFER_HEIGHT / 2 - 22};		// 오프셋 (3, -14)			// +가 오른쪽, +가 아래쪽
@@ -1529,6 +1532,7 @@ void CMainScene::AddShaderObject(ShaderTag tag, CGameObject* pObject)
 
 void CMainScene::CreateConstantBuffers()
 {
+	
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory(&d3dBufferDesc, sizeof(d3dBufferDesc));
 	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -1538,9 +1542,18 @@ void CMainScene::CreateConstantBuffers()
 	D3D11_SUBRESOURCE_DATA d3dBufferData;
 	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
 	d3dBufferData.pSysMem = m_pLights;
-	m_pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbLights);
+//	HR(m_pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbLights));
 
-	DXUT_SetDebugName(m_pd3dcbLights, "Lights");
+//	DXUT_SetDebugName(m_pd3dcbLights, "Lights");
+	
+
+	// Test Constant Buffer
+	d3dBufferDesc.ByteWidth = sizeof(XMFLOAT4);
+	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
+	d3dBufferData.pSysMem = &TWBAR_MGR->g_xmf4TestVariable;
+	HR(m_pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbTestVariable));
+
+	DXUT_SetDebugName(m_pd3dcbTestVariable, "Test Variable");
 }
 
 void CMainScene::UpdateConstantBuffers(LIGHTS *pLights)
@@ -1554,6 +1567,16 @@ void CMainScene::UpdateConstantBuffers(LIGHTS *pLights)
 	m_pd3dDeviceContext->Unmap(m_pd3dcbLights, 0);
 	m_pd3dDeviceContext->PSSetConstantBuffers(PS_CB_SLOT_LIGHT, 1, &m_pd3dcbLights);
 	*/
+
+
+	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+	m_pd3dDeviceContext->Map(m_pd3dcbTestVariable, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	XMFLOAT4 *pcbTest = (XMFLOAT4 *)d3dMappedResource.pData;
+	memcpy(pcbTest, &TWBAR_MGR->g_xmf4TestVariable, sizeof(XMFLOAT4));
+	m_pd3dDeviceContext->Unmap(m_pd3dcbTestVariable, 0);
+	m_pd3dDeviceContext->GSSetConstantBuffers(GS_CB_SLOT_TEST, 1, &m_pd3dcbTestVariable);
+
+	
 }
 
 void CMainScene::ReleaseConstantBuffers()
@@ -1564,6 +1587,7 @@ void CMainScene::ReleaseConstantBuffers()
 	}
 
 	ReleaseCOM(m_pd3dcbLights);
+	ReleaseCOM(m_pd3dcbTestVariable);
 }
 
 void CMainScene::CreateLights()
@@ -1739,7 +1763,8 @@ void CMainScene::Update(float fDeltaTime)
 
 
 	// Light Shader Update
-	if (m_pLights && m_pd3dcbLights) UpdateConstantBuffers(m_pLights);
+//	if (m_pLights && m_pd3dcbLights) UpdateConstantBuffers(m_pLights);
+	UpdateConstantBuffers(nullptr);
 	
 	m_pLightManager->SetAmbient(m_f3DirectionalAmbientLowerColor, m_f3DirectionalAmbientUpperColor);
 	m_pLightManager->SetDirectional(m_f3DirectionalDirection, m_f3DirectionalColor);

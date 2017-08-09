@@ -62,6 +62,7 @@ void CStateObjectManager::InitializeManager()
 
 	HR(g_pd3dDevice->CreateBlendState(&alphaToCoverageDesc, &g_pAlphaToCoverageBS));
 	DXUT_SetDebugName(g_pAlphaToCoverageBS, "AlphaToCoverageBS:");
+
 	// TransparentBS
 	D3D11_BLEND_DESC transparentDesc = { 0 };
 	transparentDesc.AlphaToCoverageEnable = false;
