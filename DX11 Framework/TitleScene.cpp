@@ -187,8 +187,8 @@ void CTitleScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 
 
 		cs_login packet;
-		strcpy(packet.id, m_ID);
-		strcpy(packet.password, m_Password);
+		//strcpy(packet.id, m_ID);
+		//strcpy(packet.password, m_Password);
 
 		packet.size = sizeof(packet);
 		packet.strlen = strlen(packet.id);
@@ -257,20 +257,25 @@ bool CTitleScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			if (m_Idclick)
 			{
 
-				m_ID[i] = wParam;
+				m_ID += wParam;
+//				m_ID[i] = wParam;
+	
 				i++;
 
-				if (i > 9)
-					i = 9;
+				if (m_ID.size() > 9)
+					m_ID.pop_back();
+					//i = 9;
 
 			}
 			else if (!m_Idclick)
 			{
-				m_Password[j] = wParam;
+				m_Password += wParam;
+//				m_Password[j] = wParam;
 				j++;
 
-				if (j > 9)
-					j = 9;
+				if (m_Password.size() > 9)
+					m_Password.pop_back();
+					//j = 9;
 			}
 		}
 	}
@@ -280,17 +285,20 @@ bool CTitleScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		{
 			if (m_Idclick)
 			{
-				i--;
-				if (i < 0)
+				if( m_ID.size() > 0)
+					m_ID.pop_back();
+				//i--;
 					i = 0;
-				m_ID[i] = '\0';
+				//m_ID[i] = '\0';
 			}
 			else if (!m_Idclick)
 			{
-				j--;
+				if (m_Password.size() > 0)
+					m_Password.pop_back();
+				//j--;
 				if (j < 0)
 					j = 0;
-				m_Password[j] = '\0';
+				//m_Password[j] = '\0';
 			}
 		}
 

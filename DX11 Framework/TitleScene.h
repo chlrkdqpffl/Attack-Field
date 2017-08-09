@@ -6,8 +6,9 @@
 class CTitleScene :	public CScene
 {
 	TextureTag	m_tagCursorSelectUI = TextureTag::eNone;
-	char m_ID[10]{ '\0' };
-	char m_Password[10]{ '\0' };
+	string m_ID, m_Password;
+	//char m_ID[10]{ '\0' };
+	//char m_Password[10]{ '\0' };
 	bool m_Idclick =false;
 public:
 	CTitleScene();

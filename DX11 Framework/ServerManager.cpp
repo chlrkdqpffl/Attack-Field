@@ -121,6 +121,8 @@ void CServerManager::processpacket(char *ptr)
 
 		SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(my_put_packet->RED));
 		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(my_put_packet->Blue));
+
+		cout << my_put_packet->x<<" "<< my_put_packet->y<<" " <<my_put_packet->z << endl;
 	}
 
 
