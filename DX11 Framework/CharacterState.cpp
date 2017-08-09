@@ -129,33 +129,33 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 																		// Forward
 	if (relativeVelocity.z > 0) {
 		if (relativeVelocity.x < 0) {		// Left
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardLeft);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardLeft, 1.5f);
 		}
 		else if (relativeVelocity.x > 0) {	// Right
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardRight);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardRight, 1.5f);
 		}
 		else {
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Forward, 1.2f);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Forward, 1.5f);
 		}
 	}
 	// Backward
 	else if (relativeVelocity.z < 0) {
 		if (relativeVelocity.x < 0) {		// Left
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardLeft);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardLeft, 1.5f);
 		}
 		else if (relativeVelocity.x > 0) {	// Right
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardRight);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardRight, 1.5f);
 		}
 		else {
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Backward, 1.2f);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Backward, 1.5f);
 		}
 	}
 	else {
 		if (relativeVelocity.x < 0) {		// Left
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Left);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Left, 1.5f);
 		}
 		else if (relativeVelocity.x > 0) {	// Right
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Right);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Right, 1.5f);
 		}
 	}
 
@@ -249,7 +249,7 @@ void CState_Run::EnterState(CCharacterObject* pCharacter, AnimationData::Parts t
 		return;
 
 	SOUND_MGR->Play3DSound(SoundTag::eRun, SoundChannel::eChannel_Walk, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
-	pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun);
+	pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun, 1.5f);
 	pCharacter->SetIsTempRun(true);
 }
 
@@ -370,6 +370,7 @@ void CState_Death::ExitState(CCharacterObject* pCharacter, AnimationData::Parts 
 	pCharacter->SetIsDeadly(false);
 	pCharacter->SetIsRespawn(false);
 	pCharacter->SetIsDeath(false);
+	pCharacter->SetIsRespawn(false);
 #ifndef USE_SERVER
 	pCharacter->Revival(100);
 	pCharacter->SetPosition(m_Position);

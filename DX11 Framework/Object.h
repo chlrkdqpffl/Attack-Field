@@ -18,15 +18,14 @@ public:
 protected:
 	virtual void CreateMesh(ID3D11Device *pd3dDevice)		{ cout << "No have Mesh" << endl; };
 	virtual void CreateShader(ID3D11Device *pd3dDevice)		{ cout << "No have Shader" << endl; };
-	virtual void CreateMaterial()							{ cout << "No have Material" << endl; };
 
 public:
 	XMMATRIX						m_mtxLocal = XMMatrixIdentity();
 	XMMATRIX						m_mtxWorld = XMMatrixIdentity();
 	XMMATRIX						m_mtxShadow = XMMatrixIdentity();
+	virtual void CreateMaterial()							{ cout << "No have Material" << endl; };
 
 protected:
-	XMFLOAT3						m_f3PrevPosition = XMFLOAT3(0, 0, 0);
 	// ----- Identity ----- //
 	UINT							m_nObjectId = 0;
 	MeshTag							m_tagMesh = MeshTag::eNone;
@@ -110,8 +109,6 @@ public:
 
 	XMVECTOR GetvPosition(bool bIsLocal = false) const;
 	XMFLOAT3 GetPosition(bool isLocal = false) const;
-	XMFLOAT3 GetPrevPosition() const { return m_f3PrevPosition; };
-
 	XMVECTOR GetvLook(bool bIsLocal = false) const;
 	XMVECTOR GetvUp(bool bIsLocal = false) const;
 	XMVECTOR GetvRight(bool bIsLocal = false) const;

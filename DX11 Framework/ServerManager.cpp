@@ -48,6 +48,7 @@ void CServerManager::processpacket(char *ptr)
 				i++;
 			}
 
+			
 
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRelativeVelocity(my_Pos_packet->Animation);
@@ -62,7 +63,6 @@ void CServerManager::processpacket(char *ptr)
 		id = my_put_packet->id;
 
 		if (first_time)
-
 		{
 			m_myid = id;
 
@@ -84,19 +84,25 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 			SCENE_MGR->g_pPlayer->SetPlayerlife(static_cast<UINT>(my_put_packet->hp));//SCENE_MGR->g_pMainScene->-> SetLife(static_cast<UINT>(my_put_packet->hp));
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetServerID(id);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetTagTeam(reinterpret_cast<TeamType &>(my_put_packet->Team));
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->CreateMaterial();
 		}
 		else
 		{
-			CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject(TeamType::eRedTeam);   //객체 생성
+			
+			CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject(static_cast<TeamType>(my_put_packet->Team));   //객체 생성
 			pCharObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
 			pCharObject->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 
 			pCharObject->SetRelativeVelocity(my_put_packet->Animation);
 			pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
 			pCharObject->SetServerID(id);
+		
 
 			SCENE_MGR->g_pMainScene->GetCharcontainer().push_back(pCharObject);
 			SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);
+
+
 
 			COLLISION_MGR->m_vecCharacterContainer.push_back(pCharObject);
 
@@ -336,6 +342,28 @@ void CServerManager::processpacket(char *ptr)
 		}
 		break;
 	}
+	case 13:	//로그인 실패시 클라이언트종료
+	{
+		SC_login_CONNECT *packet;
+		packet = reinterpret_cast<SC_login_CONNECT *>(ptr);
+		id = packet->id;
+		if (!packet->connect)
+		{
+			SCENE_MGR->m_loginfail = true;
+			//PostQuitMessage(0);
+		}
+		break;
+	}
+	case 14:
+	{
+		cs_temp_exit *packet;
+		packet = reinterpret_cast<cs_temp_exit *>(ptr);
+
+		SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
+
+
+		break;
+	}
 	default:
 		std::cout << "Unknown PACKET type :" << (int)ptr[1] << "\n";
 		break;
@@ -393,6 +421,9 @@ void CServerManager::Server_init()
 	cout << " ip 입력 : ";
 	cin >> ip;
 #endif
+
+
+
 	WSADATA wsa;
 	WSAStartup(MAKEWORD(2, 2), &wsa);
 	g_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, 0);
@@ -413,6 +444,7 @@ void CServerManager::Server_init()
 
 
 
+
 	WSAAsyncSelect(g_socket, m_handle, WM_SOCKET, FD_CLOSE | FD_READ);
 
 
@@ -421,7 +453,7 @@ void CServerManager::Server_init()
 	recv_wsabuf.buf = recv_buffer;
 	recv_wsabuf.len = BUF_SIZE;
 
-
+	
 }
 
 void CServerManager::Sendpacket(unsigned char* Data)

@@ -24,6 +24,8 @@ void CResourceManager::LoadResourceTitleScene()
 {
 	// BackGround Image
 	AddResourece(TextureTag::eTitleBackGroundD,		"../Assets/Image/UI/TitleScene.jpg");
+	AddResourece(TextureTag::eDeath,				"../Assets/Image/UI/DeathMatch.png");
+	AddResourece(TextureTag::eOccupy,				"../Assets/Image/UI/OccupyMatch.png");
 //	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene.jpg");
 	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene2.jpg");
 
@@ -35,6 +37,12 @@ void CResourceManager::LoadResourceTitleScene()
 	AddResourece(TextureTag::eStartButtonOff,		"../Assets/Image/UI/StartOff.png");
 	AddResourece(TextureTag::eExitButtonOn,			"../Assets/Image/UI/ExitOn.png");
 	AddResourece(TextureTag::eExitButtonOff,		"../Assets/Image/UI/ExitOff.png");
+	AddResourece(TextureTag::eID,					"../Assets/Image/UI/ID.png");
+	AddResourece(TextureTag::ePassword,				"../Assets/Image/UI/Password.png");
+	AddResourece(TextureTag::eLogin,				"../Assets/Image/UI/Login.png");
+	AddResourece(TextureTag::eIDClick,				"../Assets/Image/UI/IDClick.png");
+	AddResourece(TextureTag::ePasswordClick,		"../Assets/Image/UI/PasswordClick.png");
+	
 }
 
 bool CResourceManager::LoadResourceAll()
