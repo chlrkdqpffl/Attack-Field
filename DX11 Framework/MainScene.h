@@ -28,7 +28,7 @@ public:
 	virtual void CreateLights();
 
 	virtual void Update(float fDeltaTime) override;
-	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera, HWND hwnd) override;
+	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera) override;
 	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext) override;
 
 	void CreateMapDataObject();

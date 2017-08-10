@@ -110,8 +110,7 @@ void CWaitScene::IsCollisionUI(POINT mousePos , HWND hwnd)
 }
 
 
-void CWaitScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera, HWND hwnd)
+void CWaitScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
 	m_pUIManager->RenderAll(pd3dDeviceContext);
 }
-

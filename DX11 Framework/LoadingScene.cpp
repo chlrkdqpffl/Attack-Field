@@ -45,7 +45,7 @@ void CLoadingScene::Update(float fDeltaTime)
 		m_bIsLoadingComplete = true;		
 }
 
-void CLoadingScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera, HWND hwnd)
+void CLoadingScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 {
 	m_pUIManager->RenderAll(pd3dDeviceContext);
 

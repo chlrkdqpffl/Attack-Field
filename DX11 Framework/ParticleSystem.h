@@ -4,46 +4,43 @@ struct CB_PARTICLEINFO
 {
 	XMFLOAT3 m_d3dxvEmitPosition;
 	float m_fGameTime;
+
 	XMFLOAT3 m_d3dxvEmitDirection;
 	float m_fTimeStep;
-	XMFLOAT3 m_d3dxvAcceleration;
 };
 
-struct CParticleVertex
+struct CParticle
 {
-	XMFLOAT3 m_d3dxvPosition;
-	XMFLOAT3 m_d3dxvVelocity;
-	XMFLOAT2 m_d3dxvSize;
-	float m_fAge;
-	UINT m_nType;
+	XMFLOAT3 m_f3Position = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 m_f3Velocity = XMFLOAT3(0, 0, 0);
+	XMFLOAT2 m_f2Size = XMFLOAT2(0, 0);
+	float m_fAge = 0.0f;
+	UINT m_nType = 0;
 };
 
 class CParticleSystem
 {
 private:
-	UINT m_nMaxParticles;			// 최대 파티클
-	bool m_bInitializeParticle;		// Emitter 파티클 생성 신호
-	float m_fGameTime;				// ElapsedTime 저장
-	float m_fTimeStep;				// 흘러간 시간 기록
-	float m_fAge;					// 파티클의 소멸 Age
-	XMFLOAT3 m_d3dxvAcceleration;	// 파티클 속도
-	XMFLOAT3 m_d3dxvEmitPosition;	// 파티클 포지션
-	XMFLOAT3 m_d3dxvEmitDirection;	// 파티클 방향
+	UINT m_nMaxParticles			= 0;			
+	bool m_bInitializeParticle		= true;		
+	float m_fGameTime				= 0.0f;				
+	float m_fTimeStep				= 0.0f;				
+	float m_fAge					= 0.0f;
+
+	XMFLOAT3 m_f3EmitPosition		= XMFLOAT3(0, 0, 0);
+	XMFLOAT3 m_f3EmitDirection		= XMFLOAT3(0, 1, 0);
+	XMFLOAT3 m_f3CameraPosition		= XMFLOAT3(0, 0, 0);
 	
-	ID3D11Buffer *m_pd3dcbParticleInfo;
+	ID3D11Buffer *m_pd3dInitialVertexBuffer	= nullptr;
+	ID3D11Buffer *m_pd3dStreamOutVertexBuffer = nullptr;
+	ID3D11Buffer *m_pd3dDrawVertexBuffer = nullptr;
 
-	UINT m_nOffset;
-	UINT m_nStride;
+	ID3D11Buffer *m_pCBParticleInfo = nullptr;
 
-	// 이하는 쉐이더 설정과 관련된 객체들이다.
-	ID3D11Buffer *m_pd3dInitialVertexBuffer;	// 시작점 버텍스버퍼
-	ID3D11Buffer *m_pd3dStreamOutVertexBuffer;	// 스트림아웃 버텍스버퍼
-	ID3D11Buffer *m_pd3dDrawVertexBuffer;		//
-
-	ID3D11InputLayout		*m_pd3dVertexLayout;
-	ID3D11VertexShader		*m_pd3dVertexShader;
-	ID3D11GeometryShader	*m_pd3dGeometryShader;
-	ID3D11PixelShader		*m_pd3dPixelShader;
+	ID3D11InputLayout		*m_pd3dVertexLayout = nullptr;
+	ID3D11VertexShader		*m_pd3dVertexShader = nullptr;
+	ID3D11GeometryShader	*m_pd3dGeometryShader = nullptr;
+	ID3D11PixelShader		*m_pd3dPixelShader = nullptr;
 	ID3D11VertexShader		*m_pd3dSOVertexShader;	// StreamOut용도의 VS
 	ID3D11GeometryShader	*m_pd3dSOGeometryShader;
 	
@@ -55,28 +52,24 @@ private:
 
 	ID3D11ShaderResourceView *m_pd3dsrvTextureArray;
 
+	void CreateBuffer(ID3D11Device *pd3dDevice);
+
 public:
 	CParticleSystem();
 	~CParticleSystem();
 
 	void Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceView *pd3dsrvTexArray, ID3D11ShaderResourceView *pd3dsrvRandomTexture, UINT nMaxParticles);
-	void CreateParticle(ID3D11Device *pd3dDevice, XMFLOAT3 &pd3dxvPosition, XMFLOAT3 &pd3dxvDirection, XMFLOAT3 &pd3dxvAccelerator);
-	ID3D11ShaderResourceView* CreateRandomTexture1DSRV(ID3D11Device *pd3dDevice);
-	void Update(float fTimeStep, float fElapsedTime);
+
+	void Update(float fDeltaTime);
 	void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
-	void ParticleRestart() { m_bInitializeParticle = true; }
+	void ParticleRestart() { m_bInitializeParticle = true; m_fAge = 0.0f; }
 
+	void UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext);
+	void CreateShader(ID3D11Device *pd3dDevice, const wstring& wstring);
+	void CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, const wstring& wstring, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dSOGeometryShader);
 	
-	void CreateShaderVariables(ID3D11Device *pd3dDevice);
-	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
-	void CreateShader(ID3D11Device *pd3dDevice);
-	void CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader, D3D11_INPUT_ELEMENT_DESC *pd3dInputLayout, UINT nElements, ID3D11InputLayout **ppd3dVertexLayout);
-	void CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11PixelShader **ppd3dPixelShader);
-	void CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader);
-	void CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dSOGeometryShader);
-
+	ID3D11ShaderResourceView* CreateRandomTexture1DSRV(ID3D11Device *pd3dDevice);
 	ID3D11ShaderResourceView* CreateTexture2DArraySRV(ID3D11Device *pd3dDevice, _TCHAR(*ppstrFilePaths)[128], UINT nTextures);
 
 };
-

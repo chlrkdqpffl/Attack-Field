@@ -112,6 +112,9 @@
     <Filter Include="HLSL\Deferred\Light">
       <UniqueIdentifier>{d60721e4-64b1-451f-8ea6-8cc8c2f99d4e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HLSL\Particle">
+      <UniqueIdentifier>{8f2ed613-93d3-4bc0-bb46-21ce10be5793}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

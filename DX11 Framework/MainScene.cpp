@@ -407,18 +407,23 @@ void CMainScene::Initialize()
 #endif
 
 #pragma region [Particle System]
+	
 	ID3D11ShaderResourceView* pParticleTexture = nullptr;
 
-	m_pParticleSystem = new CParticleSystem();
+	CParticleSystem* fireParticle = new CParticleSystem();
 	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
-	m_pParticleSystem->Initialize(m_pd3dDevice, pParticleTexture, m_pParticleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 500);
-	m_pParticleSystem->CreateShader(m_pd3dDevice, L"Shader HLSL File/Particle.fx");
+	fireParticle->Initialize(m_pd3dDevice, pParticleTexture, fireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500);
+	fireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Particle.fx");
 
+
+	m_vecParticleSystemContainer.push_back(fireParticle);
+
+	/*
 	m_pRainParitlcleSystem = new CParticleSystem();
 	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/raindrop.dds"), NULL, NULL, &pParticleTexture, NULL);
 	m_pRainParitlcleSystem->Initialize(m_pd3dDevice, pParticleTexture, m_pRainParitlcleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 10000);
 	m_pRainParitlcleSystem->CreateShader(m_pd3dDevice, L"Shader HLSL File/Rain.hlsli");
-
+*/	
 
 #pragma endregion
 
@@ -1513,14 +1518,15 @@ void CMainScene::ReleaseObjects()
 	CScene::ReleaseObjects();
 	ReleaseConstantBuffers();
 
-	SafeDelete(m_pParticleSystem);
-	SafeDelete(m_pRainParitlcleSystem);
 	SafeDelete(m_pBoundingBoxShader);
 
 	for (auto& object : m_vecCharacterContainer)
 		SafeDelete(object);
 
 	m_pLightManager->DeInitialize();
+
+	for (auto& system : m_vecParticleSystemContainer)
+		SafeDelete(system);
 }
 
 void CMainScene::AddShaderObject(ShaderTag tag, CGameObject* pObject)
@@ -1771,11 +1777,8 @@ void CMainScene::Update(float fDeltaTime)
 
 
 	// Particle
-	m_fGametime += fDeltaTime;
-	m_pParticleSystem->Update(fDeltaTime, m_fGametime);
-
-	m_pRainParitlcleSystem->SetEmitPosition(m_pCamera->GetvPosition() + XMVectorSet(0.0f, -3.0f, 1, 0.0f));
-	m_pRainParitlcleSystem->Update(fDeltaTime, m_fGametime);
+	for (auto& system : m_vecParticleSystemContainer)
+		system->Update(fDeltaTime);
 
 	// Timer
 	CalcTime();
@@ -1820,8 +1823,11 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	// ------ Start Scene Rendering ------ // 
 	CScene::Render(pd3dDeviceContext, pCamera);
 
-	m_pParticleSystem->Render(pd3dDeviceContext);
-	m_pRainParitlcleSystem->Render(pd3dDeviceContext);
+	for (auto& system : m_vecParticleSystemContainer)
+		system->Render(m_pd3dDeviceContext);
+
+//	m_pParticleSystem->Render(pd3dDeviceContext);
+//	m_pRainParitlcleSystem->Render(pd3dDeviceContext);
 
 	for (auto& object : m_vecCharacterContainer)
 		object->Render(m_pd3dDeviceContext, m_pCamera);

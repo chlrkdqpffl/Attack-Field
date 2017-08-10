@@ -263,7 +263,7 @@ void CScene::Update(float fDeltaTime)
 	*/
 }
 
-void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera, HWND hwnd)
+void CScene::Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 {
 	if (m_pSkyBox)
 		m_pSkyBox->Render(pd3dDeviceContext, pCamera);

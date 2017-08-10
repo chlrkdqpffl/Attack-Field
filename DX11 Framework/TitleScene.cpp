@@ -299,14 +299,9 @@ bool CTitleScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 	return false;
 }
 
-void CTitleScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera, HWND hwnd)
+void CTitleScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-
-
-
 	m_pUIManager->RenderAll(pd3dDeviceContext);
-
-
 
 	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_ID, 40, 1000, 450, 0xFFFFFFFF, FW1_LEFT);
 	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_Password, 40, 1000, 650, 0xFFFFFFFF, FW1_LEFT);
