@@ -7,11 +7,6 @@ cbuffer cbFixed
     float3 gAccelW = { -1.0f, -9.8f, 0.0f };
 };
 
-cbuffer cbTestVariable : register(b3)
-{
-    float4 g_f4Var : packoffset(c0);
-};
-
 
 PARTICLE_INPUT VSParticleStreamOut(PARTICLE_INPUT vin)
 {

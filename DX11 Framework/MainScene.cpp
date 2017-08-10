@@ -1578,9 +1578,8 @@ void CMainScene::UpdateConstantBuffers(LIGHTS *pLights)
 	XMFLOAT4 *pcbTest = (XMFLOAT4 *)d3dMappedResource.pData;
 	memcpy(pcbTest, &TWBAR_MGR->g_xmf4TestVariable, sizeof(XMFLOAT4));
 	m_pd3dDeviceContext->Unmap(m_pd3dcbTestVariable, 0);
-	m_pd3dDeviceContext->GSSetConstantBuffers(GS_CB_SLOT_TEST, 1, &m_pd3dcbTestVariable);
-
-	
+	m_pd3dDeviceContext->VSSetConstantBuffers(CB_SLOT_TEST, 1, &m_pd3dcbTestVariable);
+	m_pd3dDeviceContext->GSSetConstantBuffers(CB_SLOT_TEST, 1, &m_pd3dcbTestVariable);
 }
 
 void CMainScene::ReleaseConstantBuffers()
@@ -1821,11 +1820,8 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	// ------ Start Scene Rendering ------ // 
 	CScene::Render(pd3dDeviceContext, pCamera);
 
-	for (auto& system : m_vecParticleSystemContainer)
-		system->Render(m_pd3dDeviceContext);
-
-//	m_pParticleSystem->Render(pd3dDeviceContext);
-//	m_pRainParitlcleSystem->Render(pd3dDeviceContext);
+//	for (auto& system : m_vecParticleSystemContainer)
+//		system->Render(m_pd3dDeviceContext);
 
 	for (auto& object : m_vecCharacterContainer)
 		object->Render(m_pd3dDeviceContext, m_pCamera);
@@ -1842,6 +1838,9 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	// ------ Final Scene Rendering ------ //
 	m_GBuffer->DeferredRender(pd3dDeviceContext);
 	m_pLightManager->DoLighting(pd3dDeviceContext);
+
+	for (auto& system : m_vecParticleSystemContainer)
+		system->Render(m_pd3dDeviceContext);
 
 	if (GLOBAL_MGR->g_bShowLightVolume)
 		m_pLightManager->DrawLightVolume(pd3dDeviceContext);

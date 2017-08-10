@@ -16,6 +16,8 @@ ID3D11SamplerState*		CStateObjectManager::g_pPointClampSS		= 0;
 ID3D11SamplerState*		CStateObjectManager::g_pLinearWarpSS		= 0;
 ID3D11SamplerState*		CStateObjectManager::g_pPointWarpSS			= 0;
 
+ID3D11DepthStencilState* CStateObjectManager::g_pNoDepthWritesDSS	= 0;
+ID3D11DepthStencilState* CStateObjectManager::g_pDisableDepthDSS	= 0;
 
 CStateObjectManager::CStateObjectManager()
 {
@@ -107,6 +109,21 @@ void CStateObjectManager::InitializeManager()
 	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pLinearWarpSS));
 	DXUT_SetDebugName(g_pLinearWarpSS, "LinearWarpSS:");
+
+	// ---------------------------------------------------------------------------------- //
+	// ------------------------------ Depth Stencil State ------------------------------- //
+	D3D11_DEPTH_STENCIL_DESC depthDesc;
+	ZeroMemory(&depthDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	depthDesc.DepthEnable = true;
+	depthDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;		 	
+	depthDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthDesc.StencilEnable = false;
+	HR(g_pd3dDevice->CreateDepthStencilState(&depthDesc, &g_pNoDepthWritesDSS));
+	DXUT_SetDebugName(g_pLinearWarpSS, "No Depth Write DSS");
+
+	depthDesc.DepthEnable = false;
+	HR(g_pd3dDevice->CreateDepthStencilState(&depthDesc, &g_pDisableDepthDSS));
+	DXUT_SetDebugName(g_pLinearWarpSS, "Disable Depth DSS");
 }
 
 void CStateObjectManager::ReleseManager()
@@ -122,4 +139,7 @@ void CStateObjectManager::ReleseManager()
 	ReleaseCOM(g_pPointClampSS);
 	ReleaseCOM(g_pLinearWarpSS);
 	ReleaseCOM(g_pPointWarpSS);
+
+	ReleaseCOM(g_pNoDepthWritesDSS);
+	ReleaseCOM(g_pDisableDepthDSS);
 }

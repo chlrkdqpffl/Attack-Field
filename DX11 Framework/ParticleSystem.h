@@ -44,12 +44,9 @@ private:
 	ID3D11VertexShader		*m_pd3dSOVertexShader = nullptr;
 	ID3D11GeometryShader	*m_pd3dSOGeometryShader = nullptr;
 	
-	ID3D11DepthStencilState *m_pd3dSODepthStencilState = nullptr;
-	ID3D11DepthStencilState *m_pd3dDepthStencilState = nullptr;
 	ID3D11BlendState		*m_pd3dBlendState = nullptr;
 
 	ID3D11ShaderResourceView *m_pd3dsrvRandomTexture = nullptr;
-
 	ID3D11ShaderResourceView *m_pd3dsrvTextureArray = nullptr;
 
 	void CreateBuffer(ID3D11Device *pd3dDevice);

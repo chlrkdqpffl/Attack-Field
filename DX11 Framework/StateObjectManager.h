@@ -24,4 +24,8 @@ public:
 	static ID3D11SamplerState*		g_pPointClampSS;
 	static ID3D11SamplerState*		g_pPointWarpSS;
 	static ID3D11SamplerState*		g_pLinearWarpSS;
+
+	static ID3D11DepthStencilState* g_pNoDepthWritesDSS;
+	static ID3D11DepthStencilState* g_pDisableDepthDSS;
+
 };

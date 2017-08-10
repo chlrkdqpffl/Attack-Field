@@ -29,6 +29,12 @@ cbuffer cbViewMatrix : register(b2) // GS Buffer
     matrix gmtxProjection : packoffset(c4);
 };
 
+cbuffer cbTestVariable : register(b3)   // VS, GS Buffer
+{
+    float4 g_f4Var : packoffset(c0);
+};
+
+
 Texture1D gtxtRandomTexture : register(t0);
 Texture2DArray gtxtParticleTextureArray : register(t9);
 SamplerState gLinearWarpSS: register(s0);
