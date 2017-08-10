@@ -42,6 +42,89 @@ void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceV
 	m_nMaxParticles = nMaxParticles;
 
 	CreateBuffer(pd3dDevice);
+
+
+	// Blend State
+	/*
+	D3D11_BLEND_DESC d3dBlendStateDesc;
+	ZeroMemory(&d3dBlendStateDesc, sizeof(D3D11_BLEND_DESC));
+	d3dBlendStateDesc.IndependentBlendEnable = true;
+	ZeroMemory(&d3dBlendStateDesc.RenderTarget[0], sizeof(D3D11_RENDER_TARGET_BLEND_DESC));
+	d3dBlendStateDesc.AlphaToCoverageEnable = true;
+	d3dBlendStateDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	d3dBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	pd3dDevice->CreateBlendState(&d3dBlendStateDesc, &m_pd3dBlendState);
+	*/
+	D3D11_BLEND_DESC d3dBlendStateDesc;
+	ZeroMemory(&d3dBlendStateDesc, sizeof(D3D11_BLEND_DESC));
+	d3dBlendStateDesc.IndependentBlendEnable = false;
+	ZeroMemory(&d3dBlendStateDesc.RenderTarget[0], sizeof(D3D11_RENDER_TARGET_BLEND_DESC));
+	d3dBlendStateDesc.AlphaToCoverageEnable = false;
+	d3dBlendStateDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+
+	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+
+	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
+	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+
+	d3dBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	pd3dDevice->CreateBlendState(&d3dBlendStateDesc, &m_pd3dBlendState);
+
+	DXUT_SetDebugName(m_pd3dBlendState, "ParticleBS");
+
+	/*
+
+	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+	//-----------------------------------------------------------------------------
+
+	
+	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
+	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+	//-----------------------------------------------------------------------------
+
+	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	*/
+
 }
 
 void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice, const wstring& wstring)
@@ -60,24 +143,6 @@ void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice, const wstring& wstr
 	CShader::CreateGeometryShaderFromFile(pd3dDevice, wstring, "GSParticleDraw", "gs_5_0", &m_pd3dGeometryShader);
 	CreateSOGeometryShaderFromFile(pd3dDevice, wstring, "GSParticleStreamOut", "gs_5_0", &m_pd3dSOGeometryShader);
 	CShader::CreatePixelShaderFromFile(pd3dDevice, wstring, "PSParticleDraw", "ps_5_0", &m_pd3dPixelShader);
-
-	// 블렌드 상태 설정
-	D3D11_BLEND_DESC d3dBlendStateDesc;
-	ZeroMemory(&d3dBlendStateDesc, sizeof(D3D11_BLEND_DESC));
-	d3dBlendStateDesc.IndependentBlendEnable = true;
-	ZeroMemory(&d3dBlendStateDesc.RenderTarget[0], sizeof(D3D11_RENDER_TARGET_BLEND_DESC));
-	d3dBlendStateDesc.AlphaToCoverageEnable = true;
-	d3dBlendStateDesc.RenderTarget[0].BlendEnable = true;
-	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
-	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	d3dBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-	pd3dDevice->CreateBlendState(&d3dBlendStateDesc, &m_pd3dBlendState);
-
-	DXUT_SetDebugName(m_pd3dBlendState, "ParticleBS");
 }
 
 void CParticleSystem::Update(float fDeltaTime)
@@ -107,7 +172,7 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 	pd3dDeviceContext->OMGetDepthStencilState(&prevDepthStencilState, &prevStencil);
 
 	pd3dDeviceContext->OMSetDepthStencilState(m_pd3dSODepthStencilState, 0);
-	pd3dDeviceContext->GSSetSamplers(0, 1, &STATEOBJ_MGR->g_pPointWarpSS);
+	pd3dDeviceContext->GSSetSamplers(0, 1, &STATEOBJ_MGR->g_pLinearWarpSS);
 	pd3dDeviceContext->GSSetShaderResources(GS_TEXTURE_SLOT_RANDOM, 1, &m_pd3dsrvRandomTexture);
 	pd3dDeviceContext->SOSetTargets(1, &m_pd3dStreamOutVertexBuffer, &offset);
 
@@ -136,7 +201,7 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 	pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 0);
 	pd3dDeviceContext->OMSetBlendState(m_pd3dBlendState, nullptr, 0xffffffff);
 
-	pd3dDeviceContext->PSSetSamplers(0, 1, &STATEOBJ_MGR->g_pPointWarpSS);
+	pd3dDeviceContext->PSSetSamplers(0, 1, &STATEOBJ_MGR->g_pLinearWarpSS);
 	pd3dDeviceContext->PSSetShaderResources(PS_CB_SLOT_PARTICLE, 1, &m_pd3dsrvTextureArray);
 
 	pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dDrawVertexBuffer, &stride, &offset);
@@ -192,8 +257,8 @@ void CParticleSystem::UpdateConstantBuffer(ID3D11DeviceContext* pd3dDeviceContex
 	CB_PARTICLEINFO *pcbParticleInfo = (CB_PARTICLEINFO*)d3dMappedResource.pData;
 	pcbParticleInfo->m_fGameTime = m_fGameTime;
 	pcbParticleInfo->m_fTimeStep = m_fTimeStep;
-	pcbParticleInfo->m_d3dxvEmitDirection = m_f3EmitDirection;
 	pcbParticleInfo->m_d3dxvEmitPosition = m_f3EmitPosition;
+	pcbParticleInfo->m_d3dxvEmitDirection = m_f3EmitDirection;
 
 	pd3dDeviceContext->Unmap(m_pCBParticleInfo, 0);
 

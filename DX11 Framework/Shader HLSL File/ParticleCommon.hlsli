@@ -21,9 +21,7 @@ cbuffer cbParticleInfo : register(b1) // GS Buffer
     float gfGameTime;
     float3 gvParticleEmitDirection;
     float gfTimeStep;
-    float3 gvAcceleration;
 };
-
 
 cbuffer cbViewMatrix : register(b2) // GS Buffer
 {
@@ -32,8 +30,8 @@ cbuffer cbViewMatrix : register(b2) // GS Buffer
 };
 
 Texture1D gtxtRandomTexture : register(t0);
-Texture2D gtxtParticleTextureArray : register(t9);
-SamplerState gParticleSamplerState : register(s0);
+Texture2DArray gtxtParticleTextureArray : register(t9);
+SamplerState gLinearWarpSS: register(s0);
 
 
 struct PARTICLE_INPUT
@@ -63,23 +61,16 @@ struct GS_PARTICLE_OUT
 
 float3 RandUnitVec3(float offset)
 {
-	// Use game time plus offset to sample random texture.
     float u = (gfGameTime + offset);
+    float3 v = gtxtRandomTexture.SampleLevel(gLinearWarpSS, u, 0).xyz;
 	
-	// coordinates in [-1,1]
-    float3 v = gtxtRandomTexture.SampleLevel(gParticleSamplerState, u, 0).xyz;
-	
-	// project onto unit sphere
     return normalize(v);
 }
 
 float3 RandVec3(float offset)
 {
-	// Use game time plus offset to sample random texture.
     float u = (gfGameTime + offset);
-	
-	// coordinates in [-1,1]
-    float3 v = gtxtRandomTexture.SampleLevel(gParticleSamplerState, u, 0).xyz;
+    float3 v = gtxtRandomTexture.SampleLevel(gLinearWarpSS, u, 0).xyz;
 	
     return v;
 }

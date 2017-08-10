@@ -41,16 +41,16 @@ private:
 	ID3D11VertexShader		*m_pd3dVertexShader = nullptr;
 	ID3D11GeometryShader	*m_pd3dGeometryShader = nullptr;
 	ID3D11PixelShader		*m_pd3dPixelShader = nullptr;
-	ID3D11VertexShader		*m_pd3dSOVertexShader;	// StreamOut¿ëµµÀÇ VS
-	ID3D11GeometryShader	*m_pd3dSOGeometryShader;
+	ID3D11VertexShader		*m_pd3dSOVertexShader = nullptr;
+	ID3D11GeometryShader	*m_pd3dSOGeometryShader = nullptr;
 	
-	ID3D11DepthStencilState *m_pd3dSODepthStencilState;
-	ID3D11DepthStencilState *m_pd3dDepthStencilState;
-	ID3D11BlendState		*m_pd3dBlendState;
+	ID3D11DepthStencilState *m_pd3dSODepthStencilState = nullptr;
+	ID3D11DepthStencilState *m_pd3dDepthStencilState = nullptr;
+	ID3D11BlendState		*m_pd3dBlendState = nullptr;
 
-	ID3D11ShaderResourceView *m_pd3dsrvRandomTexture;
+	ID3D11ShaderResourceView *m_pd3dsrvRandomTexture = nullptr;
 
-	ID3D11ShaderResourceView *m_pd3dsrvTextureArray;
+	ID3D11ShaderResourceView *m_pd3dsrvTextureArray = nullptr;
 
 	void CreateBuffer(ID3D11Device *pd3dDevice);
 
@@ -72,4 +72,6 @@ public:
 	ID3D11ShaderResourceView* CreateRandomTexture1DSRV(ID3D11Device *pd3dDevice);
 	ID3D11ShaderResourceView* CreateTexture2DArraySRV(ID3D11Device *pd3dDevice, _TCHAR(*ppstrFilePaths)[128], UINT nTextures);
 
+	// Setter
+	void SetEmitPosition(XMFLOAT3 pos) { m_f3EmitPosition = pos; }
 };

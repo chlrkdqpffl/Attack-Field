@@ -129,33 +129,33 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 																		// Forward
 	if (relativeVelocity.z > 0) {
 		if (relativeVelocity.x < 0) {		// Left
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardLeft, 1.5f);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardLeft);
 		}
 		else if (relativeVelocity.x > 0) {	// Right
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardRight, 1.5f);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardRight);
 		}
 		else {
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Forward, 1.5f);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Forward, 1.2f);
 		}
 	}
 	// Backward
 	else if (relativeVelocity.z < 0) {
 		if (relativeVelocity.x < 0) {		// Left
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardLeft, 1.5f);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardLeft);
 		}
 		else if (relativeVelocity.x > 0) {	// Right
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardRight, 1.5f);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardRight);
 		}
 		else {
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Backward, 1.5f);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Backward, 1.2f);
 		}
 	}
 	else {
 		if (relativeVelocity.x < 0) {		// Left
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Left, 1.5f);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Left);
 		}
 		else if (relativeVelocity.x > 0) {	// Right
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Right, 1.5f);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Right);
 		}
 	}
 

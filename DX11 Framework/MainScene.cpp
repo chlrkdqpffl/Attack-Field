@@ -413,11 +413,9 @@ void CMainScene::Initialize()
 	CParticleSystem* fireParticle = new CParticleSystem();
 	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
 	fireParticle->Initialize(m_pd3dDevice, pParticleTexture, fireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500);
-	fireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Particle.fx");
-
-
+	fireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
+	fireParticle->SetEmitPosition(XMFLOAT3(60.0f, 2.5f, 10.0f));
 	m_vecParticleSystemContainer.push_back(fireParticle);
-
 	/*
 	m_pRainParitlcleSystem = new CParticleSystem();
 	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/raindrop.dds"), NULL, NULL, &pParticleTexture, NULL);

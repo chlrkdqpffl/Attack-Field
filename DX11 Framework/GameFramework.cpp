@@ -630,9 +630,13 @@ void CGameFramework::DrawBlurredSceneToScreen(ID3D11DeviceContext* pd3dDeviceCon
 void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers(); 
-	
+
+#ifdef DEVELOP_MODE
+	SceneTag startTag = SceneTag::eMainScene;		// Main Scene 시작
+#else
 	SceneTag startTag = SceneTag::eTitleScene;		// Title Scene 시작
-//	SceneTag startTag = SceneTag::eMainScene;		// Main Scene 시작
+#endif 
+
 	switch (startTag) {
 		case SceneTag::eTitleScene:
 			SCENE_MGR->ChangeScene(SceneTag::eTitleScene);

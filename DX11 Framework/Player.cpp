@@ -17,10 +17,11 @@ CPlayer::CPlayer(CCharacterObject* pCharacter)
 	m_d3dxvGravity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_fFriction = 0.0f;
 
-	// 임시
-//	m_fSpeed = 50;
+#ifdef DEVELOP_MODE
 	m_fSpeed = 30;
-//	m_fSpeed = 5;	// 자연스러운 속도
+#else
+	m_fSpeed = 8;	// 자연스러운 속도
+#endif
 	count = 0;
 }
 
@@ -73,7 +74,11 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
 		if (m_pCharacter->GetIsTempRun()) {		// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
+#ifdef DEVELOP_MODE
 			d3dxvShift *= 3;
+#else
+			d3dxvShift *= 2;
+#endif
 //			d3dxvShift += XMLoadFloat3(&m_d3dxvLook) * 3;
 //			relativeVelocity += XMVectorSet(0, 0, 3, 0);
 		}

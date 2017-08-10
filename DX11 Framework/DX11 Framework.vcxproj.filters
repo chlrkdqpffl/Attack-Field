@@ -638,9 +638,6 @@
     <FxCompile Include="Shader HLSL File\Effect.fx">
       <Filter>HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="Shader HLSL File\Particle.fx">
-      <Filter>HLSL\Particle</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader HLSL File\Fog.hlsli">
@@ -717,6 +714,15 @@
     </None>
     <None Include="Shader HLSL File\Blur.hlsli">
       <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\ParticleCommon.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
+    <None Include="Shader HLSL File\Fire.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
+    <None Include="Shader HLSL File\Rain.hlsli">
+      <Filter>HLSL\Particle</Filter>
     </None>
   </ItemGroup>
 </Project>
