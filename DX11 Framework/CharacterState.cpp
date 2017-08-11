@@ -368,7 +368,6 @@ void CState_Death::ExitState(CCharacterObject* pCharacter, AnimationData::Parts 
 		return;
 
 	pCharacter->SetIsDeadly(false);
-	pCharacter->SetIsRespawn(false);
 	pCharacter->SetIsDeath(false);
 	pCharacter->SetIsRespawn(false);
 #ifndef USE_SERVER

@@ -724,5 +724,8 @@
     <None Include="Shader HLSL File\Rain.hlsli">
       <Filter>HLSL\Particle</Filter>
     </None>
+    <None Include="Shader HLSL File\Blood.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
   </ItemGroup>
 </Project>

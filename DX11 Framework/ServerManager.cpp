@@ -418,7 +418,7 @@ void CServerManager::Server_init()
 {
 #ifdef USE_LOOPBACKADDRESS
 	char ip[20] = "127.0.0.1";
-#elif
+#else
 	char ip[20];		
 	cout << " ip ют╥б : ";
 	cin >> ip;

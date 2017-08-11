@@ -55,7 +55,7 @@ public:
 	CParticleSystem();
 	~CParticleSystem();
 
-	void Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceView *pd3dsrvTexArray, ID3D11ShaderResourceView *pd3dsrvRandomTexture, UINT nMaxParticles);
+	void Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceView *pd3dsrvTexArray, ID3D11ShaderResourceView *pd3dsrvRandomTexture, UINT nMaxParticles, ID3D11BlendState* blendState);
 
 	void Update(float fDeltaTime);
 	void Render(ID3D11DeviceContext *pd3dDeviceContext);

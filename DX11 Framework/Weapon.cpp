@@ -58,8 +58,15 @@ void CWeapon::Firing(XMVECTOR direction)
 				}
 				else {
 					hitCharacter->DamagedCharacter(m_fDamage);
-
 				}
+
+				/*
+				CollisionInfo info2;
+				// Create Particle
+				cout << "이게 진짜다" << endl;
+				info.m_pHitObject->GetMesh()->CheckRayIntersection(&firePosOffset, &direction, &info2);
+				cout << "------------------------------------"<< endl;
+				*/
 			}
 		}
 #endif

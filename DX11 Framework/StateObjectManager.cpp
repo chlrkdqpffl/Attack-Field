@@ -11,6 +11,9 @@ ID3D11RasterizerState*	CStateObjectManager::g_pNoCullRS			= 0;
 ID3D11BlendState*		CStateObjectManager::g_pAlphaToCoverageBS	= 0;
 ID3D11BlendState*		CStateObjectManager::g_pTransparentBS		= 0;
 
+ID3D11BlendState*		CStateObjectManager::g_pBloodBS = 0;
+ID3D11BlendState*		CStateObjectManager::g_pFireBS = 0;
+
 ID3D11SamplerState*		CStateObjectManager::g_pLinearClampSS		= 0;
 ID3D11SamplerState*		CStateObjectManager::g_pPointClampSS		= 0;
 ID3D11SamplerState*		CStateObjectManager::g_pLinearWarpSS		= 0;
@@ -82,6 +85,31 @@ void CStateObjectManager::InitializeManager()
 	HR(g_pd3dDevice->CreateBlendState(&transparentDesc, &g_pTransparentBS));
 	DXUT_SetDebugName(g_pTransparentBS, "TransparentBS:");
 
+	D3D11_BLEND_DESC d3dBlendStateDesc;
+	ZeroMemory(&d3dBlendStateDesc, sizeof(D3D11_BLEND_DESC));
+	d3dBlendStateDesc.IndependentBlendEnable = false;
+	ZeroMemory(&d3dBlendStateDesc.RenderTarget[0], sizeof(D3D11_RENDER_TARGET_BLEND_DESC));
+	d3dBlendStateDesc.AlphaToCoverageEnable = false;
+	d3dBlendStateDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	d3dBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	HR(g_pd3dDevice->CreateBlendState(&d3dBlendStateDesc, &g_pBloodBS));
+	DXUT_SetDebugName(g_pTransparentBS, "Blood BS:");
+
+	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	HR(g_pd3dDevice->CreateBlendState(&d3dBlendStateDesc, &g_pFireBS));
+	DXUT_SetDebugName(g_pTransparentBS, "Fire BS:");
+
 	// ---------------------------------------------------------------------------- //
 	// ------------------------------ Sampler State ------------------------------- //
 	D3D11_SAMPLER_DESC d3dSamplerDesc;
@@ -134,6 +162,9 @@ void CStateObjectManager::ReleseManager()
 
 	ReleaseCOM(g_pAlphaToCoverageBS);
 	ReleaseCOM(g_pTransparentBS);
+
+	ReleaseCOM(g_pBloodBS);
+	ReleaseCOM(g_pFireBS);
 
 	ReleaseCOM(g_pLinearClampSS);
 	ReleaseCOM(g_pPointClampSS);

@@ -27,37 +27,20 @@ CParticleSystem::~CParticleSystem()
 	// SRV
 	ReleaseCOM(m_pd3dsrvRandomTexture);
 	ReleaseCOM(m_pd3dsrvTextureArray);
-
-	// State
-	ReleaseCOM(m_pd3dBlendState);
 }
 
-void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceView* pd3dsrvTexArray, ID3D11ShaderResourceView* pd3dsrvRandomTexture, UINT nMaxParticles)
+void CParticleSystem::Initialize
+	(ID3D11Device *pd3dDevice, ID3D11ShaderResourceView* pd3dsrvTexArray, ID3D11ShaderResourceView* pd3dsrvRandomTexture, UINT nMaxParticles, ID3D11BlendState *blendState)
 {
 	m_pd3dsrvTextureArray = pd3dsrvTexArray;
 	m_pd3dsrvRandomTexture = pd3dsrvRandomTexture;
-
+	m_pd3dBlendState = blendState;
 	m_nMaxParticles = nMaxParticles;
 
 	CreateBuffer(pd3dDevice);
 
-
-	// Blend State
-	D3D11_BLEND_DESC d3dBlendStateDesc;
-	ZeroMemory(&d3dBlendStateDesc, sizeof(D3D11_BLEND_DESC));
-	d3dBlendStateDesc.IndependentBlendEnable = true;
-	ZeroMemory(&d3dBlendStateDesc.RenderTarget[0], sizeof(D3D11_RENDER_TARGET_BLEND_DESC));
-	d3dBlendStateDesc.AlphaToCoverageEnable = false;
-	d3dBlendStateDesc.RenderTarget[0].BlendEnable = true;
-	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
-	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	d3dBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-	pd3dDevice->CreateBlendState(&d3dBlendStateDesc, &m_pd3dBlendState);
 	/*
+	// Blend State
 	D3D11_BLEND_DESC d3dBlendStateDesc;
 	ZeroMemory(&d3dBlendStateDesc, sizeof(D3D11_BLEND_DESC));
 	d3dBlendStateDesc.IndependentBlendEnable = false;
@@ -70,56 +53,36 @@ void CParticleSystem::Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceV
 	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
 	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-
-	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-
-	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
-	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
-	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	
 	d3dBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	pd3dDevice->CreateBlendState(&d3dBlendStateDesc, &m_pd3dBlendState);
-
-	*/
-	DXUT_SetDebugName(m_pd3dBlendState, "ParticleBS");
-
-	/*
-
-	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-
-	//-----------------------------------------------------------------------------
-
 	
-	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
-	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
-	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
-	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-
-	//-----------------------------------------------------------------------------
-
+	D3D11_BLEND_DESC d3dBlendStateDesc;
+	ZeroMemory(&d3dBlendStateDesc, sizeof(D3D11_BLEND_DESC));
+	d3dBlendStateDesc.IndependentBlendEnable = false;
+	ZeroMemory(&d3dBlendStateDesc.RenderTarget[0], sizeof(D3D11_RENDER_TARGET_BLEND_DESC));
+	d3dBlendStateDesc.AlphaToCoverageEnable = false;
+	d3dBlendStateDesc.RenderTarget[0].BlendEnable = true;
+	
 	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
 	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
 	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	*/
 
+	// 불 파티클 아래 옵션이 더 자연스러움
+	d3dBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	d3dBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	d3dBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	d3dBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	
+	d3dBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	pd3dDevice->CreateBlendState(&d3dBlendStateDesc, &m_pd3dBlendState);
+
+	DXUT_SetDebugName(m_pd3dBlendState, "ParticleBS");
+	*/
 }
 
 void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice, const wstring& wstring)
@@ -275,7 +238,7 @@ void CParticleSystem::CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, c
 		{ 0, "AGE", 0, 0, 1, 0 },
 		{ 0, "TYPE", 0, 0, 1, 0 }
 	};
-	UINT pBufferStrides[1] = { sizeof(CParticle) };//개수 많이 지정해야되지않나
+	UINT pBufferStrides[1] = { sizeof(CParticle) };
 
 	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 #if defined(DEBUG) || defined(_DEBUG)
@@ -322,7 +285,8 @@ ID3D11ShaderResourceView *CParticleSystem::CreateTexture2DArraySRV(ID3D11Device 
 	d3dxImageLoadInfo.pSrcInfo = 0;
 
 	ID3D11Texture2D **ppd3dTextures = new ID3D11Texture2D*[nTextures];
-	for (UINT i = 0; i < nTextures; i++) D3DX11CreateTextureFromFile(pd3dDevice, ppstrFilePaths[i], &d3dxImageLoadInfo, 0, (ID3D11Resource **)&ppd3dTextures[i], 0);
+	for (UINT i = 0; i < nTextures; i++) 
+		D3DX11CreateTextureFromFile(pd3dDevice, ppstrFilePaths[i], &d3dxImageLoadInfo, 0, (ID3D11Resource **)&ppd3dTextures[i], 0);
 
 	D3D11_TEXTURE2D_DESC d3dTexure2DDesc;
 

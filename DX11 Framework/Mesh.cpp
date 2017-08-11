@@ -130,7 +130,6 @@ int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRay
 	if (m_nIndices > 0) nPrimitives = (m_d3dPrimitiveTopology == D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST) ? (m_nIndices / 3) : (m_nIndices - 2);
 
 	XMFLOAT3 v0, v1, v2;
-//	XMVECTOR v0, v1, v2;
 	v0 = v1 = v2 = XMFLOAT3(0, 0, 0);
 	float fuHitBaryCentric = 0.0f, fvHitBaryCentric = 0.0f, fHitDistance = 0.0f, fNearHitDistance = FLT_MAX;
 	for (int i = 0; i < nPrimitives; i++)
@@ -153,6 +152,10 @@ int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRay
 					XMVECTOR normal = XMVector3Cross(edge1, edge2);
 					normal = XMVector3Normalize(normal);
 					XMStoreFloat3(&pd3dxIntersectInfo->m_f3HitNormal, -1 * normal);		// -1을 해줘야 정확하던데 왜그런지 미확인
+
+					pd3dxIntersectInfo->m_f3HitPosition.x = (v0.x + v1.x + v2.x) / 3;
+					pd3dxIntersectInfo->m_f3HitPosition.y = (v0.y + v1.y + v2.y) / 3;
+					pd3dxIntersectInfo->m_f3HitPosition.z = (v0.z + v1.z + v2.z) / 3;
 				}
 			}
 			nIntersections++;
