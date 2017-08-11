@@ -20,6 +20,10 @@ public:
 	static ID3D11BlendState*		g_pAlphaToCoverageBS;
 	static ID3D11BlendState*		g_pTransparentBS;
 
+	// Particle BS
+	static ID3D11BlendState*		g_pFireBS;
+	static ID3D11BlendState*		g_pBloodBS;
+
 	static ID3D11SamplerState*		g_pLinearClampSS;
 	static ID3D11SamplerState*		g_pPointClampSS;
 	static ID3D11SamplerState*		g_pPointWarpSS;

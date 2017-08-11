@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "MainScene.h"
+#include "protocol.h"
 
 CMainScene::CMainScene()
 {
@@ -106,6 +107,8 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_F5:
+				m_vecParticleSystemContainer.back()->ParticleRestart();
+
 				break;
 			case VK_Z:
 			
@@ -351,6 +354,15 @@ void CMainScene::Initialize()
 	m_vecBBoxRenderContainer.push_back(m_pPlayerCharacter);
 	m_vecCharacterContainer.push_back(m_pPlayerCharacter);
 
+#ifdef USE_SERVER
+	cs_Gamemode packet;
+	packet.size = sizeof(cs_Gamemode);
+	packet.mode = 1;
+	packet.type = 5;
+
+	SERVER_MGR->Sendpacket(reinterpret_cast<BYTE*>(&packet));
+#endif
+
 #pragma endregion 
 
 	/*
@@ -410,19 +422,56 @@ void CMainScene::Initialize()
 	
 	ID3D11ShaderResourceView* pParticleTexture = nullptr;
 
-	CParticleSystem* fireParticle = new CParticleSystem();
+	CParticleSystem* pFireParticle = new CParticleSystem();
 	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
-	fireParticle->Initialize(m_pd3dDevice, pParticleTexture, fireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500);
-	fireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
-	fireParticle->SetEmitPosition(XMFLOAT3(60.0f, 2.5f, 10.0f));
-	m_vecParticleSystemContainer.push_back(fireParticle);
-	/*
-	m_pRainParitlcleSystem = new CParticleSystem();
-	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/raindrop.dds"), NULL, NULL, &pParticleTexture, NULL);
-	m_pRainParitlcleSystem->Initialize(m_pd3dDevice, pParticleTexture, m_pRainParitlcleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 10000);
-	m_pRainParitlcleSystem->CreateShader(m_pd3dDevice, L"Shader HLSL File/Rain.hlsli");
-*/	
+	pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
+	pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
+	pFireParticle->SetEmitPosition(XMFLOAT3(60.0f, 2.5f, 10.0f));		// 불 위치 조절 필요
+	m_vecParticleSystemContainer.push_back(pFireParticle);
 
+	pFireParticle = new CParticleSystem();
+	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
+	pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
+	pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
+	pFireParticle->SetEmitPosition(XMFLOAT3(60.0f, 2.5f, 30.0f));		// 불 위치 조절 필요
+	m_vecParticleSystemContainer.push_back(pFireParticle);
+
+	pFireParticle = new CParticleSystem();
+	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
+	pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
+	pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
+	pFireParticle->SetEmitPosition(XMFLOAT3(60.0f, 2.5f, 50.0f));		// 불 위치 조절 필요
+	m_vecParticleSystemContainer.push_back(pFireParticle);
+	
+	pFireParticle = new CParticleSystem();
+	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
+	pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
+	pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
+	pFireParticle->SetEmitPosition(XMFLOAT3(60.0f, 2.5f, 100.0f));		// 불 위치 조절 필요
+
+	m_vecParticleSystemContainer.push_back(pFireParticle);
+
+	// Blood
+	CParticleSystem* pBloodParticle = new CParticleSystem();
+	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/blood.dds"), NULL, NULL, &pParticleTexture, NULL);
+	pBloodParticle->Initialize(m_pd3dDevice, pParticleTexture, pBloodParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS);
+	pBloodParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Blood.hlsli");
+	pBloodParticle->SetEmitPosition(XMFLOAT3(70.0f, 2.5f, 10.0f));
+
+	m_vecParticleSystemContainer.push_back(pBloodParticle);
+
+
+
+
+
+
+	/*	비 제거 - 자연스럽지 않음
+	CParticleSystem* pRainParitlcleSystem = new CParticleSystem();
+	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/raindrop.dds"), NULL, NULL, &pParticleTexture, NULL);
+	pRainParitlcleSystem->Initialize(m_pd3dDevice, pParticleTexture, pRainParitlcleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 10000);
+	pRainParitlcleSystem->CreateShader(m_pd3dDevice, L"Shader HLSL File/Rain.hlsli");
+	m_vecParticleSystemContainer.push_back(pRainParitlcleSystem);
+	*/
 #pragma endregion
 
 //	CreateMapDataObject();
@@ -1698,11 +1747,13 @@ void CMainScene::CalcTime()
 
 void CMainScene::ShowDeadlyUI()
 {
-	if (!m_pPlayer->GetIsDeadly())
+	if (!m_pPlayer->GetIsDeadly()) {
+		m_pDamageUI->AddOpacity(-1.0f);
 		return;
+	}
 
 	static bool bIsReverse = false;
-	float opacityValue = 0.5f;
+	float opacityValue = 0.8f;
 
 	if (bIsReverse) {
 		m_pDamageUI->AddOpacity(-1 * opacityValue * m_fDeltaTime);
