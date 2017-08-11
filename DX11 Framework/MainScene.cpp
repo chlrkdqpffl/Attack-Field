@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "MainScene.h"
+#include "protocol.h"
 
 CMainScene::CMainScene()
 {
@@ -350,6 +351,14 @@ void CMainScene::Initialize()
 	CScene::CreatePlayer();
 	m_vecBBoxRenderContainer.push_back(m_pPlayerCharacter);
 	m_vecCharacterContainer.push_back(m_pPlayerCharacter);
+
+	cs_Gamemode packet;
+
+	packet.size = sizeof(cs_Gamemode);
+	packet.mode = 1;
+	packet.type = 5;
+
+	SERVER_MGR->Sendpacket(reinterpret_cast<BYTE *>(&packet));
 
 #pragma endregion 
 
