@@ -107,8 +107,9 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_F5:
+			{
 				m_vecParticleSystemContainer.back()->ParticleRestart();
-
+			}
 				break;
 			case VK_Z:
 			
@@ -460,18 +461,12 @@ void CMainScene::Initialize()
 
 	m_vecParticleSystemContainer.push_back(pBloodParticle);
 
-
-
-
-
-
-	/*	비 제거 - 자연스럽지 않음
-	CParticleSystem* pRainParitlcleSystem = new CParticleSystem();
+	// Rain
+	m_pRainParticle = new CParticleSystem();
 	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/raindrop.dds"), NULL, NULL, &pParticleTexture, NULL);
-	pRainParitlcleSystem->Initialize(m_pd3dDevice, pParticleTexture, pRainParitlcleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 10000);
-	pRainParitlcleSystem->CreateShader(m_pd3dDevice, L"Shader HLSL File/Rain.hlsli");
-	m_vecParticleSystemContainer.push_back(pRainParitlcleSystem);
-	*/
+	m_pRainParticle->Initialize(m_pd3dDevice, pParticleTexture, m_pRainParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 5000, STATEOBJ_MGR->g_pFireBS);
+	m_pRainParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Rain.hlsli");
+	
 #pragma endregion
 
 //	CreateMapDataObject();
@@ -1572,6 +1567,7 @@ void CMainScene::ReleaseObjects()
 
 	m_pLightManager->DeInitialize();
 
+	SafeDelete(m_pRainParticle);
 	for (auto& system : m_vecParticleSystemContainer)
 		SafeDelete(system);
 }
@@ -1825,6 +1821,12 @@ void CMainScene::Update(float fDeltaTime)
 
 
 	// Particle
+	XMVECTOR offsetV = m_pCamera->GetvPosition(); XMFLOAT3 rainOffset;
+	offsetV += m_pCamera->GetvUp() * 20;
+	offsetV += m_pCamera->GetvLook() * 20;
+	XMStoreFloat3(&rainOffset, offsetV);
+	m_pRainParticle->SetEmitPosition(rainOffset);
+	m_pRainParticle->Update(fDeltaTime);
 	for (auto& system : m_vecParticleSystemContainer)
 		system->Update(fDeltaTime);
 
@@ -1890,6 +1892,8 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	m_GBuffer->DeferredRender(pd3dDeviceContext);
 	m_pLightManager->DoLighting(pd3dDeviceContext);
 
+	// Particle
+	m_pRainParticle->Render(m_pd3dDeviceContext);
 	for (auto& system : m_vecParticleSystemContainer)
 		system->Render(m_pd3dDeviceContext);
 

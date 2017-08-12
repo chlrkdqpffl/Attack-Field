@@ -128,9 +128,11 @@ protected:
 	CSkyBox								*m_pSkyBox		= nullptr;
 
 	// Particle
+	CParticleSystem*					m_pRainParticle = nullptr;
+
 	float								m_fGametime		= 0.0f;
-	float								m_fDeltaTime = 0.0f;
-	CPlayer								*m_pPlayer = nullptr;
+	float								m_fDeltaTime	= 0.0f;
+	CPlayer								*m_pPlayer		= nullptr;
 	CCharacterObject					*m_pPlayerCharacter = nullptr;
 
 	// UI
