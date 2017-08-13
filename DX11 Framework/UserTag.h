@@ -133,8 +133,7 @@ enum class TextureTag
 
 	// Building
 	eBuilding19D, eBuilding20D, eBuilding21D, eBuilding22D, eBuilding30D, eBuilding33D, eBuilding34D, eBuilding77D, eBuilding78D, eBuilding100D, eBuilding103D,
-	eParkingLotD, eHotelD,
-	eBenchD, eGrassD,
+	eGrassD,
 
 	// BackGround Image
 	eTitleBackGroundD, eLoadingBackGroundD,
@@ -145,12 +144,15 @@ enum class TextureTag
 	eSideWalk1D, eSideWalk2D,
 	eSideWalk1ND, eSideWalk2N,
 
+	// Container
+	eContainerRedD, eContainerBlueD, eContainerYellowD, eContainerN,
+
 	// UI
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
 	eCaptureArea, eAim, eMagazineUI, eLifeUI, eScoreUI, eDamagedCharacterUI, eRespawnGage, eRespawnGageWhite,
 
 	// Etc
-	eBusStopD, eStreetLampD, eBarricadeD, eStoneWallD, eStoneWallN,
+	eStreetLampD, eBarricadeD, eStoneWallD, eStoneWallN,
 
 	// Etc 2
 	eStoneD, eStoneND, eBricksD, eBricksN,
@@ -184,18 +186,18 @@ enum class MeshTag
 
 	// Building
 	eBuilding19, eBuilding20, eBuilding21, eBuilding22, eBuilding30, eBuilding33, eBuilding34, eBuilding77, eBuilding78, eBuilding100, eBuilding103, eBuilding104,
-	eParkingLot, eHotel,
 
 	// Road
 	eRoad, eCenterRoad, eCrossRoad,
 
+	// Container
+	eContainer1, eContainer2, eContainer3,
 
 	// Etc
-	eBench, eBusStop, eStreetLamp, eBarricade,
+	eStreetLamp, eBarricade,
 
 	// Etc 2
 	eTest,
-	eBox100m
 };
 
 enum class ObjectTag
@@ -208,10 +210,15 @@ enum class ObjectTag
 
 	// Building
 	eBuilding19, eBuilding20, eBuilding21, eBuilding22, eBuilding30, eBuilding33, eBuilding34, eBuilding77, eBuilding78, eBuilding100, eBuilding103, eBuilding104,
-	eParkingLot, eHotel, eStoneWall,
+	eStoneWall,
+
+	// Container
+	eContainer1Red, eContainer2Red, eContainer3Red,
+	eContainer1Blue, eContainer2Blue, eContainer3Blue,
+	eContainer1Yellow, eContainer2Yellow, eContainer3Yellow,
 
 	// Etc
-	eBench, eGrass, eBusStop, eStreetLamp, eBarricade
+	eGrass, eStreetLamp, eBarricade
 };
 
 

@@ -129,11 +129,6 @@ void CResourceManager::LoadMapData()
 	AddResourece(MeshTag::eBuilding103,			"../Assets/FBX Model/Building/Building103/Building103.model");
 	AddResourece(MeshTag::eBuilding104,			"../Assets/FBX Model/Building/Building104/Building104.model");
 
-	// Parking Lot
-	AddResourece(TextureTag::eParkingLotD,		"../Assets/FBX Model/ParkingLot/ParkingLotD.jpg");
-	//AddResourece(MeshTag::eParkingLot,			"../Assets/FBX Model/ParkingLot/ParkingLot.model");
-	AddResourece(MeshTag::eParkingLot,			"../Assets/FBX Model/ParkingLot/parkinglot2.model");
-
 	// ============== Road ============== //
 	AddResourece(TextureTag::eRoad1D,			"../Assets/FBX Model/Road/Road1D.dds");
 	AddResourece(TextureTag::eRoad1N,			"../Assets/FBX Model/Road/Road1N.dds");
@@ -144,19 +139,21 @@ void CResourceManager::LoadMapData()
 	AddResourece(TextureTag::eCrossRoadD,		"../Assets/FBX Model/Road/CrossRoadD.jpg");
 	AddResourece(TextureTag::eCrossRoadN,		"../Assets/FBX Model/Road/CrossRoadN.dds");
 
-
 	AddResourece(MeshTag::eRoad,				"../Assets/FBX Model/Road/road.model");
 	AddResourece(MeshTag::eCenterRoad,			"../Assets/FBX Model/Road/RoadCenter.model");
 	AddResourece(MeshTag::eCrossRoad,			"../Assets/FBX Model/Road/CrossRoad.model");
 
+	// =================== Container =================== //
+	AddResourece(TextureTag::eContainerRedD,	"../Assets/FBX Model/Container/ContainerRED.dds");
+	AddResourece(TextureTag::eContainerBlueD,	"../Assets/FBX Model/Container/ContainerBLUE.dds");
+	AddResourece(TextureTag::eContainerYellowD, "../Assets/FBX Model/Container/ContainerYELLOW.dds");
+	AddResourece(TextureTag::eContainerN,		"../Assets/FBX Model/Container/ContainerN.dds");
+
+	AddResourece(MeshTag::eContainer1,			"../Assets/FBX Model/Container/Container1.model");
+	AddResourece(MeshTag::eContainer2,			"../Assets/FBX Model/Container/Container2.model");
+	AddResourece(MeshTag::eContainer3,			"../Assets/FBX Model/Container/Container3.model");
+
 	// Etc
-	AddResourece(TextureTag::eBenchD,			"../Assets/FBX Model/Bench/BenchD.jpg");
-	AddResourece(MeshTag::eBench,				"../Assets/FBX Model/Bench/Bench.model");
-
-	AddResourece(TextureTag::eBusStopD,			"../Assets/FBX Model/Busstop/bus_stop_sign.png");
-	AddResourece(MeshTag::eBusStop,				"../Assets/FBX Model/Busstop/BusStop.model");
-
-//	AddResourece(TextureTag::eStreetLampD,		"../Assets/FBX Model/StreetLamp/bus_stop_sign.png");
 	AddResourece(MeshTag::eStreetLamp,			"../Assets/FBX Model/StreetLamp/lamp.model");
 
 	AddResourece(TextureTag::eGrassD,			"../Assets/FBX Model/Etc/GrassD.jpg");

@@ -34,18 +34,25 @@ void CMapDataManager::InitializeManager()
 	AddMapData(ObjectTag::eBuilding100,					"../Assets/MapData/Building100.txt");
 	AddMapData(ObjectTag::eBuilding103,					"../Assets/MapData/Building103.txt");
 	AddMapData(ObjectTag::eBuilding104,					"../Assets/MapData/Building104.txt");
-	AddMapData(ObjectTag::eParkingLot,					"../Assets/MapData/Parking.txt");
-	AddMapData(ObjectTag::eHotel,						"../Assets/MapData/Hotel.txt");
 	AddMapData(ObjectTag::eBarricade,					"../Assets/MapData/Barricaed.txt");
 
+	// Container
+	AddMapData(ObjectTag::eContainer1Red,				"../Assets/MapData/Container1Red.txt");
+	AddMapData(ObjectTag::eContainer1Blue,				"../Assets/MapData/Container1Blue.txt");
+	AddMapData(ObjectTag::eContainer1Yellow,			"../Assets/MapData/Container1Yellow.txt");
+	AddMapData(ObjectTag::eContainer2Red,				"../Assets/MapData/Container2Red.txt");
+	AddMapData(ObjectTag::eContainer2Blue,				"../Assets/MapData/Container2Blue.txt");
+	AddMapData(ObjectTag::eContainer2Yellow,			"../Assets/MapData/Container2Yellow.txt");
+	AddMapData(ObjectTag::eContainer3Red,				"../Assets/MapData/Container3Red.txt");
+	AddMapData(ObjectTag::eContainer3Blue,				"../Assets/MapData/Container3Blue.txt");
+	AddMapData(ObjectTag::eContainer3Yellow,			"../Assets/MapData/Container3Yellow.txt");
+
 	// Etc
-	AddMapData(ObjectTag::eBusStop,						"../Assets/MapData/Bus_Stop.txt");
 	AddMapData(ObjectTag::eStreetLamp,					"../Assets/MapData/Street_lamp.txt");
-	AddMapData(ObjectTag::eBench,						"../Assets/MapData/Bench.txt");
 	AddMapData(ObjectTag::eGrass,						"../Assets/MapData/Grass.txt");
 	AddMapData(ObjectTag::eSideWalk1,					"../Assets/MapData/SideWalk.txt");
 	AddMapData(ObjectTag::eSideWalk2,					"../Assets/MapData/SideWalk2.txt");
-	AddMapData(ObjectTag::eStoneWall, "../Assets/MapData/StoneWall1.txt");
+	AddMapData(ObjectTag::eStoneWall,					"../Assets/MapData/StoneWall.txt");
 
 
 	cout << endl;
@@ -77,7 +84,7 @@ bool CMapDataManager::AddMapData(const ObjectTag& tag, const string& source)
 	
 		vecMapData.push_back(data);
 	}
-	vecMapData.pop_back();
+//	vecMapData.pop_back();			// 왜 들어가있는지 미확인
 	fin.close();
 
 	m_mapDataPool.insert(make_pair(tag, vecMapData));
