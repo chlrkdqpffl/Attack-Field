@@ -147,12 +147,18 @@ enum class TextureTag
 	// Container
 	eContainerRedD, eContainerBlueD, eContainerYellowD, eContainerN,
 
+	// Barrel
+	eFireBarrelD, eFireBarrelN, eBarrelD, eBarrelN,
+
+	// StreetLamp
+	eStreetLampD, eStreetLampN,
+
 	// UI
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
 	eCaptureArea, eAim, eMagazineUI, eLifeUI, eScoreUI, eDamagedCharacterUI, eRespawnGage, eRespawnGageWhite,
 
 	// Etc
-	eStreetLampD, eBarricadeD, eStoneWallD, eStoneWallN,
+	eBarricadeD, eStoneWallD, eStoneWallN,
 
 	// Etc 2
 	eStoneD, eStoneND, eBricksD, eBricksN,
@@ -193,6 +199,9 @@ enum class MeshTag
 	// Container
 	eContainer1, eContainer2, eContainer3,
 
+	// Barrel
+	eFireBarrel, eBarrel,
+
 	// Etc
 	eStreetLamp, eBarricade,
 
@@ -216,6 +225,9 @@ enum class ObjectTag
 	eContainer1Red, eContainer2Red, eContainer3Red,
 	eContainer1Blue, eContainer2Blue, eContainer3Blue,
 	eContainer1Yellow, eContainer2Yellow, eContainer3Yellow,
+
+	// Barrel
+	eFireBarrel, eBarrel,
 
 	// Etc
 	eGrass, eStreetLamp, eBarricade

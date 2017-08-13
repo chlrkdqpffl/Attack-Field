@@ -40,6 +40,7 @@ protected:
 	bool				m_bIsDeadlyAttack = false;
 
 	// ----- Game System Variable ----- //
+	DWORD				m_dwDeathStartTime = 0;
 	UINT				m_nServerID = 0;
 	UINT				m_nLife = 0;
 	UINT				m_nArmorPoint = 0;
@@ -128,7 +129,10 @@ public:
 	bool GetIsFire() const { return  m_bIsFire; }
 	void SetIsReload(bool set) { m_bIsReload = set; }
 	bool GetIsReload() const { return m_bIsReload; }
-	void SetIsDeath(bool set) { m_bIsDeath = set; }
+	void SetIsDeath(bool bIsDeath) {
+		if (bIsDeath) m_dwDeathStartTime = GetTickCount();
+		m_bIsDeath = bIsDeath; 
+	}
 	bool GetIsDeath() const { return m_bIsDeath; }
 	void SetIsDeathHead(bool set) { m_bIsDeathHead = set; }
 	bool GetIsDeathHead() const { return m_bIsDeathHead; }
@@ -142,7 +146,6 @@ public:
 	bool GetIsDeadlyAttack() const { return m_bIsDeadlyAttack; }
 	void SetTagTeam(TeamType &Team) { 
 		m_tagTeam = Team; 
-
 	}
 	
 
@@ -156,5 +159,5 @@ public:
 	UINT GetServerID() const { return m_nServerID; }
 	UINT GetWeaponBulletCount() const { return m_pWeapon->GetBulletCount(); }
 	UINT GetWeaponMaxBulletCount() const { return m_pWeapon->GetMaxBulletCount(); }
-	
+	DWORD GetDeathTime() const { return m_dwDeathStartTime; }
 };

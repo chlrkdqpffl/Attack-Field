@@ -47,6 +47,10 @@ void CMapDataManager::InitializeManager()
 	AddMapData(ObjectTag::eContainer3Blue,				"../Assets/MapData/Container3Blue.txt");
 	AddMapData(ObjectTag::eContainer3Yellow,			"../Assets/MapData/Container3Yellow.txt");
 
+	// Barrel
+	AddMapData(ObjectTag::eFireBarrel,					"../Assets/MapData/FireBarrel.txt");
+	AddMapData(ObjectTag::eBarrel,						"../Assets/MapData/Barrel.txt");
+
 	// Etc
 	AddMapData(ObjectTag::eStreetLamp,					"../Assets/MapData/Street_lamp.txt");
 	AddMapData(ObjectTag::eGrass,						"../Assets/MapData/Grass.txt");

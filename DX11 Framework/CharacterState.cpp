@@ -292,7 +292,7 @@ void CState_Death::EnterState(CCharacterObject* pCharacter, AnimationData::Parts
 		return;
 
 	// 리스폰 대기 시간 5초
-	m_dwDeathWaitingTime = 5000;
+	m_dwDeathWaitingTime = RESPAWN_TIME;
 	m_dwDeathStartTime = GetTickCount();
 
 	if (pCharacter->GetIsDeathHead())

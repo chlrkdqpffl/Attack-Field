@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "UIMesh.h"
 
-
 CUIMesh::CUIMesh(ID3D11Device *pd3dDevice, POINT startPos, POINT endPos, float zPos)
 {
 	m_nVertices = 4;

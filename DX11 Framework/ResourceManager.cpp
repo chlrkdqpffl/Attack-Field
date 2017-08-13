@@ -153,9 +153,21 @@ void CResourceManager::LoadMapData()
 	AddResourece(MeshTag::eContainer2,			"../Assets/FBX Model/Container/Container2.model");
 	AddResourece(MeshTag::eContainer3,			"../Assets/FBX Model/Container/Container3.model");
 
-	// Etc
-	AddResourece(MeshTag::eStreetLamp,			"../Assets/FBX Model/StreetLamp/lamp.model");
+	// =================== Barrel =================== //
+	AddResourece(MeshTag::eFireBarrel,			"../Assets/FBX Model/Barrel/FireBarrel.model");
+	AddResourece(MeshTag::eBarrel,				"../Assets/FBX Model/Barrel/Barrel.model");
 
+	AddResourece(TextureTag::eFireBarrelD,		"../Assets/FBX Model/Barrel/FireBarrelD.dds");
+	AddResourece(TextureTag::eFireBarrelN,		"../Assets/FBX Model/Barrel/FireBarrelN.png");
+	AddResourece(TextureTag::eBarrelD,			"../Assets/FBX Model/Barrel/BarrelD.dds");
+	AddResourece(TextureTag::eBarrelN,			"../Assets/FBX Model/Barrel/BarrelN.dds");
+
+	// =================== Lamp =================== //
+	AddResourece(MeshTag::eStreetLamp,			"../Assets/FBX Model/StreetLamp/StreetLamp.model");
+	AddResourece(TextureTag::eStreetLampD,		"../Assets/FBX Model/StreetLamp/StreetLampD.dds");
+	AddResourece(TextureTag::eStreetLampN,		"../Assets/FBX Model/StreetLamp/StreetLampN.png");
+
+	// Etc
 	AddResourece(TextureTag::eGrassD,			"../Assets/FBX Model/Etc/GrassD.jpg");
 
 	AddResourece(TextureTag::eBarricadeD,		"../Assets/FBX Model/Barricade/BarricadeD.jpg");

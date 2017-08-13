@@ -17,6 +17,7 @@ CUIObject::CUIObject(TextureTag tag) : m_tagTexture(tag)
 CUIObject::~CUIObject()
 {
 	SafeDelete(m_pMesh);
+	SafeDelete(m_pDynamicMesh);
 	SafeDelete(m_pMaterial);
 }
 
@@ -29,12 +30,16 @@ bool CUIObject::IsCollision(POINT mousePos)
 	return false;
 }
 
-void CUIObject::Initialize(ID3D11Device* pDevice, POINT startPos, POINT endPos, float zPos)
+void CUIObject::Initialize(ID3D11Device* pDevice, POINT startPos, POINT endPos, float zPos, bool bIsDynamic)
 {
 	m_ptStartPos = startPos;
 	m_ptEndPos = endPos;
+	m_bIsDynamic = bIsDynamic;
 
-	m_pMesh = new CUIMesh(pDevice, m_ptStartPos, m_ptEndPos, zPos);
+	if(bIsDynamic)
+		m_pDynamicMesh = new CDynamicUIMesh(pDevice, m_ptStartPos, m_ptEndPos, zPos);
+	else
+		m_pMesh = new CUIMesh(pDevice, m_ptStartPos, m_ptEndPos, zPos);
 }
 
 void CUIObject::AddOpacity(float set)
@@ -47,7 +52,10 @@ void CUIObject::Render(ID3D11DeviceContext* pDeviceContext)
 {
 	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pDeviceContext);
 
-	m_pMesh->Render(pDeviceContext);
+	if (m_bIsDynamic)
+		m_pDynamicMesh->Render(pDeviceContext);
+	else
+		m_pMesh->Render(pDeviceContext);
 }
 
 // ============================================================================================================================  //

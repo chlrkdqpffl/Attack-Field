@@ -426,35 +426,22 @@ void CMainScene::Initialize()
 #pragma region [Particle System]
 	
 	ID3D11ShaderResourceView* pParticleTexture = nullptr;
+	vector<MapData> vecMapData;
+	CParticleSystem* pFireParticle = nullptr;
 
-	CParticleSystem* pFireParticle = new CParticleSystem();
-	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
-	pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
-	pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
-	pFireParticle->SetEmitPosition(XMFLOAT3(60.0f, 2.5f, 10.0f));		// 불 위치 조절 필요
-	m_vecParticleSystemContainer.push_back(pFireParticle);
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pFireParticle = new CParticleSystem();
+		D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
+		pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
+		pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
 
-	pFireParticle = new CParticleSystem();
-	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
-	pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
-	pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
-	pFireParticle->SetEmitPosition(XMFLOAT3(60.0f, 2.5f, 30.0f));		// 불 위치 조절 필요
-	m_vecParticleSystemContainer.push_back(pFireParticle);
-
-	pFireParticle = new CParticleSystem();
-	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
-	pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
-	pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
-	pFireParticle->SetEmitPosition(XMFLOAT3(60.0f, 2.5f, 50.0f));		// 불 위치 조절 필요
-	m_vecParticleSystemContainer.push_back(pFireParticle);
-	
-	pFireParticle = new CParticleSystem();
-	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
-	pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
-	pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
-	pFireParticle->SetEmitPosition(XMFLOAT3(60.0f, 2.5f, 100.0f));		// 불 위치 조절 필요
-
-	m_vecParticleSystemContainer.push_back(pFireParticle);
+		XMFLOAT3 offsetPos = vecMapData[count].m_Position;
+		offsetPos.y += 1.5f;
+		offsetPos.z -= 0.5f;
+		pFireParticle->SetEmitPosition(offsetPos);
+		m_vecParticleSystemContainer.push_back(pFireParticle);
+	}
 
 	// Blood
 	CParticleSystem* pBloodParticle = new CParticleSystem();
@@ -1172,13 +1159,11 @@ void CMainScene::CreateMapDataInstancingObject()
 #pragma endregion
 
 #pragma region [Street Lamp]
-	/*
-	// 텍스쳐가 없어서 현재는 인스턴싱을 안쓰고 있음 - FBX Mesh는 텍스쳐까지 포함된 버퍼를 가지므로
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp).size());
-
 	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eStreetLamp);
-	pFbxMesh->Initialize(m_pd3dDevice);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
 	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eStreetLampD, TextureTag::eStreetLampN);
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
 
@@ -1190,27 +1175,11 @@ void CMainScene::CreateMapDataInstancingObject()
 		pObject->Rotate(vecMapData[count].m_Rotation);
 		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormal, pObject);
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
 		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
-#pragma endregion
-	*/
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pObject = new CGameObject();
-		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eStreetLamp, vecMapData[count].m_Scale);
-		pFbxMesh->Initialize(m_pd3dDevice);
 
-		pObject->SetMesh(pFbxMesh);
-		pObject->CreateAxisObject(m_pd3dDevice);
-		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation);
-
-		pObject->CreateBoundingBox(m_pd3dDevice);
-
-		AddShaderObject(ShaderTag::eNormal, pObject);
-	}
 #pragma endregion
 
 #pragma region [Barricade]
@@ -1505,6 +1474,53 @@ void CMainScene::CreateMapDataInstancingObject()
 	
 #pragma endregion
 
+#pragma region [Barrel]
+	// Fire Barrel 1
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eFireBarrel);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eFireBarrelD, TextureTag::eFireBarrelN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	// Barrel
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eBarrel).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eBarrel);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eBarrelD, TextureTag::eBarrelN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBarrel);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+#pragma endregion
+
+
 }
 
 void CMainScene::CreateTestingObject()
@@ -1613,8 +1629,8 @@ void CMainScene::CreateUIImage()
 	pUIObject = new CUIObject(TextureTag::eAim);
 	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 3, FRAME_BUFFER_HEIGHT / 2 - 22};		// 오프셋 (3, -14)			// +가 오른쪽, +가 아래쪽
 	pUIObject->Initialize(m_pd3dDevice, POINT{ aimingPos.x - 20, aimingPos.y - 20 }, POINT{ aimingPos.x + 20, aimingPos.y + 20 }, 0.0f);
-	m_pUIManager->AddUIObject(pUIObject);
 	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
 	
 	// Score
 	pUIObject = new CUIObject(TextureTag::eScoreUI);
@@ -1640,14 +1656,14 @@ void CMainScene::CreateUIImage()
 
 	// Respawn Gage
 	pUIObject = new CUIObject(TextureTag::eRespawnGage);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 + 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 300 , FRAME_BUFFER_HEIGHT / 2 + 65 }, 0.4f);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 305, FRAME_BUFFER_HEIGHT / 2 + 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 305 , FRAME_BUFFER_HEIGHT / 2 + 65 }, 0.1f);
 	pUIObject->AddOpacity(-0.3f);
+	pUIObject->SetActive(false);
 	m_pUIManager->AddUIObject(pUIObject);
 
-
-//	실시간으로 유아이 크기 조절하는 함수 만들기
 	pUIObject = new CUIObject(TextureTag::eRespawnGageWhite);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 295, FRAME_BUFFER_HEIGHT / 2 + 43 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 295 , FRAME_BUFFER_HEIGHT / 2 + 62 }, 0.5f);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 + 43 }, POINT{ FRAME_BUFFER_WIDTH / 2 - 300 , FRAME_BUFFER_HEIGHT / 2 + 62 }, 0.0f, true);
+	pUIObject->SetActive(false);
 	m_pUIManager->AddUIObject(pUIObject);
 }
 
@@ -1848,10 +1864,22 @@ void CMainScene::RenderUI()
 
 void CMainScene::ShowRespawnUI()
 {
-	if (!m_pPlayerCharacter->GetIsDeath())
+	CUIObject* pGageUI = m_pUIManager->GetUIObject(TextureTag::eRespawnGage);
+	CUIObject* pWhiteGageUI = m_pUIManager->GetUIObject(TextureTag::eRespawnGageWhite);
+
+	if (!m_pPlayerCharacter->GetIsDeath()) {
+		pWhiteGageUI->SetActive(false);
+		pGageUI->SetActive(false);
 		return;
+	}
 
+	pGageUI->SetActive(true);
+	pWhiteGageUI->SetActive(true);
 
+	const UINT gageLength = 600;	// UI x축 길이 600 
+	float percentage = (float)(GetTickCount() - m_pPlayerCharacter->GetDeathTime()) / RESPAWN_TIME;
+
+	pWhiteGageUI->SetEndPos(POINT{ FRAME_BUFFER_WIDTH / 2 - 300 + (LONG)(percentage * gageLength), FRAME_BUFFER_HEIGHT / 2 + 62 });
 }
 
 void CMainScene::ShowDeadlyUI()
@@ -2135,8 +2163,8 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	TEXT_MGR->RenderText(pd3dDeviceContext, str, 65, 800, 10, 0xFFFFFFFF, FW1_CENTER);
 
 	// ----- Respawn ------ //
-//	if (m_pPlayerCharacter->GetIsDeath()) {
+	if (m_pPlayerCharacter->GetIsDeath()) {
 		str = "RESPAWN";
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
-//	}
+	}
 }

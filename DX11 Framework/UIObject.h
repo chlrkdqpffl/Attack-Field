@@ -1,9 +1,11 @@
 #pragma once
 #include "UIMesh.h"
+#include "DynamicUIMesh.h"
 
 class CUIObject
 {
 	CUIMesh					*m_pMesh = nullptr;
+	CDynamicUIMesh			*m_pDynamicMesh = nullptr;
 	CMaterial				*m_pMaterial = nullptr;
 
 	POINT					m_ptStartPos;
@@ -11,12 +13,13 @@ class CUIObject
 	bool					m_bActive = true;
 	TextureTag				m_tagTexture;
 	float					m_fOpacity = 1.0f;
+	bool					m_bIsDynamic = false;
 
 public:
 	CUIObject(TextureTag);
 	virtual ~CUIObject();
 
-	void Initialize(ID3D11Device* pDevice, POINT startPos, POINT endPos, float zPos);
+	void Initialize(ID3D11Device* pDevice, POINT startPos, POINT endPos, float zPos, bool bIsDynamic = false);
 	bool IsCollision(POINT mousePos);
 
 	void Render(ID3D11DeviceContext* pDeviceContext);
@@ -29,6 +32,9 @@ public:
 	void SetActive(bool set) { m_bActive = set; }
 	void AddOpacity(float set);
 	float GetOpacity() const { return m_fOpacity; }
+
+	void SetStartPos(POINT pos) { m_pDynamicMesh->SetStartPos(pos); }
+	void SetEndPos(POINT pos) { m_pDynamicMesh->SetEndPos(pos); }
 };
 
 class CUIManager
