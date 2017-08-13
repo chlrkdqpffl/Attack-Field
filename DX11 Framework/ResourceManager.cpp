@@ -97,6 +97,8 @@ void CResourceManager::LoadUIData()
 	AddResourece(TextureTag::eMagazineUI,		"../Assets/Image/UI/MagazineUI.png");
 	AddResourece(TextureTag::eLifeUI,			"../Assets/Image/UI/LifeUI.png");
 	AddResourece(TextureTag::eDamagedCharacterUI, "../Assets/Image/UI/DamagedCharacter.png");
+	AddResourece(TextureTag::eRespawnGage,		"../Assets/Image/UI/RespawnGage.png");
+	AddResourece(TextureTag::eRespawnGageWhite, "../Assets/Image/UI/RespawnGage(White).png");
 }
 
 void CResourceManager::LoadMapData()

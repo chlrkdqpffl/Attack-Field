@@ -5,7 +5,7 @@
 //#define FRAME_BUFFER_HEIGHT				768
 
 
-//#define DEVELOP_MODE
+#define DEVELOP_MODE
 
 //#define USE_SERVER
 #define USE_CONSOLE					// Open Console Windows

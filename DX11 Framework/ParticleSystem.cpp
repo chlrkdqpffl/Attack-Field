@@ -112,6 +112,22 @@ void CParticleSystem::Update(float fDeltaTime)
 
 void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 {
+	/*
+	// Rain을 제외한 모든 파티클 절두체 컬링 - 미룸
+	BoundingBox bcBoundingCube;
+	bcBoundingCube.Extents = XMFLOAT3(TWBAR_MGR->g_nSelect, TWBAR_MGR->g_nSelect, TWBAR_MGR->g_nSelect);
+
+	XMMATRIX mtx;
+	mtx = XMMatrixIdentity();
+	XMMatrixTranslation(m_f3EmitPosition.x, m_f3EmitPosition.y, m_f3EmitPosition.z);
+
+	bcBoundingCube.Transform(bcBoundingCube, mtx);
+	bool bIsVisible = SCENE_MGR->g_pCamera->IsInFrustum(&bcBoundingCube);
+
+	if (!bIsVisible)
+		return;
+	*/
+
 	UpdateConstantBuffer(pd3dDeviceContext);
 	
 	UINT stride = sizeof(CParticle);

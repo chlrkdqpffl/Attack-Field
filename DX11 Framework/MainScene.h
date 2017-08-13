@@ -39,6 +39,10 @@ public:
 
 	void RenderBoundingBox();
 	void CalcTime();
+
+	// UI
+	void RenderUI();
+	void ShowRespawnUI();
 	void ShowDeadlyUI();
 	void ShowDeadlyAttackUI();
 

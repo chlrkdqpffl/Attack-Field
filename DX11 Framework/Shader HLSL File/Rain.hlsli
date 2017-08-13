@@ -18,7 +18,7 @@ void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTIC
         {
             for (int i = 0; i < 5; ++i)
             {
-                float3 vRandom = float3(50.0f, 10.0f, 50.0f) * RandVec3((float) i / 5.0f);
+                float3 vRandom = float3(50.0f, 10.0f, 50.0f) * RandVec3((float) i / 5.0f);      // offset 찾아야 함
 
                 PARTICLE_INPUT particle = (PARTICLE_INPUT) 0;
                 particle.position = gvParticleEmitPosition.xyz + vRandom;
@@ -71,8 +71,7 @@ void GSParticleDraw(point VertexOut gin[1], inout LineStream<GeoOut> lineStream)
     if (gin[0].Type != PARTICLE_TYPE_EMITTER)
     {
         float3 p0 = gin[0].PosW;
- //       float3 p1 = gin[0].PosW + 0.03f * gRainAccelW;
-        float3 p1 = gin[0].PosW + 0.1f * gRainAccelW;
+        float3 p1 = gin[0].PosW + 0.04f * gRainAccelW;
 		
         matrix mtxViewProjection = mul(gmtxView, gmtxProjection);
         GeoOut v0;

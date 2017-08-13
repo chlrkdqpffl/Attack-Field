@@ -112,7 +112,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			}
 				break;
 			case VK_Z:
-			
+				m_pPlayerCharacter->SetIsDeath(true);
 				break;
 			case VK_X:
 				
@@ -1553,6 +1553,18 @@ void CMainScene::CreateUIImage()
 	pUIObject->AddOpacity(-1.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 	m_pDamageUI = pUIObject;
+
+	// Respawn Gage
+	pUIObject = new CUIObject(TextureTag::eRespawnGage);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 + 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 300 , FRAME_BUFFER_HEIGHT / 2 + 65 }, 0.4f);
+	pUIObject->AddOpacity(-0.3f);
+	m_pUIManager->AddUIObject(pUIObject);
+
+
+	실시간으로 유아이 크기 조절하는 함수 만들기
+	pUIObject = new CUIObject(TextureTag::eRespawnGageWhite);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 295, FRAME_BUFFER_HEIGHT / 2 + 43 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 295 , FRAME_BUFFER_HEIGHT / 2 + 62 }, 0.5f);
+	m_pUIManager->AddUIObject(pUIObject);
 }
 
 void CMainScene::ReleaseObjects()
@@ -1741,6 +1753,23 @@ void CMainScene::CalcTime()
 	}
 }
 
+void CMainScene::RenderUI()
+{
+	m_pUIManager->RenderAll(m_pd3dDeviceContext);
+
+	ShowDeadlyAttackUI();
+	ShowDeadlyUI();
+	ShowRespawnUI();
+}
+
+void CMainScene::ShowRespawnUI()
+{
+	if (!m_pPlayerCharacter->GetIsDeath())
+		return;
+
+
+}
+
 void CMainScene::ShowDeadlyUI()
 {
 	if (!m_pPlayer->GetIsDeadly()) {
@@ -1821,21 +1850,17 @@ void CMainScene::Update(float fDeltaTime)
 
 
 	// Particle
-	XMVECTOR offsetV = m_pCamera->GetvPosition(); XMFLOAT3 rainOffset;
-	offsetV += m_pCamera->GetvUp() * 20;
-	offsetV += m_pCamera->GetvLook() * 20;
-	XMStoreFloat3(&rainOffset, offsetV);
-	m_pRainParticle->SetEmitPosition(rainOffset);
+	XMVECTOR rainOffset = m_pCamera->GetvPosition();
+	rainOffset += m_pCamera->GetvUp() * 20;
+	rainOffset += m_pCamera->GetvLook() * 20;
+
+	m_pRainParticle->SetEmitvPosition(rainOffset);
 	m_pRainParticle->Update(fDeltaTime);
 	for (auto& system : m_vecParticleSystemContainer)
 		system->Update(fDeltaTime);
 
 	// Timer
 	CalcTime();
-
-	// UI Effect
-	ShowDeadlyAttackUI();
-	ShowDeadlyUI();
 
 	// Deferred
 	float fAdaptationNorm;
@@ -1917,7 +1942,8 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	if (GLOBAL_MGR->g_vRenderOption.y)
 		RenderBoundingBox();
 
-	m_pUIManager->RenderAll(pd3dDeviceContext);
+	// UI
+	RenderUI();
 	RenderAllText(m_pd3dDeviceContext);
 	m_pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
 
@@ -1978,24 +2004,24 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 
 	// ----- Magazine ------ //
 	str = "M16A1";
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 46, 1430, 765, 0xFFCCCCCC, FW1_LEFT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 46, 1430, 765, 0xFFCCCCCC, FW1_LEFT);
 
 	UINT nBulletCount = m_pPlayer->GetWeaponBulletCount();
 	str = to_string(nBulletCount);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 53, 1465, 823, 0xFFFFFFFF, FW1_RIGHT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 53, 1465, 823, 0xFFFFFFFF, FW1_RIGHT);
 
 	UINT nMaxBulletCount = m_pPlayer->GetWeaponMaxBulletCount();
 	str = " /  " + to_string(nMaxBulletCount);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 53, 1470, 823, 0xFFBBBBBB, FW1_LEFT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 53, 1470, 823, 0xFFBBBBBB, FW1_LEFT);
 
 	// ----- Life, ArmorPoint ----- //
 	UINT nPlayerLife = m_pPlayer->GetPlayerLife();
 	str = to_string(nPlayerLife);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 210, 743, 0xFFFFFFFF, FW1_RIGHT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 48, 210, 743, 0xFFFFFFFF, FW1_RIGHT);
 
 	UINT nPlayerArmorPoint = m_pPlayer->GetPlayerArmorPoint();
 	str = to_string(nPlayerArmorPoint);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 255, 815, 0xFFFFFFFF, FW1_RIGHT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 48, 255, 815, 0xFFFFFFFF, FW1_RIGHT);
 
 	// ----- Time ----- //
 	UINT nMinute = m_nGameTime / 60;
@@ -2004,23 +2030,29 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 		str = '0' + to_string(nMinute);
 	else
 		str = to_string(nMinute);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 793, 85, 0xFFFFFFFF, FW1_RIGHT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 48, 793, 85, 0xFFFFFFFF, FW1_RIGHT);
 
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(":"), 48, 804.3f, 85, 0xFFFFFFFF, FW1_RIGHT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, ":", 48, 804.3f, 85, 0xFFFFFFFF, FW1_RIGHT);
 
 	if (nSecond < 10)
 		str = '0' + to_string(nSecond);
 	else
 		str = to_string(nSecond);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 843, 85, 0xFFFFFFFF, FW1_RIGHT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 48, 843, 85, 0xFFFFFFFF, FW1_RIGHT);
 
 	// ----- Total Kill ----- //
 	str = to_string(m_nRedTeamTotalKill);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 60, 698, 10, 0xFF0020FF, FW1_CENTER);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 698, 10, 0xFF0020FF, FW1_CENTER);
 
 	str = to_string(m_nBlueTeamTotalKill);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 60, 913, 10, 0xFFFF4500, FW1_CENTER);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 913, 10, 0xFFFF4500, FW1_CENTER);
 
 	str = "100";
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 65, 800, 10, 0xFFFFFFFF, FW1_CENTER);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 65, 800, 10, 0xFFFFFFFF, FW1_CENTER);
+
+	// ----- Respawn ------ //
+//	if (m_pPlayerCharacter->GetIsDeath()) {
+		str = "RESPAWN";
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
+//	}
 }

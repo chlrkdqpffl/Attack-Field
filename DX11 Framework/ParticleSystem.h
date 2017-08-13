@@ -71,4 +71,5 @@ public:
 
 	// Setter
 	void SetEmitPosition(XMFLOAT3 pos) { m_f3EmitPosition = pos; }
+	void SetEmitvPosition(XMVECTOR pos) { XMStoreFloat3(&m_f3EmitPosition,pos); }
 };
