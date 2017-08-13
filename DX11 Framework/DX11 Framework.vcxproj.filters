@@ -354,6 +354,9 @@
     <ClCompile Include="WaitScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="DynamicUIMesh.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -619,6 +622,9 @@
     </ClInclude>
     <ClInclude Include="WaitScene.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicUIMesh.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5,11 +5,11 @@
 //#define FRAME_BUFFER_HEIGHT				768
 
 
-//#define DEVELOP_MODE
+#define DEVELOP_MODE
 
+//#define USE_SERVER
 #define USE_CONSOLE					// Open Console Windows
-#define USE_SERVER
-#define USE_LOOPBACKADDRESS			// auto 127.0.0.1
+//#define USE_LOOPBACKADDRESS			// auto 127.0.0.1
 
 #define USE_DEFERRD_RENDER
 
@@ -31,6 +31,8 @@
 #define SHADOW_RENDER_TARGET_HEIGHT		1024
 
 #define MAXBONECOUNT					60
+#define RESPAWN_TIME					5000	// 리스폰 시간 5초
+
 
 #define _WITH_TERRAIN_PARTITION
 #define _WITH_FRUSTUM_CULLING_BY_OBJECT

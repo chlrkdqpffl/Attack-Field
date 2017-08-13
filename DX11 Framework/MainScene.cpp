@@ -16,6 +16,10 @@ CMainScene::CMainScene()
 
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.25f, 0.25f, 0.25f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.8f, 0.8f, 0.8f);
+
+#ifdef DEVELOP_MODE
+	m_f3DirectionalAmbientUpperColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
+#endif
 }
 
 CMainScene::~CMainScene()
@@ -107,11 +111,12 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_F5:
+			{
 				m_vecParticleSystemContainer.back()->ParticleRestart();
-
+			}
 				break;
 			case VK_Z:
-			
+				m_pPlayerCharacter->SetIsDeath(true);
 				break;
 			case VK_X:
 				
@@ -419,35 +424,22 @@ void CMainScene::Initialize()
 #pragma region [Particle System]
 	
 	ID3D11ShaderResourceView* pParticleTexture = nullptr;
+	vector<MapData> vecMapData;
+	CParticleSystem* pFireParticle = nullptr;
 
-	CParticleSystem* pFireParticle = new CParticleSystem();
-	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
-	pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
-	pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
-	pFireParticle->SetEmitPosition(XMFLOAT3(60.0f, 2.5f, 10.0f));		// 불 위치 조절 필요
-	m_vecParticleSystemContainer.push_back(pFireParticle);
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pFireParticle = new CParticleSystem();
+		D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
+		pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
+		pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
 
-	pFireParticle = new CParticleSystem();
-	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
-	pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
-	pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
-	pFireParticle->SetEmitPosition(XMFLOAT3(60.0f, 2.5f, 30.0f));		// 불 위치 조절 필요
-	m_vecParticleSystemContainer.push_back(pFireParticle);
-
-	pFireParticle = new CParticleSystem();
-	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
-	pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
-	pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
-	pFireParticle->SetEmitPosition(XMFLOAT3(60.0f, 2.5f, 50.0f));		// 불 위치 조절 필요
-	m_vecParticleSystemContainer.push_back(pFireParticle);
-	
-	pFireParticle = new CParticleSystem();
-	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
-	pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
-	pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
-	pFireParticle->SetEmitPosition(XMFLOAT3(60.0f, 2.5f, 100.0f));		// 불 위치 조절 필요
-
-	m_vecParticleSystemContainer.push_back(pFireParticle);
+		XMFLOAT3 offsetPos = vecMapData[count].m_Position;
+		offsetPos.y += 1.5f;
+		offsetPos.z -= 0.5f;
+		pFireParticle->SetEmitPosition(offsetPos);
+		m_vecParticleSystemContainer.push_back(pFireParticle);
+	}
 
 	// Blood
 	CParticleSystem* pBloodParticle = new CParticleSystem();
@@ -458,18 +450,12 @@ void CMainScene::Initialize()
 
 	m_vecParticleSystemContainer.push_back(pBloodParticle);
 
-
-
-
-
-
-	/*	비 제거 - 자연스럽지 않음
-	CParticleSystem* pRainParitlcleSystem = new CParticleSystem();
+	// Rain
+	m_pRainParticle = new CParticleSystem();
 	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/raindrop.dds"), NULL, NULL, &pParticleTexture, NULL);
-	pRainParitlcleSystem->Initialize(m_pd3dDevice, pParticleTexture, pRainParitlcleSystem->CreateRandomTexture1DSRV(m_pd3dDevice), 10000);
-	pRainParitlcleSystem->CreateShader(m_pd3dDevice, L"Shader HLSL File/Rain.hlsli");
-	m_vecParticleSystemContainer.push_back(pRainParitlcleSystem);
-	*/
+	m_pRainParticle->Initialize(m_pd3dDevice, pParticleTexture, m_pRainParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 5000, STATEOBJ_MGR->g_pFireBS);
+	m_pRainParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Rain.hlsli");
+	
 #pragma endregion
 
 //	CreateMapDataObject();
@@ -769,43 +755,8 @@ void CMainScene::CreateMapDataObject()
 
 		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
-
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eParkingLot);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pObject = new CGameObject();
-		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eParkingLot, vecMapData[count].m_Scale);
-		pFbxMesh->Initialize(m_pd3dDevice);
-
-		pObject->SetMaterial(1, TextureTag::eParkingLotD);
-		pObject->SetMesh(pFbxMesh);
-		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation);
-
-		pObject->CreateBoundingBox(m_pd3dDevice);
-
-		AddShaderObject(ShaderTag::eNormalTexture, pObject);
-	}
 #pragma endregion
 	
-#pragma region [Bench]
-	// ==============================   Road   ============================== //
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBench);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pObject = new CGameObject();
-		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eBench, vecMapData[count].m_Scale);
-		pFbxMesh->Initialize(m_pd3dDevice);
-
-		pObject->SetMaterial(1, TextureTag::eBenchD);
-		pObject->SetMesh(pFbxMesh);
-		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation);
-
-		pObject->CreateBoundingBox(m_pd3dDevice);
-
-		AddShaderObject(ShaderTag::eNormalTexture, pObject);
-	}
-#pragma endregion
-
 #pragma region [Grass]
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eGrass);
 	for (int count = 0; count < vecMapData.size(); ++count) {
@@ -817,25 +768,6 @@ void CMainScene::CreateMapDataObject()
 		pObject->SetPosition(vecMapData[count].m_Position);
 		//pObject->Rotate(vecMapData[count].m_Rotation);
 
-		pObject->CreateBoundingBox(m_pd3dDevice);
-
-		AddShaderObject(ShaderTag::eNormalTexture, pObject);
-	}
-#pragma endregion
-
-#pragma region [Busstop]
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBusStop);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pObject = new CGameObject();
-		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eBusStop, vecMapData[count].m_Scale);
-		pFbxMesh->Initialize(m_pd3dDevice);
-
-		pObject->SetMaterial(1, TextureTag::eBusStopD);
-		pObject->SetMesh(pFbxMesh);
-		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation);
-	
-		pObject->CreateAxisObject(m_pd3dDevice);
 		pObject->CreateBoundingBox(m_pd3dDevice);
 
 		AddShaderObject(ShaderTag::eNormalTexture, pObject);
@@ -1180,47 +1112,6 @@ void CMainScene::CreateMapDataInstancingObject()
 
 		AddShaderObject(ShaderTag::eNormalTexture, pObject);
 	}
-
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eParkingLot);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pObject = new CGameObject();
-		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eParkingLot, vecMapData[count].m_Scale);
-		pFbxMesh->Initialize(m_pd3dDevice);
-
-		pObject->SetMaterial(1, TextureTag::eParkingLotD);
-		pObject->SetMesh(pFbxMesh);
-		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation);
-
-		pObject->CreateBoundingBox(m_pd3dDevice);
-
-		AddShaderObject(ShaderTag::eNormalTexture, pObject);
-	}
-#pragma endregion
-
-#pragma region [Bench]
-	// Bench
-	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eBench).size());
-
-	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eBench);
-	pFbxMesh->Initialize(m_pd3dDevice);
-	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eBenchD);
-	pInstancingShaders->BuildObjects(m_pd3dDevice);
-	pInstancingShaders->CreateShader(m_pd3dDevice);
-
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBench);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pObject = new CGameObject();
-		pObject->SetMesh(pFbxMesh);
-		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation);
-		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
-
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);
-		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
-	}
-	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 #pragma endregion
 
 #pragma region [Grass]
@@ -1265,38 +1156,12 @@ void CMainScene::CreateMapDataInstancingObject()
 	}
 #pragma endregion
 
-#pragma region [Busstop]
-	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eBusStop).size());
-
-	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eBusStop);
-	pFbxMesh->Initialize(m_pd3dDevice);
-	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eBusStopD);
-	pInstancingShaders->BuildObjects(m_pd3dDevice);
-	pInstancingShaders->CreateShader(m_pd3dDevice);
-
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBusStop);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pObject = new CGameObject();
-		pObject->SetMesh(pFbxMesh);
-		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation);
-		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
-
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);
-		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
-	}
-	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
-#pragma endregion
-
 #pragma region [Street Lamp]
-	/*
-	// 텍스쳐가 없어서 현재는 인스턴싱을 안쓰고 있음 - FBX Mesh는 텍스쳐까지 포함된 버퍼를 가지므로
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp).size());
-
 	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eStreetLamp);
-	pFbxMesh->Initialize(m_pd3dDevice);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
 	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eStreetLampD, TextureTag::eStreetLampN);
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
 
@@ -1308,27 +1173,11 @@ void CMainScene::CreateMapDataInstancingObject()
 		pObject->Rotate(vecMapData[count].m_Rotation);
 		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormal, pObject);
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
 		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
-#pragma endregion
-	*/
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pObject = new CGameObject();
-		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eStreetLamp, vecMapData[count].m_Scale);
-		pFbxMesh->Initialize(m_pd3dDevice);
 
-		pObject->SetMesh(pFbxMesh);
-		pObject->CreateAxisObject(m_pd3dDevice);
-		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation);
-
-		pObject->CreateBoundingBox(m_pd3dDevice);
-
-		AddShaderObject(ShaderTag::eNormal, pObject);
-	}
 #pragma endregion
 
 #pragma region [Barricade]
@@ -1401,14 +1250,14 @@ void CMainScene::CreateMapDataInstancingObject()
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 #pragma endregion
-
+	
 #pragma region [StoneWall]
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall);
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall).size());
 	pMesh = new CCubeMeshTexturedTangenteIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
 
 	pInstancingShaders->SetMesh(pMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eStoneWallD);
+	pInstancingShaders->SetMaterial(2, TextureTag::eStoneWallD, TextureTag::eStoneWallN);
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
 
@@ -1424,6 +1273,252 @@ void CMainScene::CreateMapDataInstancingObject()
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 #pragma endregion
+
+#pragma region [Container]
+	// Container 1
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer1Red).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer1);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerRedD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer1Red);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer1Blue).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer1);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerBlueD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer1Blue);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer1Yellow).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer1);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerYellowD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer1Yellow);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	
+	// Container 2
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer2Red).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer2);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerRedD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer2Red);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer2Blue).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer2);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerBlueD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer2Blue);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer2Yellow).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer2);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerYellowD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer2Yellow);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	// Container 3
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer3Red).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer3);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerRedD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer3Red);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer3Blue).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer3);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerBlueD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer3Blue);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer3Yellow).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer3);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerYellowD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer3Yellow);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+	
+#pragma endregion
+
+#pragma region [Barrel]
+	// Fire Barrel 1
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eFireBarrel);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eFireBarrelD, TextureTag::eFireBarrelN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	// Barrel
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eBarrel).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eBarrel);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eBarrelD, TextureTag::eBarrelN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBarrel);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+#pragma endregion
+
+
 }
 
 void CMainScene::CreateTestingObject()
@@ -1532,8 +1627,8 @@ void CMainScene::CreateUIImage()
 	pUIObject = new CUIObject(TextureTag::eAim);
 	POINT aimingPos = POINT{ FRAME_BUFFER_WIDTH / 2 + 3, FRAME_BUFFER_HEIGHT / 2 - 22};		// 오프셋 (3, -14)			// +가 오른쪽, +가 아래쪽
 	pUIObject->Initialize(m_pd3dDevice, POINT{ aimingPos.x - 20, aimingPos.y - 20 }, POINT{ aimingPos.x + 20, aimingPos.y + 20 }, 0.0f);
-	m_pUIManager->AddUIObject(pUIObject);
 	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
 	
 	// Score
 	pUIObject = new CUIObject(TextureTag::eScoreUI);
@@ -1556,6 +1651,18 @@ void CMainScene::CreateUIImage()
 	pUIObject->AddOpacity(-1.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 	m_pDamageUI = pUIObject;
+
+	// Respawn Gage
+	pUIObject = new CUIObject(TextureTag::eRespawnGage);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 305, FRAME_BUFFER_HEIGHT / 2 + 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 305 , FRAME_BUFFER_HEIGHT / 2 + 65 }, 0.1f);
+	pUIObject->AddOpacity(-0.3f);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eRespawnGageWhite);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 + 43 }, POINT{ FRAME_BUFFER_WIDTH / 2 - 300 , FRAME_BUFFER_HEIGHT / 2 + 62 }, 0.0f, true);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
 }
 
 void CMainScene::ReleaseObjects()
@@ -1570,6 +1677,7 @@ void CMainScene::ReleaseObjects()
 
 	m_pLightManager->DeInitialize();
 
+	SafeDelete(m_pRainParticle);
 	for (auto& system : m_vecParticleSystemContainer)
 		SafeDelete(system);
 }
@@ -1743,6 +1851,35 @@ void CMainScene::CalcTime()
 	}
 }
 
+void CMainScene::RenderUI()
+{
+	m_pUIManager->RenderAll(m_pd3dDeviceContext);
+
+	ShowDeadlyAttackUI();
+	ShowDeadlyUI();
+	ShowRespawnUI();
+}
+
+void CMainScene::ShowRespawnUI()
+{
+	CUIObject* pGageUI = m_pUIManager->GetUIObject(TextureTag::eRespawnGage);
+	CUIObject* pWhiteGageUI = m_pUIManager->GetUIObject(TextureTag::eRespawnGageWhite);
+
+	if (!m_pPlayerCharacter->GetIsDeath()) {
+		pWhiteGageUI->SetActive(false);
+		pGageUI->SetActive(false);
+		return;
+	}
+
+	pGageUI->SetActive(true);
+	pWhiteGageUI->SetActive(true);
+
+	const UINT gageLength = 600;	// UI x축 길이 600 
+	float percentage = (float)(GetTickCount() - m_pPlayerCharacter->GetDeathTime()) / RESPAWN_TIME;
+
+	pWhiteGageUI->SetEndPos(POINT{ FRAME_BUFFER_WIDTH / 2 - 300 + (LONG)(percentage * gageLength), FRAME_BUFFER_HEIGHT / 2 + 62 });
+}
+
 void CMainScene::ShowDeadlyUI()
 {
 	if (!m_pPlayer->GetIsDeadly()) {
@@ -1823,15 +1960,17 @@ void CMainScene::Update(float fDeltaTime)
 
 
 	// Particle
+	XMVECTOR rainOffset = m_pCamera->GetvPosition();
+	rainOffset += m_pCamera->GetvUp() * 20;
+	rainOffset += m_pCamera->GetvLook() * 20;
+
+	m_pRainParticle->SetEmitvPosition(rainOffset);
+	m_pRainParticle->Update(fDeltaTime);
 	for (auto& system : m_vecParticleSystemContainer)
 		system->Update(fDeltaTime);
 
 	// Timer
 	CalcTime();
-
-	// UI Effect
-	ShowDeadlyAttackUI();
-	ShowDeadlyUI();
 
 	// Deferred
 	float fAdaptationNorm;
@@ -1888,6 +2027,8 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	m_GBuffer->DeferredRender(pd3dDeviceContext);
 	m_pLightManager->DoLighting(pd3dDeviceContext);
 
+	// Particle
+	m_pRainParticle->Render(m_pd3dDeviceContext);
 	for (auto& system : m_vecParticleSystemContainer)
 		system->Render(m_pd3dDeviceContext);
 
@@ -1911,7 +2052,8 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	if (GLOBAL_MGR->g_vRenderOption.y)
 		RenderBoundingBox();
 
-	m_pUIManager->RenderAll(pd3dDeviceContext);
+	// UI
+	RenderUI();
 	RenderAllText(m_pd3dDeviceContext);
 	m_pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
 
@@ -1972,24 +2114,24 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 
 	// ----- Magazine ------ //
 	str = "M16A1";
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 46, 1430, 765, 0xFFCCCCCC, FW1_LEFT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 46, 1430, 765, 0xFFCCCCCC, FW1_LEFT);
 
 	UINT nBulletCount = m_pPlayer->GetWeaponBulletCount();
 	str = to_string(nBulletCount);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 53, 1465, 823, 0xFFFFFFFF, FW1_RIGHT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 53, 1465, 823, 0xFFFFFFFF, FW1_RIGHT);
 
 	UINT nMaxBulletCount = m_pPlayer->GetWeaponMaxBulletCount();
 	str = " /  " + to_string(nMaxBulletCount);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 53, 1470, 823, 0xFFBBBBBB, FW1_LEFT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 53, 1470, 823, 0xFFBBBBBB, FW1_LEFT);
 
 	// ----- Life, ArmorPoint ----- //
 	UINT nPlayerLife = m_pPlayer->GetPlayerLife();
 	str = to_string(nPlayerLife);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 210, 743, 0xFFFFFFFF, FW1_RIGHT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 48, 210, 743, 0xFFFFFFFF, FW1_RIGHT);
 
 	UINT nPlayerArmorPoint = m_pPlayer->GetPlayerArmorPoint();
 	str = to_string(nPlayerArmorPoint);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 255, 815, 0xFFFFFFFF, FW1_RIGHT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 48, 255, 815, 0xFFFFFFFF, FW1_RIGHT);
 
 	// ----- Time ----- //
 	UINT nMinute = m_nGameTime / 60;
@@ -1998,23 +2140,29 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 		str = '0' + to_string(nMinute);
 	else
 		str = to_string(nMinute);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 793, 85, 0xFFFFFFFF, FW1_RIGHT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 48, 793, 85, 0xFFFFFFFF, FW1_RIGHT);
 
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(":"), 48, 804.3f, 85, 0xFFFFFFFF, FW1_RIGHT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, ":", 48, 804.3f, 85, 0xFFFFFFFF, FW1_RIGHT);
 
 	if (nSecond < 10)
 		str = '0' + to_string(nSecond);
 	else
 		str = to_string(nSecond);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 48, 843, 85, 0xFFFFFFFF, FW1_RIGHT);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 48, 843, 85, 0xFFFFFFFF, FW1_RIGHT);
 
 	// ----- Total Kill ----- //
 	str = to_string(m_nRedTeamTotalKill);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 60, 698, 10, 0xFF0020FF, FW1_CENTER);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 698, 10, 0xFF0020FF, FW1_CENTER);
 
 	str = to_string(m_nBlueTeamTotalKill);
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 60, 913, 10, 0xFFFF4500, FW1_CENTER);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 913, 10, 0xFFFF4500, FW1_CENTER);
 
 	str = "100";
-	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 65, 800, 10, 0xFFFFFFFF, FW1_CENTER);
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 65, 800, 10, 0xFFFFFFFF, FW1_CENTER);
+
+	// ----- Respawn ------ //
+	if (m_pPlayerCharacter->GetIsDeath()) {
+		str = "RESPAWN";
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
+	}
 }

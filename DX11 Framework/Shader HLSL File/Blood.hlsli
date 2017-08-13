@@ -20,12 +20,12 @@ void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTIC
         if (input[0].age > 0.005f)
         {
             float3 vRandom = RandUnitVec3(0.0f);
-            vRandom.x *= 0.5f;
-            vRandom.z *= 0.5f;
+   //         vRandom.x *= 0.5f;
+   //         vRandom.z *= 0.5f;
 
             PARTICLE_INPUT particle = (PARTICLE_INPUT) 0;
             particle.position = gvParticleEmitPosition.xyz;
-            particle.velocity = 10.0f * vRandom;
+            particle.velocity = 5.0f * vRandom;
   //          particle.velocity = g_f4Var.z * vRandom;
            // particle.size = float2(0.5f, 0.5f);
             particle.size = float2(1.0f, 1.0f);
@@ -56,7 +56,7 @@ PARTICLE_OUTPUT VSParticleDraw(PARTICLE_INPUT input)
 //    output.position = (0.5f * t * t * accel) + (t * input.velocity) + input.position;
     
 
-    float fOpacity = 1.0f - smoothstep(0.0f, 1.0f, t * 2);
+    float fOpacity = 1.0f - smoothstep(0.0f, 1.0f, t * 2.5f);
   //  float fOpacity = 1.0f - smoothstep(0.0f, 1.0f, t);
 
     output.color = float4(1.0f, 1.0f, 1.0f, fOpacity);

@@ -250,6 +250,13 @@ void CGameObject::Move(XMFLOAT3 vPos, bool isLocal)
 
 void CGameObject::Rotate(float fPitch, float fYaw, float fRoll, bool isLocal)
 {
+	if (fPitch >= 360)
+		fPitch = fPitch - 360;
+	if (fYaw >= 360)
+		fYaw = fYaw - 360;
+	if (fRoll >= 360)
+		fRoll = fRoll - 360;
+
 	XMMATRIX mtxRotate;
 	mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fPitch), 
 		XMConvertToRadians(fYaw), XMConvertToRadians(fRoll));
@@ -268,8 +275,6 @@ void CGameObject::Rotate(XMFLOAT3 fAngle, bool isLocal)
 		fAngle.y = fAngle.y - 360;
 	if (fAngle.z >= 360)
 		fAngle.z = fAngle.z - 360;
-
-
 
 	XMMATRIX mtxRotate;
 	mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fAngle.x),
