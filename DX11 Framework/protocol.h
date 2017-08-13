@@ -219,8 +219,10 @@ struct cs_temp_exit
 {
 	BYTE size;
 	BYTE type;
-
 };
+
+
+
 
 struct cs_login
 {
@@ -242,13 +244,19 @@ struct SC_login_CONNECT
 	bool connect;
 };
 
-struct sc_temp_exit
+
+
+struct sc_input_game
 {
-	BYTE id;
 	BYTE size;
 	BYTE type;
 };
 
+struct cs_create_charter
+{
+	BYTE size;
+	BYTE type;
+};
 
 
 #pragma pack(pop)

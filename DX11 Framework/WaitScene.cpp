@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "WaitScene.h"
-
+#include "protocol.h"
 
 
 CWaitScene::CWaitScene()
@@ -93,8 +93,23 @@ void CWaitScene::IsCollisionUI(POINT mousePos , HWND hwnd)
 {
 	switch (m_tagCursorSelectUI) {
 	case TextureTag::eDeath:
-	
+
+#ifdef USE_SERVER
+		cs_Gamemode packet;
+		packet.size = sizeof(cs_Gamemode);
+		packet.mode = 1;
+		packet.type = 5;
+
+		if (!m_mouseclick)
+		{
+			SERVER_MGR->Sendpacket(reinterpret_cast<BYTE*>(&packet));
+			m_mouseclick = true;
+		}
+#else
 		SCENE_MGR->ChangeScene(SceneTag::eLoadingScene);
+#endif
+	
+		
 
 		break;
 

@@ -33,7 +33,7 @@ void CServerManager::processpacket(char *ptr)
 		sc_packet_pos*         my_Pos_packet;
 		my_Pos_packet = reinterpret_cast<sc_packet_pos *>(ptr);
 		id = my_Pos_packet->id;
-
+		cout << id << endl;
 		if (id == m_myid)
 		{
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(my_Pos_packet->hp);
@@ -61,7 +61,7 @@ void CServerManager::processpacket(char *ptr)
 		sc_packet_put_player*   my_put_packet;
 		my_put_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
 		id = my_put_packet->id;
-
+		cout << id << endl;
 		if (first_time)
 		{
 			m_myid = id;
@@ -122,7 +122,6 @@ void CServerManager::processpacket(char *ptr)
 		SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(my_put_packet->RED));
 		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(my_put_packet->Blue));
 
-		cout << my_put_packet->x<<" "<< my_put_packet->y<<" " <<my_put_packet->z << endl;
 	}
 
 
@@ -366,6 +365,18 @@ void CServerManager::processpacket(char *ptr)
 
 		break;
 	}
+
+	case 15:
+	{
+		SCENE_MGR->ChangeScene(SceneTag::eLoadingScene);
+		
+		cs_create_charter sendpacket;
+
+		sendpacket.size = sizeof(cs_create_charter);
+		sendpacket.type = 8;
+		break;
+	}
+	
 	default:
 		std::cout << "Unknown PACKET type :" << (int)ptr[1] << "\n";
 		break;
