@@ -733,5 +733,8 @@
     <None Include="Shader HLSL File\Blood.hlsli">
       <Filter>HLSL\Particle</Filter>
     </None>
+    <None Include="Shader HLSL File\ShadowGen.hlsli">
+      <Filter>HLSL\Deferred\Light</Filter>
+    </None>
   </ItemGroup>
 </Project>

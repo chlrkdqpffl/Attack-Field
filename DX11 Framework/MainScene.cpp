@@ -5,21 +5,21 @@
 CMainScene::CMainScene()
 {
 	m_tagScene = SceneTag::eMainScene;
-	TWBAR_MGR->g_xmf3SelectObjectRotate = XMFLOAT3(45, 40, 30);
-	//TWBAR_MGR->g_xmf3SelectObjectRotate = XMFLOAT3(20, 85, 30);
+	TWBAR_MGR->g_xmf3SelectObjectRotate = XMFLOAT3(40, 60, 50);
 	TWBAR_MGR->g_xmf3SelectObjectPosition = XMFLOAT3(56, 10, 23);
 
-	m_f3DirectionalColor = XMFLOAT3(0.85f, 0.8f, 0.8f);
+	m_f3DirectionalColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	m_f3DirectionalDirection = XMFLOAT3(1.0f, -1.0f, 1.0f);
 //	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 //	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 
-	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.25f, 0.25f, 0.25f);
-	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.8f, 0.8f, 0.8f);
+	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 #ifdef DEVELOP_MODE
-	m_f3DirectionalAmbientUpperColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//m_f3DirectionalAmbientUpperColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
 #endif
+
 }
 
 CMainScene::~CMainScene()
@@ -362,14 +362,14 @@ void CMainScene::Initialize()
 	m_vecBBoxRenderContainer.push_back(m_pPlayerCharacter);
 	m_vecCharacterContainer.push_back(m_pPlayerCharacter);
 
-
-
+#ifdef USE_SERVER
 	cs_create_charter packet;
 
 	packet.size = sizeof(cs_create_charter);
 	packet.type = 8;
 
 	SERVER_MGR->Sendpacket(reinterpret_cast<BYTE *>(&packet));
+#endif
 
 #pragma endregion 
 
@@ -1749,6 +1749,7 @@ void CMainScene::UpdateConstantBuffers(LIGHTS *pLights)
 	m_pd3dDeviceContext->Unmap(m_pd3dcbTestVariable, 0);
 	m_pd3dDeviceContext->VSSetConstantBuffers(CB_SLOT_TEST, 1, &m_pd3dcbTestVariable);
 	m_pd3dDeviceContext->GSSetConstantBuffers(CB_SLOT_TEST, 1, &m_pd3dcbTestVariable);
+	m_pd3dDeviceContext->PSSetConstantBuffers(CB_SLOT_TEST, 1, &m_pd3dcbTestVariable);
 }
 
 void CMainScene::ReleaseConstantBuffers()
@@ -1768,7 +1769,6 @@ void CMainScene::CreateLights()
 	XMFLOAT3 pos;
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
 	
-	
 	for (auto light : vecMapData) {
 		pos = light.m_Position;
 		pos.y += 10;
@@ -1776,6 +1776,7 @@ void CMainScene::CreateLights()
 		m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
 	}
 	
+
 	// Player above Light
 	/*
 	XMStoreFloat3(&pos, m_pPlayer->GetvLook() * TWBAR_MGR->g_xmf3Offset.x);
@@ -1943,7 +1944,7 @@ void CMainScene::Update(float fDeltaTime)
 	// 충돌 정보 갱신
 	COLLISION_MGR->InitCollisionInfo();
 	COLLISION_MGR->UpdateManager();
-	
+
 	GLOBAL_MGR->UpdateManager();
 
 	CScene::Update(fDeltaTime);
@@ -1957,8 +1958,8 @@ void CMainScene::Update(float fDeltaTime)
 	if (m_pLights && m_pd3dcbLights)
 	{
 		XMFLOAT3 f3vCameraPosition = m_pCamera->GetPosition();
-//		XMStoreFloat4(&m_pLights->m_d3dxvCameraPosition, XMVectorSet(f4vCameraPosition.x, f4vCameraPosition.y, f4vCameraPosition.z, 1.0f));
-		
+		//		XMStoreFloat4(&m_pLights->m_d3dxvCameraPosition, XMVectorSet(f4vCameraPosition.x, f4vCameraPosition.y, f4vCameraPosition.z, 1.0f));
+
 		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvPosition, m_pPlayer->GetvPosition());
 		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvDirection, m_pPlayer->GetvLook());
 
@@ -1969,7 +1970,7 @@ void CMainScene::Update(float fDeltaTime)
 	// Light Shader Update
 //	if (m_pLights && m_pd3dcbLights) UpdateConstantBuffers(m_pLights);
 	UpdateConstantBuffers(nullptr);
-	
+
 	m_pLightManager->SetAmbient(m_f3DirectionalAmbientLowerColor, m_f3DirectionalAmbientUpperColor);
 	m_pLightManager->SetDirectional(m_f3DirectionalDirection, m_f3DirectionalColor);
 
@@ -2001,9 +2002,9 @@ void CMainScene::Update(float fDeltaTime)
 		// Normalize the adaptation time with the frame time (all in seconds)
 		// Never use a value higher or equal to 1 since that means no adaptation at all (keeps the old value)
 		fAdaptationNorm = min(TWBAR_MGR->g_OptionHDR.g_fAdaptation < 0.0001f ? 1.0f : fDeltaTime / TWBAR_MGR->g_OptionHDR.g_fAdaptation, 0.9999f);
-	//	fAdaptationNorm = fDeltaTime / 3;			// 1부터 10까지가 샘플 프로그램임
+		//	fAdaptationNorm = fDeltaTime / 3;			// 1부터 10까지가 샘플 프로그램임
 	}
-	m_PostFX->SetParameters(TWBAR_MGR->g_OptionHDR.g_fMiddleGrey, TWBAR_MGR->g_OptionHDR.g_fWhite, fAdaptationNorm, 
+	m_PostFX->SetParameters(TWBAR_MGR->g_OptionHDR.g_fMiddleGrey, TWBAR_MGR->g_OptionHDR.g_fWhite, fAdaptationNorm,
 		TWBAR_MGR->g_OptionHDR.g_fBloomThreshold, TWBAR_MGR->g_OptionHDR.g_fBloomScale, TWBAR_MGR->g_OptionHDR.g_fDOFFarStart, TWBAR_MGR->g_OptionHDR.g_fDOFFarRange);
 	m_pLightManager->ClearLights();
 	CreateLights();
@@ -2023,11 +2024,9 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	// ------ Start Scene Rendering ------ // 
 	CScene::Render(pd3dDeviceContext, pCamera);
 
-//	for (auto& system : m_vecParticleSystemContainer)
-//		system->Render(m_pd3dDeviceContext);
-
 	for (auto& object : m_vecCharacterContainer)
-		object->Render(m_pd3dDeviceContext, m_pCamera);
+		if(object->IsVisible(pCamera))
+			object->Render(m_pd3dDeviceContext, m_pCamera);
 
 	// ------ End Scene Rendering ------ //
 	m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
@@ -2040,7 +2039,7 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 
 	// ------ Final Scene Rendering ------ //
 	m_GBuffer->DeferredRender(pd3dDeviceContext);
-	m_pLightManager->DoLighting(pd3dDeviceContext);
+	m_pLightManager->DoLighting(pd3dDeviceContext, pCamera);
 
 	// Particle
 	m_pRainParticle->Render(m_pd3dDeviceContext);

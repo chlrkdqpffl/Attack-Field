@@ -31,6 +31,11 @@ cbuffer cbFog : register(b2)
 
 static const float2 g_SpecPowerRange = { 10.0, 250.0 };
 
+cbuffer cbTestVariable : register(b11) // VS, GS, PS Buffer
+{
+    float4 g_f4Var : packoffset(c0);
+};
+
 
 struct SURFACE_DATA
 {
@@ -113,6 +118,7 @@ void MaterialFromGBuffer(SURFACE_DATA gbd, inout Material mat)
     mat.diffuseColor.xyz = gbd.Color;
     mat.diffuseColor.w = 1.0; // Fully opaque
     mat.specPow = g_SpecPowerRange.x + g_SpecPowerRange.y * gbd.SpecPow;
+  
     mat.specIntensity = gbd.SpecIntensity;
 }
 

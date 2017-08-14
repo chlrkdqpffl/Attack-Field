@@ -384,6 +384,7 @@
     <None Include="Shader HLSL File\PostFX.hlsli" />
     <None Include="Shader HLSL File\PostProcessing.hlsli" />
     <None Include="Shader HLSL File\Rain.hlsli" />
+    <None Include="Shader HLSL File\ShadowGen.hlsli" />
     <None Include="Shader HLSL File\SpotLight.hlsli" />
     <None Include="Shader HLSL File\Terrain.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

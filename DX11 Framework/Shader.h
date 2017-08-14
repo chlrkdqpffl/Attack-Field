@@ -51,6 +51,7 @@ protected:
 public:
 	static void CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader, D3D11_INPUT_ELEMENT_DESC *pd3dInputElements, UINT nElements, ID3D11InputLayout **ppd3dInputLayout);
 	static void CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader);
+	static void CreateLayoutFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, D3D11_INPUT_ELEMENT_DESC *pd3dInputElements, UINT nElements, ID3D11InputLayout **ppd3dInputLayout);
 	static void CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11PixelShader **ppd3dPixelShader);
 	static void CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader);
 	static void CreateComputeShaderFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11ComputeShader **ppd3dComputeShader);

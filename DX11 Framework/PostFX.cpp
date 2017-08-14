@@ -179,9 +179,9 @@ void CPostFX::Initialize(ID3D11Device* pDevice, UINT width, UINT height)
 	HR(pDevice->CreateBuffer(&bufferDesc, NULL, &m_pFinalPassCB));
 	DXUT_SetDebugName(m_pFinalPassCB, "PostFX - Final Pass CB");
 
-	bufferDesc.ByteWidth = sizeof(TBlurCB);
-	HR(pDevice->CreateBuffer(&bufferDesc, NULL, &m_pBlurCB));
-	DXUT_SetDebugName(m_pBlurCB, "PostFX - Blur CB");
+//	bufferDesc.ByteWidth = sizeof(TBlurCB);
+//	HR(pDevice->CreateBuffer(&bufferDesc, NULL, &m_pBlurCB));
+//	DXUT_SetDebugName(m_pBlurCB, "PostFX - Blur CB");
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Create ShaderFile

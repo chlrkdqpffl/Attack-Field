@@ -20,7 +20,7 @@ Max Resource(Texture, Buffer)	: 128
 #define VS_CB_SLOT_TERRAIN					0x03
 #define VS_CB_SLOT_SKYBOX					0x04
 #define VS_CB_SLOT_PROJECTION				0x05
-#define VS_CB_SLOT_SHADOW					0x06
+#define VS_CB_SLOT_SHADOWGEN				0x06
 #define VS_CB_SLOT_BONETRANSFORM			0x07
 #define CB_SLOT_CAMERA_POSITION				10
 
@@ -39,6 +39,7 @@ Max Resource(Texture, Buffer)	: 128
 // Computer Shader
 #define CS_SLOT_WEIGHTS						0x00
 #define CS_CB_SLOT_DownScale				0x01
+
 // Pixel Shader
 //#define PS_CB_SLOT_LIGHT					0x00
 #define PS_CB_SLOT_MATERIAL					0x01
@@ -51,7 +52,7 @@ Max Resource(Texture, Buffer)	: 128
 #define PS_CB_SLOT_PARTICLE					0x09
 
 
-#define CB_SLOT_TEST						0x03
+#define CB_SLOT_TEST						0x0B
 
 
 // ============================================ //
@@ -72,12 +73,13 @@ Max Resource(Texture, Buffer)	: 128
 //		PS_TEXTURE_SLOT_TERRAIN_NORMAL		0x06
 //		PS_TEXTURE_SLOT_TERRAIN_HEIGHT		0x07
 
+#define PS_TEXTURE_SLOT_SHADOWMAP			0x08
+
 #define PS_TEXTURE_SLOT_SKYBOX				0x0D
-#define PS_TEXTURE_SLOT_CUBEMAPPED			0x0E
-#define PS_TEXTURE_SLOT_PROJECTION			0x0F
-#define PS_TEXTURE_SLOT_PROJECTED_DEPTH		0x10
-#define PS_TEXTURE_SLOT_SHADOW				0x11
-#define PS_TEXTURE_SLOT_SCREEN				0x12
+//#define PS_TEXTURE_SLOT_CUBEMAPPED			0x0E
+//#define PS_TEXTURE_SLOT_PROJECTION			0x0F
+//#define PS_TEXTURE_SLOT_PROJECTED_DEPTH		0x10
+//#define PS_TEXTURE_SLOT_SCREEN				0x12
 #define PS_TEXTRUE_SLOT_GBUFFER				19
 
 // Sampler
@@ -86,6 +88,4 @@ Max Resource(Texture, Buffer)	: 128
 #define PS_SAMPLER_SLOT_TERRAIN				0x02
 //		PS_SAMPLER_SLOT_TERRAINDETAIL		0x03
 #define PS_SAMPLER_SLOT_SKYBOX				0x04
-#define PS_SAMPLER_SLOT_CUBEMAPPED			0x05
-#define PS_SAMPLER_SLOT_PROJECTION			0x06
-#define PS_SAMPLER_SLOT_SHADOW				0x07
+#define PS_SAMPLER_SLOT_SHADOWPCF			0x05

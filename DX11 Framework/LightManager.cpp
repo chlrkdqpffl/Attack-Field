@@ -174,7 +174,7 @@ void CLightManager::DeInitialize()
 	ReleaseCOM(m_pWireframeRS);
 }
 
-void CLightManager::DoLighting(ID3D11DeviceContext* pd3dImmediateContext)
+void CLightManager::DoLighting(ID3D11DeviceContext* pd3dImmediateContext, CCamera *pCamera)
 {
 	// Store the previous depth state
 	ID3D11DepthStencilState* pPrevDepthState;
@@ -205,8 +205,12 @@ void CLightManager::DoLighting(ID3D11DeviceContext* pd3dImmediateContext)
 	pd3dImmediateContext->RSGetState(&pPrevRSState);
 	pd3dImmediateContext->RSSetState(m_pNoDepthClipFrontRS);
 
-	// Do the rest of the lights
+	//int count = 0;
+	// 절두체 컬링이 스피어라서 제대로 안됨
 	for (auto light : m_arrLights) {
+		if (!pCamera->IsInFrustum(&light.m_bsBoundingSphere))
+			continue;
+	//	count++;
 		if (light.eLightType == TYPE_POINT)
 			PointLight(pd3dImmediateContext, light.vPosition, light.fRange, light.vColor, false);
 		else if (light.eLightType == TYPE_SPOT)
@@ -215,7 +219,8 @@ void CLightManager::DoLighting(ID3D11DeviceContext* pd3dImmediateContext)
 			CapsuleLight(pd3dImmediateContext, light.vPosition, light.vDirection, light.fRange, light.fLength, light.vColor, false);
 	}
 
-	// Restore the states
+	//cout << "현재 보이는 조명 갯수 : " << count << endl;
+
 	pd3dImmediateContext->OMSetBlendState(pPrevBlendState, prevBlendFactor, prevSampleMask);
 	ReleaseCOM(pPrevBlendState);
 	pd3dImmediateContext->RSSetState(pPrevRSState);
@@ -231,7 +236,7 @@ void CLightManager::DoLighting(ID3D11DeviceContext* pd3dImmediateContext)
 
 	// Cleanup
 	ZeroMemory(arrViews, sizeof(arrViews));
-	pd3dImmediateContext->PSSetShaderResources(0, 4, arrViews);
+	pd3dImmediateContext->PSSetShaderResources(PS_TEXTRUE_SLOT_GBUFFER, 4, arrViews);
 }
 
 void CLightManager::DrawLightVolume(ID3D11DeviceContext* pd3dImmediateContext)
@@ -295,7 +300,7 @@ void CLightManager::DirectionalLight(ID3D11DeviceContext* pd3dImmediateContext)
 
 	// Cleanup
 	ID3D11ShaderResourceView *arrRV[1] = { NULL };
-	pd3dImmediateContext->PSSetShaderResources(4, 1, arrRV);
+//	pd3dImmediateContext->PSSetShaderResources(4, 1, arrRV);
 	pd3dImmediateContext->VSSetShader(NULL, NULL, 0);
 	pd3dImmediateContext->PSSetShader(NULL, NULL, 0);
 	pd3dImmediateContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -371,10 +376,6 @@ void CLightManager::SpotLight(ID3D11DeviceContext* pd3dImmediateContext, const X
 	XMMATRIX mView = SCENE_MGR->g_pCamera->GetViewMatrix();
 	XMMATRIX mProj = SCENE_MGR->g_pCamera->GetProjectionMatrix();
 	XMMATRIX mWorldViewProjection = mLightWorldScale * m_LightWorldTransRotate * mView * mProj;
-
-	//	cout << "뷰 : ";  ShowXMMatrix(mView);
-	//	cout << "프로젝션: ";  ShowXMMatrix(mView);
-	// 	cout << "----------------------------"<<endl;
 
 	// Write the matrix to the domain shader constant buffer
 	D3D11_MAPPED_SUBRESOURCE MappedResource;

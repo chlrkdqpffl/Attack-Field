@@ -29,7 +29,7 @@ cbuffer cbViewMatrix : register(b2) // GS Buffer
     matrix gmtxProjection : packoffset(c4);
 };
 
-cbuffer cbTestVariable : register(b3)   // VS, GS Buffer
+cbuffer cbTestVariable : register(b11)   // VS, GS, PS Buffer
 {
     float4 g_f4Var : packoffset(c0);
 };

@@ -55,8 +55,6 @@ void CAntTweakBarManager::InitializeManager()
 	CreateTessOption();
 	CreateHDROption();
 
-
-
 	// Test Variable
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Test Var X", TW_TYPE_FLOAT, &g_xmf4TestVariable.x, "step=0.2");
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Test Var Y", TW_TYPE_FLOAT, &g_xmf4TestVariable.y, "step=0.2");
@@ -109,11 +107,11 @@ void CAntTweakBarManager::CreateHDROption()
 
 	TwDefine("TweakBar/HDR opened = false ");
 
-	g_OptionHDR.g_fMiddleGrey = 1.0f;
-	g_OptionHDR.g_fWhite = 2.0f;
+	g_OptionHDR.g_fMiddleGrey = 2.0f;
+	g_OptionHDR.g_fWhite = 1.5f;
 	g_OptionHDR.g_fAdaptation = 3.0f;
-	g_OptionHDR.g_fBloomThreshold = 1.1f;
-	g_OptionHDR.g_fBloomScale = 0.74f;
+	g_OptionHDR.g_fBloomThreshold = 1.0f;
+	g_OptionHDR.g_fBloomScale = 1.0f;
 	g_OptionHDR.g_fDOFFarStart = 40.0f;
 	g_OptionHDR.g_fDOFFarRange = 60.0f;
 }

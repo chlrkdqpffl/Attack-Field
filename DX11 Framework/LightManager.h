@@ -111,6 +111,7 @@ public:
 		pointLight.vPosition = vPointPosition;
 		pointLight.fRange = fPointRange;
 		pointLight.vColor = vPointColor;
+		pointLight.m_bsBoundingSphere = BoundingSphere(XMFLOAT3(vPointPosition), fPointRange);
 
 		m_arrLights.push_back(pointLight);
 	}
@@ -127,6 +128,7 @@ public:
 		spotLight.fOuterAngle = D3DX_PI * fSpotOuterAngle / 180.0f;
 		spotLight.fInnerAngle = D3DX_PI * fSpotInnerAngle / 180.0f;
 		spotLight.vColor = vSpotColor;
+		spotLight.m_bsBoundingSphere = BoundingSphere(XMFLOAT3(vSpotPosition), fSpotRange);
 
 		m_arrLights.push_back(spotLight);
 	}
@@ -142,11 +144,12 @@ public:
 		capsuleLight.fRange = fCapsuleRange;
 		capsuleLight.fLength = fCapsuleLength;
 		capsuleLight.vColor = vCapsuleColor;
+		capsuleLight.m_bsBoundingSphere = BoundingSphere(XMFLOAT3(vCapsulePosition), fCapsuleRange);
 
 		m_arrLights.push_back(capsuleLight);
 	}
 
-	void DoLighting(ID3D11DeviceContext* pd3dImmediateContext);
+	void DoLighting(ID3D11DeviceContext* pd3dImmediateContext, CCamera *pCamera);
 
 	void DrawLightVolume(ID3D11DeviceContext* pd3dImmediateContext);
 	void SetGBuffer(CGBuffer* pGBuffer) { m_pGBuffer = pGBuffer; }
@@ -170,6 +173,8 @@ private:
 		float fOuterAngle;
 		float fInnerAngle;
 		XMFLOAT3 vColor;
+
+		BoundingSphere m_bsBoundingSphere;
 	} LIGHT;
 
 	// Do the directional light calculation
