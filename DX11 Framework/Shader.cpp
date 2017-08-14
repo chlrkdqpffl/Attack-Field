@@ -90,6 +90,34 @@ void CShader::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, const wstring
 	}
 }
 
+void CShader::CreateLayoutFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, D3D11_INPUT_ELEMENT_DESC *pd3dInputElements, UINT nElements, ID3D11InputLayout **ppd3dInputLayout)
+{
+	HRESULT hResult;
+
+	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if defined(DEBUG) || defined(_DEBUG)
+	dwShaderFlags |= D3DCOMPILE_DEBUG;
+#endif
+
+	ID3DBlob *pd3dVertexShaderBlob = NULL, *pd3dErrorBlob = NULL;
+	if (SUCCEEDED(hResult = D3DX11CompileFromFile(wstrFileName.c_str(), NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dVertexShaderBlob, &pd3dErrorBlob, NULL)))
+	{
+		HR(pd3dDevice->CreateInputLayout(pd3dInputElements, nElements, pd3dVertexShaderBlob->GetBufferPointer(), pd3dVertexShaderBlob->GetBufferSize(), ppd3dInputLayout));
+
+		pd3dVertexShaderBlob->Release();
+
+		DXUT_SetDebugName(*ppd3dInputLayout, pszShaderName);
+	}
+	else {
+		if (pszShaderName) {
+			WCHAR* wstr = ConverCtoWC(pszShaderName);
+			MessageBox(NULL, wstr, L"Shader Error !", MB_OK);
+		}
+		else
+			MessageBox(NULL, L"ShaderName is NULL!!", wstrFileName.c_str(), MB_OK);
+	}
+}
+
 void CShader::CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, const wstring& wstrFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11PixelShader **ppd3dPixelShader)
 {
 	HRESULT hResult;
@@ -591,9 +619,7 @@ void CInstancedObjectsShader::BuildObjects(ID3D11Device *pd3dDevice)
 	/*
 	m_pBoundingBoxMesh = new CBoundingBoxMesh(pd3dDevice, m_pMesh->GetBoundingCube());
 	m_pBoundingBoxShader = new CBoundingBoxShader();
-//	m_pBoundingBoxShader = new CBoundingBoxInstancedShader();
 	m_pBoundingBoxShader->CreateShader(pd3dDevice);
-//	m_pBoundingBoxMesh->AssembleToVertexBuffer(1, &m_pd3dInstanceBuffer, &m_nInstanceBufferStride, &m_nInstanceBufferOffset);
 */
 }
 
@@ -631,20 +657,22 @@ void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCa
 		findShader->second->OnPostRender(pd3dDeviceContext);
 	}
 
-/*
+	/*
 	// Bounding Box Rendering
 	if (GLOBAL_MGR->g_vRenderOption.y) {
 		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
 
-		for (auto object : shaderTag.second) {
-			if (object->IsVisible(pCamera)) {
-				m_pBoundingBoxShader->OnPrepareSetting(pd3dDeviceContext,object->GetCollisionCheck());
-				CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &object->m_mtxWorld);
+		for (auto shaderTag : m_mapObjectContainer) {
+			for (auto object : shaderTag.second) {
+				if (object->IsVisible(pCamera)) {
+					m_pBoundingBoxShader->OnPrepareSetting(pd3dDeviceContext, object->GetCollisionCheck());
+					CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &object->m_mtxWorld);
 
-				m_pBoundingBoxMesh->Render(pd3dDeviceContext);
+					m_pBoundingBoxMesh->Render(pd3dDeviceContext);
+				}
 			}
 		}
 		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 	}
-*/
+	*/
 }

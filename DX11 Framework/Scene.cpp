@@ -38,6 +38,7 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	switch (nMessageID) {
 	case WM_KEYDOWN:
 		switch (wParam) {
+			/*
 			case '1':
 				cout << "RGB Axis Option" << endl;
 				GLOBAL_MGR->g_bShowWorldAxis = !GLOBAL_MGR->g_bShowWorldAxis;
@@ -69,6 +70,7 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
 				break;
 			}
+			*/
 			case '5':
 			{
 				cout << "G-Buffer Option" << endl;

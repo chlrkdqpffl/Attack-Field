@@ -24,7 +24,7 @@ static const float SampleWeights[13] =
 };
 
 #define kernelhalf 6
-#define groupthreads 128
+#define groupthreads 256
 groupshared float4 SharedInput[groupthreads];
 
 [numthreads(groupthreads, 1, 1)]

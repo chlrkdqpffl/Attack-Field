@@ -279,3 +279,8 @@ bool CCamera::IsInFrustum(BoundingBox *boundingbox)
 {
 	return(IsInFrustum(XMLoadFloat3(&boundingbox->Center), XMLoadFloat3(&boundingbox->Extents)));
 }
+
+bool CCamera::IsInFrustum(BoundingSphere *boundingSphere)
+{
+	return(IsInFrustum(XMLoadFloat3(&boundingSphere->Center), XMVectorSet(boundingSphere->Radius, boundingSphere->Radius, boundingSphere->Radius, 0.0f)));
+}

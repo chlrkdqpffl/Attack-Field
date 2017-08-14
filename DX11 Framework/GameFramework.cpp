@@ -615,8 +615,8 @@ void CGameFramework::CreateConstantBuffer_Weights()
 void CGameFramework::CreateComputeShader(ID3D11Device* pd3dDevice)
 {
 	CShader* pComputeShader = new CShader();
-	pComputeShader->CreateComputeShaderFromFile(pd3dDevice, L"Shader HLSL File/Blurring.hlsli", "HorzBlurCS", "cs_5_0", &m_pHorizontalBlurShader);
-	pComputeShader->CreateComputeShaderFromFile(pd3dDevice, L"Shader HLSL File/Blurring.hlsli", "VertBlurCS", "cs_5_0", &m_pVerticalBlurShader);
+	pComputeShader->CreateComputeShaderFromFile(pd3dDevice, L"Shader HLSL File/Blurring.hlsli", "HorizFilter", "cs_5_0", &m_pHorizontalBlurShader);
+	pComputeShader->CreateComputeShaderFromFile(pd3dDevice, L"Shader HLSL File/Blurring.hlsli", "VerticalFilter", "cs_5_0", &m_pVerticalBlurShader);
 
 	SafeDelete(pComputeShader);
 }

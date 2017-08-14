@@ -60,9 +60,6 @@ void CWeapon::Firing(XMVECTOR direction)
 					hitCharacter->DamagedCharacter(m_fDamage);
 				}
 
-				cout << "맞은 부위 : " << static_cast<int>(info.m_HitParts )<< endl;
-
-
 				/*
 				CollisionInfo info2;
 				// Create Particle

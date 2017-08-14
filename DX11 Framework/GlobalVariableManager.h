@@ -43,7 +43,7 @@ public:
 	static bool								g_bShowWorldAxis;
 	static bool								g_bShowWireFrame;
 	bool									g_bShowLightVolume = false;
-	bool									g_bEnablePostFX = false;
+	bool									g_bEnablePostFX = true;
 
 	vector<CLineObject*>					g_vecLineContainer;
 };

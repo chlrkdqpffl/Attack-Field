@@ -126,4 +126,5 @@ public:
 	void CalculateFrustumPlanes();
 	bool IsInFrustum(XMVECTOR& xCenter, XMVECTOR& xExtern);
 	bool IsInFrustum(BoundingBox *boundingbox);
+	bool IsInFrustum(BoundingSphere *boundingSphere);
 };
