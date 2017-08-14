@@ -187,15 +187,15 @@ void CTitleScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 
 
 		cs_login packet;
-		//strcpy(packet.id, m_ID);
-		//strcpy(packet.password, m_Password);
+		strcpy(packet.id, m_ID.c_str());
+		strcpy(packet.password, m_Password.c_str());
 
 		packet.size = sizeof(packet);
 		packet.strlen = strlen(packet.id);
 		packet.passstrlen = strlen(packet.password);
 		packet.type = 6;
 
-		//SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+//		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 
 #endif
 

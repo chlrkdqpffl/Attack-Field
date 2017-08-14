@@ -95,6 +95,7 @@ void CWaitScene::IsCollisionUI(POINT mousePos , HWND hwnd)
 	case TextureTag::eDeath:
 
 #ifdef USE_SERVER
+
 		cs_Gamemode packet;
 		packet.size = sizeof(cs_Gamemode);
 		packet.mode = 1;

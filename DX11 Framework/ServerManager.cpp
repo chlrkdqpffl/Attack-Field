@@ -33,7 +33,6 @@ void CServerManager::processpacket(char *ptr)
 		sc_packet_pos*         my_Pos_packet;
 		my_Pos_packet = reinterpret_cast<sc_packet_pos *>(ptr);
 		id = my_Pos_packet->id;
-		cout << id << endl;
 		if (id == m_myid)
 		{
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(my_Pos_packet->hp);
@@ -61,6 +60,9 @@ void CServerManager::processpacket(char *ptr)
 		sc_packet_put_player*   my_put_packet;
 		my_put_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
 		id = my_put_packet->id;
+
+		cout << id << endl;
+
 		if (first_time)
 		{
 			m_myid = id;
@@ -350,6 +352,7 @@ void CServerManager::processpacket(char *ptr)
 		if (!packet->connect)
 		{
 			SCENE_MGR->m_loginfail = true;
+			exit(1);
 			//PostQuitMessage(0);
 		}
 		break;
