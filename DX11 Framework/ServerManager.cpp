@@ -61,7 +61,7 @@ void CServerManager::processpacket(char *ptr)
 		my_put_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
 		id = my_put_packet->id;
 
-		cout << id << endl;
+		
 
 		if (first_time)
 		{

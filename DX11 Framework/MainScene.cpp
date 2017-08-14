@@ -1850,7 +1850,7 @@ void CMainScene::ModifiedSelectObject()
 //	m_pSelectedObject->SetPosition(TWBAR_MGR->g_xmf3SelectObjectPosition);
 //	m_pSelectedObject->SetRotate(TWBAR_MGR->g_xmf3SelectObjectRotate);
 	
-	cout << "Select Object Postion : "; ShowXMFloat3(pos);
+	//cout << "Select Object Postion : "; ShowXMFloat3(pos);
 
 	m_pSelectedObject = nullptr;
 }
