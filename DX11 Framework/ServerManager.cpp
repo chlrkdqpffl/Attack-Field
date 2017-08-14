@@ -33,7 +33,6 @@ void CServerManager::processpacket(char *ptr)
 		sc_packet_pos*         my_Pos_packet;
 		my_Pos_packet = reinterpret_cast<sc_packet_pos *>(ptr);
 		id = my_Pos_packet->id;
-		cout << id << endl;
 		if (id == m_myid)
 		{
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(my_Pos_packet->hp);

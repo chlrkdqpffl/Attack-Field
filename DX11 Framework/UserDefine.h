@@ -9,7 +9,7 @@
 
 #define USE_SERVER
 #define USE_CONSOLE					// Open Console Windows
-//#define USE_LOOPBACKADDRESS			// auto 127.0.0.1
+#define USE_LOOPBACKADDRESS			// auto 127.0.0.1
 
 #define USE_DEFERRD_RENDER
 
