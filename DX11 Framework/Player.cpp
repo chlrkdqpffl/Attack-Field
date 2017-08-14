@@ -141,6 +141,10 @@ void CPlayer::Move(XMVECTOR vTranslate)
 
 void CPlayer::Rotate(float x, float y)
 {
+	// Death Check
+	if (m_pCharacter->GetIsDeath())
+		return;
+
 	XMMATRIX mtxRotate;
 	CameraTag nCurrentCameraTag = m_pCamera->GetCameraTag();
 	if ((nCurrentCameraTag == CameraTag::eFirstPerson) || (nCurrentCameraTag == CameraTag::eThirdPerson)) {
