@@ -362,6 +362,8 @@ void CMainScene::Initialize()
 	m_vecBBoxRenderContainer.push_back(m_pPlayerCharacter);
 	m_vecCharacterContainer.push_back(m_pPlayerCharacter);
 
+
+
 	cs_create_charter packet;
 
 	packet.size = sizeof(cs_create_charter);
