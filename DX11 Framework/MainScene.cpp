@@ -116,13 +116,16 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			}
 				break;
 			case VK_Z:
+				// 임의로 죽어보기
 				m_pPlayerCharacter->SetIsDeath(true);
 				break;
 			case VK_X:
-				
+				// 임의로 헤드샷 맞기
+				m_pPlayerCharacter->SetIsDeadlyAttack(true);
 				break;
 			case VK_C:
-	
+				// 임의로 위급 상황
+				m_pPlayerCharacter->SetIsDeadly(true);
 				break;
 			}
 			break;
@@ -1665,6 +1668,15 @@ void CMainScene::CreateUIImage()
 	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 + 43 }, POINT{ FRAME_BUFFER_WIDTH / 2 - 300 , FRAME_BUFFER_HEIGHT / 2 + 62 }, 0.0f, true);
 	pUIObject->SetActive(false);
 	m_pUIManager->AddUIObject(pUIObject);
+
+	/*
+	// Damaged Parts
+	pUIObject = new CUIObject(TextureTag::eDamagedParts);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 100, FRAME_BUFFER_HEIGHT / 2 }, POINT{ 200 , FRAME_BUFFER_HEIGHT / 2 + 65 }, 0.1f, true);
+//	pUIObject->AddOpacity(-0.3f);
+	m_pUIManager->AddUIObject(pUIObject);
+	*/
+	
 }
 
 void CMainScene::ReleaseObjects()
@@ -1873,6 +1885,7 @@ void CMainScene::ShowRespawnUI()
 		return;
 	}
 
+	m_pDamageUI->AddOpacity(-1.0f);
 	pGageUI->SetActive(true);
 	pWhiteGageUI->SetActive(true);
 
@@ -1884,10 +1897,8 @@ void CMainScene::ShowRespawnUI()
 
 void CMainScene::ShowDeadlyUI()
 {
-	if (!m_pPlayer->GetIsDeadly()) {
-		m_pDamageUI->AddOpacity(-1.0f);
+	if (!m_pPlayer->GetIsDeadly())
 		return;
-	}
 
 	static bool bIsReverse = false;
 	float opacityValue = 0.8f;
@@ -1910,14 +1921,16 @@ void CMainScene::ShowDeadlyAttackUI()
 {
 	if (!m_pPlayer->GetIsDeadlyAttack())
 		return;
+
 	static bool bIsDeadlyAttack = true;
+	float opacityValue = 0.8f;
 
 	if (bIsDeadlyAttack) {
 		m_pDamageUI->AddOpacity(1.0f);
 		bIsDeadlyAttack = false;
 	}
-
-	m_pDamageUI->AddOpacity(-1 * m_fDeltaTime);
+	
+	m_pDamageUI->AddOpacity(-1 * opacityValue * m_fDeltaTime);
 	
 	if (m_pDamageUI->GetOpacity() <= 0.0f) {
 		bIsDeadlyAttack = true;

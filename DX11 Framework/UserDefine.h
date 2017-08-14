@@ -7,7 +7,10 @@
 
 #define DEVELOP_MODE
 
-//#define USE_SERVER
+#ifndef DEVELOP_MODE
+	#define USE_SERVER
+#endif
+
 #define USE_CONSOLE					// Open Console Windows
 //#define USE_LOOPBACKADDRESS			// auto 127.0.0.1
 
