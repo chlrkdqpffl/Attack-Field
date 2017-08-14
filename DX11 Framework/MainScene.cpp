@@ -362,14 +362,12 @@ void CMainScene::Initialize()
 	m_vecBBoxRenderContainer.push_back(m_pPlayerCharacter);
 	m_vecCharacterContainer.push_back(m_pPlayerCharacter);
 
-#ifdef USE_SERVER
-	cs_Gamemode packet;
-	packet.size = sizeof(cs_Gamemode);
-	packet.mode = 1;
-	packet.type = 5;
+	cs_create_charter packet;
 
-	SERVER_MGR->Sendpacket(reinterpret_cast<BYTE*>(&packet));
-#endif
+	packet.size = sizeof(cs_create_charter);
+	packet.type = 8;
+
+	SERVER_MGR->Sendpacket(reinterpret_cast<BYTE *>(&packet));
 
 #pragma endregion 
 

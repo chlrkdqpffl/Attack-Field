@@ -3,6 +3,7 @@
 class CWaitScene : public CScene
 {
 	TextureTag	m_tagCursorSelectUI = TextureTag::eNone;
+	bool m_mouseclick = false;
 
 public:
 	CWaitScene();
