@@ -94,7 +94,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			case VK_R: 
 				m_pPlayer->SetKeyDown(KeyInput::eReload);
 				break;
-			case VK_E:	//점령하기
+			case VK_E:
 				m_pPlayer->SetKeyDown(KeyInput::eOccupy);
 				break;
 			case VK_F1:
@@ -116,9 +116,6 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_F5:
-			{
-				PARTICLE_MGR->m_vecParticleSystemContainer.back()->ParticleRestart();
-			}
 				break;
 			case VK_Z:
 				// 임의로 죽어보기
@@ -1619,24 +1616,27 @@ void CMainScene::CreateUIImage()
 	m_pDamageUI = pUIObject;
 
 	// Respawn Gage
-	pUIObject = new CUIObject(TextureTag::eRespawnGage);
+	pUIObject = new CUIObject(TextureTag::eRespawnGageBar);
 	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 305, FRAME_BUFFER_HEIGHT / 2 + 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 305 , FRAME_BUFFER_HEIGHT / 2 + 65 }, 0.1f);
 	pUIObject->AddOpacity(-0.3f);
 	pUIObject->SetActive(false);
 	m_pUIManager->AddUIObject(pUIObject);
 
-	pUIObject = new CUIObject(TextureTag::eRespawnGageWhite);
+	pUIObject = new CUIObject(TextureTag::eRespawnGageWhiteBar);
 	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 + 43 }, POINT{ FRAME_BUFFER_WIDTH / 2 - 300 , FRAME_BUFFER_HEIGHT / 2 + 62 }, 0.0f, true);
 	pUIObject->SetActive(false);
 	m_pUIManager->AddUIObject(pUIObject);
 
-	/*
-	// Damaged Parts
-	pUIObject = new CUIObject(TextureTag::eDamagedParts);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ 100, FRAME_BUFFER_HEIGHT / 2 }, POINT{ 200 , FRAME_BUFFER_HEIGHT / 2 + 65 }, 0.1f, true);
-//	pUIObject->AddOpacity(-0.3f);
+	pUIObject = new CUIObject(TextureTag::eOccupyGageBar);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 305, FRAME_BUFFER_HEIGHT / 2 + 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 305 , FRAME_BUFFER_HEIGHT / 2 + 65 }, 0.1f);
+	pUIObject->AddOpacity(-0.3f);
+	pUIObject->SetActive(false);
 	m_pUIManager->AddUIObject(pUIObject);
-	*/
+
+	pUIObject = new CUIObject(TextureTag::eOccupyGageWhiteBar);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 + 43 }, POINT{ FRAME_BUFFER_WIDTH / 2 - 300 , FRAME_BUFFER_HEIGHT / 2 + 62 }, 0.0f, true);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
 	
 }
 
@@ -1758,12 +1758,16 @@ void CMainScene::CalcTime()
 void CMainScene::PrepareRenderUI()
 {
 	// 중복해서 그리는 문제 존재(m_pUIManager 에서 추가 렌더링)
-	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eRespawnGage);
-	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eRespawnGageWhite);
+	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eRespawnGageBar);
+	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eRespawnGageWhiteBar);
+
+	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eOccupyGageBar);
+	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eOccupyGageWhiteBar);
 }
 
 void CMainScene::RenderUI()
 {
+	ShowOccupyUI();
 	ShowDeadlyAttackUI();
 	ShowDeadlyUI();
 	ShowDeathRespawnUI();
@@ -1772,10 +1776,38 @@ void CMainScene::RenderUI()
 	m_pUIManager->RenderAll(m_pd3dDeviceContext);
 }
 
+void CMainScene::ShowOccupyUI()
+{
+	CUIObject* pGageUI = m_pUIManager->GetUIObject(TextureTag::eOccupyGageBar);
+	CUIObject* pWhiteGageUI = m_pUIManager->GetUIObject(TextureTag::eOccupyGageWhiteBar);
+
+	if (!m_pPlayerCharacter->GetIsOccupy()) {
+		pWhiteGageUI->SetActive(false);
+		pGageUI->SetActive(false);
+		return;
+	}
+
+	pGageUI->SetActive(true);
+	pWhiteGageUI->SetActive(true);
+
+	const UINT gageLength = 600;	// UI x축 길이 600 
+	float percentage = (float)(GetTickCount() - m_pPlayerCharacter->GetOccupyTime()) / OCCUPY_TIME;
+
+	pWhiteGageUI->SetEndPos(POINT{ FRAME_BUFFER_WIDTH / 2 - 300 + (LONG)(percentage * gageLength), FRAME_BUFFER_HEIGHT / 2 + 62 });
+
+	if (percentage >= 1) {
+
+		cout << "패킷 보내셈" << endl;
+		cout << "점령 완료" << endl;
+
+
+	}
+}
+
 void CMainScene::ShowDeathRespawnUI()
 {
-	CUIObject* pGageUI = m_pUIManager->GetUIObject(TextureTag::eRespawnGage);
-	CUIObject* pWhiteGageUI = m_pUIManager->GetUIObject(TextureTag::eRespawnGageWhite);
+	CUIObject* pGageUI = m_pUIManager->GetUIObject(TextureTag::eRespawnGageBar);
+	CUIObject* pWhiteGageUI = m_pUIManager->GetUIObject(TextureTag::eRespawnGageWhiteBar);
 
 	if (!m_pPlayerCharacter->GetIsDeath()) {
 		pWhiteGageUI->SetActive(false);
@@ -2051,8 +2083,8 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
 	}
 
-	if (m_pPlayerCharacter->GetOccupy()) {
-		str = "점령중";
-		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
-	}
+//	if (m_pPlayerCharacter->GetIsOccupy()) {
+//		str = "점령중";
+//		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_CENTER);
+//	}
 }

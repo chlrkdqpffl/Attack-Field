@@ -116,8 +116,11 @@ void CResourceManager::LoadUIData()
 	AddResourece(TextureTag::eMagazineUI,		"../Assets/Image/UI/MagazineUI.png");
 	AddResourece(TextureTag::eLifeUI,			"../Assets/Image/UI/LifeUI.png");
 	AddResourece(TextureTag::eDamagedCharacterUI, "../Assets/Image/UI/DamagedCharacter.png");
-	AddResourece(TextureTag::eRespawnGage,		"../Assets/Image/UI/RespawnGage.png");
-	AddResourece(TextureTag::eRespawnGageWhite, "../Assets/Image/UI/RespawnGage(White).png");
+	AddResourece(TextureTag::eRespawnGageBar,	"../Assets/Image/UI/RespawnGage.png");
+	AddResourece(TextureTag::eRespawnGageWhiteBar, "../Assets/Image/UI/RespawnGage(White).png");
+
+	AddResourece(TextureTag::eOccupyGageBar,	"../Assets/Image/UI/RespawnGage.png");	// 현재는 동일한 텍스쳐 사용중
+	AddResourece(TextureTag::eOccupyGageWhiteBar, "../Assets/Image/UI/RespawnGage(White).png");
 
 //	AddResourece(TextureTag::eDamagedParts,		"../Assets/Image/UI/DamagedParts.png");
 	

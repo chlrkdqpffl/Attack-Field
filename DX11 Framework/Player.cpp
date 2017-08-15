@@ -72,9 +72,9 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	else
 		m_pCharacter->SetIsReload(false);
 
-	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy)) {	//점령전 대비..
-#ifdef	USE_SERVER
+	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy)) {
 			m_pCharacter->SetOccupy(true);
+#ifdef	USE_SERVER
 			sc_occupy packet;
 			packet.size = sizeof(sc_occupy);
 			packet.type = 9;
