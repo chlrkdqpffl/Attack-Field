@@ -6,7 +6,7 @@ class CCollisionManager : public CSingletonManager<CCollisionManager>
 {
 public:
 	vector<CGameObject*>				m_vecStaticMeshContainer;
-	vector<CGameObject*>				m_vecDynamicMeshContainer;
+//	vector<CGameObject*>				m_vecDynamicMeshContainer;
 	vector<CCharacterObject*>			m_vecCharacterContainer;
 
 public:
@@ -27,6 +27,7 @@ public:
 
 	// User Define
 	bool CheckCollision(CollisionInfo& info, CGameObject* pObjectA, CGameObject* pObjectB);
+	void CreateFireDirectionLine(XMVECTOR position, XMVECTOR direction, float length);
 
 private:
 	bool RayCastCollision_AABB(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);

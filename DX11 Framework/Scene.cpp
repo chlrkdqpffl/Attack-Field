@@ -50,8 +50,9 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			case '3':
 				GLOBAL_MGR->g_bShowWireFrame = !GLOBAL_MGR->g_bShowWireFrame;
 				break;
+				*/
 			case '4':
-			{	
+			{
 				cout << "BoundingBox Rendering Option" << endl;
 				GLOBAL_MGR->g_vRenderOption.y = !GLOBAL_MGR->g_vRenderOption.y;
 
@@ -62,7 +63,6 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
 				break;
 			}
-			*/
 			case '5':
 			{
 				cout << "G-Buffer Option" << endl;

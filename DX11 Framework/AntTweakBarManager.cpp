@@ -113,5 +113,6 @@ void CAntTweakBarManager::CreateHDROption()
 	g_OptionHDR.g_fBloomThreshold = 1.0f;
 	g_OptionHDR.g_fBloomScale = 1.0f;
 	g_OptionHDR.g_fDOFFarStart = 40.0f;
-	g_OptionHDR.g_fDOFFarRange = 60.0f;
+	g_OptionHDR.g_fDOFFarRange = 10.0f;
+	g_OptionHDR.g_fDOFChangingTime = 1.0f;
 }

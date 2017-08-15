@@ -246,3 +246,12 @@ bool CCollisionManager::CheckCollision(CollisionInfo& info, CGameObject* pOrigin
 
 	return true;
 }
+
+void CCollisionManager::CreateFireDirectionLine(XMVECTOR position, XMVECTOR direction, float length)
+{
+	XMVECTOR endPos = position + (direction * length);
+	CLineObject* pRayObject = new CLineObject(position, endPos, 3000);
+	pRayObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
+
+	GLOBAL_MGR->g_vecLineContainer.push_back(pRayObject);
+}

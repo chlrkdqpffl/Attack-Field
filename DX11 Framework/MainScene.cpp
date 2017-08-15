@@ -1871,7 +1871,7 @@ void CMainScene::ShowDeadlyAttackUI()
 void CMainScene::Update(float fDeltaTime)
 {
 	// 충돌 정보 갱신
-//	COLLISION_MGR->InitCollisionInfo();
+//	COLLISION_MGR->InitCollisionInfo();	// 현재 플레이어만 적용되고있어서 주석처리함
 //	COLLISION_MGR->UpdateManager();
 
 	GLOBAL_MGR->UpdateManager();

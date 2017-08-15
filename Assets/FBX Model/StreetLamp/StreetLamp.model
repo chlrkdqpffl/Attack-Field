@@ -9,8 +9,8 @@ MeshCount: 1
 false
 
 [BBox_DATA]
-Center: 1.85723 4.92876 0
-Extents: 2.14802 4.92876 0.29079
+Center: 0 4.92876 0
+Extents: 0.15 4.92876 0.15
 
 [VERTEX_DATA]
 3.2104 9.78524 -0.102178

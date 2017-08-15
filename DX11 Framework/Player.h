@@ -30,6 +30,10 @@ protected:
 
 	int							count;
 
+	// DOF Variable
+	int							m_nPrevDOFStart = 0;
+	DWORD						m_dwDOFPreiodTime = 0;
+
 public:
 	CPlayer(CCharacterObject* pCharacter = nullptr);
 	virtual ~CPlayer();
@@ -44,6 +48,7 @@ public:
 	void Rotate(float x, float y);
 	void Update(float fDeltaTime);
 	void UpdateKeyInput(float fDeltaTime);
+	void UpdateDOF(float fDeltaTime);
 
 	// ----- Get, Setter ----- //
 	XMFLOAT3 GetPrevPosition() const { return m_vPrevPosition; }
