@@ -151,7 +151,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_SHIFT:
 				m_pPlayer->SetKeyUp(KeyInput::eRun);
-
+				break;
 			case VK_E:	
 				m_pPlayer->SetKeyUp(KeyInput::eOccupy);
 				break;
