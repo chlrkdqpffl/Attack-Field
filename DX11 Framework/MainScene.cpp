@@ -1711,23 +1711,14 @@ void CMainScene::AddShaderObject(ShaderTag tag, CGameObject* pObject)
 
 void CMainScene::CreateConstantBuffers()
 {
-	
+	// Test Constant Buffer	
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory(&d3dBufferDesc, sizeof(d3dBufferDesc));
 	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	d3dBufferDesc.ByteWidth = sizeof(LIGHTS);
+	d3dBufferDesc.ByteWidth = sizeof(XMFLOAT4);
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	D3D11_SUBRESOURCE_DATA d3dBufferData;
-	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
-	d3dBufferData.pSysMem = m_pLights;
-//	HR(m_pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbLights));
-
-//	DXUT_SetDebugName(m_pd3dcbLights, "Lights");
-	
-
-	// Test Constant Buffer
-	d3dBufferDesc.ByteWidth = sizeof(XMFLOAT4);
 	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
 	d3dBufferData.pSysMem = &TWBAR_MGR->g_xmf4TestVariable;
 	HR(m_pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbTestVariable));
@@ -1735,19 +1726,8 @@ void CMainScene::CreateConstantBuffers()
 	DXUT_SetDebugName(m_pd3dcbTestVariable, "Test Variable");
 }
 
-void CMainScene::UpdateConstantBuffers(LIGHTS *pLights)
+void CMainScene::UpdateConstantBuffers()
 {
-//	m_pLights->m_d3dxcGlobalAmbient = XMFLOAT4(m_fGlobalAmbient, m_fGlobalAmbient, m_fGlobalAmbient, 1.0f);
-/*
-	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	m_pd3dDeviceContext->Map(m_pd3dcbLights, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-	LIGHTS *pcbLight = (LIGHTS *)d3dMappedResource.pData;
-	memcpy(pcbLight, pLights, sizeof(LIGHTS));
-	m_pd3dDeviceContext->Unmap(m_pd3dcbLights, 0);
-	m_pd3dDeviceContext->PSSetConstantBuffers(PS_CB_SLOT_LIGHT, 1, &m_pd3dcbLights);
-	*/
-
-
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	m_pd3dDeviceContext->Map(m_pd3dcbTestVariable, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	XMFLOAT4 *pcbTest = (XMFLOAT4 *)d3dMappedResource.pData;
@@ -1760,11 +1740,6 @@ void CMainScene::UpdateConstantBuffers(LIGHTS *pLights)
 
 void CMainScene::ReleaseConstantBuffers()
 {
-	if (m_pLights) {
-		delete m_pLights;
-		m_pLights = nullptr;
-	}
-
 	ReleaseCOM(m_pd3dcbLights);
 	ReleaseCOM(m_pd3dcbTestVariable);
 }
@@ -1779,7 +1754,16 @@ void CMainScene::CreateLights()
 		pos = light.m_Position;
 		pos.y += 10;
 
-		m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
+		m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), 40.0f, 60.0f, 50.0f, XMFLOAT3(1, 1, 1));
+		//	m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
+	}
+
+	// Player Spot Light
+	{
+		pos = m_pPlayer->GetPosition();
+		XMFLOAT3 look = m_pPlayerCharacter->GetFireDirection();
+		//m_pLightManager->AddSpotLight(pos, look, TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
+		m_pLightManager->AddSpotLight(pos, look, 60.0f, 35.0f, 20.0f, XMFLOAT3(1, 1, 1));
 	}
 	
 
@@ -1794,58 +1778,6 @@ void CMainScene::CreateLights()
 //	m_pLightManager->AddSpotLight(XMFLOAT3(50, 10, 3), XMFLOAT3(0, -1, 0), 30, 35, 30, XMFLOAT3(1, 1, 1));
 	//m_pLightManager->AddSpotLight(TWBAR_MGR->g_xmf3SelectObjectPosition, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
 	//m_pLightManager->AddPointLight(TWBAR_MGR->g_xmf3SelectObjectPosition, TWBAR_MGR->g_xmf3SelectObjectRotate.x, XMFLOAT3(1, 1, 1));
-
-	/*
-	m_pLights = new LIGHTS;
-	::ZeroMemory(m_pLights, sizeof(LIGHTS));
-
-	m_fGlobalAmbient = 0.5f;
-	m_pLights->m_d3dxcGlobalAmbient = XMFLOAT4(m_fGlobalAmbient, m_fGlobalAmbient, m_fGlobalAmbient, 1.0f);
-
-	m_pLights->m_pLights[0].m_bEnable = 1.0f;
-	m_pLights->m_pLights[0].m_nType = DIRECTIONAL_LIGHT;
-	m_pLights->m_pLights[0].m_d3dxcAmbient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	m_pLights->m_pLights[0].m_d3dxcDiffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	m_pLights->m_pLights[0].m_d3dxcSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 16.0f);
-	m_pLights->m_pLights[0].m_d3dxvDirection = XMFLOAT3(0.0f, -1.0f, 0.0f);
-
-	m_pLights->m_pLights[1].m_bEnable = 1.0f;
-	m_pLights->m_pLights[1].m_nType = SPOT_LIGHT;
-	m_pLights->m_pLights[1].m_fRange = 100.0f;
-	m_pLights->m_pLights[1].m_d3dxcAmbient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	m_pLights->m_pLights[1].m_d3dxcDiffuse = XMFLOAT4(1.0f, 0.3f, 0.3f, 1.0f);
-//	m_pLights->m_pLights[1].m_d3dxcSpecular = XMFLOAT4(0.1f, 0.1f, 0.1f, 16.0f);
-	m_pLights->m_pLights[1].m_d3dxcSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 16.0f);
-	m_pLights->m_pLights[1].m_d3dxvPosition = XMFLOAT3(500.0f, 300.0f, 500.0f);
-	m_pLights->m_pLights[1].m_d3dxvDirection = XMFLOAT3(0.0f, 0.0f, 1.0f);
-	m_pLights->m_pLights[1].m_d3dxvAttenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
-	m_pLights->m_pLights[1].m_fFalloff = 8.0f;
-	m_pLights->m_pLights[1].m_fPhi = (float)cos(D3DXToRadian(40.0f));
-	m_pLights->m_pLights[1].m_fTheta = (float)cos(D3DXToRadian(20.0f));
-
-	m_pLights->m_pLights[2].m_bEnable = 1.0f;
-	m_pLights->m_pLights[2].m_nType = POINT_LIGHT;
-	m_pLights->m_pLights[2].m_fRange = 300.0f;
-	m_pLights->m_pLights[2].m_d3dxcAmbient = XMFLOAT4(0.1f, 0.0f, 0.0f, 1.0f);
-	m_pLights->m_pLights[2].m_d3dxcDiffuse = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	m_pLights->m_pLights[2].m_d3dxcSpecular = XMFLOAT4(0.1f, 0.1f, 0.1f, 16.0f);
-	m_pLights->m_pLights[2].m_d3dxvPosition = XMFLOAT3(300.0f, 300.0f, 300.0f);
-	m_pLights->m_pLights[2].m_d3dxvDirection = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_pLights->m_pLights[2].m_d3dxvAttenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
-
-	m_pLights->m_pLights[3].m_bEnable = 1.0f;
-	m_pLights->m_pLights[3].m_nType = SPOT_LIGHT;
-	m_pLights->m_pLights[3].m_fRange = 60.0f;
-	m_pLights->m_pLights[3].m_d3dxcAmbient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	m_pLights->m_pLights[3].m_d3dxcDiffuse = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	m_pLights->m_pLights[3].m_d3dxcSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 16.0f);
-	m_pLights->m_pLights[3].m_d3dxvPosition = XMFLOAT3(500.0f, 300.0f, 500.0f);
-	m_pLights->m_pLights[3].m_d3dxvDirection = XMFLOAT3(0.0f, -1.0f, 0.0f);
-	m_pLights->m_pLights[3].m_d3dxvAttenuation = XMFLOAT3(1.0f, 0.01f, 0.001f);
-	m_pLights->m_pLights[3].m_fFalloff = 20.0f;
-	m_pLights->m_pLights[3].m_fPhi = (float)cos(D3DXToRadian(40.0f));
-	m_pLights->m_pLights[3].m_fTheta = (float)cos(D3DXToRadian(15.0f)); 
-	*/
 }
 
 void CMainScene::ModifiedSelectObject()
@@ -1874,32 +1806,12 @@ void CMainScene::CalcTime()
 
 void CMainScene::RenderUI()
 {
-	m_pUIManager->RenderAll(m_pd3dDeviceContext);
-
 	ShowDeadlyAttackUI();
 	ShowDeadlyUI();
 	ShowDeathRespawnUI();
-	ShowOccupyRespawnUI();
-}
 
-void CMainScene::ShowOccupyRespawnUI()
-{
-	CUIObject* pGageUI = m_pUIManager->GetUIObject(TextureTag::eRespawnGage);
-	CUIObject* pWhiteGageUI = m_pUIManager->GetUIObject(TextureTag::eRespawnGageWhite);
-
-	if (!m_pPlayerCharacter->GetOccupy()) {
-		pWhiteGageUI->SetActive(false);
-		pGageUI->SetActive(false);
-		return;
-	}
-
-	pGageUI->SetActive(true);
-	pWhiteGageUI->SetActive(true);
-
-	const UINT gageLength = 600;	// UI x축 길이 600 
-	float percentage = (float)(GetTickCount() - m_pPlayerCharacter->GetDeathTime()) / 3000;
-
-	pWhiteGageUI->SetEndPos(POINT{ FRAME_BUFFER_WIDTH / 2 - 300 + (LONG)(percentage * gageLength), FRAME_BUFFER_HEIGHT / 2 + 62 });
+	// ------ UI ----- // 뎁스스텐실 뷰 오류로 인하여 미리 그려줌
+	m_pUIManager->RenderAll(m_pd3dDeviceContext);
 }
 
 void CMainScene::ShowDeathRespawnUI()
@@ -1970,10 +1882,11 @@ void CMainScene::ShowDeadlyAttackUI()
 void CMainScene::Update(float fDeltaTime)
 {
 	// 충돌 정보 갱신
-	COLLISION_MGR->InitCollisionInfo();
-	COLLISION_MGR->UpdateManager();
+//	COLLISION_MGR->InitCollisionInfo();
+//	COLLISION_MGR->UpdateManager();
 
 	GLOBAL_MGR->UpdateManager();
+	UpdateConstantBuffers();
 
 	CScene::Update(fDeltaTime);
 
@@ -1983,21 +1896,6 @@ void CMainScene::Update(float fDeltaTime)
 	for (auto& object : m_vecCharacterContainer)
 		object->Update(fDeltaTime);
 
-	if (m_pLights && m_pd3dcbLights)
-	{
-		XMFLOAT3 f3vCameraPosition = m_pCamera->GetPosition();
-		//		XMStoreFloat4(&m_pLights->m_d3dxvCameraPosition, XMVectorSet(f4vCameraPosition.x, f4vCameraPosition.y, f4vCameraPosition.z, 1.0f));
-
-		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvPosition, m_pPlayer->GetvPosition());
-		XMStoreFloat3(&m_pLights->m_pLights[1].m_d3dxvDirection, m_pPlayer->GetvLook());
-
-		XMStoreFloat3(&m_pLights->m_pLights[3].m_d3dxvPosition, m_pPlayer->GetvPosition() + XMVectorSet(0.0f, 80.0f, 0.0f, 0.0f));
-	}
-
-
-	// Light Shader Update
-//	if (m_pLights && m_pd3dcbLights) UpdateConstantBuffers(m_pLights);
-	UpdateConstantBuffers(nullptr);
 
 	m_pLightManager->SetAmbient(m_f3DirectionalAmbientLowerColor, m_f3DirectionalAmbientUpperColor);
 	m_pLightManager->SetDirectional(m_f3DirectionalDirection, m_f3DirectionalColor);
@@ -2069,7 +1967,11 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	m_GBuffer->DeferredRender(pd3dDeviceContext);
 	m_pLightManager->DoLighting(pd3dDeviceContext, pCamera);
 
-	// Particle
+	// ----- UI ----- // -> 중복해서 그리는 문제 존재 (m_pUIManager 에서 추가 렌더링)
+	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eRespawnGage);
+	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eRespawnGageWhite);
+
+	// ----- Particle System ----- //
 	m_pRainParticle->Render(m_pd3dDeviceContext);
 	for (auto& system : m_vecParticleSystemContainer)
 		system->Render(m_pd3dDeviceContext);
@@ -2094,7 +1996,7 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	if (GLOBAL_MGR->g_vRenderOption.y)
 		RenderBoundingBox();
 
-	// UI
+	// Etc
 	RenderUI();
 	RenderAllText(m_pd3dDeviceContext);
 	m_pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);

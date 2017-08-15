@@ -4,12 +4,10 @@
 //#define FRAME_BUFFER_WIDTH				1280
 //#define FRAME_BUFFER_HEIGHT				768
 
+// 클라이언트 개발 모드
+#define DEVELOP_MODE
 
-//#define DEVELOP_MODE
-
-#ifndef DEVELOP_MODE
-#endif
-#define USE_SERVER
+//#define USE_SERVER
 
 #define USE_CONSOLE					// Open Console Windows
 #define USE_LOOPBACKADDRESS			// auto 127.0.0.1

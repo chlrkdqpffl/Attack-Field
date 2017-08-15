@@ -22,7 +22,7 @@ public:
 	virtual void ReleaseObjects();
 
 	virtual void CreateConstantBuffers();
-	virtual void UpdateConstantBuffers(LIGHTS *pLights);
+	virtual void UpdateConstantBuffers();
 	virtual void ReleaseConstantBuffers();
 
 	virtual void CreateLights();
@@ -43,7 +43,6 @@ public:
 	// UI
 	void RenderUI();
 	void ShowDeathRespawnUI();
-	void ShowOccupyRespawnUI();
 	void ShowDeadlyUI();
 	void ShowDeadlyAttackUI();
 
@@ -86,5 +85,7 @@ private:
 	UINT							m_nGameTime = 0;
 	UINT							m_nRedTeamTotalKill = 0;
 	UINT							m_nBlueTeamTotalKill = 0;
+
+	// UI
 	CUIObject*						m_pDamageUI = nullptr;
 };

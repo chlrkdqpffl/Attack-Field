@@ -99,6 +99,20 @@ TextureTag CUIManager::FindCollisionUIObject(POINT mousePos)
 	return TextureTag::eNone;
 }
 
+void CUIManager::Render(ID3D11DeviceContext* pDeviceContext, TextureTag tag)
+{
+	m_pUIShader->OnPrepareRender(pDeviceContext);
+
+	pDeviceContext->OMSetBlendState(STATEOBJ_MGR->g_pTransparentBS, NULL, 0xffffffff);
+	pDeviceContext->RSSetState(STATEOBJ_MGR->g_pNoCullRS);
+
+	CUIObject* pUIObject = GetUIObject(tag);
+	pUIObject->Render(pDeviceContext);
+
+	pDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
+	pDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
+}
+
 void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)
 {
 	m_pUIShader->OnPrepareRender(pDeviceContext);
@@ -110,7 +124,6 @@ void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)
 
 	for (auto& uiObj : m_vecUIObject) {
 		if (uiObj->GetActive()) { 
-
 			// Opacity Update
 			if (uiObj->GetOpacity() != m_fSettingOpacity) {
 				m_fSettingOpacity = uiObj->GetOpacity();
@@ -123,7 +136,6 @@ void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)
 				*pcbRenderOption = GLOBAL_MGR->g_vRenderOption;
 				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
 			}
-		
 			uiObj->Render(pDeviceContext);
 		}
 	}
