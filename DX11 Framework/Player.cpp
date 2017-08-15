@@ -74,15 +74,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy)) {
 			m_pCharacter->SetOccupy(true);
-#ifdef	USE_SERVER
-			sc_occupy packet;
-			packet.size = sizeof(sc_occupy);
-			packet.type = 9;
-			packet.redteam = static_cast<int>(SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetTagTeam());
-	
-			//cout << packet.redteam << endl;
-			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-#endif
+
 	}
 	else 
 		m_pCharacter->SetOccupy(false);

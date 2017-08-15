@@ -383,12 +383,7 @@ void CServerManager::processpacket(char *ptr)
 	case 16:	//어떤팀이 점령했는지 보낸다.
 	{
 		sc_occupy *packet = reinterpret_cast<sc_occupy *>(ptr);
-	
-		//if (packet->redteam == 1)
-		////	cout << "red occupy" << endl;
-		//else
-		////	cout << "blue occupy" << endl;
-		//SCENE_MGR->g_pMainScene->SetOccupy(packet->redteam);	//점령정보 받아온다.
+		SCENE_MGR->g_pMainScene->SetOccupyTeam(packet->redteam);	
 		break;
 	}
 
