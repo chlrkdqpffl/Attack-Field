@@ -26,6 +26,8 @@ void CResourceManager::LoadResourceTitleScene()
 	AddResourece(TextureTag::eTitleBackGroundD,		"../Assets/Image/UI/TitleScene.jpg");
 	AddResourece(TextureTag::eDeathOn,				"../Assets/Image/UI/DeathMatchOn.png");
 	AddResourece(TextureTag::eOccupyOn,				"../Assets/Image/UI/OccupyMatchOn.png");
+	AddResourece(TextureTag::eDeathSearch,			"../Assets/Image/UI/DeathMatchOn.png");
+	AddResourece(TextureTag::eOccupySearch,			"../Assets/Image/UI/OccupyMatchOn.png");
 	AddResourece(TextureTag::eDeathOff,				"../Assets/Image/UI/DeathMatchOff.png");
 	AddResourece(TextureTag::eOccupyOff,			"../Assets/Image/UI/OccupyMatchOff.png");
 //	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene.jpg");
@@ -46,19 +48,19 @@ void CResourceManager::LoadResourceTitleScene()
 	AddResourece(TextureTag::ePasswordClick,		"../Assets/Image/UI/PasswordClick.png");
 
 	//search UI
-	AddResourece(TextureTag::eSearch1,				"../Assets/Image/loding/1.bmp");
-	AddResourece(TextureTag::eSearch2,				"../Assets/Image/loding/2.bmp");
-	AddResourece(TextureTag::eSearch3,				"../Assets/Image/loding/3.bmp");
-	AddResourece(TextureTag::eSearch4,				"../Assets/Image/loding/4.bmp");
-	AddResourece(TextureTag::eSearch5,				"../Assets/Image/loding/5.bmp");
-	AddResourece(TextureTag::eSearch6,				"../Assets/Image/loding/6.bmp");
-	AddResourece(TextureTag::eSearch7,				"../Assets/Image/loding/7.bmp");
-	AddResourece(TextureTag::eSearch8,				"../Assets/Image/loding/8.bmp");
-	AddResourece(TextureTag::eSearch9,				"../Assets/Image/loding/9.bmp");
-	AddResourece(TextureTag::eSearch10,				"../Assets/Image/loding/10.bmp");
-	AddResourece(TextureTag::eSearch11,				"../Assets/Image/loding/11.bmp");
-	AddResourece(TextureTag::eSearch12,				"../Assets/Image/loding/12.bmp");
-	AddResourece(TextureTag::eSearch13,				"../Assets/Image/loding/13.bmp");
+	AddResourece(TextureTag::eSearch1,				"../Assets/Image/loding/1.png");
+	AddResourece(TextureTag::eSearch2,				"../Assets/Image/loding/2.png");
+	AddResourece(TextureTag::eSearch3,				"../Assets/Image/loding/3.png");
+	AddResourece(TextureTag::eSearch4,				"../Assets/Image/loding/4.png");
+	AddResourece(TextureTag::eSearch5,				"../Assets/Image/loding/5.png");
+	AddResourece(TextureTag::eSearch6,				"../Assets/Image/loding/6.png");
+	AddResourece(TextureTag::eSearch7,				"../Assets/Image/loding/7.png");
+	AddResourece(TextureTag::eSearch8,				"../Assets/Image/loding/8.png");
+	AddResourece(TextureTag::eSearch9,				"../Assets/Image/loding/9.png");
+	//AddResourece(TextureTag::eSearch10,				"../Assets/Image/loding/10.jpg");
+	//AddResourece(TextureTag::eSearch11,				"../Assets/Image/loding/11.bmp");
+	//AddResourece(TextureTag::eSearch12,				"../Assets/Image/loding/12.bmp");
+	//AddResourece(TextureTag::eSearch13,				"../Assets/Image/loding/13.bmp");
 	
 }
 
