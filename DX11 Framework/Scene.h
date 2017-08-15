@@ -39,30 +39,6 @@
 #define SPOT_LIGHT			2.0f
 #define DIRECTIONAL_LIGHT	3.0f
 
-struct LIGHT
-{
-	XMFLOAT4				m_d3dxcAmbient;
-	XMFLOAT4				m_d3dxcDiffuse;
-	XMFLOAT4				m_d3dxcSpecular;
-	XMFLOAT3				m_d3dxvPosition;
-	float					m_fRange;
-	XMFLOAT3				m_d3dxvDirection;
-	float					m_nType;
-	XMFLOAT3				m_d3dxvAttenuation;
-	float 					m_fFalloff;
-	float 					m_fTheta; //cos(m_fTheta)
-	float					m_fPhi; //cos(m_fPhi)
-	float					m_bEnable;
-	float					padding;
-};
-
-struct LIGHTS
-{
-//	vector<LIGHT>			m_vLightVector;
-	LIGHT					m_pLights[MAX_LIGHTS];
-	XMFLOAT4				m_d3dxcGlobalAmbient;
-};
-
 class CScene
 {
 public:
@@ -120,9 +96,6 @@ protected:
 	// ResizeRatio
 	float								m_fResizeRatioX = 1.0f;
 	float								m_fResizeRatioY = 1.0f;
-
-	// Light
-	LIGHTS								*m_pLights		= nullptr;
 
 	// Environment
 	CSkyBox								*m_pSkyBox		= nullptr;
