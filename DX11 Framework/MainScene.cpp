@@ -2130,13 +2130,18 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 
 	if (m_cOccupyteam == 1) {
 		str = "RedÆÀ Á¡·É";
-		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1430, 430, 0xFFFFFFFF, FW1_LEFT);
 	}
 	if (m_cOccupyteam == 2) {
 		str = "BlueÆÀ Á¡·É";
-		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1400, 430, 0xFFFFFFFF, FW1_LEFT);
 	}
 
+	if (m_cOccupyteam != 0)
+	{
+		str = to_string(m_OccupyTime);
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1500, 500, 0xFFFFFFFF, FW1_LEFT);
+	}
 //	if (m_pPlayerCharacter->GetIsOccupy()) {
 //		str = "Á¡·ÉÁß";
 //		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_CENTER);

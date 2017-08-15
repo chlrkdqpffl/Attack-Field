@@ -52,6 +52,7 @@ public:
 	vector<CGameObject*>	&GetBbBoxcontainer()	{return m_vecBBoxRenderContainer; }
 	
 	void SetGameTime(UINT time) { m_nGameTime = time; }
+	void SetOccupyTime(float time) { m_OccupyTime = time; }
 	void SetRedTeamKill(UINT kill) { m_nRedTeamTotalKill = kill; }
 	void SetBlueTeamKill(UINT kill) { m_nBlueTeamTotalKill = kill; }
 	void SetOccupyTeam(BYTE team) { m_cOccupyteam = team; }
@@ -87,9 +88,11 @@ private:
 	// ----- Game System ----- //
 	DWORD							m_dwTime = 0;
 	UINT							m_nGameTime = 0;
+	int							m_OccupyTime = 0;
 	UINT							m_nRedTeamTotalKill = 0;
 	UINT							m_nBlueTeamTotalKill = 0;
 	BYTE							m_cOccupyteam = 0; //어떤팀이 점령했는지 알아야 한다.
+
 
 
 	// UI

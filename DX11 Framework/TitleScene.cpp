@@ -43,6 +43,8 @@ void CTitleScene::CreateUIImage()
 	pBackGroundUI->Initialize(m_pd3dDevice, POINT{ 0,0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.99f);
 	m_pUIManager->SetBackGroundUI(pBackGroundUI);
 
+
+
 	// Start	
 	CUIObject* pStartButtonOn = new CUIObject(TextureTag::eStartButtonOn);
 	pStartButtonOn->Initialize(m_pd3dDevice, POINT{ 1050, 450 }, POINT{ 1400, 550 }, 0.1f);
@@ -61,38 +63,52 @@ void CTitleScene::CreateUIImage()
 
 	CUIObject* pExitButtonOff = new CUIObject(TextureTag::eExitButtonOff);
 	pExitButtonOff->Initialize(m_pd3dDevice, POINT{ 1050, 580 }, POINT{ 1400, 680 }, 0.1f);
+	pExitButtonOn->SetActive(false);
 	m_pUIManager->AddUIObject(pExitButtonOff);
+
+
+	CUIObject* pLoginBack = new CUIObject(TextureTag::eLoginBack);
+	pLoginBack->Initialize(m_pd3dDevice, POINT{ 940, 505 }, POINT{ 1500, 675 }, 0.1f);
+	pLoginBack->SetActive(false);
+	m_pUIManager->AddUIObject(pLoginBack);
 
 
 	//IDUI
 	CUIObject* pID = new CUIObject(TextureTag::eID);
-	pID->Initialize(m_pd3dDevice, POINT{ 1000, 450 }, POINT{ 1350, 550 }, 0.1f);
+	pID->Initialize(m_pd3dDevice, POINT{ 950, 515 }, POINT{ 1320, 585 }, 0.1f);
 	pID->SetActive(false);
 	m_pUIManager->AddUIObject(pID);
 
-	//Password UI
-	CUIObject* pPassword = new CUIObject(TextureTag::ePassword);
-	pPassword->Initialize(m_pd3dDevice, POINT{ 1000, 650 }, POINT{ 1350, 750 }, 0.1f);
-	pPassword->SetActive(false);
-	m_pUIManager->AddUIObject(pPassword);
-
 	//IDClick
 	CUIObject* pIDClick = new CUIObject(TextureTag::eIDClick);
-	pIDClick->Initialize(m_pd3dDevice, POINT{ 1000, 450 }, POINT{ 1350, 550 }, 0.1f);
+	pIDClick->Initialize(m_pd3dDevice, POINT{ 950, 515 }, POINT{ 1320, 585 }, 0.1f);
 	pIDClick->SetActive(false);
 	m_pUIManager->AddUIObject(pIDClick);
 
+
+	//Password UI
+	CUIObject* pPassword = new CUIObject(TextureTag::ePassword);
+	pPassword->Initialize(m_pd3dDevice, POINT{ 950, 595 }, POINT{ 1320, 665 }, 0.1f);
+	pPassword->SetActive(false);
+	m_pUIManager->AddUIObject(pPassword);
+
+
 	//Password Click
 	CUIObject* pPasswordClick = new CUIObject(TextureTag::ePasswordClick);
-	pPasswordClick->Initialize(m_pd3dDevice, POINT{ 1000, 650 }, POINT{ 1350, 750 }, 0.1f);
+	pPasswordClick->Initialize(m_pd3dDevice, POINT{ 950, 595 }, POINT{ 1320, 665 }, 0.1f);
 	pPasswordClick->SetActive(false);
 	m_pUIManager->AddUIObject(pPasswordClick);
 
 	//start 버튼 누르면 로그인 UI뜨게 만든다.
 	CUIObject* pLogin = new CUIObject(TextureTag::eLogin);
-	pLogin->Initialize(m_pd3dDevice, POINT{ 1400, 450 }, POINT{ 1450, 750 }, 0.1f);
+	pLogin->Initialize(m_pd3dDevice, POINT{ 1330, 515 }, POINT{ 1490, 665 }, 0.1f);
 	pLogin->SetActive(false);
 	m_pUIManager->AddUIObject(pLogin);
+
+	CUIObject* pLoginOn = new CUIObject(TextureTag::eLoginon);
+	pLoginOn->Initialize(m_pd3dDevice, POINT{ 1330, 515 }, POINT{ 1490, 665 }, 0.1f);
+	pLoginOn->SetActive(false);
+	m_pUIManager->AddUIObject(pLoginOn);
 
 
 
@@ -111,6 +127,7 @@ void CTitleScene::IsOnCursorUI(POINT mousePos, HWND hWnd)
 		m_tagCursorSelectUI = TextureTag::eNone;
 		m_pUIManager->GetUIObject(TextureTag::eStartButtonOn)->SetActive(false);
 		m_pUIManager->GetUIObject(TextureTag::eExitButtonOn)->SetActive(false);
+		m_pUIManager->GetUIObject(TextureTag::eLoginon)->SetActive(false);
 
 
 		break;
@@ -126,7 +143,8 @@ void CTitleScene::IsOnCursorUI(POINT mousePos, HWND hWnd)
 
 	case TextureTag::eLogin:
 
-		m_tagCursorSelectUI = TextureTag::eLogin;
+		m_tagCursorSelectUI = TextureTag::eLoginon;
+		m_pUIManager->GetUIObject(TextureTag::eLoginon)->SetActive(true);
 		break;
 
 	case TextureTag::eID:
@@ -145,6 +163,32 @@ void CTitleScene::IsOnCursorUI(POINT mousePos, HWND hWnd)
 		m_tagCursorSelectUI = TextureTag::ePasswordClick;
 		break;
 
+	case TextureTag::eLoginBack:
+	{
+		if (mousePos.x > 950 && mousePos.x < 1320)
+		{
+			if(mousePos.y > 515 && mousePos.y< 585)
+				m_tagCursorSelectUI = TextureTag::eID;
+
+			else if(mousePos.y > 595 && mousePos.y< 665)
+				m_tagCursorSelectUI = TextureTag::ePassword;
+
+			m_pUIManager->GetUIObject(TextureTag::eLoginon)->SetActive(false);
+
+		}
+		else if (mousePos.x > 1330 && mousePos.x < 1490)
+		{
+			if (mousePos.y > 515 && mousePos.y < 665)
+			{
+				m_pUIManager->GetUIObject(TextureTag::eLoginon)->SetActive(true);
+				m_tagCursorSelectUI = TextureTag::eLogin;
+			}
+		}
+
+		
+		break;
+	}
+
 	}
 }
 
@@ -152,6 +196,8 @@ void CTitleScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 {
 	switch (m_tagCursorSelectUI) {
 	case TextureTag::eStartButtonOn:
+
+		m_pUIManager->GetUIObject(TextureTag::eLoginBack)->SetActive(true);
 		m_pUIManager->GetUIObject(TextureTag::eID)->SetActive(true);
 		m_pUIManager->GetUIObject(TextureTag::ePassword)->SetActive(true);
 		m_pUIManager->GetUIObject(TextureTag::eLogin)->SetActive(true);
@@ -162,10 +208,11 @@ void CTitleScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 		m_pUIManager->GetUIObject(TextureTag::eStartButtonOff)->SetActive(false);
 		m_pUIManager->GetUIObject(TextureTag::eExitButtonOff)->SetActive(false);
 
+
 		break;
 	case TextureTag::eID:
 		m_tagCursorSelectUI = TextureTag::eIDClick;
-		m_Idclick = true;;
+		m_Idclick = true;
 		m_pUIManager->GetUIObject(TextureTag::eID)->SetActive(false);
 		m_pUIManager->GetUIObject(TextureTag::eIDClick)->SetActive(true);
 
@@ -221,6 +268,24 @@ void CTitleScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 		m_Idclick = false;
 		m_tagCursorSelectUI = TextureTag::ePasswordClick;
 		break;
+	case TextureTag::eLoginBack:
+		if (mousePos.x > 950 && mousePos.x < 1320)
+		{
+			if (mousePos.y > 515 && mousePos.y < 585)
+			{
+				m_Idclick = true;
+				m_pUIManager->GetUIObject(TextureTag::eID)->SetActive(false);
+				m_pUIManager->GetUIObject(TextureTag::eIDClick)->SetActive(true);
+			}
+			else if (mousePos.y > 595 && mousePos.y < 665)
+			{
+				m_Idclick = false;
+				m_pUIManager->GetUIObject(TextureTag::ePassword)->SetActive(false);
+				m_pUIManager->GetUIObject(TextureTag::ePasswordClick)->SetActive(true);
+			}
+		}
+
+		break;
 	case TextureTag::eExitButtonOn:
 		::PostQuitMessage(0);
 		break;
@@ -270,13 +335,19 @@ bool CTitleScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			else if (!m_Idclick)
 			{
 				m_Password += wParam;
+				m_scretpassword += '*';
 //				m_Password[j] = wParam;
 				j++;
 
 				if (m_Password.size() > 9)
+				{
 					m_Password.pop_back();
+					m_scretpassword.pop_back();
+				}
 					//j = 9;
 			}
+
+
 		}
 	}
 	else if (nMessageID == WM_KEYDOWN)
@@ -294,7 +365,10 @@ bool CTitleScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			else if (!m_Idclick)
 			{
 				if (m_Password.size() > 0)
+				{
 					m_Password.pop_back();
+					m_scretpassword.pop_back();
+				}
 				//j--;
 				if (j < 0)
 					j = 0;
@@ -303,6 +377,8 @@ bool CTitleScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		}
 
 	}
+
+
 	
 	return false;
 }
@@ -311,6 +387,8 @@ void CTitleScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 {
 	m_pUIManager->RenderAll(pd3dDeviceContext);
 
-	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_ID, 40, 1000, 450, 0xFFFFFFFF, FW1_LEFT);
-	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_Password, 40, 1000, 650, 0xFFFFFFFF, FW1_LEFT);
+	
+
+	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_ID, 40, 1020, 530, 0xFFFFFFFF, FW1_LEFT);
+	TEXT_MGR->RenderText(m_pd3dDeviceContext, m_scretpassword, 40, 1025, 615, 0xFFFFFFFF, FW1_LEFT);
 }
