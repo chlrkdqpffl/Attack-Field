@@ -181,7 +181,7 @@ public:
 	DWORD GetDeathTime() const { return m_dwDeathStartTime; }
 	DWORD GetOccupyTime() const { return m_dwOccupyStartTime; }
 
+	CWeapon* GetWeapon() const { return m_pWeapon; }
 	void Setmode(BYTE mode) { m_Gamemode = mode;}
 	BYTE Getmode() {return m_Gamemode;}
-
 };

@@ -14,16 +14,6 @@ CWeapon::~CWeapon()
 {
 }
 
-void CWeapon::CreateFireDirectionLine(XMVECTOR position, XMVECTOR direction)
-{
-	float lineLength = m_fRange;
-	XMVECTOR endPos = GetvPosition() + (direction * lineLength);
-	CLineObject* pRayObject = new CLineObject(position, endPos, 3000);
-	pRayObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
-
-	GLOBAL_MGR->g_vecLineContainer.push_back(pRayObject);
-}
-
 void CWeapon::Firing(XMVECTOR direction)
 {
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed) {
@@ -35,8 +25,7 @@ void CWeapon::Firing(XMVECTOR direction)
 		m_nhasBulletCount--;
 
 		XMVECTOR firePosOffset = GetvPosition() + (-1 * GetvRight() * (GetBoundingBox().Extents.z - 0.6f)) + (-1 * GetvLook() * 0.225) + (GetvUp() * 0.1f);
-		CollisionInfo info;
-
+	
 #ifdef USE_SERVER
 		cs_weapon* packet = reinterpret_cast<cs_weapon *>(SERVER_MGR->GetSendbuffer());
 		packet->size = sizeof(cs_weapon);
@@ -46,6 +35,7 @@ void CWeapon::Firing(XMVECTOR direction)
 
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(packet));
 #else
+		CollisionInfo info;
 		if (COLLISION_MGR->RayCastCollisionToCharacter(info, firePosOffset, direction)) {
 			if (info.m_fDistance < m_fRange) {
 				info.m_pHitObject->SetCollision(true);
@@ -64,12 +54,18 @@ void CWeapon::Firing(XMVECTOR direction)
 				XMVECTOR bloodOffset = firePosOffset; 
 				bloodOffset  += direction * info.m_fDistance;
 				PARTICLE_MGR->CreateBlood(bloodOffset);
-
-				CreateFireDirectionLine(bloodOffset, direction);
 			}
 		}
+		else if (COLLISION_MGR->RayCastCollision(info, firePosOffset, direction)) {
+			if (info.m_fDistance < m_fRange) {
+				XMVECTOR SparkOffset = firePosOffset;
+				SparkOffset += direction * info.m_fDistance;
+				PARTICLE_MGR->CreateSpark(SparkOffset);
+			}
+		}
+
 #endif
-		//CreateFireDirectionLine(firePosOffset, direction);
+		//COLLISION_MGR->CreateFireDirectionLine(firePosOffset, direction, m_fRange);
 	}
 }
 

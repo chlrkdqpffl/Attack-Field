@@ -10,6 +10,7 @@ struct OptionHDR
 	float g_fBloomScale = 0.0f;
 	float g_fDOFFarStart = 0.0f;
 	float g_fDOFFarRange = 0.0f;
+	float g_fDOFChangingTime = 1.0f;
 };
 
 class CAntTweakBarManager : public CSingletonManager<CAntTweakBarManager>

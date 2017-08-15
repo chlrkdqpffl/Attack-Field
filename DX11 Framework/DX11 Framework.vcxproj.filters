@@ -742,5 +742,11 @@
     <None Include="Shader HLSL File\ShadowGen.hlsli">
       <Filter>HLSL\Deferred\Light</Filter>
     </None>
+    <None Include="Shader HLSL File\Spark.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
+    <None Include="Shader HLSL File\FireSpark.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
   </ItemGroup>
 </Project>

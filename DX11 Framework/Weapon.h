@@ -31,7 +31,6 @@ public:
 	virtual void Firing(XMVECTOR direction);
 	virtual void Update(float fDeltaTime) override;
 
-	void CreateFireDirectionLine(XMVECTOR position, XMVECTOR direction);
 	void Reloading();
 	bool IsExistBullet() const { return ( 0 < m_nhasBulletCount); }
 	UINT GetBulletCount() const { return m_nhasBulletCount; }

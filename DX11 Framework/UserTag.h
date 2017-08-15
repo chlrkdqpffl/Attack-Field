@@ -148,7 +148,7 @@ enum class TextureTag
 	eContainerRedD, eContainerBlueD, eContainerYellowD, eContainerN,
 
 	// Barrel
-	eFireBarrelD, eFireBarrelN, eBarrelD, eBarrelN,
+	eFireBarrelD, eFireBarrelN, eBarrelD, eBarrelN, eOccupyBarrelD, eOccupyBarrelN,
 
 	// StreetLamp
 	eStreetLampD, eStreetLampN,
@@ -206,7 +206,7 @@ enum class MeshTag
 	eContainer1, eContainer2, eContainer3,
 
 	// Barrel
-	eFireBarrel, eBarrel,
+	eFireBarrel, eBarrel, eOccupyBarrel,
 
 	// Etc
 	eStreetLamp, eBarricade,
@@ -233,7 +233,7 @@ enum class ObjectTag
 	eContainer1Yellow, eContainer2Yellow, eContainer3Yellow,
 
 	// Barrel
-	eFireBarrel, eBarrel,
+	eFireBarrel, eBarrel, eOccupyBarrel,
 
 	// Etc
 	eGrass, eStreetLamp, eBarricade

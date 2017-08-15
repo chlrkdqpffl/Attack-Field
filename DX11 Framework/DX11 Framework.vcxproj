@@ -373,6 +373,7 @@
     <None Include="Shader HLSL File\DirLight.hlsli" />
     <None Include="Shader HLSL File\DisplacementMap.hlsli" />
     <None Include="Shader HLSL File\CharacterSkinned.hlsli" />
+    <None Include="Shader HLSL File\FireSpark.hlsli" />
     <None Include="Shader HLSL File\Fog.hlsli" />
     <None Include="Shader HLSL File\GBuffer.hlsli" />
     <None Include="Shader HLSL File\GBufferStructure.hlsli" />
@@ -387,6 +388,7 @@
     <None Include="Shader HLSL File\PostProcessing.hlsli" />
     <None Include="Shader HLSL File\Rain.hlsli" />
     <None Include="Shader HLSL File\ShadowGen.hlsli" />
+    <None Include="Shader HLSL File\Spark.hlsli" />
     <None Include="Shader HLSL File\SpotLight.hlsli" />
     <None Include="Shader HLSL File\Terrain.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

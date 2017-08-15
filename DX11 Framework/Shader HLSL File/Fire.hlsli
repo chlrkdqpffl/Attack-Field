@@ -13,7 +13,6 @@ PARTICLE_INPUT VSParticleStreamOut(PARTICLE_INPUT input)
 [maxvertexcount(2)]
 void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTICLE_INPUT> pointStream)
 {
- //   input[0].age += gfTimeStep * g_f4Var.x;
     input[0].age += gfTimeStep * 0.4f;
     if (input[0].type == PARTICLE_TYPE_EMITTER)
     {
@@ -27,9 +26,9 @@ void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTIC
             particle.position = gvParticleEmitPosition.xyz;
             particle.velocity = 3.0f * vRandom;
   //          particle.velocity = g_f4Var.z * vRandom;
-            particle.size = float2(3.0f, 3.0f);
+  //          particle.size = float2(3.0f, 3.0f);
            // particle.size = float2(1.0f, 1.0f);
-  //          particle.size = float2(g_f4Var.y, g_f4Var.y);
+            particle.size = float2(2.2f, 2.2f);
             particle.age = 0.0f;
             particle.type = PARTICLE_TYPE_FLARE;
 

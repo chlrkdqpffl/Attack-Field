@@ -220,8 +220,46 @@ void CPlayer::Rotate(float x, float y)
 #endif
 }
 
+void CPlayer::UpdateDOF(float fDeltaTime)
+{
+	// DOF 거리 조절
+	CollisionInfo info;
+	float fMinDist = 0.0f;
+
+	CWeapon* pWeapon = m_pCharacter->GetWeapon();
+
+	XMVECTOR fireOffsetPos = pWeapon->GetvPosition() + (-1 * pWeapon->GetvRight() * (pWeapon->GetBoundingBox().Extents.z - 0.6f)) + (-1 * pWeapon->GetvLook() * 0.225) + (pWeapon->GetvUp() * 0.1f);
+	XMVECTOR fireDirection = XMLoadFloat3(&m_pCharacter->GetFireDirection());
+
+	if (COLLISION_MGR->RayCastCollision(info, fireOffsetPos, fireDirection))
+		fMinDist = info.m_fDistance;
+
+	if (COLLISION_MGR->RayCastCollisionToCharacter(info, fireOffsetPos, fireDirection)) {
+		if (info.m_fDistance <= fMinDist)
+			fMinDist = info.m_fDistance;
+	}
+	
+	// 가장 가까운 객체가 없는 경우 - 하늘을 보는 경우
+	if (fMinDist == 0.0f)
+		fMinDist = 300.0f;
+
+	// 그 차이가 5보다 작다면 변화를 주지 않음
+	if (abs(fMinDist - TWBAR_MGR->g_OptionHDR.g_fDOFFarStart) < 3)
+		return;
+
+	// 1초의 시간을 두고 변화
+	if (GetTickCount() - m_dwDOFPreiodTime >= 1000) {
+		m_nPrevDOFStart = TWBAR_MGR->g_OptionHDR.g_fDOFFarStart;
+		m_dwDOFPreiodTime = GetTickCount();
+	}
+
+	float dist = fMinDist - m_nPrevDOFStart;
+	TWBAR_MGR->g_OptionHDR.g_fDOFFarStart += dist * fDeltaTime / TWBAR_MGR->g_OptionHDR.g_fDOFChangingTime;
+}
+
 void CPlayer::Update(float fDeltaTime)
 {
+	UpdateDOF(fDeltaTime);
 	OnApplyGravity(fDeltaTime);
 	m_vPrevPosition = GetPosition();
 	Move(XMLoadFloat3(&m_d3dxvVelocity));
@@ -244,7 +282,7 @@ void CPlayer::Update(float fDeltaTime)
 	
 	m_pCamera->RegenerateViewMatrix();
 
-	
+
 	// Character Update
 	XMFLOAT4X4 mtx;
 	XMStoreFloat4x4(&mtx, m_pCharacter->m_mtxWorld);
@@ -253,7 +291,7 @@ void CPlayer::Update(float fDeltaTime)
 	mtx._21 = m_d3dxvUp.x;			mtx._22 = m_d3dxvUp.y;			mtx._23 = m_d3dxvUp.z;
 	mtx._31 = m_d3dxvLook.x;		mtx._32 = m_d3dxvLook.y;		mtx._33 = m_d3dxvLook.z;
 	mtx._41 = m_d3dxvPosition.x;	mtx._42 = m_d3dxvPosition.y;	mtx._43 = m_d3dxvPosition.z;
-	
+
 	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&mtx);
 }
 
@@ -308,14 +346,12 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 void CPlayer::SetKeyDown(KeyInput key)
 {
 	m_wKeyState |= static_cast<int>(key);
-
 }
 
 void CPlayer::SetKeyUp(KeyInput key)
 {
 	m_wKeyState ^= static_cast<int>(key);
 	count = 0;
-
 }
 
 void CPlayer::SetLook(float x, float y, float z)

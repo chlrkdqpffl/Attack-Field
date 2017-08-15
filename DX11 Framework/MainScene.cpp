@@ -1479,9 +1479,29 @@ void CMainScene::CreateMapDataInstancingObject()
 		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	// Occupy Barrel
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eOccupyBarrel).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eOccupyBarrel);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eOccupyBarrelD, TextureTag::eOccupyBarrelN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eOccupyBarrel);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 #pragma endregion
-
-
 }
 
 void CMainScene::CreateTestingObject()
@@ -1890,7 +1910,7 @@ void CMainScene::ShowDeadlyAttackUI()
 void CMainScene::Update(float fDeltaTime)
 {
 	// 충돌 정보 갱신
-//	COLLISION_MGR->InitCollisionInfo();
+//	COLLISION_MGR->InitCollisionInfo();	// 현재 플레이어만 적용되고있어서 주석처리함
 //	COLLISION_MGR->UpdateManager();
 
 	GLOBAL_MGR->UpdateManager();

@@ -50,6 +50,7 @@ void CMapDataManager::InitializeManager()
 	// Barrel
 	AddMapData(ObjectTag::eFireBarrel,					"../Assets/MapData/FireBarrel.txt");
 	AddMapData(ObjectTag::eBarrel,						"../Assets/MapData/Barrel.txt");
+	AddMapData(ObjectTag::eOccupyBarrel,				"../Assets/MapData/OccupyBarrel.txt");
 
 	// Etc
 	AddMapData(ObjectTag::eStreetLamp,					"../Assets/MapData/Street_lamp.txt");

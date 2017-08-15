@@ -6,8 +6,12 @@ class CParticleManager : public CSingletonManager<CParticleManager>
 {
 public:
 
-	const UINT m_nMaxBloodParticle		= 20;
+	const UINT m_nMaxBloodParticle		= 5;
 	vector<CParticleSystem*>			m_vecBloodParticleSystemPool;
+
+	const UINT m_nMaxSparkParticle		= 20;
+	vector<CParticleSystem*>			m_vecSparkParticleSystemPool;
+
 
 	CParticleSystem*					m_pRainParticle = nullptr;
 	vector<CParticleSystem*>			m_vecParticleSystemContainer;
@@ -24,4 +28,5 @@ public:
 	void RenderAllNoEffect(ID3D11DeviceContext *pd3dDeviceContext);
 	void RenderAllEffect(ID3D11DeviceContext *pd3dDeviceContext);
 	void CreateBlood(XMVECTOR pos);
+	void CreateSpark(XMVECTOR pos);
 };
