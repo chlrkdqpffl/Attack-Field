@@ -20,7 +20,7 @@ CPlayer::CPlayer(CCharacterObject* pCharacter)
 #ifdef DEVELOP_MODE
 	m_fSpeed = 30;
 #else
-	m_fSpeed = 8;	// 자연스러운 속도
+	m_fSpeed = 6;	// 자연스러운 속도
 #endif
 	count = 0;
 }

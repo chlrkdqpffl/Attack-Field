@@ -41,19 +41,22 @@ void CWeapon::Firing(XMVECTOR direction)
 				info.m_pHitObject->SetCollision(true);
 
 				CCharacterObject* hitCharacter = static_cast<CCharacterObject*>(info.m_pHitObject);
+
+				XMVECTOR bloodOffset = firePosOffset;
+				bloodOffset += direction * info.m_fDistance;
+
 				// Head Shot ÆÇÁ¤
 				if (info.m_HitParts == ChracterBoundingBoxParts::eHead) {
 					hitCharacter->SetIsHeadHit(true);
 					hitCharacter->DamagedCharacter(m_fDamage * 2.5f);
+
+					PARTICLE_MGR->CreateCopiousBleeding(bloodOffset);
 				}
 				else {
 					hitCharacter->DamagedCharacter(m_fDamage);
+
+					PARTICLE_MGR->CreateBlood(bloodOffset);
 				}
-			
-				// Create Particle		
-				XMVECTOR bloodOffset = firePosOffset; 
-				bloodOffset  += direction * info.m_fDistance;
-				PARTICLE_MGR->CreateBlood(bloodOffset);
 			}
 		}
 		else if (COLLISION_MGR->RayCastCollision(info, firePosOffset, direction)) {

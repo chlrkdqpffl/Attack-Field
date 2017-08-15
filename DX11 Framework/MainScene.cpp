@@ -407,10 +407,11 @@ void CMainScene::Initialize()
 
 #ifndef USE_SERVER
 	// ==== Test용 - 총 메쉬 오프셋 찾기용 ==== //
-	CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject(TeamType::eBlueTeam);
+	//CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject(TeamType::eBlueTeam);
+	CCharacterObject* pCharacter = new CTerroristCharacterObject(TeamType::eBlueTeam);
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
-
+//	pCharacter->SetLife(100000);
 	pCharacter->SetPosition(60.0f, 2.5f, 15.0f);
 
 	m_vecBBoxRenderContainer.push_back(pCharacter);

@@ -748,5 +748,8 @@
     <None Include="Shader HLSL File\FireSpark.hlsli">
       <Filter>HLSL\Particle</Filter>
     </None>
+    <None Include="Shader HLSL File\CopiousBleeding.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
   </ItemGroup>
 </Project>

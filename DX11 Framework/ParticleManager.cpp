@@ -16,6 +16,9 @@ void CParticleManager::ReleseManager()
 
 	for (auto& system : m_vecSparkParticleSystemPool)
 		SafeDelete(system);
+
+	for (auto& system : m_vecCopiousBleedingParticleSystemPool)
+		SafeDelete(system);
 }
 
 void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
@@ -56,27 +59,48 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 	}
 
 	// ========================== Blood ================================= //
+	CParticleSystem* pBloodParticle = nullptr;
 	for (int i = 0; i < m_nMaxBloodParticle; ++i) {
-		CParticleSystem* pBloodParticle = new CParticleSystem();
+		pBloodParticle = new CParticleSystem();
 		D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/blood.dds"), NULL, NULL, &pParticleTexture, NULL);
 		pBloodParticle->Initialize(pd3dDevice, pParticleTexture, pBloodParticle->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS, 1.0f);
 		pBloodParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Blood.hlsli");
 		pBloodParticle->SetActive(false);
 		m_vecBloodParticleSystemPool.push_back(pBloodParticle);
 
-		CParticleSystem* pBloodParticle2 = new CParticleSystem();
-		D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/blood2.dds"), NULL, NULL, &pParticleTexture, NULL);
-		pBloodParticle2->Initialize(pd3dDevice, pParticleTexture, pBloodParticle2->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS, 1.0f);
-		pBloodParticle2->CreateShader(pd3dDevice, L"Shader HLSL File/Blood.hlsli");
-		pBloodParticle2->SetActive(false);
-		m_vecBloodParticleSystemPool.push_back(pBloodParticle2);
+		pBloodParticle = new CParticleSystem();
+		pBloodParticle->Initialize(pd3dDevice, pParticleTexture, pBloodParticle->CreateRandomTexture1DSRV(pd3dDevice), 8, STATEOBJ_MGR->g_pBloodBS, 1.0f);
+		pBloodParticle->CreateShader(pd3dDevice, L"Shader HLSL File/CopiousBleeding.hlsli");
+		pBloodParticle->SetActive(false);
+		m_vecCopiousBleedingParticleSystemPool.push_back(pBloodParticle);
 
-		CParticleSystem* pBloodParticle3 = new CParticleSystem();
+
+		pBloodParticle = new CParticleSystem();
+		D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/blood2.dds"), NULL, NULL, &pParticleTexture, NULL);
+		pBloodParticle->Initialize(pd3dDevice, pParticleTexture, pBloodParticle->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS, 1.0f);
+		pBloodParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Blood.hlsli");
+		pBloodParticle->SetActive(false);
+		m_vecBloodParticleSystemPool.push_back(pBloodParticle);
+		
+		pBloodParticle = new CParticleSystem();
+		pBloodParticle->Initialize(pd3dDevice, pParticleTexture, pBloodParticle->CreateRandomTexture1DSRV(pd3dDevice), 8, STATEOBJ_MGR->g_pBloodBS, 1.0f);
+		pBloodParticle->CreateShader(pd3dDevice, L"Shader HLSL File/CopiousBleeding.hlsli");
+		pBloodParticle->SetActive(false);
+		m_vecCopiousBleedingParticleSystemPool.push_back(pBloodParticle);
+
+
+		pBloodParticle = new CParticleSystem();
 		D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/blood3.dds"), NULL, NULL, &pParticleTexture, NULL);
-		pBloodParticle3->Initialize(pd3dDevice, pParticleTexture, pBloodParticle2->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS, 1.0f);
-		pBloodParticle3->CreateShader(pd3dDevice, L"Shader HLSL File/Blood.hlsli");
-		pBloodParticle3->SetActive(false);
-		m_vecBloodParticleSystemPool.push_back(pBloodParticle3);	
+		pBloodParticle->Initialize(pd3dDevice, pParticleTexture, pBloodParticle->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS, 1.0f);
+		pBloodParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Blood.hlsli");
+		pBloodParticle->SetActive(false);
+		m_vecBloodParticleSystemPool.push_back(pBloodParticle);	
+		
+		pBloodParticle = new CParticleSystem();
+		pBloodParticle->Initialize(pd3dDevice, pParticleTexture, pBloodParticle->CreateRandomTexture1DSRV(pd3dDevice), 8, STATEOBJ_MGR->g_pBloodBS, 1.0f);
+		pBloodParticle->CreateShader(pd3dDevice, L"Shader HLSL File/CopiousBleeding.hlsli");
+		pBloodParticle->SetActive(false);
+		m_vecCopiousBleedingParticleSystemPool.push_back(pBloodParticle);
 	}
 	
 	// ========================== Spark ================================= //
@@ -104,8 +128,30 @@ void CParticleManager::CreateBlood(XMVECTOR pos)
 	for (auto& particle: m_vecBloodParticleSystemPool) {
 		if (particle->GetActive())
 			continue;
-		else
+		else {
 			pParticle = particle;
+			break;
+		}
+	}
+
+	if (!pParticle)
+		return;
+
+	pParticle->ParticleRestart();
+	pParticle->SetEmitvPosition(pos);
+}
+
+void CParticleManager::CreateCopiousBleeding(XMVECTOR pos)
+{
+	CParticleSystem* pParticle = nullptr;
+	
+	for (auto& particle : m_vecCopiousBleedingParticleSystemPool) {
+		if (particle->GetActive())
+			continue;
+		else {
+			pParticle = particle;
+			break;
+		}
 	}
 
 	if (!pParticle)
@@ -122,9 +168,12 @@ void CParticleManager::CreateSpark(XMVECTOR pos)
 	for (auto& particle : m_vecSparkParticleSystemPool) {
 		if (particle->GetActive())
 			continue;
-		else
+		else {
 			pParticle = particle;
+			break;
+		}
 	}
+
 	if (!pParticle)
 		return;
 
@@ -149,6 +198,10 @@ void CParticleManager::UpdateManager(float fDeltaTime)
 		if (system->GetActive())
 			system->Update(fDeltaTime);
 
+	for (auto& system : m_vecCopiousBleedingParticleSystemPool)
+		if (system->GetActive())
+			system->Update(fDeltaTime);
+
 	for (auto& system : m_vecParticleSystemContainer)
 		if (system->GetActive())
 			system->Update(fDeltaTime);
@@ -159,6 +212,10 @@ void CParticleManager::RenderAllNoEffect(ID3D11DeviceContext *pd3dDeviceContext)
 	m_pRainParticle->Render(pd3dDeviceContext);
 
 	for (auto& system : m_vecSparkParticleSystemPool)
+		if (system->GetActive())
+			system->Render(pd3dDeviceContext);
+
+	for (auto& system : m_vecCopiousBleedingParticleSystemPool)
 		if (system->GetActive())
 			system->Render(pd3dDeviceContext);
 

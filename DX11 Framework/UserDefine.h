@@ -5,7 +5,7 @@
 //#define FRAME_BUFFER_HEIGHT				768
 
 // 클라이언트 개발 모드
-#define DEVELOP_MODE
+//#define DEVELOP_MODE
 
 //#define USE_SERVER
 
