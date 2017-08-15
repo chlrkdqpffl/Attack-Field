@@ -181,11 +181,15 @@ void CResourceManager::LoadMapData()
 	// =================== Barrel =================== //
 	AddResourece(MeshTag::eFireBarrel,			"../Assets/FBX Model/Barrel/FireBarrel.model");
 	AddResourece(MeshTag::eBarrel,				"../Assets/FBX Model/Barrel/Barrel.model");
+	AddResourece(MeshTag::eOccupyBarrel,		"../Assets/FBX Model/Barrel/OccupyBarrel.model");
 
 	AddResourece(TextureTag::eFireBarrelD,		"../Assets/FBX Model/Barrel/FireBarrelD.dds");
 	AddResourece(TextureTag::eFireBarrelN,		"../Assets/FBX Model/Barrel/FireBarrelN.png");
 	AddResourece(TextureTag::eBarrelD,			"../Assets/FBX Model/Barrel/BarrelD.dds");
 	AddResourece(TextureTag::eBarrelN,			"../Assets/FBX Model/Barrel/BarrelN.dds");
+
+	AddResourece(TextureTag::eOccupyBarrelD,	"../Assets/FBX Model/Barrel/OccupyBarrelD.jpg");
+	AddResourece(TextureTag::eOccupyBarrelN,	"../Assets/FBX Model/Barrel/OccupyBarrelN.jpg");
 
 	// =================== Lamp =================== //
 	AddResourece(MeshTag::eStreetLamp,			"../Assets/FBX Model/StreetLamp/StreetLamp.model");
