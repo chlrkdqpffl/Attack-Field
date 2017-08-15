@@ -73,6 +73,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 		m_pCharacter->SetIsReload(false);
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy)) {	//점령전 대비..
+#ifdef	USE_SERVER
 			m_pCharacter->SetOccupy(true);
 			sc_occupy packet;
 			packet.size = sizeof(sc_occupy);
@@ -81,6 +82,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	
 			cout << packet.redteam << endl;
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+#endif
 	}
 	else 
 		m_pCharacter->SetOccupy(false);
