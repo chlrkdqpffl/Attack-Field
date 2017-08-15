@@ -24,10 +24,15 @@ void CWaitScene::CreateUIImage()
 	m_pUIManager = new CUIManager();
 	m_pUIManager->Initialize(m_pd3dDevice);
 
-	CUIObject* TitleBackGroundD = new CUIObject(TextureTag::eTitleBackGroundD);
-	TitleBackGroundD->Initialize(m_pd3dDevice, POINT{ 0,0 }, POINT{ FRAME_BUFFER_WIDTH , FRAME_BUFFER_HEIGHT }, 0.0f);
-	TitleBackGroundD->SetActive(false);
-	m_pUIManager->AddUIObject(TitleBackGroundD);
+	CUIObject* SearchDeatmode = new CUIObject(TextureTag::eDeathSearch);
+	SearchDeatmode->Initialize(m_pd3dDevice, POINT{ 0,0 }, POINT{ FRAME_BUFFER_WIDTH , FRAME_BUFFER_HEIGHT }, 0.0f);
+	SearchDeatmode->SetActive(false);
+	m_pUIManager->AddUIObject(SearchDeatmode);
+
+	CUIObject* SearchOccupymode = new CUIObject(TextureTag::eOccupySearch);
+	SearchOccupymode->Initialize(m_pd3dDevice, POINT{ 0,0 }, POINT{ FRAME_BUFFER_WIDTH , FRAME_BUFFER_HEIGHT }, 0.0f);
+	SearchOccupymode->SetActive(false);
+	m_pUIManager->AddUIObject(SearchOccupymode);
 
 	// Death
 	CUIObject* pDeathMatchOn = new CUIObject(TextureTag::eDeathOn);
@@ -54,69 +59,69 @@ void CWaitScene::CreateUIImage()
 
 
 	CUIObject* search1 = new CUIObject(TextureTag::eSearch1);
-	search1->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20 , FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20,  FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
+	search1->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
 	search1->SetActive(false);
 	m_pUIManager->AddUIObject(search1);
 
 	CUIObject* search2 = new CUIObject(TextureTag::eSearch2);
-	search2->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 -20 , FRAME_BUFFER_HEIGHT / 2 -20 }, POINT{ FRAME_BUFFER_WIDTH / 2 +20,  FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
+	search2->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 -40 , FRAME_BUFFER_HEIGHT / 2 -40 }, POINT{ FRAME_BUFFER_WIDTH / 2 +40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
 	search2->SetActive(false);
 	m_pUIManager->AddUIObject(search2);
 
 	CUIObject* ssearch3 = new CUIObject(TextureTag::eSearch3);
-	ssearch3->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20 , FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20,  FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
+	ssearch3->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
 	ssearch3->SetActive(false);
 	m_pUIManager->AddUIObject(ssearch3);
 
 	CUIObject* search4 = new CUIObject(TextureTag::eSearch4);
-	search4->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20 , FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20,  FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
+	search4->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
 	search4->SetActive(false);
 	m_pUIManager->AddUIObject(search4);
 
 	CUIObject* search5 = new CUIObject(TextureTag::eSearch5);
-	search5->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20 , FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20,  FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
+	search5->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
 	search5->SetActive(false);
 	m_pUIManager->AddUIObject(search5);
 
 	CUIObject* search6 = new CUIObject(TextureTag::eSearch6);
-	search6->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20 , FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20,  FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
+	search6->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
 	search6->SetActive(false);
 	m_pUIManager->AddUIObject(search6);
 
 	CUIObject* search7 = new CUIObject(TextureTag::eSearch7);
-	search7->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20 , FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20,  FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
+	search7->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
 	search7->SetActive(false);
 	m_pUIManager->AddUIObject(search7);
 
 	CUIObject* search8 = new CUIObject(TextureTag::eSearch8);
-	search8->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20 , FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20,  FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
+	search8->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
 	search8->SetActive(false);
 	m_pUIManager->AddUIObject(search8);
 
 	CUIObject* search9 = new CUIObject(TextureTag::eSearch9);
-	search9->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20 , FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20,  FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
+	search9->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
 	search9->SetActive(false);
 	m_pUIManager->AddUIObject(search9);
 
-	CUIObject* search10 = new CUIObject(TextureTag::eSearch10);
-	search10->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20 , FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20,  FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
-	search10->SetActive(false);
-	m_pUIManager->AddUIObject(search10);
+	//CUIObject* search10 = new CUIObject(TextureTag::eSearch10);
+	//search10->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
+	//search10->SetActive(false);
+	//m_pUIManager->AddUIObject(search10);
 
-	CUIObject* search11 = new CUIObject(TextureTag::eSearch11);
-	search11->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20 , FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20,  FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
-	search11->SetActive(false);
-	m_pUIManager->AddUIObject(search11);
+	//CUIObject* search11 = new CUIObject(TextureTag::eSearch11);
+	//search11->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
+	//search11->SetActive(false);
+	//m_pUIManager->AddUIObject(search11);
 
-	CUIObject* search12 = new CUIObject(TextureTag::eSearch12);
-	search12->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20 , FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20,  FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
-	search12->SetActive(false);
-	m_pUIManager->AddUIObject(search12);
+	//CUIObject* search12 = new CUIObject(TextureTag::eSearch12);
+	//search12->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
+	//search12->SetActive(false);
+	//m_pUIManager->AddUIObject(search12);
 
-	CUIObject* search13 = new CUIObject(TextureTag::eSearch13);
-	search13->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 20 , FRAME_BUFFER_HEIGHT / 2 - 20 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 20,  FRAME_BUFFER_HEIGHT / 2 + 20 }, 0.0f);
-	search13->SetActive(false);
-	m_pUIManager->AddUIObject(search13);
+	//CUIObject* search13 = new CUIObject(TextureTag::eSearch13);
+	//search13->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
+	//search13->SetActive(false);
+	//m_pUIManager->AddUIObject(search13);
 
 }
 
@@ -227,30 +232,30 @@ void CWaitScene::SearchRender()
 		m_pUIManager->GetUIObject(TextureTag::eSearch9)->SetActive(true);
 		break;
 	case TextureTag::eSearch9:
-		m_tagCursorSelectUI = TextureTag::eSearch10;
-		m_pUIManager->GetUIObject(TextureTag::eSearch9)->SetActive(false);
-		m_pUIManager->GetUIObject(TextureTag::eSearch10)->SetActive(true);
-		break;
-	case TextureTag::eSearch10:
-		m_tagCursorSelectUI = TextureTag::eSearch11;
-		m_pUIManager->GetUIObject(TextureTag::eSearch10)->SetActive(false);
-		m_pUIManager->GetUIObject(TextureTag::eSearch11)->SetActive(true);
-		break;
-	case TextureTag::eSearch11:
-		m_tagCursorSelectUI = TextureTag::eSearch12;
-		m_pUIManager->GetUIObject(TextureTag::eSearch11)->SetActive(false);
-		m_pUIManager->GetUIObject(TextureTag::eSearch12)->SetActive(true);
-		break;
-	case TextureTag::eSearch12:
-		m_tagCursorSelectUI = TextureTag::eSearch13;
-		m_pUIManager->GetUIObject(TextureTag::eSearch12)->SetActive(false);
-		m_pUIManager->GetUIObject(TextureTag::eSearch13)->SetActive(true);
-		break;
-	case TextureTag::eSearch13:
 		m_tagCursorSelectUI = TextureTag::eSearch1;
-		m_pUIManager->GetUIObject(TextureTag::eSearch13)->SetActive(false);
+		m_pUIManager->GetUIObject(TextureTag::eSearch9)->SetActive(false);
 		m_pUIManager->GetUIObject(TextureTag::eSearch1)->SetActive(true);
 		break;
+	//case TextureTag::eSearch10:
+	//	m_tagCursorSelectUI = TextureTag::eSearch11;
+	//	m_pUIManager->GetUIObject(TextureTag::eSearch10)->SetActive(false);
+	//	m_pUIManager->GetUIObject(TextureTag::eSearch11)->SetActive(true);
+	//	break;
+	//case TextureTag::eSearch11:
+	//	m_tagCursorSelectUI = TextureTag::eSearch12;
+	//	m_pUIManager->GetUIObject(TextureTag::eSearch11)->SetActive(false);
+	//	m_pUIManager->GetUIObject(TextureTag::eSearch12)->SetActive(true);
+	//	break;
+	//case TextureTag::eSearch12:
+	//	m_tagCursorSelectUI = TextureTag::eSearch13;
+	//	m_pUIManager->GetUIObject(TextureTag::eSearch12)->SetActive(false);
+	//	m_pUIManager->GetUIObject(TextureTag::eSearch13)->SetActive(true);
+	//	break;
+	//case TextureTag::eSearch13:
+	//	m_tagCursorSelectUI = TextureTag::eSearch1;
+	//	m_pUIManager->GetUIObject(TextureTag::eSearch13)->SetActive(false);
+	//	m_pUIManager->GetUIObject(TextureTag::eSearch1)->SetActive(true);
+	//	break;
 	}
 }
 
@@ -297,7 +302,7 @@ void CWaitScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 			m_pUIManager->GetUIObject(TextureTag::eOccupyOff)->SetActive(false);
 
 			m_tagCursorSelectUI = TextureTag::eSearch1;
-			m_pUIManager->GetUIObject(TextureTag::eTitleBackGroundD)->SetActive(true);
+			m_pUIManager->GetUIObject(TextureTag::eDeathSearch)->SetActive(true);
 			m_pUIManager->GetUIObject(TextureTag::eSearch1)->SetActive(true);
 			
 		}
@@ -321,7 +326,13 @@ void CWaitScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 			SERVER_MGR->Sendpacket(reinterpret_cast<BYTE*>(&packet));
 			m_mouseclick = true;
 
+			m_pUIManager->GetUIObject(TextureTag::eDeathOn)->SetActive(false);
+			m_pUIManager->GetUIObject(TextureTag::eDeathOff)->SetActive(false);
+			m_pUIManager->GetUIObject(TextureTag::eOccupyOn)->SetActive(false);
+			m_pUIManager->GetUIObject(TextureTag::eOccupyOff)->SetActive(false);
+
 			m_tagCursorSelectUI = TextureTag::eSearch1;
+			m_pUIManager->GetUIObject(TextureTag::eOccupySearch)->SetActive(true);
 			m_pUIManager->GetUIObject(TextureTag::eSearch1)->SetActive(true);
 		}
 
@@ -346,4 +357,5 @@ void CWaitScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 {
 	m_pUIManager->RenderAll(pd3dDeviceContext);
 	SearchRender();
+	Sleep(100);
 }
