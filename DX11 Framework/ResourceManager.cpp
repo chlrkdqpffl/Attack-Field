@@ -32,6 +32,7 @@ void CResourceManager::LoadResourceTitleScene()
 	AddResourece(TextureTag::eOccupyOff,			"../Assets/Image/UI/OccupyMatchOff.png");
 //	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene.jpg");
 	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene2.jpg");
+	AddResourece(TextureTag::eLoginBack,			"../Assets/Image/UI/LoginBack.png");
 
 	// Character
 //	AddResourece(MeshTag::eTerrorist,				"../Assets/FBX Model/Character/Terrorist/Terrorist(use).model");
@@ -44,6 +45,7 @@ void CResourceManager::LoadResourceTitleScene()
 	AddResourece(TextureTag::eID,					"../Assets/Image/UI/ID.png");
 	AddResourece(TextureTag::ePassword,				"../Assets/Image/UI/Password.png");
 	AddResourece(TextureTag::eLogin,				"../Assets/Image/UI/Login.png");
+	AddResourece(TextureTag::eLoginon,				"../Assets/Image/UI/LoginOn.png");
 	AddResourece(TextureTag::eIDClick,				"../Assets/Image/UI/IDClick.png");
 	AddResourece(TextureTag::ePasswordClick,		"../Assets/Image/UI/PasswordClick.png");
 

@@ -165,8 +165,8 @@ enum class TextureTag
 	eStoneD, eStoneND, eBricksD, eBricksN,
 	eWallD, eWallND,
 
-	//юс╫ц UI
-	eID, ePassword, eIDClick, ePasswordClick, eLogin, eDeathOn, eOccupyOn, eDeathOff, eOccupyOff,
+	//UI2
+	eID, ePassword, eIDClick, ePasswordClick, eLogin, eLoginon,eDeathOn, eOccupyOn, eDeathOff, eOccupyOff, eLoginBack,
 
 	//Search
 	eSearch1, eSearch2, eSearch3, eSearch4, eSearch5, eSearch6, eSearch7, eSearch8, eSearch9, eSearch10, eSearch11, eSearch12, eSearch13,

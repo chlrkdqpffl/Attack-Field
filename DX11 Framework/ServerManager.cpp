@@ -392,8 +392,8 @@ void CServerManager::processpacket(char *ptr)
 		SC_Occupy_Timer*   packet;
 		packet = reinterpret_cast<SC_Occupy_Timer *>(ptr);
 
-		cout << packet->Occupy_timer << endl;
-	//	SCENE_MGR->g_pMainScene->SetGameTime(packet->Starting_timer);
+		
+		SCENE_MGR->g_pMainScene->SetOccupyTime(packet->Occupy_timer);
 		break;
 	
 	}

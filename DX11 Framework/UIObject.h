@@ -41,6 +41,7 @@ class CUIManager
 {
 	CShader					*m_pUIShader = nullptr;
 	CUIObject*				m_pBackGroundUI = nullptr;
+	CUIObject*				m_ptempBackGroundUI = nullptr;
 	vector<CUIObject*>		m_vecUIObject;
 	float					m_fSettingOpacity = 1.0f;
 
@@ -59,4 +60,5 @@ public:
 	CUIObject* GetUIObject(TextureTag tag);
 
 	void SetBackGroundUI(CUIObject* ui) { m_pBackGroundUI = ui; }
+	void SettempBackGroundUI(CUIObject* ui) { m_ptempBackGroundUI = ui; }
 };
