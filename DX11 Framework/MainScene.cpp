@@ -1795,8 +1795,13 @@ void CMainScene::ShowOccupyUI()
 
 	pWhiteGageUI->SetEndPos(POINT{ FRAME_BUFFER_WIDTH / 2 - 300 + (LONG)(percentage * gageLength), FRAME_BUFFER_HEIGHT / 2 + 62 });
 
-	if (percentage >= 1)
+	if (percentage >= 1) {
+
+		cout << "패킷 보내셈" << endl;
 		cout << "점령 완료" << endl;
+
+
+	}
 }
 
 void CMainScene::ShowDeathRespawnUI()
