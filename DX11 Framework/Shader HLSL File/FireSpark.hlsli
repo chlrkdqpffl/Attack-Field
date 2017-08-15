@@ -2,7 +2,7 @@
 
 // fxc /E GSParticleStreamOut /T gs_5_0 /Od /Zi /Fo CompiledVS.fxo Particle.fx
 
-static const float3 gBloodAccelW = { 0.0f, -10.0f, 0.0f };
+static const float3 gBloodAccelW = { 0.0f, 10.0f, 0.0f };
 
 PARTICLE_INPUT VSParticleStreamOut(PARTICLE_INPUT input)
 {
@@ -13,20 +13,18 @@ PARTICLE_INPUT VSParticleStreamOut(PARTICLE_INPUT input)
 void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTICLE_INPUT> pointStream)
 {
     input[0].age += gfTimeStep;
+
     if (input[0].type == PARTICLE_TYPE_EMITTER)
     {
-        if (input[0].age > 0.005f)
-        {
+        if (input[0].age > 0.005f) {
             float3 vRandom = RandUnitVec3(0.0f);
-  
             PARTICLE_INPUT particle = (PARTICLE_INPUT) 0;
             particle.position = gvParticleEmitPosition.xyz;
 //            particle.velocity = 5.0f * vRandom;
 //            particle.size = float2(1.0f, 1.0f);
-            //particle.velocity = g_f4Var.z * vRandom;
-            particle.velocity = 3.0f * vRandom;
-            //particle.size = float2(g_f4Var.x, g_f4Var.x);
-            particle.size = float2(0.4f, 0.4f);
+            //particle.velocity = (5 * vRandom) * vRandom;
+            particle.velocity = 5.0f * vRandom * vRandom * vRandom;
+            particle.size = float2(0.05f, 0.05f);
             particle.age = 0.0f;
             particle.type = PARTICLE_TYPE_FLARE;
 
@@ -97,5 +95,7 @@ void GSParticleDraw(point PARTICLE_OUTPUT input[1], inout TriangleStream<GS_PART
 
 float4 PSParticleDraw(GS_PARTICLE_OUT input) : SV_Target
 {
-    return gtxtParticleTextureArray.Sample(gLinearWarpSS, float3(input.texCoord, 0)) * input.color;
+    float4 cColor = gtxtParticleTextureArray.Sample(gLinearWarpSS, float3(input.texCoord, 0)) * input.color;
+    cColor += float4(0.5f, 0.2f, 0.0f, 0.0f);
+    return cColor;
 }

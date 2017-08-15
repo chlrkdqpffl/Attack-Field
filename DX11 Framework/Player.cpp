@@ -282,7 +282,7 @@ void CPlayer::Update(float fDeltaTime)
 	
 	m_pCamera->RegenerateViewMatrix();
 
-	
+
 	// Character Update
 	XMFLOAT4X4 mtx;
 	XMStoreFloat4x4(&mtx, m_pCharacter->m_mtxWorld);
@@ -291,7 +291,7 @@ void CPlayer::Update(float fDeltaTime)
 	mtx._21 = m_d3dxvUp.x;			mtx._22 = m_d3dxvUp.y;			mtx._23 = m_d3dxvUp.z;
 	mtx._31 = m_d3dxvLook.x;		mtx._32 = m_d3dxvLook.y;		mtx._33 = m_d3dxvLook.z;
 	mtx._41 = m_d3dxvPosition.x;	mtx._42 = m_d3dxvPosition.y;	mtx._43 = m_d3dxvPosition.z;
-	
+
 	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&mtx);
 }
 

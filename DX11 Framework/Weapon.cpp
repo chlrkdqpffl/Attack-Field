@@ -56,6 +56,14 @@ void CWeapon::Firing(XMVECTOR direction)
 				PARTICLE_MGR->CreateBlood(bloodOffset);
 			}
 		}
+		else if (COLLISION_MGR->RayCastCollision(info, firePosOffset, direction)) {
+			if (info.m_fDistance < m_fRange) {
+				XMVECTOR SparkOffset = firePosOffset;
+				SparkOffset += direction * info.m_fDistance;
+				PARTICLE_MGR->CreateSpark(SparkOffset);
+			}
+		}
+
 #endif
 		//COLLISION_MGR->CreateFireDirectionLine(firePosOffset, direction, m_fRange);
 	}
