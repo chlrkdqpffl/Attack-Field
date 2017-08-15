@@ -5,9 +5,9 @@
 //#define FRAME_BUFFER_HEIGHT				768
 
 // 클라이언트 개발 모드
-//#define DEVELOP_MODE
+#define DEVELOP_MODE
 
-#define USE_SERVER
+//#define USE_SERVER
 
 #define USE_CONSOLE					// Open Console Windows
 #define USE_LOOPBACKADDRESS			// auto 127.0.0.1
@@ -54,6 +54,8 @@
 #define MAPDATA_MGR CMapDataManager::GetInstance()
 #define SOUND_MGR CSoundManager::GetInstance()
 #define SERVER_MGR CServerManager::GetInstance()
+#define PARTICLE_MGR CParticleManager::GetInstance()
+// -------------------------------------------------- //
 
 // Check Timer
 #define STARTTIMER(msg)			{ cout << msg; GLOBAL_MGR->g_startTime = chrono::system_clock::now();}

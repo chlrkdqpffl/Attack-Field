@@ -26,6 +26,8 @@ private:
 	float m_fGameTime				= 0.0f;				
 	float m_fTimeStep				= 0.0f;				
 	float m_fAge					= 0.0f;
+	float m_fMaxAge					= FLT_MAX;
+	bool m_bIsActive				= true;
 
 	XMFLOAT3 m_f3EmitPosition		= XMFLOAT3(0, 0, 0);
 	XMFLOAT3 m_f3EmitDirection		= XMFLOAT3(0, 1, 0);
@@ -55,7 +57,7 @@ public:
 	CParticleSystem();
 	~CParticleSystem();
 
-	void Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceView *pd3dsrvTexArray, ID3D11ShaderResourceView *pd3dsrvRandomTexture, UINT nMaxParticles, ID3D11BlendState* blendState);
+	void Initialize(ID3D11Device *pd3dDevice, ID3D11ShaderResourceView *pd3dsrvTexArray, ID3D11ShaderResourceView *pd3dsrvRandomTexture, UINT nMaxParticles, ID3D11BlendState* blendState, float maxAge = FLT_MAX);
 
 	void Update(float fDeltaTime);
 	void Render(ID3D11DeviceContext *pd3dDeviceContext);
@@ -69,7 +71,10 @@ public:
 	ID3D11ShaderResourceView* CreateRandomTexture1DSRV(ID3D11Device *pd3dDevice);
 	ID3D11ShaderResourceView* CreateTexture2DArraySRV(ID3D11Device *pd3dDevice, _TCHAR(*ppstrFilePaths)[128], UINT nTextures);
 
-	// Setter
+	// --- Getter, Setter --- //
+	float GetAge() const { return m_fAge; }
+	bool GetActive() const { return m_bIsActive; }
+
 	void SetEmitPosition(XMFLOAT3 pos) { m_f3EmitPosition = pos; }
 	void SetEmitvPosition(XMVECTOR pos) { XMStoreFloat3(&m_f3EmitPosition,pos); }
 };

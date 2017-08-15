@@ -357,6 +357,9 @@
     <ClCompile Include="DynamicUIMesh.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -625,6 +628,9 @@
     </ClInclude>
     <ClInclude Include="DynamicUIMesh.h">
       <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleManager.h">
+      <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

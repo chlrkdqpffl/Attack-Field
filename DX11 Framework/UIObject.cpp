@@ -107,7 +107,8 @@ void CUIManager::Render(ID3D11DeviceContext* pDeviceContext, TextureTag tag)
 	pDeviceContext->RSSetState(STATEOBJ_MGR->g_pNoCullRS);
 
 	CUIObject* pUIObject = GetUIObject(tag);
-	pUIObject->Render(pDeviceContext);
+	if (pUIObject->GetActive())
+		pUIObject->Render(pDeviceContext);
 
 	pDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 	pDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);

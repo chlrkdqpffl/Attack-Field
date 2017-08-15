@@ -78,6 +78,8 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	MAPDATA_MGR->InitializeManager();
 	RESOURCE_MGR->InitializeManager();
 	SOUND_MGR->InitializeManager();
+	PARTICLE_MGR->InitializeManager();
+
 	BuildObjects();
 	
 	return(true);
@@ -106,6 +108,7 @@ void CGameFramework::OnDestroy()
 	COLLISION_MGR->ReleseInstance();
 	SOUND_MGR->ReleseInstance();
 	SERVER_MGR->ReleseInstance();
+	PARTICLE_MGR->ReleseInstance();
 
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtDumpMemoryLeaks();
@@ -406,7 +409,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case VK_RETURN:
 			break;
 		case VK_F5:
-			ScreenCapture(m_pd3dRenderTargetView);
+	//		ScreenCapture(m_pd3dRenderTargetView);
 			break;
 		case VK_F9:
 		{

@@ -59,7 +59,7 @@ void CWeapon::Firing(XMVECTOR direction)
 				else {
 					hitCharacter->DamagedCharacter(m_fDamage);
 				}
-
+				cout << "맞은 거리 : " << info.m_fDistance << endl;
 				/*
 				CollisionInfo info2;
 				// Create Particle
