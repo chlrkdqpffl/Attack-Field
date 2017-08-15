@@ -19,6 +19,7 @@ public:
 
 	virtual bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) override;
 	void IsOnCursorUI(POINT mousePos , HWND hwnd);
+	void SearchRender();
 	virtual void IsCollisionUI(POINT mousePos , HWND hwnd) override;
 
 };

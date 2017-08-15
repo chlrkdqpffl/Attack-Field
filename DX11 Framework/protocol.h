@@ -62,6 +62,7 @@ struct sc_packet_put_player {   //서버에서 처음 접속했을때 위치값과 ID를 부여한�
 	BYTE   Blue;
 	float   timer;
 
+	BYTE mode;
 };
 
 struct sc_packet_pos   //서버에서 처리된 값을 클라에게 보낸다. 

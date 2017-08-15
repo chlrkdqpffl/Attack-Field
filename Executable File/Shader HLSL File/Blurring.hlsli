@@ -2,7 +2,7 @@
 //     fxc /E HorzBlurCS /T cs_5_0 /Od /Zi /Fo CompiledShader.fxo Blurring.hlsli
 
 Texture2D gtxInput : register(t0);
-RWTexture2D<float4> gtxtRWOutput;
+RWTexture2D<float4> gtxtRWOutput : register(u0);
 
 static float gfWeights[11] = { 0.05f, 0.05f, 0.1f, 0.1f, 0.1f, 0.2f, 0.1f, 0.1f, 0.1f, 0.05f, 0.05f };
 static const int gBlurRadius = 5;
@@ -11,7 +11,7 @@ static const int gBlurRadius = 5;
 groupshared float4 gTextureCache[(ThreadNum + 2 * gBlurRadius)];
 
 [numthreads(ThreadNum, 1, 1)]
-void HorzBlurCS(int3 vGroupThreadID : SV_GroupThreadID, int3 vDispatchThreadID : SV_DispatchThreadID)
+void HorizFilter(int3 vGroupThreadID : SV_GroupThreadID, int3 vDispatchThreadID : SV_DispatchThreadID)
 {
     if (vGroupThreadID.x < gBlurRadius)
     {
@@ -42,7 +42,7 @@ void HorzBlurCS(int3 vGroupThreadID : SV_GroupThreadID, int3 vDispatchThreadID :
 
 
 [numthreads(1, ThreadNum, 1)]
-void VertBlurCS(int3 vGroupThreadID : SV_GroupThreadID, int3 vDispatchThreadID : SV_DispatchThreadID)
+void VerticalFilter(int3 vGroupThreadID : SV_GroupThreadID, int3 vDispatchThreadID : SV_DispatchThreadID)
 {
     if (vGroupThreadID.y < gBlurRadius)
     {

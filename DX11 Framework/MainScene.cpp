@@ -92,6 +92,9 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			case VK_R: 
 				m_pPlayer->SetKeyDown(KeyInput::eReload);
 				break;
+			case VK_E:	//점령하기
+				m_pPlayer->SetKeyDown(KeyInput::eOccupy);
+				break;
 			case VK_F1:
 			case VK_F2:
 			case VK_F3:
@@ -148,6 +151,9 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_SHIFT:
 				m_pPlayer->SetKeyUp(KeyInput::eRun);
+
+			case VK_E:	
+				m_pPlayer->SetKeyUp(KeyInput::eOccupy);
 				break;
 			}
 			break;
@@ -1872,10 +1878,31 @@ void CMainScene::RenderUI()
 
 	ShowDeadlyAttackUI();
 	ShowDeadlyUI();
-	ShowRespawnUI();
+	ShowDeathRespawnUI();
+	ShowOccupyRespawnUI();
 }
 
-void CMainScene::ShowRespawnUI()
+void CMainScene::ShowOccupyRespawnUI()
+{
+	CUIObject* pGageUI = m_pUIManager->GetUIObject(TextureTag::eRespawnGage);
+	CUIObject* pWhiteGageUI = m_pUIManager->GetUIObject(TextureTag::eRespawnGageWhite);
+
+	if (!m_pPlayerCharacter->GetOccupy()) {
+		pWhiteGageUI->SetActive(false);
+		pGageUI->SetActive(false);
+		return;
+	}
+
+	pGageUI->SetActive(true);
+	pWhiteGageUI->SetActive(true);
+
+	const UINT gageLength = 600;	// UI x축 길이 600 
+	float percentage = (float)(GetTickCount() - m_pPlayerCharacter->GetDeathTime()) / 3000;
+
+	pWhiteGageUI->SetEndPos(POINT{ FRAME_BUFFER_WIDTH / 2 - 300 + (LONG)(percentage * gageLength), FRAME_BUFFER_HEIGHT / 2 + 62 });
+}
+
+void CMainScene::ShowDeathRespawnUI()
 {
 	CUIObject* pGageUI = m_pUIManager->GetUIObject(TextureTag::eRespawnGage);
 	CUIObject* pWhiteGageUI = m_pUIManager->GetUIObject(TextureTag::eRespawnGageWhite);
@@ -1895,6 +1922,7 @@ void CMainScene::ShowRespawnUI()
 
 	pWhiteGageUI->SetEndPos(POINT{ FRAME_BUFFER_WIDTH / 2 - 300 + (LONG)(percentage * gageLength), FRAME_BUFFER_HEIGHT / 2 + 62 });
 }
+
 
 void CMainScene::ShowDeadlyUI()
 {
@@ -2177,6 +2205,11 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	// ----- Respawn ------ //
 	if (m_pPlayerCharacter->GetIsDeath()) {
 		str = "RESPAWN";
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
+	}
+
+	if (m_pPlayerCharacter->GetOccupy()) {
+		str = "점령중";
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
 	}
 }

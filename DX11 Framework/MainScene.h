@@ -42,7 +42,8 @@ public:
 
 	// UI
 	void RenderUI();
-	void ShowRespawnUI();
+	void ShowDeathRespawnUI();
+	void ShowOccupyRespawnUI();
 	void ShowDeadlyUI();
 	void ShowDeadlyAttackUI();
 

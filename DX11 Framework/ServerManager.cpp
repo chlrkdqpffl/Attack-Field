@@ -86,6 +86,7 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pPlayer->SetPlayerlife(static_cast<UINT>(my_put_packet->hp));//SCENE_MGR->g_pMainScene->-> SetLife(static_cast<UINT>(my_put_packet->hp));
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetServerID(id);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetTagTeam(reinterpret_cast<TeamType &>(my_put_packet->Team));
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->Setmode(my_put_packet->mode);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->CreateMaterial();
 		}
 		else
@@ -98,7 +99,7 @@ void CServerManager::processpacket(char *ptr)
 			pCharObject->SetRelativeVelocity(my_put_packet->Animation);
 			pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
 			pCharObject->SetServerID(id);
-		
+			pCharObject->Setmode(my_put_packet->mode);
 
 			SCENE_MGR->g_pMainScene->GetCharcontainer().push_back(pCharObject);
 			SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);

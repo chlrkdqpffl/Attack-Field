@@ -31,6 +31,7 @@ protected:
 	bool				m_bIsReload = false;
 	bool				m_bIsRun = false;
 	bool				m_bIsDeath = false;
+	bool				m_bIsOccupy = false;
 	bool				m_bIsDeathHead = false;
 	bool				m_bIsHeadHit = false;
 	bool				m_bTempIsRun = false;   // 임시로 달리기 속력 맞추려고 넣은 변수 이므로 사용 금지 - 추후 수정
@@ -41,9 +42,11 @@ protected:
 
 	// ----- Game System Variable ----- //
 	DWORD				m_dwDeathStartTime = 0;
+	DWORD				m_dwOccupyStartTime = 0;
 	UINT				m_nServerID = 0;
 	UINT				m_nLife = 0;
 	UINT				m_nArmorPoint = 0;
+	BYTE				m_Gamemode;
 
 	// ----- Parts Collision Variable ----- // 
 	BoundingOrientedBox		m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
@@ -129,6 +132,13 @@ public:
 	bool GetIsFire() const { return  m_bIsFire; }
 	void SetIsReload(bool set) { m_bIsReload = set; }
 	bool GetIsReload() const { return m_bIsReload; }
+	
+	void SetOccupy(bool occupy) {
+		if (occupy) m_dwOccupyStartTime = GetTickCount();
+		m_bIsOccupy = occupy; 
+	}
+	bool GetOccupy() { return m_bIsOccupy; }
+	
 	void SetIsDeath(bool bIsDeath) {
 		if (bIsDeath) m_dwDeathStartTime = GetTickCount();
 		m_bIsDeath = bIsDeath; 
@@ -160,4 +170,8 @@ public:
 	UINT GetWeaponBulletCount() const { return m_pWeapon->GetBulletCount(); }
 	UINT GetWeaponMaxBulletCount() const { return m_pWeapon->GetMaxBulletCount(); }
 	DWORD GetDeathTime() const { return m_dwDeathStartTime; }
+
+	void Setmode(BYTE mode) { m_Gamemode = mode;}
+	BYTE Getmode() {return m_Gamemode;}
+
 };
