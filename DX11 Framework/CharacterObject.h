@@ -157,6 +157,7 @@ public:
 	void SetTagTeam(TeamType &Team) { 
 		m_tagTeam = Team; 
 	}
+	TeamType GetTagTeam() { return m_tagTeam; }
 	
 
 	// ----- Game System Function ----- //

@@ -259,5 +259,23 @@ struct cs_create_charter
 	BYTE type;
 };
 
+struct sc_occupy
+{
+	BYTE size;
+	BYTE type;
+	BYTE redteam;
+
+};
+
+struct SC_Occupy_Timer
+{
+	BYTE size;
+	BYTE type;
+
+	float Occupy_timer;
+
+};
+
+
 
 #pragma pack(pop)

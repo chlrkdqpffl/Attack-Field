@@ -358,7 +358,7 @@ void CServerManager::processpacket(char *ptr)
 		}
 		break;
 	}
-	case 14:
+	case 14:	//임시
 	{
 		cs_temp_exit *packet;
 		packet = reinterpret_cast<cs_temp_exit *>(ptr);
@@ -369,7 +369,7 @@ void CServerManager::processpacket(char *ptr)
 		break;
 	}
 
-	case 15:
+	case 15:	//방에 들어가지면 받고 신변경해주고 서버에 정보 넣어달라고 보낸다.
 	{
 		SCENE_MGR->ChangeScene(SceneTag::eLoadingScene);
 		
@@ -378,6 +378,29 @@ void CServerManager::processpacket(char *ptr)
 		sendpacket.size = sizeof(cs_create_charter);
 		sendpacket.type = 8;
 		break;
+	}
+
+	case 16:	//어떤팀이 점령했는지 보낸다.
+	{
+		sc_occupy *packet = reinterpret_cast<sc_occupy *>(ptr);
+	
+		if (packet->redteam == 1)
+			cout << "red occupy" << endl;
+		else
+			cout << "blue occupy" << endl;
+		//SCENE_MGR->g_pMainScene->SetOccupy(packet->redteam);	//점령정보 받아온다.
+		break;
+	}
+
+	case 17:
+	{		
+		SC_Occupy_Timer*   packet;
+		packet = reinterpret_cast<SC_Occupy_Timer *>(ptr);
+
+		cout << packet->Occupy_timer << endl;
+	//	SCENE_MGR->g_pMainScene->SetGameTime(packet->Starting_timer);
+		break;
+	
 	}
 	
 	default:
