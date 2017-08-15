@@ -384,10 +384,10 @@ void CServerManager::processpacket(char *ptr)
 	{
 		sc_occupy *packet = reinterpret_cast<sc_occupy *>(ptr);
 	
-		if (packet->redteam == 1)
-			cout << "red occupy" << endl;
-		else
-			cout << "blue occupy" << endl;
+		//if (packet->redteam == 1)
+		////	cout << "red occupy" << endl;
+		//else
+		////	cout << "blue occupy" << endl;
 		//SCENE_MGR->g_pMainScene->SetOccupy(packet->redteam);	//점령정보 받아온다.
 		break;
 	}

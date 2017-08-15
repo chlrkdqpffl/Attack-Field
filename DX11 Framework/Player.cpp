@@ -80,7 +80,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 			packet.type = 9;
 			packet.redteam = static_cast<int>(SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetTagTeam());
 	
-			cout << packet.redteam << endl;
+			//cout << packet.redteam << endl;
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 #endif
 	}
