@@ -134,10 +134,21 @@ public:
 	bool GetIsReload() const { return m_bIsReload; }
 	
 	void SetOccupy(bool occupy) {
-		if (occupy) m_dwOccupyStartTime = GetTickCount();
-		m_bIsOccupy = occupy; 
+		static bool bIsOccupyStart = false;
+
+		if (occupy) {
+			if (!bIsOccupyStart) {
+				m_bIsOccupy = true;
+				bIsOccupyStart = true;
+				m_dwOccupyStartTime = GetTickCount();
+			}
+		}
+		else {
+			m_bIsOccupy = false;
+			bIsOccupyStart = false;
+		}
 	}
-	bool GetOccupy() { return m_bIsOccupy; }
+	bool GetIsOccupy() const { return m_bIsOccupy; }
 	
 	void SetIsDeath(bool bIsDeath) {
 		if (bIsDeath) m_dwDeathStartTime = GetTickCount();
@@ -154,11 +165,8 @@ public:
 	bool GetIsDeadly() const { return m_bIsDeadly; }
 	void SetIsDeadlyAttack(bool set) { m_bIsDeadlyAttack = set; }
 	bool GetIsDeadlyAttack() const { return m_bIsDeadlyAttack; }
-	void SetTagTeam(TeamType &Team) { 
-		m_tagTeam = Team; 
-	}
+	void SetTagTeam(TeamType Team) { m_tagTeam = Team; }
 	TeamType GetTagTeam() { return m_tagTeam; }
-	
 
 	// ----- Game System Function ----- //
 	void SetLife(UINT life) { m_nLife = life; }
@@ -171,6 +179,7 @@ public:
 	UINT GetWeaponBulletCount() const { return m_pWeapon->GetBulletCount(); }
 	UINT GetWeaponMaxBulletCount() const { return m_pWeapon->GetMaxBulletCount(); }
 	DWORD GetDeathTime() const { return m_dwDeathStartTime; }
+	DWORD GetOccupyTime() const { return m_dwOccupyStartTime; }
 
 	void Setmode(BYTE mode) { m_Gamemode = mode;}
 	BYTE Getmode() {return m_Gamemode;}

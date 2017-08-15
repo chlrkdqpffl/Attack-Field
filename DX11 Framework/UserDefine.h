@@ -5,9 +5,9 @@
 //#define FRAME_BUFFER_HEIGHT				768
 
 // 클라이언트 개발 모드
-//#define DEVELOP_MODE
+#define DEVELOP_MODE
 
-#define USE_SERVER
+//#define USE_SERVER
 
 #define USE_CONSOLE					// Open Console Windows
 #define USE_LOOPBACKADDRESS			// auto 127.0.0.1
@@ -32,6 +32,7 @@
 #define SHADOW_RENDER_TARGET_HEIGHT		1024
 
 #define MAXBONECOUNT					60
+#define OCCUPY_TIME						3000	// 점령 시간 3초
 #define RESPAWN_TIME					5000	// 리스폰 시간 5초
 
 
