@@ -115,7 +115,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_F5:
 			{
-				m_vecParticleSystemContainer.back()->ParticleRestart();
+				PARTICLE_MGR->m_vecParticleSystemContainer.back()->ParticleRestart();
 			}
 				break;
 			case VK_Z:
@@ -406,18 +406,6 @@ void CMainScene::Initialize()
 #pragma endregion 
 */
 
-#pragma region [Create Test - NomalMapping]	
-	/*
-	
-	CNormalMapObject* normalMapObject = new CNormalMapObject();
-	normalMapObject->CreateObjectData(m_pd3dDevice);
-
-	normalMapObject->SetPosition(10, 0, 100);
-	m_vecObjectsContainer.push_back(normalMapObject);
-	*/
-#pragma endregion 
-
-	 
 #ifndef USE_SERVER
 	// ==== Test용 - 총 메쉬 오프셋 찾기용 ==== //
 	CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject(TeamType::eBlueTeam);
@@ -432,42 +420,7 @@ void CMainScene::Initialize()
 	COLLISION_MGR->m_vecCharacterContainer.push_back(pCharacter);
 #endif
 
-#pragma region [Particle System]
-	
-	ID3D11ShaderResourceView* pParticleTexture = nullptr;
-	vector<MapData> vecMapData;
-	CParticleSystem* pFireParticle = nullptr;
-
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pFireParticle = new CParticleSystem();
-		D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/flare0.dds"), NULL, NULL, &pParticleTexture, NULL);
-		pFireParticle->Initialize(m_pd3dDevice, pParticleTexture, pFireParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
-		pFireParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Fire.hlsli");
-
-		XMFLOAT3 offsetPos = vecMapData[count].m_Position;
-		offsetPos.y += 1.5f;
-		offsetPos.z -= 0.5f;
-		pFireParticle->SetEmitPosition(offsetPos);
-		m_vecParticleSystemContainer.push_back(pFireParticle);
-	}
-
-	// Blood
-	CParticleSystem* pBloodParticle = new CParticleSystem();
-	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/blood.dds"), NULL, NULL, &pParticleTexture, NULL);
-	pBloodParticle->Initialize(m_pd3dDevice, pParticleTexture, pBloodParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS);
-	pBloodParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Blood.hlsli");
-	pBloodParticle->SetEmitPosition(XMFLOAT3(70.0f, 2.5f, 10.0f));
-
-	m_vecParticleSystemContainer.push_back(pBloodParticle);
-
-	// Rain
-	m_pRainParticle = new CParticleSystem();
-	D3DX11CreateShaderResourceViewFromFile(m_pd3dDevice, _T("../Assets/Image/Particle/raindrop.dds"), NULL, NULL, &pParticleTexture, NULL);
-	m_pRainParticle->Initialize(m_pd3dDevice, pParticleTexture, m_pRainParticle->CreateRandomTexture1DSRV(m_pd3dDevice), 5000, STATEOBJ_MGR->g_pFireBS);
-	m_pRainParticle->CreateShader(m_pd3dDevice, L"Shader HLSL File/Rain.hlsli");
-	
-#pragma endregion
+	PARTICLE_MGR->CreateParticleSystems(m_pd3dDevice);
 
 //	CreateMapDataObject();
 	CreateMapDataInstancingObject();
@@ -1696,10 +1649,6 @@ void CMainScene::ReleaseObjects()
 		SafeDelete(object);
 
 	m_pLightManager->DeInitialize();
-
-	SafeDelete(m_pRainParticle);
-	for (auto& system : m_vecParticleSystemContainer)
-		SafeDelete(system);
 }
 
 void CMainScene::AddShaderObject(ShaderTag tag, CGameObject* pObject)
@@ -1804,6 +1753,13 @@ void CMainScene::CalcTime()
 	}
 }
 
+void CMainScene::PrepareRenderUI()
+{
+	// 중복해서 그리는 문제 존재(m_pUIManager 에서 추가 렌더링)
+	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eRespawnGage);
+	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eRespawnGageWhite);
+}
+
 void CMainScene::RenderUI()
 {
 	ShowDeadlyAttackUI();
@@ -1834,7 +1790,6 @@ void CMainScene::ShowDeathRespawnUI()
 
 	pWhiteGageUI->SetEndPos(POINT{ FRAME_BUFFER_WIDTH / 2 - 300 + (LONG)(percentage * gageLength), FRAME_BUFFER_HEIGHT / 2 + 62 });
 }
-
 
 void CMainScene::ShowDeadlyUI()
 {
@@ -1888,50 +1843,36 @@ void CMainScene::Update(float fDeltaTime)
 	GLOBAL_MGR->UpdateManager();
 	UpdateConstantBuffers();
 
+	// ====== Object ===== //
 	CScene::Update(fDeltaTime);
-
-	if (m_pSelectedObject)
-		ModifiedSelectObject();
 
 	for (auto& object : m_vecCharacterContainer)
 		object->Update(fDeltaTime);
 
+	// ====== Particle ===== //
+	PARTICLE_MGR->UpdateManager(fDeltaTime);
 
-	m_pLightManager->SetAmbient(m_f3DirectionalAmbientLowerColor, m_f3DirectionalAmbientUpperColor);
-	m_pLightManager->SetDirectional(m_f3DirectionalDirection, m_f3DirectionalColor);
-
-
-	// Particle
-	XMVECTOR rainOffset = m_pCamera->GetvPosition();
-	rainOffset += m_pCamera->GetvUp() * 20;
-	rainOffset += m_pCamera->GetvLook() * 20;
-
-	m_pRainParticle->SetEmitvPosition(rainOffset);
-	m_pRainParticle->Update(fDeltaTime);
-	for (auto& system : m_vecParticleSystemContainer)
-		system->Update(fDeltaTime);
-
-	// Timer
+	// ====== Timer ===== //
 	CalcTime();
 
-	// Deferred
+	// ====== Deferred ===== //
 	float fAdaptationNorm;
 	static bool s_bFirstTime = true;
-	if (s_bFirstTime)
-	{
-		// On the first frame we want to fully adapt the new value so use 0
+	if (s_bFirstTime) {
 		fAdaptationNorm = 0.0f;
 		s_bFirstTime = false;
 	}
-	else
-	{
-		// Normalize the adaptation time with the frame time (all in seconds)
-		// Never use a value higher or equal to 1 since that means no adaptation at all (keeps the old value)
+	else {
 		fAdaptationNorm = min(TWBAR_MGR->g_OptionHDR.g_fAdaptation < 0.0001f ? 1.0f : fDeltaTime / TWBAR_MGR->g_OptionHDR.g_fAdaptation, 0.9999f);
 		//	fAdaptationNorm = fDeltaTime / 3;			// 1부터 10까지가 샘플 프로그램임
 	}
 	m_PostFX->SetParameters(TWBAR_MGR->g_OptionHDR.g_fMiddleGrey, TWBAR_MGR->g_OptionHDR.g_fWhite, fAdaptationNorm,
 		TWBAR_MGR->g_OptionHDR.g_fBloomThreshold, TWBAR_MGR->g_OptionHDR.g_fBloomScale, TWBAR_MGR->g_OptionHDR.g_fDOFFarStart, TWBAR_MGR->g_OptionHDR.g_fDOFFarRange);
+
+	// ===== Light ===== //
+	m_pLightManager->SetAmbient(m_f3DirectionalAmbientLowerColor, m_f3DirectionalAmbientUpperColor);
+	m_pLightManager->SetDirectional(m_f3DirectionalDirection, m_f3DirectionalColor);
+
 	m_pLightManager->ClearLights();
 	CreateLights();
 }
@@ -1967,15 +1908,12 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	m_GBuffer->DeferredRender(pd3dDeviceContext);
 	m_pLightManager->DoLighting(pd3dDeviceContext, pCamera);
 
-	// ----- UI ----- // -> 중복해서 그리는 문제 존재 (m_pUIManager 에서 추가 렌더링)
-	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eRespawnGage);
-	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eRespawnGageWhite);
+	// ----- UI ----- // 
+	PrepareRenderUI();
 
 	// ----- Particle System ----- //
-	m_pRainParticle->Render(m_pd3dDeviceContext);
-	for (auto& system : m_vecParticleSystemContainer)
-		system->Render(m_pd3dDeviceContext);
-
+	PARTICLE_MGR->RenderAll(m_pd3dDeviceContext);
+	
 	if (GLOBAL_MGR->g_bShowLightVolume)
 		m_pLightManager->DrawLightVolume(pd3dDeviceContext);
 
@@ -1986,7 +1924,6 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 #endif
 
 	// =============== Rendering Option =================== //
-
 	for (auto& lineObject : GLOBAL_MGR->g_vecLineContainer)
 		lineObject->Render(m_pd3dDeviceContext, m_pCamera);
 

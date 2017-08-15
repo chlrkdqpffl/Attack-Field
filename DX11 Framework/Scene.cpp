@@ -5,14 +5,6 @@
 #include "stdafx.h"
 #include "Scene.h"
 
-CScene::CScene()
-{
-}
-
-CScene::~CScene()
-{
-}
-
 bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	switch (nMessageID)
@@ -102,23 +94,18 @@ void CScene::Initialize()
 
 void CScene::CreatePlayer()
 {
-
 	m_pPlayerCharacter = new CTerroristCharacterObject(TeamType::eRedTeam);
 	m_pPlayerCharacter->CreateObjectData(m_pd3dDevice);
-	// 이거 두개 추가.
-
 	m_pPlayerCharacter->CreateAxisObject(m_pd3dDevice);
 
 	m_pPlayer = new CTerrainPlayer(m_pPlayerCharacter);
 	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson);
-	//	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eFirstPerson);
+//	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eFirstPerson);
 	m_pCamera = m_pPlayer->GetCamera();
 	m_pPlayerCharacter->SetPlayer(m_pPlayer);
 
 	SCENE_MGR->g_pPlayer = m_pPlayer;
 	m_pPlayer->SetPosition(XMVectorSet(60.0f, 2.5f, 20.0f, 0.0f));
-
-
 }
 
 void CScene::ReleaseObjects()

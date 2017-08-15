@@ -30,8 +30,9 @@ CParticleSystem::~CParticleSystem()
 }
 
 void CParticleSystem::Initialize
-	(ID3D11Device *pd3dDevice, ID3D11ShaderResourceView* pd3dsrvTexArray, ID3D11ShaderResourceView* pd3dsrvRandomTexture, UINT nMaxParticles, ID3D11BlendState *blendState)
+	(ID3D11Device *pd3dDevice, ID3D11ShaderResourceView* pd3dsrvTexArray, ID3D11ShaderResourceView* pd3dsrvRandomTexture, UINT nMaxParticles, ID3D11BlendState *blendState, float maxAge)
 {
+	m_fMaxAge = maxAge;
 	m_pd3dsrvTextureArray = pd3dsrvTexArray;
 	m_pd3dsrvRandomTexture = pd3dsrvRandomTexture;
 	m_pd3dBlendState = blendState;
@@ -108,6 +109,9 @@ void CParticleSystem::Update(float fDeltaTime)
 	m_fTimeStep = fDeltaTime;
 	m_fGameTime += fDeltaTime;
 	m_fAge += m_fTimeStep;
+
+	if (m_fMaxAge <= m_fAge)
+		m_bIsActive = false;
 }
 
 void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)

@@ -41,6 +41,7 @@ public:
 	void CalcTime();
 
 	// UI
+	void PrepareRenderUI();
 	void RenderUI();
 	void ShowDeathRespawnUI();
 	void ShowDeadlyUI();

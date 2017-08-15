@@ -42,8 +42,8 @@
 class CScene
 {
 public:
-	CScene();
-	virtual ~CScene();
+	CScene() {};
+	virtual ~CScene() {};
 
 	virtual bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	virtual bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
@@ -100,9 +100,6 @@ protected:
 	// Environment
 	CSkyBox								*m_pSkyBox		= nullptr;
 
-	// Particle
-	CParticleSystem*					m_pRainParticle = nullptr;
-
 	float								m_fGametime		= 0.0f;
 	float								m_fDeltaTime	= 0.0f;
 	CPlayer								*m_pPlayer		= nullptr;
@@ -114,7 +111,6 @@ protected:
 	vector<CGameObject*>				m_vecObjectsContainer;
 	vector<CInstancedObjectsShader*>	m_vecInstancedObjectsShaderContainer;
 	CObjectsShader						m_vecShaderObjectContainer;
-	vector<CParticleSystem*>			m_vecParticleSystemContainer;
-
+	
 	CSphereObject*						m_pSphereObject = nullptr;
 };

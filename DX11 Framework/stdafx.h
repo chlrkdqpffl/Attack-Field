@@ -82,6 +82,7 @@ using namespace std;
 #include "CollisionManager.h"
 #include "MapDataManager.h"
 #include "SoundManager.h"
+#include "ParticleManager.h"
 // ------------------------------- //
 
 template <typename T>
