@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ParticleManager.h"
 
-
 void CParticleManager::InitializeManager()
 {
 }
@@ -10,6 +9,9 @@ void CParticleManager::ReleseManager()
 {
 	SafeDelete(m_pRainParticle);
 	for (auto& system : m_vecParticleSystemContainer)
+		SafeDelete(system);
+
+	for (auto& system : m_vecBloodParticleSystemPool)
 		SafeDelete(system);
 }
 
@@ -31,17 +33,18 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 		offsetPos.z -= 0.5f;
 		pFireParticle->SetEmitPosition(offsetPos);
 
-		PARTICLE_MGR->m_vecParticleSystemContainer.push_back(pFireParticle);
+		m_vecParticleSystemContainer.push_back(pFireParticle);
 	}
 
 	// Blood
-	CParticleSystem* pBloodParticle = new CParticleSystem();
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/blood.dds"), NULL, NULL, &pParticleTexture, NULL);
-	pBloodParticle->Initialize(pd3dDevice, pParticleTexture, pBloodParticle->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS);
-	pBloodParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Blood.hlsli");
-	pBloodParticle->SetEmitPosition(XMFLOAT3(70.0f, 2.5f, 20.0f));
-
-	PARTICLE_MGR->m_vecParticleSystemContainer.push_back(pBloodParticle);
+	for (int i = 0; i < m_nMaxBloodParticle; ++i) {
+		CParticleSystem* pBloodParticle = new CParticleSystem();
+		D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Assets/Image/Particle/blood.dds"), NULL, NULL, &pParticleTexture, NULL);
+		pBloodParticle->Initialize(pd3dDevice, pParticleTexture, pBloodParticle->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS, 1.0f);
+		pBloodParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Blood.hlsli");
+		pBloodParticle->SetActive(false);
+		m_vecBloodParticleSystemPool.push_back(pBloodParticle);
+	}
 
 	// Rain
 	m_pRainParticle = new CParticleSystem();
@@ -49,6 +52,21 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 	m_pRainParticle->Initialize(pd3dDevice, pParticleTexture, m_pRainParticle->CreateRandomTexture1DSRV(pd3dDevice), 5000, STATEOBJ_MGR->g_pFireBS);
 	m_pRainParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Rain.hlsli");
 
+}
+
+void CParticleManager::CreateBlood(XMVECTOR pos)
+{
+	CParticleSystem* pBloodParticle = nullptr;
+
+	for (auto& blood : m_vecBloodParticleSystemPool) {
+		if (blood->GetActive())
+			continue;
+		else
+			pBloodParticle = blood;
+	}
+
+	pBloodParticle->ParticleRestart();
+	pBloodParticle->SetEmitvPosition(pos);
 }
 
 void CParticleManager::UpdateManager(float fDeltaTime)
@@ -60,16 +78,27 @@ void CParticleManager::UpdateManager(float fDeltaTime)
 	m_pRainParticle->SetEmitvPosition(rainOffset);
 	m_pRainParticle->Update(fDeltaTime);
 
+	for (auto& system : m_vecBloodParticleSystemPool)
+		if (system->GetActive())
+			system->Update(fDeltaTime);
+
 	for (auto& system : m_vecParticleSystemContainer)
 		if (system->GetActive())
 			system->Update(fDeltaTime);
 }
 
-void CParticleManager::RenderAll(ID3D11DeviceContext *pd3dDeviceContext)
+void CParticleManager::RenderAllNoEffect(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	m_pRainParticle->Render(pd3dDeviceContext);
 
+	for (auto& system : m_vecBloodParticleSystemPool)
+		if (system->GetActive())
+			system->Render(pd3dDeviceContext);
+}
+
+void CParticleManager::RenderAllEffect(ID3D11DeviceContext *pd3dDeviceContext)
+{
 	for (auto& system : m_vecParticleSystemContainer)
-		if(system->GetActive())
+		if (system->GetActive())
 			system->Render(pd3dDeviceContext);
 }

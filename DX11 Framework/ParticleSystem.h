@@ -62,7 +62,7 @@ public:
 	void Update(float fDeltaTime);
 	void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
-	void ParticleRestart() { m_bInitializeParticle = true; m_fAge = 0.0f; }
+	void ParticleRestart() { m_bInitializeParticle = true; m_fAge = 0.0f; m_bIsActive = true; }
 
 	void UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext);
 	void CreateShader(ID3D11Device *pd3dDevice, const wstring& wstring);
@@ -75,6 +75,7 @@ public:
 	float GetAge() const { return m_fAge; }
 	bool GetActive() const { return m_bIsActive; }
 
+	void SetActive(bool set) { m_bIsActive = set; }
 	void SetEmitPosition(XMFLOAT3 pos) { m_f3EmitPosition = pos; }
 	void SetEmitvPosition(XMVECTOR pos) { XMStoreFloat3(&m_f3EmitPosition,pos); }
 };

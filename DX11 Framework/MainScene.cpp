@@ -20,6 +20,8 @@ CMainScene::CMainScene()
 	//m_f3DirectionalAmbientUpperColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
 #endif
 
+	TWBAR_MGR->g_xmf4TestVariable.x = 0.4f;
+	TWBAR_MGR->g_xmf4TestVariable.z = 3.0f;
 }
 
 CMainScene::~CMainScene()
@@ -1912,7 +1914,7 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	PrepareRenderUI();
 
 	// ----- Particle System ----- //
-	PARTICLE_MGR->RenderAll(m_pd3dDeviceContext);
+	PARTICLE_MGR->RenderAllEffect(m_pd3dDeviceContext);
 	
 	if (GLOBAL_MGR->g_bShowLightVolume)
 		m_pLightManager->DrawLightVolume(pd3dDeviceContext);
@@ -1922,6 +1924,8 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 		pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthDSV());
 	}
 #endif
+
+	PARTICLE_MGR->RenderAllNoEffect(m_pd3dDeviceContext);
 
 	// =============== Rendering Option =================== //
 	for (auto& lineObject : GLOBAL_MGR->g_vecLineContainer)
