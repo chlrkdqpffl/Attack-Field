@@ -1778,6 +1778,7 @@ void CMainScene::RenderUI()
 
 void CMainScene::ShowOccupyUI()
 {
+
 	CUIObject* pGageUI = m_pUIManager->GetUIObject(TextureTag::eOccupyGageBar);
 	CUIObject* pWhiteGageUI = m_pUIManager->GetUIObject(TextureTag::eOccupyGageWhiteBar);
 
@@ -1787,19 +1788,37 @@ void CMainScene::ShowOccupyUI()
 		return;
 	}
 
-	pGageUI->SetActive(true);
-	pWhiteGageUI->SetActive(true);
 
+	if (m_cOccupyteam != static_cast<int>(SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetTagTeam()))
+	{
+		pGageUI->SetActive(true);
+		pWhiteGageUI->SetActive(true);
+	}
+	else
+	{
+		pGageUI->SetActive(false);
+		pWhiteGageUI->SetActive(false);
+	}
 	const UINT gageLength = 600;	// UI x축 길이 600 
 	float percentage = (float)(GetTickCount() - m_pPlayerCharacter->GetOccupyTime()) / OCCUPY_TIME;
 
 	pWhiteGageUI->SetEndPos(POINT{ FRAME_BUFFER_WIDTH / 2 - 300 + (LONG)(percentage * gageLength), FRAME_BUFFER_HEIGHT / 2 + 62 });
 
-	if (percentage >= 1) {
+	if (percentage >= 1)
+	{
+#ifdef	USE_SERVER
+		{
+			sc_occupy packet;
+			packet.size = sizeof(sc_occupy);
+			packet.type = 9;
+			packet.redteam = static_cast<int>(SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetTagTeam());
 
-		cout << "패킷 보내셈" << endl;
-		cout << "점령 완료" << endl;
-
+			//cout << packet.redteam << endl;
+			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+		}
+#endif
+		pGageUI->SetActive(false);
+		pWhiteGageUI->SetActive(false);
 
 	}
 }
@@ -2080,6 +2099,20 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	// ----- Respawn ------ //
 	if (m_pPlayerCharacter->GetIsDeath()) {
 		str = "RESPAWN";
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
+	}
+
+	if (m_pPlayerCharacter->GetIsOccupy()) {
+		str = "점령중";
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
+	}
+
+	if (m_cOccupyteam == 1) {
+		str = "Red팀 점령";
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
+	}
+	if (m_cOccupyteam == 2) {
+		str = "Blue팀 점령";
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
 	}
 

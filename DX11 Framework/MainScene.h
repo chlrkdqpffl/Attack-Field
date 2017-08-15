@@ -54,6 +54,8 @@ public:
 	void SetGameTime(UINT time) { m_nGameTime = time; }
 	void SetRedTeamKill(UINT kill) { m_nRedTeamTotalKill = kill; }
 	void SetBlueTeamKill(UINT kill) { m_nBlueTeamTotalKill = kill; }
+	void SetOccupyTeam(BYTE team) { m_cOccupyteam = team; }
+	BYTE GetOcuupyTeam() { return m_cOccupyteam; }
 
 private:
 	// Light Info
@@ -87,6 +89,8 @@ private:
 	UINT							m_nGameTime = 0;
 	UINT							m_nRedTeamTotalKill = 0;
 	UINT							m_nBlueTeamTotalKill = 0;
+	BYTE							m_cOccupyteam = 0; //어떤팀이 점령했는지 알아야 한다.
+
 
 	// UI
 	CUIObject*						m_pDamageUI = nullptr;
