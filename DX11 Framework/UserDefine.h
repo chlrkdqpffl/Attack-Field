@@ -7,7 +7,7 @@
 // 클라이언트 개발 모드
 //#define DEVELOP_MODE
 
-//#define USE_SERVER
+#define USE_SERVER
 
 #define USE_CONSOLE					// Open Console Windows
 #define USE_LOOPBACKADDRESS			// auto 127.0.0.1

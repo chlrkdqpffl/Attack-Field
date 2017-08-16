@@ -123,6 +123,7 @@ void CServerManager::processpacket(char *ptr)
 
 		SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(my_put_packet->RED));
 		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(my_put_packet->Blue));
+		cout << SCENE_MGR->g_pMainScene->GetCharcontainer().size() << endl;
 
 	}
 
@@ -193,7 +194,7 @@ void CServerManager::processpacket(char *ptr)
 	}
 	break;
 
-	case 6:
+	case 6:	//충돌체크
 	{
 		SC_Collison*         my_collision;
 		my_collision = reinterpret_cast<SC_Collison*>(ptr);
@@ -215,8 +216,17 @@ void CServerManager::processpacket(char *ptr)
 			Collison.type = CS_HEAD_HIT;
 			Collison.size = sizeof(CS_Head_Collison);
 			Collison.id = my_collision->id;
-			if (info.m_HitParts == ChracterBoundingBoxParts::eHead)
+
+			XMVECTOR bloodOffset = XMLoadFloat3(&my_collision->position);
+			bloodOffset += XMLoadFloat3(&my_collision->direction) * info.m_fDistance;
+
+			if (info.m_HitParts == ChracterBoundingBoxParts::eHead) {
 				Collison.Head = true;
+				PARTICLE_MGR->CreateCopiousBleeding(bloodOffset);
+			}
+			else
+				PARTICLE_MGR->CreateBlood(bloodOffset);
+
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&Collison));
 		}
 	}
