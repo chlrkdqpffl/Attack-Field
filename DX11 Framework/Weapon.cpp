@@ -60,7 +60,6 @@ void CWeapon::Firing(XMVECTOR direction)
 				PARTICLE_MGR->CreateSpark(SparkOffset);
 			}
 		}
-
 #else
 		CollisionInfo info;
 		if (COLLISION_MGR->RayCastCollisionToCharacter(info, firePosOffset, direction)) {
