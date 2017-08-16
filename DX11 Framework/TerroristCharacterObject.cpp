@@ -107,13 +107,13 @@ void CTerroristCharacterObject::CreateBoundingBox(ID3D11Device *pd3dDevice)
 
 	// --- Leg --- //
 	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftUpLeg)].Center = XMFLOAT3(-0.2f, 1.1f, 0.0f);
-	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftUpLeg)].Extents = XMFLOAT3(0.15f, 0.3f, 0.17f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftUpLeg)].Extents = XMFLOAT3(0.13f, 0.3f, 0.15f);
 	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftDownLeg)].Center = XMFLOAT3(-0.175f, 0.475f, 0.0f);
 	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eLeftDownLeg)].Extents = XMFLOAT3(0.12f, 0.35f, 0.17f);
 
 
 	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightUpLeg)].Center = XMFLOAT3(0.175f, 1.1f, 0.0f);
-	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightUpLeg)].Extents = XMFLOAT3(0.15f, 0.3f, 0.17f);
+	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightUpLeg)].Extents = XMFLOAT3(0.13, 0.3f, 0.15f);
 	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightDownLeg)].Center = XMFLOAT3(0.175f, 0.45f, 0.0f);
 	m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::eRightDownLeg)].Extents = XMFLOAT3(0.12f, 0.35f, 0.17f);
 
