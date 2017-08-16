@@ -34,6 +34,7 @@
 #define MAXBONECOUNT					60
 #define OCCUPY_TIME						3000	// 점령 시간 3초
 #define RESPAWN_TIME					5000	// 리스폰 시간 5초
+#define TOTAL_KILLS						50		// 게임 종료 킬
 
 
 #define _WITH_TERRAIN_PARTITION
