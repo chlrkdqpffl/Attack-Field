@@ -451,8 +451,8 @@ void CServerManager::error_display(char *msg, int err_num)
 void CServerManager::Server_init()
 {
 #ifdef USE_AUTOIP
-	//char ip[20] = "127.0.0.1";
-	char ip[20] = "192.168.123.110";
+	char ip[20] = "127.0.0.1";
+	//char ip[20] = "192.168.123.110";
 #else
 	char ip[20];		
 	cout << " ip ют╥б : ";
@@ -464,6 +464,9 @@ void CServerManager::Server_init()
 	WSADATA wsa;
 	WSAStartup(MAKEWORD(2, 2), &wsa);
 	g_socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, 0);
+
+	char opt_val = TRUE;
+	setsockopt(g_socket, IPPROTO_TCP, TCP_NODELAY, &opt_val, sizeof(opt_val));
 
 	SOCKADDR_IN Serveraddr;
 	ZeroMemory(&Serveraddr, sizeof(SOCKADDR_IN));
@@ -478,6 +481,7 @@ void CServerManager::Server_init()
 		Sleep(3000);
 		exit(1);
 	}
+
 
 
 
