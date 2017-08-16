@@ -206,7 +206,7 @@ void CServerManager::processpacket(char *ptr)
 			if (character->GetServerID() == my_collision->id)
 				info.m_pHitObject = character;
 		}
-
+		
 		bIsPartsCollisionCS = COLLISION_MGR->RayCastCollisionToCharacter_Parts(info, XMLoadFloat3(&my_collision->position), XMLoadFloat3(&my_collision->direction));
 
 		if (bIsPartsCollisionCS) {
