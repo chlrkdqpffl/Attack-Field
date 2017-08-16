@@ -129,7 +129,7 @@ void CServerManager::processpacket(char *ptr)
 
 
 	break;
-	case 3:   //총알...
+	case 3:   // 총 발사시
 	{
 		sc_bullet_fire*         my_put_bulletfire;
 		my_put_bulletfire = reinterpret_cast<sc_bullet_fire *>(ptr);
@@ -157,7 +157,7 @@ void CServerManager::processpacket(char *ptr)
 	}
 	break;
 
-	case 4:
+	case 4:	// 안쓰는 것
 	{
 		sc_packet_remove_player *my_packet = reinterpret_cast<sc_packet_remove_player *>(ptr);
 		int other_id = my_packet->id;
@@ -193,7 +193,7 @@ void CServerManager::processpacket(char *ptr)
 	}
 	break;
 
-	case 6:
+	case 6:	// 총알 충돌 체크
 	{
 		SC_Collison*         my_collision;
 		my_collision = reinterpret_cast<SC_Collison*>(ptr);
@@ -215,8 +215,10 @@ void CServerManager::processpacket(char *ptr)
 			Collison.type = CS_HEAD_HIT;
 			Collison.size = sizeof(CS_Head_Collison);
 			Collison.id = my_collision->id;
+
 			if (info.m_HitParts == ChracterBoundingBoxParts::eHead)
 				Collison.Head = true;
+
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&Collison));
 		}
 	}
@@ -448,8 +450,9 @@ void CServerManager::error_display(char *msg, int err_num)
 
 void CServerManager::Server_init()
 {
-#ifdef USE_LOOPBACKADDRESS
-	char ip[20] = "127.0.0.1";
+#ifdef USE_AUTOIP
+	//char ip[20] = "127.0.0.1";
+	char ip[20] = "192.168.123.110";
 #else
 	char ip[20];		
 	cout << " ip 입력 : ";

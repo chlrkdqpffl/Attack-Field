@@ -143,6 +143,8 @@ struct CS_Head_Collison
 	BYTE id;
 };
 
+
+
 struct SC_Player_Hp
 {
 	BYTE size;

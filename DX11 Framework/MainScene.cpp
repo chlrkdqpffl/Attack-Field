@@ -117,6 +117,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_F5:
 				break;
+#ifndef USE_SERVER
 			case VK_Z:
 				// 임의로 죽어보기
 				m_pPlayerCharacter->SetIsDeath(true);
@@ -129,6 +130,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				// 임의로 위급 상황
 				m_pPlayerCharacter->SetIsDeadly(true);
 				break;
+#endif
 			}
 			break;
 		case WM_KEYUP:
@@ -2114,7 +2116,7 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	str = to_string(m_nBlueTeamTotalKill);
 	TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 913, 10, 0xFFFF4500, FW1_CENTER);
 
-	str = "100";
+	str = "50";
 	TEXT_MGR->RenderText(pd3dDeviceContext, str, 65, 800, 10, 0xFFFFFFFF, FW1_CENTER);
 
 	// ----- Respawn ------ //

@@ -17,9 +17,12 @@ void CAntTweakBarManager::InitializeManager()
 	g_tweakBar = TwNewBar("TweakBar");
 
 	TwDefine(" GLOBAL help='This example shows how to integrate AntTweakBar into a DirectX11 application.' "); // Message added to the help bar.
+	TwDefine(" GLOBAL visible=false ");
+
 	TwDefine(" TweakBar size = '300 300'");
 	TwDefine(" TweakBar alpha = 230");   // transparent bar
 	TwDefine(" TweakBar position = '30 100'");
+//	TwDefine(" TweakBar visible = true ");
 
 	// ------ Option ----- //
 

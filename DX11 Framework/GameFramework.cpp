@@ -725,7 +725,6 @@ void CGameFramework::ProcessInput()
 			SetCursorPos(FRAME_BUFFER_WIDTH / 2, FRAME_BUFFER_HEIGHT / 2);
 		}
 	}
-
 	
 	if (SCENE_MGR->g_nowScene->GetSceneTag() == SceneTag::eMainScene) {
 		if ((cxDelta != 0.0f) || (cyDelta != 0.0f))

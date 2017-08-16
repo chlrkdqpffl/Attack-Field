@@ -34,6 +34,33 @@ void CWeapon::Firing(XMVECTOR direction)
 		XMStoreFloat3(&packet->direction, direction);
 
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(packet));
+
+
+		// Particle용 충돌체크 - 임시방편
+		CollisionInfo info;
+		if (COLLISION_MGR->RayCastCollisionToCharacter(info, firePosOffset, direction)) {
+			if (info.m_fDistance < m_fRange) {
+				XMVECTOR bloodOffset = firePosOffset;
+				bloodOffset += direction * info.m_fDistance;
+
+				// Head Shot 판정
+				if (info.m_HitParts == ChracterBoundingBoxParts::eHead) {
+			
+					PARTICLE_MGR->CreateCopiousBleeding(bloodOffset);
+				}
+				else {
+					PARTICLE_MGR->CreateBlood(bloodOffset);
+				}
+			}
+		}
+		else if (COLLISION_MGR->RayCastCollision(info, firePosOffset, direction)) {
+			if (info.m_fDistance < m_fRange) {
+				XMVECTOR SparkOffset = firePosOffset;
+				SparkOffset += direction * info.m_fDistance;
+				PARTICLE_MGR->CreateSpark(SparkOffset);
+			}
+		}
+
 #else
 		CollisionInfo info;
 		if (COLLISION_MGR->RayCastCollisionToCharacter(info, firePosOffset, direction)) {

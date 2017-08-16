@@ -184,11 +184,8 @@ void CTitleScene::IsOnCursorUI(POINT mousePos, HWND hWnd)
 				m_tagCursorSelectUI = TextureTag::eLogin;
 			}
 		}
-
-		
 		break;
 	}
-
 	}
 }
 
