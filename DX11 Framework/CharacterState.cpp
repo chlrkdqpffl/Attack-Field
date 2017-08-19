@@ -15,7 +15,7 @@ void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		pUpperFSM->ChangeState(CState_HeadHit::GetInstance());
 		return;
 	}
-	else if (pCharacter->GetLife() < 20) {
+	else if (pCharacter->GetLife() <= 20) {
 		pCharacter->SetIsDeadly(true);		// Show Deadly UI
 	}
 }
@@ -368,7 +368,6 @@ void CState_Death::ExitState(CCharacterObject* pCharacter, AnimationData::Parts 
 		return;
 
 	pCharacter->SetIsDeadly(false);
-	pCharacter->SetIsDeath(false);
 	pCharacter->SetIsRespawn(false);
 #ifndef USE_SERVER
 	pCharacter->Revival(100);

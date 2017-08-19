@@ -60,6 +60,20 @@ enum class ChracterBoundingBoxParts
 	ePartsCount
 };
 
+enum class ParticleTag
+{
+	eNone,
+	eFire,
+
+	// ======================================= // 
+	MaxPostProcessingParticle = 100,
+	// ======================================= // 
+
+	eRain, 
+	eSpark, 
+	eBleeding, eBleeding2, eBleeding3, eCopiousBleeding,
+};
+
 // ========================================================================================================================== //
 // ==================================================== Weapon Data ========================================================= //
 

@@ -30,7 +30,7 @@ protected:
 	bool				m_bIsJump = false;
 	bool				m_bIsReload = false;
 	bool				m_bIsRun = false;
-	bool				m_bIsDeath = false;
+//	bool				m_bIsDeath = false;
 	bool				m_bIsOccupy = false;
 	bool				m_bIsDeathHead = false;
 	bool				m_bIsHeadHit = false;
@@ -150,11 +150,11 @@ public:
 	}
 	bool GetIsOccupy() const { return m_bIsOccupy; }
 	
-	void SetIsDeath(bool bIsDeath) {
-		if (bIsDeath) m_dwDeathStartTime = GetTickCount();
-		m_bIsDeath = bIsDeath; 
+	void SetDeath() {
+		m_dwDeathStartTime = GetTickCount();
+		m_nLife = 0;
 	}
-	bool GetIsDeath() const { return m_bIsDeath; }
+	bool GetIsDeath() const { return (m_nLife <= 0); }
 	void SetIsDeathHead(bool set) { m_bIsDeathHead = set; }
 	bool GetIsDeathHead() const { return m_bIsDeathHead; }
 	void SetIsHeadHit(bool set) { m_bIsHeadHit = set; }

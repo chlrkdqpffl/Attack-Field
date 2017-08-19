@@ -5,8 +5,8 @@
 CMainScene::CMainScene()
 {
 	m_tagScene = SceneTag::eMainScene;
-	TWBAR_MGR->g_xmf3SelectObjectRotate = XMFLOAT3(40, 60, 50);
-	TWBAR_MGR->g_xmf3SelectObjectPosition = XMFLOAT3(56, 10, 23);
+	TWBAR_MGR->g_xmf3SelectObjectPosition = XMFLOAT3(0, 0, 0);
+	TWBAR_MGR->g_xmf3SelectObjectRotate = XMFLOAT3(40, 50, 30.0f);
 
 	m_f3DirectionalColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	m_f3DirectionalDirection = XMFLOAT3(1.0f, -1.0f, 1.0f);
@@ -109,8 +109,9 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 					else 
 						m_pUIManager->GetUIObject(TextureTag::eAim)->SetActive(true);
 				break;
-			case VK_F4:		// 중력 테스트용으로 넣음
+			case VK_F4:	
 				m_pPlayer->SetPosition(XMVectorSet(60, 10, 30, 0));
+			//	m_pPlayer->SetPosition(XMVectorSet(60, 10, 100, 0));
 				m_pPlayer->SetGravityTimeElpased(0.0f);
 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
@@ -120,7 +121,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 #ifndef USE_SERVER
 			case VK_Z:
 				// 임의로 죽어보기
-				m_pPlayerCharacter->SetIsDeath(true);
+				m_pPlayerCharacter->SetDeath();
 				break;
 			case VK_X:
 				// 임의로 헤드샷 맞기
@@ -128,7 +129,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_C:
 				// 임의로 위급 상황
-				m_pPlayerCharacter->SetIsDeadly(true);
+				m_pPlayerCharacter->SetLife(20);
 				break;
 #endif
 			}
@@ -413,7 +414,7 @@ void CMainScene::Initialize()
 	CCharacterObject* pCharacter = new CTerroristCharacterObject(TeamType::eBlueTeam);
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
-//	pCharacter->SetLife(100000);
+	pCharacter->SetLife(100000);
 	pCharacter->SetPosition(60.0f, 2.5f, 15.0f);
 
 	m_vecBBoxRenderContainer.push_back(pCharacter);
@@ -1724,34 +1725,28 @@ void CMainScene::CreateLights()
 	XMFLOAT3 pos;
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
 	
+	// Street Lamp
 	for (auto light : vecMapData) {
 		pos = light.m_Position;
-		pos.y += 10;
-
-		m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), 40.0f, 60.0f, 50.0f, XMFLOAT3(1, 1, 1));
-		//	m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
+		//pos.y += TWBAR_MGR->g_xmf3SelectObjectPosition.y;
+		pos.y += 10.0f;
+		//m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), 40.0f, 60.0f, 50.0f, XMFLOAT3(1, 1, 1));
+		m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
 	}
 
-	// Player Spot Light
+	// Player Light
 	{
 		pos = m_pPlayer->GetPosition();
 		XMFLOAT3 look = m_pPlayerCharacter->GetFireDirection();
 		//m_pLightManager->AddSpotLight(pos, look, TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
-		m_pLightManager->AddSpotLight(pos, look, 60.0f, 35.0f, 20.0f, XMFLOAT3(1, 1, 1));
-	}
-	
+		m_pLightManager->AddSpotLight(pos, look, 35.0f, 30.0f, 10.0f, XMFLOAT3(1, 1, 1));
 
-	// Player above Light
-	/*
-	XMStoreFloat3(&pos, m_pPlayer->GetvLook() * TWBAR_MGR->g_xmf3Offset.x);
-	XMStoreFloat3(&pos, XMLoadFloat3(& pos) + m_pPlayer->GetvPosition());
-	pos.y += TWBAR_MGR->g_xmf3Offset.y;
-	m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
-	*/
-	//m_pLightManager->AddSpotLight(XMFLOAT3(56, 10, 23), XMFLOAT3(0, -1, 0),  30, 35, 30, XMFLOAT3(1, 1, 1));
-//	m_pLightManager->AddSpotLight(XMFLOAT3(50, 10, 3), XMFLOAT3(0, -1, 0), 30, 35, 30, XMFLOAT3(1, 1, 1));
-	//m_pLightManager->AddSpotLight(TWBAR_MGR->g_xmf3SelectObjectPosition, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
-	//m_pLightManager->AddPointLight(TWBAR_MGR->g_xmf3SelectObjectPosition, TWBAR_MGR->g_xmf3SelectObjectRotate.x, XMFLOAT3(1, 1, 1));
+		XMVECTOR vPos = m_pPlayer->GetvPosition();
+		vPos += 1.3f * m_pPlayer->GetvLook();
+
+		XMStoreFloat3(&pos, vPos);
+		m_pLightManager->AddPointLight(pos, 5.0f, XMFLOAT3(1, 1, 1));
+	}
 }
 
 void CMainScene::ModifiedSelectObject()

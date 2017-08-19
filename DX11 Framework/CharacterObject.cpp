@@ -83,10 +83,8 @@ void CCharacterObject::Revival(UINT life)
 
 void CCharacterObject::DamagedCharacter(UINT damage)
 {
-	if (m_nLife <= damage) {
+	if (m_nLife <= damage) 
 		m_nLife = 0;
-		m_bIsDeath = true;
-	}
 	else
 		m_nLife -= damage;
 }

@@ -47,6 +47,7 @@ CSkyBox::~CSkyBox()
 
 void CSkyBox::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
+	Rotate(XMFLOAT3(0, 0.02f, 0));
 	SetPosition(pCamera->GetPosition());
 	Update(NULL);
 

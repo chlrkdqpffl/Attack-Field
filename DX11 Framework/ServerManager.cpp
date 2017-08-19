@@ -91,7 +91,6 @@ void CServerManager::processpacket(char *ptr)
 		}
 		else
 		{
-			
 			CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject(static_cast<TeamType>(my_put_packet->Team));   //객체 생성
 			pCharObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
 			pCharObject->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
@@ -104,10 +103,8 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pMainScene->GetCharcontainer().push_back(pCharObject);
 			SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);
 
-
-
 			COLLISION_MGR->m_vecCharacterContainer.push_back(pCharObject);
-
+		
 			/*
 			UINT index;
 			int i = 0;
@@ -233,7 +230,7 @@ void CServerManager::processpacket(char *ptr)
 		{
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(packet->m_nLife);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsHeadHit(packet->m_bIsHeadHit);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsDeath(packet->m_bIsAlive);
+			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsDeath(packet->m_bIsAlive); -> 이제 Death는 Life가 0인지 아닌지로 판별하므로 필요없음
 		}
 		else
 		{
@@ -246,7 +243,7 @@ void CServerManager::processpacket(char *ptr)
 			}
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->m_nLife);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsHeadHit(packet->m_bIsHeadHit);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsDeath(packet->m_bIsAlive);
+			//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsDeath(packet->m_bIsAlive); -> 이제 Death는 Life가 0인지 아닌지로 판별하므로 필요없음
 
 		}
 	}
@@ -451,8 +448,8 @@ void CServerManager::error_display(char *msg, int err_num)
 void CServerManager::Server_init()
 {
 #ifdef USE_AUTOIP
-	char ip[20] = "127.0.0.1";
-	//char ip[20] = "192.168.123.110";
+	//char ip[20] = "127.0.0.1";
+	char ip[20] = "192.168.123.110";
 #else
 	char ip[20];		
 	cout << " ip 입력 : ";

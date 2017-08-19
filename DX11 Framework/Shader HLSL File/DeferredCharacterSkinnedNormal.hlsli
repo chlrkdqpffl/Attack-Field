@@ -81,15 +81,18 @@ PS_GBUFFER_OUTPUT PSSkinnedTexturedBumpedLightingColor(VS_SKINNED_OUTPUT input)
     float SpecPowerNorm = max(0.0001, (g_SpecPower - g_SpecPowerRange.x) / g_SpecPowerRange.y);
     input.normalW = normalize(input.normalW);
 
-    float3 DiffuseColor = gtxtDiffuse.Sample(gSamplerState, input.texCoord);
-    DiffuseColor *= DiffuseColor; // 어떤 차이인지 확인해보기
-   
+    float3 DiffuseColor = gtxtDiffuse.Sample(gSamplerState, input.texCoord);  
+    DiffuseColor *= DiffuseColor;
+    //DiffuseColor += float4(0.2f, 0.2f, 0.2f, 0.0f);
+
     PS_GBUFFER_OUTPUT output = (PS_GBUFFER_OUTPUT) 0;
 
     output.DiffuseSpecInt = float4(DiffuseColor, g_SpecIntensity);
     output.Normal = float4(normalW * 0.5 + 0.5, 0.0);
    // output.Normal = float4(1,1,1, 0.0);
     output.SpecPow = float4(SpecPowerNorm, 0.0, 0.0, 0.0);
+
+
 
     return output;
 }
