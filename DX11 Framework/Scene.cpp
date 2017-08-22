@@ -77,11 +77,6 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			}
 		}
 		break;
-	case WM_KEYUP:
-		switch (wParam) {
-			
-		}
-		break;
 	}
 	return(false);
 }

@@ -3,74 +3,40 @@
 
 void CParticleManager::InitializeManager()
 {
-	AddParticleTexture(ParticleTag::eRain,				"../Assets/Image/Particle/raindrop.dds");
-	AddParticleTexture(ParticleTag::eFire,				"../Assets/Image/Particle/flare0.dds");
-	AddParticleTexture(ParticleTag::eSpark,				"../Assets/Image/Particle/Spark.dds");
-	AddParticleTexture(ParticleTag::eBleeding,			"../Assets/Image/Particle/blood.dds");
-	AddParticleTexture(ParticleTag::eBleeding2,			"../Assets/Image/Particle/blood2.dds");
-	AddParticleTexture(ParticleTag::eBleeding3,			"../Assets/Image/Particle/blood3.dds");
-	AddParticleTexture(ParticleTag::eCopiousBleeding,	"../Assets/Image/Particle/raindrop.dds");
+	RESOURCE_MGR->AddResourece(TextureTag::eRain, "../Assets/Image/Particle/raindrop.dds");
+	RESOURCE_MGR->AddResourece(TextureTag::eFire, "../Assets/Image/Particle/flare0.dds");
+	RESOURCE_MGR->AddResourece(TextureTag::eSpark, "../Assets/Image/Particle/Spark.dds");
+	RESOURCE_MGR->AddResourece(TextureTag::eBlood1, "../Assets/Image/Particle/blood.dds");
+	RESOURCE_MGR->AddResourece(TextureTag::eBlood2, "../Assets/Image/Particle/blood2.dds");
+	RESOURCE_MGR->AddResourece(TextureTag::eBlood3, "../Assets/Image/Particle/blood3.dds");
 }
 
 void CParticleManager::ReleseManager()
 {
 	SafeDelete(m_pRainParticle);
-	for (auto& system : m_vecParticleSystemContainer)
-		SafeDelete(system);
 
-	for (auto& system : m_vecBloodParticleSystemPool)
-		SafeDelete(system);
-
-	for (auto& system : m_vecSparkParticleSystemPool)
-		SafeDelete(system);
-
-	for (auto& system : m_vecCopiousBleedingParticleSystemPool)
-		SafeDelete(system);
-}
-
-void CParticleManager::AddParticleTexture(const ParticleTag& tag, const string& source)
-{
-	HRESULT hResult;
-	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
-	D3DX11CreateShaderResourceViewFromFile(STATEOBJ_MGR->g_pd3dDevice, s_to_ws(source).c_str(), NULL, NULL, &pd3dsrvTexture, &hResult);
-
-	if ((HRESULT)hResult >= 0)
-		ShowTaskSuccess("\t Success!!");
-	else
-		ShowTaskFail("\t Error!! \t\t 파일 또는 경로를 확인하세요.");
-
-	string str = "Particle Tag : " + to_string(static_cast<int>(tag));
-	DXUT_SetDebugName(pd3dsrvTexture, str.c_str());
-
-	m_mapTexturePool.insert(make_pair(tag, pd3dsrvTexture));
-
-	// 한 태그에 여러개 등록되었음
-	assert(m_mapTexturePool.count(tag) <= 1);
-}
-
-ID3D11ShaderResourceView* CParticleManager::CloneShaderResourceView(const ParticleTag& tag)
-{
-	auto findResource = m_mapTexturePool.find(tag);
-
-	// Pool에 해당 데이터가 존재하지 않는다.
-	if (findResource == m_mapTexturePool.end())
-		MessageBox(NULL, s_to_ws("Particle Texture Tag : " + to_string(static_cast<int>(tag))).c_str(), L"Resource Error", MB_OK);
-
-	return (*findResource).second;
+	for (auto& index = m_mapParticlePool.begin(); index != m_mapParticlePool.end(); ++index)
+		for(auto& system : index->second)
+			SafeDelete(system);
 }
 
 void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 {
+	// Particle Texture 는 Resource Manager에 저장된 텍스쳐를 가져오고 
+	// 원하는 파티클의 형태마다 Particle Tag를 생성하여 해당 map에 넣어준다.
+
 	vector<MapData> vecMapData;
 	CParticleSystem* pParticle = nullptr;
 	vector<CParticleSystem*> vecParticleSystemPool;
+	wstring wstrShaderName;
 
 	// ========================== Fire ================================= //
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel);
+	wstrShaderName = L"Shader HLSL File/Fire.hlsli";
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pParticle = new CParticleSystem();
-		pParticle->Initialize(pd3dDevice, CloneShaderResourceView(ParticleTag::eFire), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
-		pParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Fire.hlsli");
+		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eFire), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
+		pParticle->CreateShader(pd3dDevice, wstrShaderName);
 
 		XMFLOAT3 offsetPos = vecMapData[count].m_Position;
 		offsetPos.y += 1.4f;
@@ -79,13 +45,15 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 
 		vecParticleSystemPool.push_back(pParticle);
 	}
-	m_mapParticlePool.insert(make_pair( ParticleTag::eFire, vecParticleSystemPool));
+	m_mapParticlePool.insert(make_pair(ParticleTag::eFire, vecParticleSystemPool));
+	vecParticleSystemPool.clear();
 
 	// Spark
+	wstrShaderName = L"Shader HLSL File/FireSpark.hlsli";
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pParticle = new CParticleSystem();
-		pParticle->Initialize(pd3dDevice, CloneShaderResourceView(ParticleTag::eSpark), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
-		pParticle->CreateShader(pd3dDevice, L"Shader HLSL File/FireSpark.hlsli");
+		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eSpark), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
+		pParticle->CreateShader(pd3dDevice, wstrShaderName);
 
 		XMFLOAT3 offsetPos = vecMapData[count].m_Position;
 		offsetPos.y += 2.8f;
@@ -94,67 +62,76 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 
 		vecParticleSystemPool.push_back(pParticle);
 	}
-	m_mapParticlePool.insert(make_pair(ParticleTag::eSpark, vecParticleSystemPool));
+	m_mapParticlePool.insert(make_pair(ParticleTag::eFireSpark, vecParticleSystemPool));
+	vecParticleSystemPool.clear();
 
 	// ========================== Blood ================================= //
+	wstrShaderName = L"Shader HLSL File/Blood.hlsli";
 	for (int i = 0; i < m_nMaxBloodParticle; ++i) {
 		pParticle = new CParticleSystem();
-		pParticle->Initialize(pd3dDevice, CloneShaderResourceView(ParticleTag::eBleeding), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS, 1.0f);
-		pParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Blood.hlsli");
+		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eBlood1), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS, 1.0f);
+		pParticle->CreateShader(pd3dDevice, wstrShaderName);
 		pParticle->SetActive(false);
 		vecParticleSystemPool.push_back(pParticle);
 
 		pParticle = new CParticleSystem();
-		pParticle->Initialize(pd3dDevice, CloneShaderResourceView(ParticleTag::eBleeding), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 8, STATEOBJ_MGR->g_pBloodBS, 1.0f);
-		pParticle->CreateShader(pd3dDevice, L"Shader HLSL File/CopiousBleeding.hlsli");
+		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eBlood2), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS, 1.0f);
+		pParticle->CreateShader(pd3dDevice, wstrShaderName);
 		pParticle->SetActive(false);
-		m_vecCopiousBleedingParticleSystemPool.push_back(pParticle);
-
-	//	어떻게하면 여러 피 텍스쳐를 동시에 사용할 지 생각해보기
-		pParticle = new CParticleSystem();
-		pParticle->Initialize(pd3dDevice, CloneShaderResourceView(ParticleTag::eBleeding2), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS, 1.0f);
-		pParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Blood.hlsli");
-		pParticle->SetActive(false);
-		m_vecBloodParticleSystemPool.push_back(pParticle);
-		
-		pParticle = new CParticleSystem();
-		pParticle->Initialize(pd3dDevice, CloneShaderResourceView(ParticleTag::eBleeding2), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 8, STATEOBJ_MGR->g_pBloodBS, 1.0f);
-		pParticle->CreateShader(pd3dDevice, L"Shader HLSL File/CopiousBleeding.hlsli");
-		pParticle->SetActive(false);
-		m_vecCopiousBleedingParticleSystemPool.push_back(pParticle);
-
+		vecParticleSystemPool.push_back(pParticle);
 
 		pParticle = new CParticleSystem();
-		pParticle->Initialize(pd3dDevice, CloneShaderResourceView(ParticleTag::eBleeding3), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS, 1.0f);
-		pParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Blood.hlsli");
+		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eBlood3), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS, 1.0f);
+		pParticle->CreateShader(pd3dDevice, wstrShaderName);
 		pParticle->SetActive(false);
-		m_vecBloodParticleSystemPool.push_back(pParticle);	
-		
-		pParticle = new CParticleSystem();
-		pParticle->Initialize(pd3dDevice, CloneShaderResourceView(ParticleTag::eBleeding3), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 8, STATEOBJ_MGR->g_pBloodBS, 1.0f);
-		pParticle->CreateShader(pd3dDevice, L"Shader HLSL File/CopiousBleeding.hlsli");
-		pParticle->SetActive(false);
-		m_vecCopiousBleedingParticleSystemPool.push_back(pParticle);
+		vecParticleSystemPool.push_back(pParticle);
 	}
-	
+	m_mapParticlePool.insert(make_pair(ParticleTag::eBleeding, vecParticleSystemPool));
+	vecParticleSystemPool.clear();
+
+	// Copious Bleeding
+	wstrShaderName = L"Shader HLSL File/CopiousBleeding.hlsli";
+	for (int i = 0; i < m_nMaxBloodParticle; ++i) {
+		pParticle = new CParticleSystem();
+		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eBlood1), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 8, STATEOBJ_MGR->g_pBloodBS, 1.0f);
+		pParticle->CreateShader(pd3dDevice, wstrShaderName);
+		pParticle->SetActive(false);
+		vecParticleSystemPool.push_back(pParticle);
+
+		pParticle = new CParticleSystem();
+		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eBlood2), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 8, STATEOBJ_MGR->g_pBloodBS, 1.0f);
+		pParticle->CreateShader(pd3dDevice, wstrShaderName);
+		pParticle->SetActive(false);
+		vecParticleSystemPool.push_back(pParticle);
+
+		pParticle = new CParticleSystem();
+		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eBlood3), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 8, STATEOBJ_MGR->g_pBloodBS, 1.0f);
+		pParticle->CreateShader(pd3dDevice, wstrShaderName);
+		pParticle->SetActive(false);
+		vecParticleSystemPool.push_back(pParticle);
+	}
+	m_mapParticlePool.insert(make_pair(ParticleTag::eCopiousBleeding, vecParticleSystemPool));
+	vecParticleSystemPool.clear();
+
 	// ========================== Spark ================================= //
+	wstrShaderName = L"Shader HLSL File/Spark.hlsli";
 	for (int i = 0; i < m_nMaxSparkParticle; ++i) {
 		pParticle = new CParticleSystem();
-		pParticle->Initialize(pd3dDevice, CloneShaderResourceView(ParticleTag::eSpark), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 10, STATEOBJ_MGR->g_pFireBS, 1.0f);
-		pParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Spark.hlsli");
+		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eSpark), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 10, STATEOBJ_MGR->g_pFireBS, 1.0f);
+		pParticle->CreateShader(pd3dDevice, wstrShaderName);
 		pParticle->SetActive(false);
-		m_vecSparkParticleSystemPool.push_back(pParticle);
+		vecParticleSystemPool.push_back(pParticle);
 	}
 
-	//m_mapParticlePool.insert(make_pair(tag, m_vecParticleSystemPool));
+	m_mapParticlePool.insert(make_pair(ParticleTag::eSpark, vecParticleSystemPool));
+	vecParticleSystemPool.clear();
 
 	// ========================== Rain ================================= //
 	m_pRainParticle = new CParticleSystem();
-	m_pRainParticle->Initialize(pd3dDevice, CloneShaderResourceView(ParticleTag::eRain), m_pRainParticle->CreateRandomTexture1DSRV(pd3dDevice), 5000, STATEOBJ_MGR->g_pFireBS);
+	m_pRainParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eRain), m_pRainParticle->CreateRandomTexture1DSRV(pd3dDevice), 5000, STATEOBJ_MGR->g_pFireBS);
 	m_pRainParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Rain.hlsli");
-
 }
-
+/*
 void CParticleManager::CreateBlood(XMVECTOR pos)
 {
 	CParticleSystem* pParticle = nullptr;
@@ -214,38 +191,37 @@ void CParticleManager::CreateSpark(XMVECTOR pos)
 	pParticle->ParticleRestart();
 	pParticle->SetEmitvPosition(pos);
 }
-
+*/
 void CParticleManager::CreateParticle(ParticleTag tag, XMVECTOR pos)
 {
-	/*
-	auto findParticlePool = m_mapNoEffectParticlePool.find(tag);
+	auto findParticlePool = m_mapParticlePool.find(tag);
 	
-	if (findParticlePool == m_mapNoEffectParticlePool.end()) {
-		findParticlePool = m_mapEffectParticlePool.find(tag);
-
-		if (findParticlePool == m_mapNoEffectParticlePool.end())
-			MessageBox(NULL, s_to_ws("Particle Tag : " + to_string(static_cast<int>(tag))).c_str(), L"Error", MB_OK);
-	}
+	if (findParticlePool == m_mapParticlePool.end())
+		MessageBox(NULL, s_to_ws("Particle Tag : " + to_string(static_cast<int>(tag))).c_str(), L"Error", MB_OK);
 
 	CParticleSystem* pParticle = nullptr;
+	int count = 0;
 	for (auto& particle : findParticlePool->second) {
-		if (particle->GetActive())
+		if (particle->GetActive()) {
+			count++;
 			continue;
+		}
 		else {
 			pParticle = particle;
 			break;
 		}
 	}
 
+	cout << count << "번 째 파티클" << endl;
+
 	if (!pParticle)
 		return;
 
 	pParticle->ParticleRestart();
 	pParticle->SetEmitvPosition(pos);
-	*/
 }
 
-void CParticleManager::UpdateManager(float fDeltaTime)
+void CParticleManager::Update_Rain(float fDeltaTime)
 {
 	XMVECTOR rainOffset = SCENE_MGR->g_pCamera->GetvPosition();
 	rainOffset += SCENE_MGR->g_pCamera->GetvUp() * 20;
@@ -253,46 +229,36 @@ void CParticleManager::UpdateManager(float fDeltaTime)
 
 	m_pRainParticle->SetEmitvPosition(rainOffset);
 	m_pRainParticle->Update(fDeltaTime);
+}
 
-	for (auto& system : m_vecSparkParticleSystemPool)
-		if (system->GetActive())
-			system->Update(fDeltaTime);
+void CParticleManager::UpdateManager(float fDeltaTime)
+{
+	Update_Rain(fDeltaTime);
 
-	for (auto& system : m_vecBloodParticleSystemPool)
-		if (system->GetActive())
-			system->Update(fDeltaTime);
-
-	for (auto& system : m_vecCopiousBleedingParticleSystemPool)
-		if (system->GetActive())
-			system->Update(fDeltaTime);
-
-	for (auto& system : m_vecParticleSystemContainer)
-		if (system->GetActive())
-			system->Update(fDeltaTime);
+	for (auto& container : m_mapParticlePool)
+		for (auto& system : container.second)
+			if (system->GetActive())
+				system->Update(fDeltaTime);
 }
 
 void CParticleManager::RenderAllNoEffect(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	m_pRainParticle->Render(pd3dDeviceContext);
 
-
-
-	for (auto& system : m_vecSparkParticleSystemPool)
-		if (system->GetActive())
-			system->Render(pd3dDeviceContext);
-
-	for (auto& system : m_vecCopiousBleedingParticleSystemPool)
-		if (system->GetActive())
-			system->Render(pd3dDeviceContext);
-
-	for (auto& system : m_vecBloodParticleSystemPool)
-		if (system->GetActive())
-			system->Render(pd3dDeviceContext);
+	for (auto& container : m_mapParticlePool)
+		if (static_cast<UINT>(container.first) > static_cast<UINT>(ParticleTag::MaxPostProcessingParticle)) {
+			for (auto& system : container.second)
+				if (system->GetActive())
+					system->Render(pd3dDeviceContext);
+		}
 }
 
 void CParticleManager::RenderAllEffect(ID3D11DeviceContext *pd3dDeviceContext)
 {
-	for (auto& system : m_vecParticleSystemContainer)
-		if (system->GetActive())
-			system->Render(pd3dDeviceContext);
+	for (auto& container : m_mapParticlePool)
+		if (static_cast<UINT>(container.first) < static_cast<UINT>(ParticleTag::MaxPostProcessingParticle)) {
+			for (auto& system : container.second)
+				if (system->GetActive())
+					system->Render(pd3dDeviceContext);
+		}
 }

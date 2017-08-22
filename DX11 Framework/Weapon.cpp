@@ -45,11 +45,10 @@ void CWeapon::Firing(XMVECTOR direction)
 
 				// Head Shot ÆÇÁ¤
 				if (info.m_HitParts == ChracterBoundingBoxParts::eHead) {
-			
-					PARTICLE_MGR->CreateCopiousBleeding(bloodOffset);
+					PARTICLE_MGR->CreateParticle(ParticleTag::eCopiousBleeding, bloodOffset);
 				}
 				else {
-					PARTICLE_MGR->CreateBlood(bloodOffset);
+					PARTICLE_MGR->CreateParticle(ParticleTag::eBleeding, bloodOffset);
 				}
 			}
 		}
@@ -57,7 +56,7 @@ void CWeapon::Firing(XMVECTOR direction)
 			if (info.m_fDistance < m_fRange) {
 				XMVECTOR SparkOffset = firePosOffset;
 				SparkOffset += direction * info.m_fDistance;
-				PARTICLE_MGR->CreateSpark(SparkOffset);
+				PARTICLE_MGR->CreateParticle(ParticleTag::eSpark, SparkOffset);
 			}
 		}
 #else
@@ -76,12 +75,12 @@ void CWeapon::Firing(XMVECTOR direction)
 					hitCharacter->SetIsHeadHit(true);
 					hitCharacter->DamagedCharacter(m_fDamage * 2.5f);
 
-					PARTICLE_MGR->CreateCopiousBleeding(bloodOffset);
+					PARTICLE_MGR->CreateParticle(ParticleTag::eCopiousBleeding, bloodOffset);
 				}
 				else {
 					hitCharacter->DamagedCharacter(m_fDamage);
 
-					PARTICLE_MGR->CreateBlood(bloodOffset);
+					PARTICLE_MGR->CreateParticle(ParticleTag::eBleeding, bloodOffset);
 				}
 			}
 		}
@@ -89,7 +88,7 @@ void CWeapon::Firing(XMVECTOR direction)
 			if (info.m_fDistance < m_fRange) {
 				XMVECTOR SparkOffset = firePosOffset;
 				SparkOffset += direction * info.m_fDistance;
-				PARTICLE_MGR->CreateSpark(SparkOffset);
+				PARTICLE_MGR->CreateParticle(ParticleTag::eSpark, SparkOffset);
 			}
 		}
 

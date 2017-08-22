@@ -11,6 +11,9 @@ CResourceManager::~CResourceManager()
 
 void CResourceManager::InitializeManager()
 {
+	cout << "=============================================================================================" << endl;
+	cout << "===================================== Resource Loading ======================================" << endl;
+	cout << " ----- Title Scene Data -----" << endl;
 	LoadResourceTitleScene();
 }
 
@@ -67,23 +70,23 @@ void CResourceManager::LoadResourceTitleScene()
 }
 
 bool CResourceManager::LoadResourceAll()
-{
-	cout << "=============================================================================================" << endl;
-	cout << "===================================== Resource Loading ======================================" << endl;
-	
-	cout << " ----- Character Data -----" << endl;
+{	
+	cout << endl << " ----- Character Data -----" << endl;
 	LoadCharacterData();
 
-	cout << " ----- Map Data -----" << endl;
+	cout << endl << " ----- Map Data -----" << endl;
 	LoadMapData();
 	
-	cout << " ----- Environment Data -----" << endl;
+	cout << endl << " ----- Environment Data -----" << endl;
 //	LoadEnvironmentData();
 	
-	cout << " ----- UI Data -----" << endl;
+	cout << endl << " ----- UI Data -----" << endl;
 	LoadUIData();
+
+	cout << endl << " ----- Particle Texture Data -----" << endl;
+	PARTICLE_MGR->InitializeManager();
 	
-	cout << " ----- Etc Data -----" << endl;
+	cout << endl << " ----- Etc Data -----" << endl;
 	LoadEtcData();
 
 	cout << endl;

@@ -70,8 +70,8 @@ enum class ParticleTag
 	// ======================================= // 
 
 	eRain, 
-	eSpark, 
-	eBleeding, eBleeding2, eBleeding3, eCopiousBleeding,
+	eSpark, eFireSpark,
+	eBleeding, eCopiousBleeding,
 };
 
 // ========================================================================================================================== //
@@ -181,6 +181,10 @@ enum class TextureTag
 
 	//UI2
 	eID, ePassword, eIDClick, ePasswordClick, eLogin, eLoginon,eDeathOn, eOccupyOn, eDeathOff, eOccupyOff, eLoginBack,
+
+	// Particle
+	eFire, eRain, eSpark,
+	eBlood1, eBlood2, eBlood3,
 
 	//Search
 	eSearch1, eSearch2, eSearch3, eSearch4, eSearch5, eSearch6, eSearch7, eSearch8, eSearch9, eSearch10, eSearch11, eSearch12, eSearch13,
