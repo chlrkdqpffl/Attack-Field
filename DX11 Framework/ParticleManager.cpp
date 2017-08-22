@@ -110,7 +110,7 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 		pParticle->SetActive(false);
 		m_vecCopiousBleedingParticleSystemPool.push_back(pParticle);
 
-		어떻게하면 여러 피 텍스쳐를 동시에 사용할 지 생각해보기
+	//	어떻게하면 여러 피 텍스쳐를 동시에 사용할 지 생각해보기
 		pParticle = new CParticleSystem();
 		pParticle->Initialize(pd3dDevice, CloneShaderResourceView(ParticleTag::eBleeding2), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS, 1.0f);
 		pParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Blood.hlsli");
@@ -217,6 +217,7 @@ void CParticleManager::CreateSpark(XMVECTOR pos)
 
 void CParticleManager::CreateParticle(ParticleTag tag, XMVECTOR pos)
 {
+	/*
 	auto findParticlePool = m_mapNoEffectParticlePool.find(tag);
 	
 	if (findParticlePool == m_mapNoEffectParticlePool.end()) {
@@ -241,6 +242,7 @@ void CParticleManager::CreateParticle(ParticleTag tag, XMVECTOR pos)
 
 	pParticle->ParticleRestart();
 	pParticle->SetEmitvPosition(pos);
+	*/
 }
 
 void CParticleManager::UpdateManager(float fDeltaTime)
