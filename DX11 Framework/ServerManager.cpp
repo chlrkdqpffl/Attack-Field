@@ -172,7 +172,7 @@ void CServerManager::processpacket(char *ptr)
 	}
 	break;
 
-	case 4:	// 안쓰는 것
+	case 4:	// 다른클라이언트 종료시 벡터에서 팝해준다.
 	{
 		sc_packet_remove_player *my_packet = reinterpret_cast<sc_packet_remove_player *>(ptr);
 		int other_id = my_packet->id;
@@ -272,6 +272,7 @@ void CServerManager::processpacket(char *ptr)
 				i++;
 			}
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->m_nLife);
+			//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetDeath();
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsHeadHit(packet->m_bIsHeadHit);
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsDeath(packet->m_bIsAlive); -> 이제 Death는 Life가 0인지 아닌지로 판별하므로 필요없음
 
