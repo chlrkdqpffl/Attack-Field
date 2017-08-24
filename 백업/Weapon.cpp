@@ -27,19 +27,14 @@ void CWeapon::Firing(XMVECTOR direction)
 		XMVECTOR firePosOffset = GetvPosition() + (-1 * GetvRight() * (GetBoundingBox().Extents.z - 0.6f)) + (-1 * GetvLook() * 0.225) + (GetvUp() * 0.1f);
 	
 #ifdef USE_SERVER
+		cs_weapon* packet = reinterpret_cast<cs_weapon *>(SERVER_MGR->GetSendbuffer());
+		packet->size = sizeof(cs_weapon);
+		packet->type = CS_WEAPONE;
+		XMStoreFloat3(&packet->position, firePosOffset);
+		XMStoreFloat3(&packet->direction, direction);
 
-		if (SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetIsFire()) //자기 자신이 쏠대만 보낸다.
-		{																 //이거 안해주면 자꾸 다른사람이 쏠때도 나간다...
-			cs_weapon* packet = reinterpret_cast<cs_weapon *>(SERVER_MGR->GetSendbuffer());
-			packet->size = sizeof(cs_weapon);
-			packet->type = CS_WEAPONE;
-			XMStoreFloat3(&packet->position, firePosOffset);
-			XMStoreFloat3(&packet->direction, direction);
+		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(packet));
 
-
-
-			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(packet));
-		}
 
 		// Particle용 충돌체크 - 임시방편
 		CollisionInfo info;

@@ -9,7 +9,6 @@ CServerManager::CServerManager()
 
 CServerManager::~CServerManager()
 {
-
 }
 
 void CServerManager::InitializeManager()
@@ -53,23 +52,6 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRelativeVelocity(my_Pos_packet->Animation);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(my_Pos_packet->hp);
-
-			if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eReload))
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(true);
-			else
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(false);
-
-			if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eRun))
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(true);
-			else 
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(false);
-
-			if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eLeftMouse))
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(true);
-			else
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(false);
-
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(false);
 		}
 	}
 	break;
@@ -113,10 +95,10 @@ void CServerManager::processpacket(char *ptr)
 			pCharObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
 			pCharObject->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 
-				pCharObject->SetRelativeVelocity(my_put_packet->Animation);
-				pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
-				pCharObject->SetServerID(id);
-				pCharObject->Setmode(my_put_packet->mode);
+			pCharObject->SetRelativeVelocity(my_put_packet->Animation);
+			pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
+			pCharObject->SetServerID(id);
+			pCharObject->Setmode(my_put_packet->mode);
 
 			SCENE_MGR->g_pMainScene->GetCharcontainer().push_back(pCharObject);
 			SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);
@@ -178,18 +160,6 @@ void CServerManager::processpacket(char *ptr)
 		int other_id = my_packet->id;
 		if (other_id == m_myid) {
 			//상태를 없애준다.
-		}
-		else
-		{
-			int i = 0;
-			auto& container = SCENE_MGR->g_pMainScene->GetCharcontainer();
-			for (auto iter = begin(container); iter != end(container); ++iter)
-			{
-				if ((*iter)->GetServerID() != id) continue;
-				delete *iter;
-				container.erase(iter);
-				break;
-			}
 		}
 	}
 	break;
@@ -478,13 +448,8 @@ void CServerManager::error_display(char *msg, int err_num)
 void CServerManager::Server_init()
 {
 #ifdef USE_AUTOIP
-	char ip[20];
-	//config파일로 IP를 읽도록 변경했어!!
-	GetPrivateProfileStringA("Server", "IP", "127.0.0.1", ip, 20, "./Config.Ini");
-
-	//char ip[20] = "192.168.0.4";
-	//char ip[20] = "192.168.219.6";
-	//char ip[20] = "192.168.0.24";
+	//char ip[20] = "127.0.0.1";
+	char ip[20] = "192.168.123.110";
 #else
 	char ip[20];		
 	cout << " ip 입력 : ";
