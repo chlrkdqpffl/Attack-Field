@@ -169,7 +169,7 @@ public:
 	TeamType GetTagTeam() { return m_tagTeam; }
 
 	// ----- Game System Function ----- //
-	void SetLife(UINT life) { m_nLife = life; }
+	void SetLife(UINT life) { m_nLife = life; if (m_nLife <= 0) SetDeath();	} //피가 0 이하이면 셋 데스 함수를 호출.
 	UINT GetLife() const { return m_nLife; }
 	void SetArmorPoint(UINT armorPoint) { m_nArmorPoint = armorPoint; }
 	UINT GetArmorPoint() const { return m_nArmorPoint; }

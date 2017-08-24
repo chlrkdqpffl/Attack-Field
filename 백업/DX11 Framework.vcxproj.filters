@@ -1,0 +1,755 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="HLSL">
+      <UniqueIdentifier>{b36ea3a8-3cb6-4680-a615-a0844cf96048}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Object">
+      <UniqueIdentifier>{95bc00e2-a8e6-4a66-b8da-dc732c5ed1de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object">
+      <UniqueIdentifier>{5c0a154d-6f11-4f3e-beff-cd86d85b23e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Mesh">
+      <UniqueIdentifier>{1ff06d3d-2915-4bb4-9b32-7c1273b81689}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader">
+      <UniqueIdentifier>{1c408c6c-1759-4168-b764-27602358a0e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader">
+      <UniqueIdentifier>{93c333b4-ee4a-4922-9585-5eafb4c177d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Mesh">
+      <UniqueIdentifier>{0989b406-fcdf-4fe5-bed1-17b9b3866732}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Manager">
+      <UniqueIdentifier>{b5833d23-61f0-4799-b0a3-6d852790d8d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Manager">
+      <UniqueIdentifier>{89fe9380-576c-45a3-b9dd-88e14d821bde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Mesh\NormalMap">
+      <UniqueIdentifier>{3337359f-fdc1-4be3-8786-e06ef93680cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Mesh\NormalMap">
+      <UniqueIdentifier>{419b3b71-1ecc-4fd8-866e-5ccb6eaed9b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Mesh\FbxFile">
+      <UniqueIdentifier>{8dff3e21-7700-4215-bdb2-ed37db3ec827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Mesh\FbxFile">
+      <UniqueIdentifier>{2640aa36-1ca3-41df-ab5d-1b29a419ebb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{22e16c88-e3ad-40e7-af8a-757e32f0e765}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Water">
+      <UniqueIdentifier>{b2ca4d8d-6df3-4b10-9483-55d96fc07de1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\SkyBox">
+      <UniqueIdentifier>{a046322d-a3d1-41f4-8894-cd50ad5354ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Character">
+      <UniqueIdentifier>{f38c5697-509f-4dcb-9183-19185c1ca890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Weopon">
+      <UniqueIdentifier>{4b5c47f8-e720-4ebf-9baa-857837285bda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Weopon\RifleGun">
+      <UniqueIdentifier>{e58cf0b1-c265-493a-8231-63a41f6b90f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Weopon\Bullet">
+      <UniqueIdentifier>{dc44146e-c0f2-43e4-9ebf-46f356d401c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Weopon\Bullet\RifleGun">
+      <UniqueIdentifier>{9eb295c1-aa22-4fe4-83fa-c38bc6c4d91c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\BoundingBox">
+      <UniqueIdentifier>{a2c00bf9-129c-4536-b6f6-5c01e117e062}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{501b630d-f68f-45c9-947c-309d4f666895}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{e7238440-4167-4996-8cd8-b8e833658337}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{7f87cd86-f7cc-4b49-94af-d21819fb1dd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Player">
+      <UniqueIdentifier>{6a423d7e-855a-42c4-b1bb-4a4f7a70010e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Billboard">
+      <UniqueIdentifier>{16748d53-bd13-4cb5-93ea-0ffd814ef231}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\Deferred">
+      <UniqueIdentifier>{b7912b48-bd30-4e80-b6bd-a96120c8225b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deferred">
+      <UniqueIdentifier>{181e45a1-6e7f-4dbd-9614-0bad023d9bed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FSM">
+      <UniqueIdentifier>{f61dec7d-4f4f-4f69-a22b-bf7216a35b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Terrain">
+      <UniqueIdentifier>{519f8bc8-9ccd-42e2-94d7-69e470d6b63a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Particle">
+      <UniqueIdentifier>{212ba4fb-c602-4b82-bf63-ababc9048f83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\Deferred\Light">
+      <UniqueIdentifier>{d60721e4-64b1-451f-8ea6-8cc8c2f99d4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\Particle">
+      <UniqueIdentifier>{8f2ed613-93d3-4bc0-bb46-21ce10be5793}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectX11_Project.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="RotatingObject.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="StateObjectManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="TextManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="WaterGridMesh.cpp">
+      <Filter>Objects\Water</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainWater.cpp">
+      <Filter>Objects\Water</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>Objects\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxMesh.cpp">
+      <Filter>Objects\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMap.cpp">
+      <Filter>Objects\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMapTerrain.cpp">
+      <Filter>Objects\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMapGridMesh.cpp">
+      <Filter>Objects\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalMapObject.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalMapShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalMapCubeMesh.cpp">
+      <Filter>소스 파일\Mesh\NormalMap</Filter>
+    </ClCompile>
+    <ClCompile Include="LineMesh.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisObjects.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureToScreenRectMesh.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturedRectMesh.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainShader.cpp">
+      <Filter>Objects\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalDisplaceMapShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedObject.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationController.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="AntTweakBarManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="PoliceCharacterObject.cpp">
+      <Filter>Objects\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterNormalShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Objects\Weopon</Filter>
+    </ClCompile>
+    <ClCompile Include="WaterShader.cpp">
+      <Filter>Objects\Water</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxMeshData.cpp">
+      <Filter>소스 파일\Mesh\FbxFile</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxModelMesh.cpp">
+      <Filter>소스 파일\Mesh\FbxFile</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxModelSkinnedMesh.cpp">
+      <Filter>소스 파일\Mesh\FbxFile</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundingBoxMesh.cpp">
+      <Filter>Objects\BoundingBox</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundingBoxShader.cpp">
+      <Filter>Objects\BoundingBox</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalVariableManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="RifleGunWeapon.cpp">
+      <Filter>Objects\Weopon\RifleGun</Filter>
+    </ClCompile>
+    <ClCompile Include="TerroristCharacterObject.cpp">
+      <Filter>Objects\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletObject.cpp">
+      <Filter>Objects\Weopon\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="RifleBullet.cpp">
+      <Filter>Objects\Weopon\Bullet\RifleGun</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundingBoxInstancedShader.cpp">
+      <Filter>Objects\BoundingBox</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="MainScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMesh.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIObject.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="FirstPersonCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceShipCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdPersonCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="AirplanePlayer.cpp">
+      <Filter>Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainPlayer.cpp">
+      <Filter>Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="BillboardObject.cpp">
+      <Filter>Objects\Billboard</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MapDataManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="GBufferShader.cpp">
+      <Filter>Deferred</Filter>
+    </ClCompile>
+    <ClCompile Include="GBuffer.cpp">
+      <Filter>Deferred</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereObject.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterObject.cpp">
+      <Filter>Objects\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterState.cpp">
+      <Filter>FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="LineObject.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="UIShader.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="PostFX.cpp">
+      <Filter>Deferred</Filter>
+    </ClCompile>
+    <ClCompile Include="WaitScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicUIMesh.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectX11_Project.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>헤더 파일\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="RotatingObject.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="SingletonManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UserDefine.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer_Slot.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="StateObjectManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="TextManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UserTag.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="WaterGridMesh.h">
+      <Filter>Objects\Water</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>Objects\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainWater.h">
+      <Filter>Objects\Water</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxMesh.h">
+      <Filter>Objects\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMap.h">
+      <Filter>Objects\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMapTerrain.h">
+      <Filter>Objects\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMapGridMesh.h">
+      <Filter>Objects\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalMapObject.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalMapShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="LineMesh.h">
+      <Filter>헤더 파일\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalMapCubeMesh.h">
+      <Filter>헤더 파일\Mesh\NormalMap</Filter>
+    </ClInclude>
+    <ClInclude Include="AxisObjects.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureToScreenRectMesh.h">
+      <Filter>헤더 파일\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedRectMesh.h">
+      <Filter>헤더 파일\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainShader.h">
+      <Filter>Objects\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalDisplaceMapShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedObject.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationController.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="PoliceCharacterObject.h">
+      <Filter>Objects\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterNormalShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Objects\Weopon</Filter>
+    </ClInclude>
+    <ClInclude Include="WaterShader.h">
+      <Filter>Objects\Water</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxModelSkinnedMesh.h">
+      <Filter>헤더 파일\Mesh\FbxFile</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxModelMesh.h">
+      <Filter>헤더 파일\Mesh\FbxFile</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxMeshData.h">
+      <Filter>헤더 파일\Mesh\FbxFile</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBoxShader.h">
+      <Filter>Objects\BoundingBox</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBoxMesh.h">
+      <Filter>Objects\BoundingBox</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalVariableManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="RifleGunWeapon.h">
+      <Filter>Objects\Weopon\RifleGun</Filter>
+    </ClInclude>
+    <ClInclude Include="TerroristCharacterObject.h">
+      <Filter>Objects\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletObject.h">
+      <Filter>Objects\Weopon\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="RifleBullet.h">
+      <Filter>Objects\Weopon\Bullet\RifleGun</Filter>
+    </ClInclude>
+    <ClInclude Include="AntTweakBarManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBoxInstancedShader.h">
+      <Filter>Objects\BoundingBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MainScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UIObject.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMesh.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="FirstPersonCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceShipCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPersonCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="AirplanePlayer.h">
+      <Filter>Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainPlayer.h">
+      <Filter>Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="BillboardObject.h">
+      <Filter>Objects\Billboard</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="MapDataManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>헤더 파일\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="GBufferShader.h">
+      <Filter>Deferred</Filter>
+    </ClInclude>
+    <ClInclude Include="GBuffer.h">
+      <Filter>Deferred</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereObject.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterObject.h">
+      <Filter>Objects\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="FSM_State.h">
+      <Filter>FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterState.h">
+      <Filter>FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="LineObject.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="StateMachine.h">
+      <Filter>FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UIShader.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="PostFX.h">
+      <Filter>Deferred</Filter>
+    </ClInclude>
+    <ClInclude Include="WaitScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicUIMesh.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="DirectX11_Project.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DirectX11_Project.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader HLSL File\Effect.fx">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader HLSL File\Fog.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\Light.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\NormalMap.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\TextureToScreen.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\Terrain.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\DisplacementMap.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\Normal.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\CharacterSkinned.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\CharacterSkinnedNormal.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\BoundingBox.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\Blurring.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\common.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\DeferredShading.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\GBuffer.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\PostProcessing.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\UI.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\DeferredCharacterSkinnedNormal.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\GBufferStructure.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\PointLight.hlsli">
+      <Filter>HLSL\Deferred\Light</Filter>
+    </None>
+    <None Include="Shader HLSL File\SpotLight.hlsli">
+      <Filter>HLSL\Deferred\Light</Filter>
+    </None>
+    <None Include="Shader HLSL File\DirLight.hlsli">
+      <Filter>HLSL\Deferred\Light</Filter>
+    </None>
+    <None Include="Shader HLSL File\CapsuleLight.hlsli">
+      <Filter>HLSL\Deferred\Light</Filter>
+    </None>
+    <None Include="Shader HLSL File\PostFX.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\PostDownScaleFX.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\Blur.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\ParticleCommon.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
+    <None Include="Shader HLSL File\Fire.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
+    <None Include="Shader HLSL File\Rain.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
+    <None Include="Shader HLSL File\Blood.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
+    <None Include="Shader HLSL File\ShadowGen.hlsli">
+      <Filter>HLSL\Deferred\Light</Filter>
+    </None>
+    <None Include="Shader HLSL File\Spark.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
+    <None Include="Shader HLSL File\FireSpark.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
+    <None Include="Shader HLSL File\CopiousBleeding.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
+  </ItemGroup>
+</Project>

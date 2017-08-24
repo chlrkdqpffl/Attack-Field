@@ -411,6 +411,7 @@ void CMainScene::Initialize()
 	CCharacterObject* pCharacter = new CTerroristCharacterObject(TeamType::eBlueTeam);
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
+	//	17.08.21 병호 : 이걸 왜????
 	pCharacter->SetLife(100000);
 	pCharacter->SetPosition(60.0f, 2.5f, 15.0f);
 

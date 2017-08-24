@@ -1,0 +1,38 @@
+#pragma once
+#include "Object.h"
+#include "HeightMap.h"
+#include "HeightMapGridMesh.h"
+
+class CHeightMapTerrain : public CGameObject
+{
+public:
+	CHeightMapTerrain(ID3D11Device *pd3dDevice, LPCTSTR pFileName, int nWidth, int nLength, int nBlockWidth, int nBlockLength, XMVECTOR d3dxvScale);
+	virtual ~CHeightMapTerrain();
+
+private:
+	CHeightMap					*m_pHeightMap;
+
+	int							m_nWidth;
+	int							m_nLength;
+
+	XMFLOAT3					m_d3dxvScale;
+	
+public:
+	float GetHeight(float x, float z, bool bReverseQuad = false) { return(m_pHeightMap->GetHeight(x, z, bReverseQuad) * m_d3dxvScale.y); } //World
+	XMVECTOR GetNormal(float x, float z) { return(m_pHeightMap->GetHeightMapNormal(int(x / m_d3dxvScale.x), int(z / m_d3dxvScale.z))); }
+
+	int GetHeightMapWidth() { return(m_pHeightMap->GetHeightMapWidth()); }
+	int GetHeightMapLength() { return(m_pHeightMap->GetHeightMapLength()); }
+
+	XMVECTOR GetScale() { return(XMLoadFloat3(&m_d3dxvScale)); }
+	float GetWidth() { return(m_nWidth * m_d3dxvScale.x); }
+	float GetLength() { return(m_nLength * m_d3dxvScale.z); }
+
+	float GetPeakHeight() { return(m_bcMeshBoundingBox.Center.y + m_bcMeshBoundingBox.Extents.y); }
+
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
+
+#ifdef _WITH_TERRAIN_TEXTURE_ARRAY
+	ID3D11Buffer				*m_pd3dcbTextureIndex;
+#endif
+};

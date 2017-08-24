@@ -71,13 +71,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>../Setting\DirectX\Include;../Setting\AntTweakBar\include;../Setting\FMOD;$(IncludePath);../Setting\FMOD\Include</IncludePath>
-    <LibraryPath>../Setting\DirectX\Lib\x86;./FW1FontWrapper\x86;$(LibraryPath);../Setting\AntTweakBar\lib;../Setting\FMOD;../Setting\FMOD\Lib</LibraryPath>
+    <IncludePath>D:\DirectX SDK\Include;../Setting\DirectX\Include;../Setting\AntTweakBar\include;../Setting\FMOD;$(IncludePath);../Setting\FMOD\Include</IncludePath>
+    <LibraryPath>D:\DirectX SDK\Lib\x64;../Setting\DirectX\Lib\x86;./FW1FontWrapper\x86;$(LibraryPath);../Setting\AntTweakBar\lib;../Setting\FMOD;../Setting\FMOD\Lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>../Setting\DirectX\Include;../Setting\AntTweakBar\include;../Setting\FMOD\Include;$(IncludePath);../Setting\FMOD\Include</IncludePath>
-    <LibraryPath>../Setting\DirectX\Lib\x64;$(LibraryPath);../Setting\AntTweakBar\lib;../Setting\FMOD\Lib;../Setting\FMOD\Lib</LibraryPath>
+    <IncludePath>D:\DirectX SDK\Include;../Setting\DirectX\Include;../Setting\AntTweakBar\include;../Setting\FMOD\Include;$(IncludePath);../Setting\FMOD\Include</IncludePath>
+    <LibraryPath>D:\DirectX SDK\Lib\x64;../Setting\DirectX\Lib\x64;$(LibraryPath);../Setting\AntTweakBar\lib;../Setting\FMOD\Lib;../Setting\FMOD\Lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
