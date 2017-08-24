@@ -5,13 +5,11 @@
 CMainScene::CMainScene()
 {
 	m_tagScene = SceneTag::eMainScene;
-	TWBAR_MGR->g_xmf3SelectObjectPosition = XMFLOAT3(0, 0, 0);
+	//TWBAR_MGR->g_xmf3SelectObjectPosition = XMFLOAT3(0, 0, 0);
 	TWBAR_MGR->g_xmf3SelectObjectRotate = XMFLOAT3(40, 50, 30.0f);
 
 	m_f3DirectionalColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	m_f3DirectionalDirection = XMFLOAT3(1.0f, -1.0f, 1.0f);
-//	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
-//	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
@@ -410,7 +408,6 @@ void CMainScene::Initialize()
 
 #ifndef USE_SERVER
 	// ==== Test용 - 총 메쉬 오프셋 찾기용 ==== //
-	//CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject(TeamType::eBlueTeam);
 	CCharacterObject* pCharacter = new CTerroristCharacterObject(TeamType::eBlueTeam);
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
@@ -426,8 +423,8 @@ void CMainScene::Initialize()
 	PARTICLE_MGR->CreateParticleSystems(m_pd3dDevice);
 
 //	CreateMapDataObject();
-	CreateMapDataInstancingObject();
-//	CreateTestingObject();
+//	CreateMapDataInstancingObject();	- 테스트용으로 잠시 맵  생성 제거
+	CreateTestingObject();
 
 	CreateLights();
 	CreateConstantBuffers();
@@ -1532,44 +1529,89 @@ void CMainScene::CreateTestingObject()
 	AddShaderObject(ShaderTag::eNormal, pObject);
 #pragma endregion
 	
-	// Not Instancing
-	/*
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pObject = new CGameObject();
-		pMesh = new CCubePatchMesh(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
-		
-		pObject->SetMaterial(2, TextureTag::eStoneD, TextureTag::eStoneND);
-		pObject->SetMesh(pMesh);
-		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation.x - 90, vecMapData[count].m_Rotation.y - 180, vecMapData[count].m_Rotation.z);
+#pragma region [Road]
+	// ==============================   Road   ============================== //
+	// Road1
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eRoad1).size());
 
-		pObject->CreateBoundingBox(m_pd3dDevice);
-		AddShaderObject(ShaderTag::eDisplacementMapping, pObject);
-	}
-	*/
-	
-	// Used Instancing
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall);
-	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall).size());
-	pMesh = new CCubePatchMesh(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
-	pInstancingShaders->SetMesh(pMesh);
-	pInstancingShaders->SetMaterial(2, TextureTag::eStoneD, TextureTag::eStoneND);
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eRoad);
+	pFbxMesh->Initialize(m_pd3dDevice);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(1, TextureTag::eRoad1D);
+
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
 
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eRoad1);
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pObject = new CGameObject();
-		pObject->SetMesh(pMesh);
+		pObject->SetMesh(pFbxMesh);
 		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation.x - 90, vecMapData[count].m_Rotation.y - 180, vecMapData[count].m_Rotation.z);
-		pObject->CreateBoundingBox(m_pd3dDevice, pMesh);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceDisplacementMapping, pObject);
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);
 		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
-	
+
+	// Road2
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eRoad2).size());
+
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eRoad);
+	pFbxMesh->Initialize(m_pd3dDevice);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(1, TextureTag::eRoad2D);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eRoad2);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCrossRoad);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eCrossRoad, vecMapData[count].m_Scale);
+		pFbxMesh->Initialize(m_pd3dDevice);
+
+		pObject->SetMaterial(1, TextureTag::eCrossRoadD);
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
+	}
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCenterRoad);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eCenterRoad, vecMapData[count].m_Scale);
+		pFbxMesh->Initialize(m_pd3dDevice);
+
+		pObject->SetMaterial(1, TextureTag::eCenterRoadD);
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
+	}
+#pragma endregion
+
+
 }
 
 void CMainScene::CreateTweakBars()
@@ -1728,12 +1770,10 @@ void CMainScene::CreateLights()
 	// Street Lamp
 	for (auto light : vecMapData) {
 		pos = light.m_Position;
-		//pos.y += TWBAR_MGR->g_xmf3SelectObjectPosition.y;
 		pos.y += 10.0f;
-		//m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), 40.0f, 60.0f, 50.0f, XMFLOAT3(1, 1, 1));
-		m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
+		m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), 45.0f, 50.0f, 30.0f, XMFLOAT3(1, 1, 1));
 	}
-
+	
 	// Player Light
 	{
 		pos = m_pPlayer->GetPosition();
@@ -1908,7 +1948,7 @@ void CMainScene::ShowDeadlyAttackUI()
 void CMainScene::Update(float fDeltaTime)
 {
 	// 충돌 정보 갱신
-//	COLLISION_MGR->InitCollisionInfo();	// 현재 플레이어만 적용되고있어서 주석처리함
+	COLLISION_MGR->InitCollisionInfo();	// 현재 플레이어만 적용되고있어서 주석처리함
 //	COLLISION_MGR->UpdateManager();
 
 	GLOBAL_MGR->UpdateManager();

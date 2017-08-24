@@ -24,18 +24,20 @@ public:
 	void AddResourecePath(const TextureTag& textureTag, const string& source);
 	void AddNoneFbxMesh(const MeshTag& meshTag);
 
-	void LoadResourceTitleScene();
-	bool LoadResourceAll();
-	void LoadEnvironmentData();
-	void LoadUIData();
-	void LoadEtcData();
-	void LoadMapData();
-	void LoadCharacterData();
-
 	wstring FindResourcePath(const TextureTag& textureTag);
 	ID3D11ShaderResourceView* CloneShaderResourceView(const TextureTag& textureTag);
 	CFbxMeshData CloneFbxMeshData(const MeshTag& meshTag);
 	CMesh* CloneNoneFbxMeshData(const MeshTag& meshTag);
 
 	void ShowImageInfo(const string& source);
+
+	void LoadResourceTitleScene();
+	bool LoadResourceAll();
+private:
+	void LoadEnvironmentData();
+	void LoadUIData();
+	void LoadSpriteData();
+	void LoadEtcData();
+	void LoadMapData();
+	void LoadCharacterData();
 };

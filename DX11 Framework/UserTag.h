@@ -186,6 +186,9 @@ enum class TextureTag
 	eFire, eRain, eSpark,
 	eBlood1, eBlood2, eBlood3,
 
+	// Sprite
+	eFireEffect,
+
 	//Search
 	eSearch1, eSearch2, eSearch3, eSearch4, eSearch5, eSearch6, eSearch7, eSearch8, eSearch9, eSearch10, eSearch11, eSearch12, eSearch13,
 	eDeathSearch, eOccupySearch

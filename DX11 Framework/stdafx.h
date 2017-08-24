@@ -83,6 +83,7 @@ using namespace std;
 #include "MapDataManager.h"
 #include "SoundManager.h"
 #include "ParticleManager.h"
+#include "SpriteImageManager.h"
 // ------------------------------- //
 
 template <typename T>

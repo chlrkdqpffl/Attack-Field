@@ -199,6 +199,7 @@
     <ClCompile Include="SkyBoxShader.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SphereObject.cpp" />
+    <ClCompile Include="SpriteImageManager.cpp" />
     <ClCompile Include="TerrainShader.cpp" />
     <ClCompile Include="TerroristCharacterObject.cpp" />
     <ClCompile Include="TextureToScreenRectMesh.cpp" />
@@ -320,6 +321,7 @@
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="SpaceShipCamera.h" />
     <ClInclude Include="SphereObject.h" />
+    <ClInclude Include="SpriteImageManager.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="StateObjectManager.h" />
     <ClInclude Include="stdafx.h" />

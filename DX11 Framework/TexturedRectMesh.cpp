@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TexturedRectMesh.h"
 
+// 현재 사용되고있지 않은 메쉬
 
 CTexturedRectMesh::CTexturedRectMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight)
 {

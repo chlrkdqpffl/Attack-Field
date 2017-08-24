@@ -48,11 +48,16 @@ void CCollisionManager::UpdateManager()
 
 void CCollisionManager::InitCollisionInfo()
 {
-	for (auto& staticObject : m_vecStaticMeshContainer)
-		staticObject->InitCollisionInfo();
+	// 1초 마다 충돌 정보 초기화
+	if (GetTickCount() - m_dwInitCollisionInfoTime > 1000) {
+		m_dwInitCollisionInfoTime = GetTickCount();
 
-	for (auto& character : m_vecCharacterContainer)
-		character->InitCollisionInfo();
+		for (auto& staticObject : m_vecStaticMeshContainer)
+			staticObject->InitCollisionInfo();
+
+		for (auto& character : m_vecCharacterContainer)
+			character->InitCollisionInfo();
+	}
 }
 
 bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)

@@ -3,6 +3,8 @@
 
 void CParticleManager::InitializeManager()
 {
+	cout << endl << " ----- Particle Texture Data -----" << endl;
+
 	RESOURCE_MGR->AddResourece(TextureTag::eRain, "../Assets/Image/Particle/raindrop.dds");
 	RESOURCE_MGR->AddResourece(TextureTag::eFire, "../Assets/Image/Particle/flare0.dds");
 	RESOURCE_MGR->AddResourece(TextureTag::eSpark, "../Assets/Image/Particle/Spark.dds");
@@ -131,67 +133,7 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 	m_pRainParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eRain), m_pRainParticle->CreateRandomTexture1DSRV(pd3dDevice), 5000, STATEOBJ_MGR->g_pFireBS);
 	m_pRainParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Rain.hlsli");
 }
-/*
-void CParticleManager::CreateBlood(XMVECTOR pos)
-{
-	CParticleSystem* pParticle = nullptr;
 
-	for (auto& particle: m_vecBloodParticleSystemPool) {
-		if (particle->GetActive())
-			continue;
-		else {
-			pParticle = particle;
-			break;
-		}
-	}
-
-	if (!pParticle)
-		return;
-
-	pParticle->ParticleRestart();
-	pParticle->SetEmitvPosition(pos);
-}
-
-void CParticleManager::CreateCopiousBleeding(XMVECTOR pos)
-{
-	CParticleSystem* pParticle = nullptr;
-	
-	for (auto& particle : m_vecCopiousBleedingParticleSystemPool) {
-		if (particle->GetActive())
-			continue;
-		else {
-			pParticle = particle;
-			break;
-		}
-	}
-
-	if (!pParticle)
-		return;
-
-	pParticle->ParticleRestart();
-	pParticle->SetEmitvPosition(pos);
-}
-
-void CParticleManager::CreateSpark(XMVECTOR pos)
-{
-	CParticleSystem* pParticle = nullptr;
-
-	for (auto& particle : m_vecSparkParticleSystemPool) {
-		if (particle->GetActive())
-			continue;
-		else {
-			pParticle = particle;
-			break;
-		}
-	}
-
-	if (!pParticle)
-		return;
-
-	pParticle->ParticleRestart();
-	pParticle->SetEmitvPosition(pos);
-}
-*/
 void CParticleManager::CreateParticle(ParticleTag tag, XMVECTOR pos)
 {
 	auto findParticlePool = m_mapParticlePool.find(tag);
@@ -200,19 +142,14 @@ void CParticleManager::CreateParticle(ParticleTag tag, XMVECTOR pos)
 		MessageBox(NULL, s_to_ws("Particle Tag : " + to_string(static_cast<int>(tag))).c_str(), L"Error", MB_OK);
 
 	CParticleSystem* pParticle = nullptr;
-	int count = 0;
 	for (auto& particle : findParticlePool->second) {
-		if (particle->GetActive()) {
-			count++;
+		if (particle->GetActive())
 			continue;
-		}
 		else {
 			pParticle = particle;
 			break;
 		}
 	}
-
-	cout << count << "번 째 파티클" << endl;
 
 	if (!pParticle)
 		return;

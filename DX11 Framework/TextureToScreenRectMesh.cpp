@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TextureToScreenRectMesh.h"
 
+// ----- UI에 사용되는 메쉬 ----- //
 
 CTextureToScreenRectMesh::CTextureToScreenRectMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight)
 {
@@ -12,15 +13,10 @@ CTextureToScreenRectMesh::CTextureToScreenRectMesh(ID3D11Device *pd3dDevice, flo
 	m_pPositions = new XMFLOAT3[m_nVertices];
 	XMFLOAT2 *pd3dxvTexCoords = new XMFLOAT2[m_nVertices];
 
-	m_pPositions[0] = XMFLOAT3(-fx, -fy, 0.9f); 
-	m_pPositions[1] = XMFLOAT3(-fx, +fy, 0.9f); 
-	m_pPositions[2] = XMFLOAT3(+fx, -fy, 0.9f); 
-	m_pPositions[3] = XMFLOAT3(+fx, +fy, 0.9f);
-	
-	pd3dxvTexCoords[0] = XMFLOAT2(0.0f, 1.0f);
-	pd3dxvTexCoords[1] = XMFLOAT2(0.0f, 0.0f);
-	pd3dxvTexCoords[2] = XMFLOAT2(1.0f, 1.0f);
-	pd3dxvTexCoords[3] = XMFLOAT2(1.0f, 0.0f);
+	m_pPositions[0] = XMFLOAT3(-fx, -fy, 0.9f);		pd3dxvTexCoords[0] = XMFLOAT2(0.0f, 1.0f);
+	m_pPositions[1] = XMFLOAT3(-fx, +fy, 0.9f);		pd3dxvTexCoords[1] = XMFLOAT2(0.0f, 0.0f);
+	m_pPositions[2] = XMFLOAT3(+fx, -fy, 0.9f);		pd3dxvTexCoords[2] = XMFLOAT2(1.0f, 1.0f);
+	m_pPositions[3] = XMFLOAT3(+fx, +fy, 0.9f);		pd3dxvTexCoords[3] = XMFLOAT2(1.0f, 0.0f);
 
 	m_pd3dPositionBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT3), m_nVertices, m_pPositions, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);
 	m_pd3dTexCoordBuffer = CreateBuffer(pd3dDevice, sizeof(XMFLOAT2), m_nVertices, pd3dxvTexCoords, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DEFAULT, 0);

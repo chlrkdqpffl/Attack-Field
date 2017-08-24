@@ -57,6 +57,7 @@
 #define SOUND_MGR CSoundManager::GetInstance()
 #define SERVER_MGR CServerManager::GetInstance()
 #define PARTICLE_MGR CParticleManager::GetInstance()
+#define SPRITE_MGR CSpriteImageManager::GetInstance()
 // -------------------------------------------------- //
 
 // Check Timer
