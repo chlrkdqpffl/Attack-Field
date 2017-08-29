@@ -25,8 +25,6 @@ void CServerManager::processpacket(char *ptr)
 	static bool first_time = true;
 	int id = 0;
 
-
-
 	switch (ptr[1])
 	{
 	case 1:   //계속 받을때

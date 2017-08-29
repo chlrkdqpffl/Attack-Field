@@ -17,9 +17,6 @@ CMainScene::CMainScene()
 #ifdef DEVELOP_MODE
 	//m_f3DirectionalAmbientUpperColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
 #endif
-
-	TWBAR_MGR->g_xmf4TestVariable.x = 0.4f;
-	TWBAR_MGR->g_xmf4TestVariable.z = 3.0f;
 }
 
 CMainScene::~CMainScene()
@@ -115,7 +112,14 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_F5:
+				TWBAR_MGR->g_OptionHDR.g_fWhite -= 0.1f;
+			//	TWBAR_MGR->g_xmf4TestVariable.x = 1.0f;
 				break;
+			case VK_F6:
+				TWBAR_MGR->g_OptionHDR.g_fWhite = 1.5f;
+			//	TWBAR_MGR->g_xmf4TestVariable.x = 0.0f;
+				break;
+			break;
 #ifndef USE_SERVER
 			case VK_Z:
 				// 임의로 죽어보기
@@ -411,8 +415,8 @@ void CMainScene::Initialize()
 	CCharacterObject* pCharacter = new CTerroristCharacterObject(TeamType::eBlueTeam);
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
-	//	17.08.21 병호 : 이걸 왜????
-	pCharacter->SetLife(100000);
+//	pCharacter->SetLife(100);
+	pCharacter->SetLife(100000);	// 파티클 테스트용
 	pCharacter->SetPosition(60.0f, 2.5f, 15.0f);
 
 	m_vecBBoxRenderContainer.push_back(pCharacter);
@@ -424,14 +428,16 @@ void CMainScene::Initialize()
 	PARTICLE_MGR->CreateParticleSystems(m_pd3dDevice);
 
 //	CreateMapDataObject();
-//	CreateMapDataInstancingObject();	- 테스트용으로 잠시 맵  생성 제거
-	CreateTestingObject();
+	CreateMapDataInstancingObject();//	- 테스트용으로 잠시 맵  생성 제거
+//	CreateTestingObject();
 
 	CreateLights();
 	CreateConstantBuffers();
 	CreateTweakBars();
 	CreateUIImage();
 
+	SOUND_MGR->PlayBgm(SoundTag::eBGM_Rain);
+	m_dwLastLightningTime = GetTickCount();
 	cout << "================================== Scene Loading Complete ===================================" << endl;
 	cout << "=============================================================================================" << endl << endl;
 }
@@ -1764,6 +1770,8 @@ void CMainScene::ReleaseConstantBuffers()
 
 void CMainScene::CreateLights()
 {
+	m_pLightManager->ClearLights();
+
 	vector<MapData> vecMapData;
 	XMFLOAT3 pos;
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
@@ -1946,14 +1954,67 @@ void CMainScene::ShowDeadlyAttackUI()
 	}
 }
 
+void CMainScene::Update_Lightning(float fDeltaTime)
+{
+	static bool isFirstLightning = false;
+	static bool isLightning = false;
+	DWORD dwFirstLightningInterval;
+	static const DWORD dwLightningPeriod = 5000;
+
+	/*
+	cout << TWBAR_MGR->g_OptionHDR.g_fWhite << endl;
+
+	if (GetTickCount() - m_dwLastLightningTime > dwLightningPeriod) {
+
+		dwFirstLightningInterval = GetTickCount();
+
+		TWBAR_MGR->g_OptionHDR.g_fWhite = 0.4f;
+		isFirstLightning = true;
+
+		cout << "ㅇㅇㅇㅇ"<< endl;
+		if (GetTickCount() - dwFirstLightningInterval > 1000) {
+			m_dwLastLightningTime = GetTickCount();
+			isLightning = true;
+			cout << "ㄴㄴㄴ" << endl;
+		}
+	}
+	
+	
+	if (isFirstLightning) {
+		TWBAR_MGR->g_OptionHDR.g_fWhite += 0.2f;
+
+		if (TWBAR_MGR->g_OptionHDR.g_fWhite >= TWBAR_MGR->g_cfWhite)
+			isFirstLightning = false;
+
+	}
+	*/
+
+	if (isLightning) {
+		TWBAR_MGR->g_OptionHDR.g_fWhite += 0.01f;
+
+		if (TWBAR_MGR->g_OptionHDR.g_fWhite >= TWBAR_MGR->g_cfWhite)
+			isLightning = false;
+	}
+	
+	if (GetTickCount() - m_dwLastLightningTime> dwLightningPeriod) {	
+		m_dwLastLightningTime = GetTickCount();
+
+		TWBAR_MGR->g_OptionHDR.g_fWhite = 0.15f;
+		isLightning = true;
+	}
+	
+}
+
 void CMainScene::Update(float fDeltaTime)
 {
 	// 충돌 정보 갱신
 	COLLISION_MGR->InitCollisionInfo();	// 현재 플레이어만 적용되고있어서 주석처리함
 //	COLLISION_MGR->UpdateManager();
 
+	// ====== Update ===== //
 	GLOBAL_MGR->UpdateManager();
 	UpdateConstantBuffers();
+	Update_Lightning(fDeltaTime);
 
 	// ====== Object ===== //
 	CScene::Update(fDeltaTime);
@@ -1985,7 +2046,6 @@ void CMainScene::Update(float fDeltaTime)
 	m_pLightManager->SetAmbient(m_f3DirectionalAmbientLowerColor, m_f3DirectionalAmbientUpperColor);
 	m_pLightManager->SetDirectional(m_f3DirectionalDirection, m_f3DirectionalColor);
 
-	m_pLightManager->ClearLights();
 	CreateLights();
 }
 

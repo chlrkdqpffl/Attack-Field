@@ -71,13 +71,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\DirectX SDK\Include;../Setting\DirectX\Include;../Setting\AntTweakBar\include;../Setting\FMOD;$(IncludePath);../Setting\FMOD\Include</IncludePath>
-    <LibraryPath>D:\DirectX SDK\Lib\x64;../Setting\DirectX\Lib\x86;./FW1FontWrapper\x86;$(LibraryPath);../Setting\AntTweakBar\lib;../Setting\FMOD;../Setting\FMOD\Lib</LibraryPath>
+    <IncludePath>../Setting\DirectX\Include;../Setting\DirectX\Include;../Setting\AntTweakBar\include;../Setting\FMOD;$(IncludePath);../Setting\FMOD\Include</IncludePath>
+    <LibraryPath>../Setting\DirectX\Lib\x64;../Setting\DirectX\Lib\x86;./FW1FontWrapper\x86;$(LibraryPath);../Setting\AntTweakBar\lib;../Setting\FMOD;../Setting\FMOD\Lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\DirectX SDK\Include;../Setting\DirectX\Include;../Setting\AntTweakBar\include;../Setting\FMOD\Include;$(IncludePath);../Setting\FMOD\Include</IncludePath>
-    <LibraryPath>D:\DirectX SDK\Lib\x64;../Setting\DirectX\Lib\x64;$(LibraryPath);../Setting\AntTweakBar\lib;../Setting\FMOD\Lib;../Setting\FMOD\Lib</LibraryPath>
+    <IncludePath>../Setting\DirectX\Include;../Setting\DirectX\Include;../Setting\AntTweakBar\include;../Setting\FMOD\Include;$(IncludePath);../Setting\FMOD\Include</IncludePath>
+    <LibraryPath>../Setting\DirectX\Lib\x64;../Setting\DirectX\Lib\x64;$(LibraryPath);../Setting\AntTweakBar\lib;../Setting\FMOD\Lib;../Setting\FMOD\Lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -200,6 +200,15 @@
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SphereObject.cpp" />
     <ClCompile Include="SpriteImageManager.cpp" />
+    <ClCompile Include="SpriteImageMesh.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="SpriteImageObject.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="SpriteImageShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="TerrainShader.cpp" />
     <ClCompile Include="TerroristCharacterObject.cpp" />
     <ClCompile Include="TextureToScreenRectMesh.cpp" />
@@ -236,7 +245,9 @@
     <ClCompile Include="TerrainPlayer.cpp" />
     <ClCompile Include="TerrainWater.cpp" />
     <ClCompile Include="TextManager.cpp" />
-    <ClCompile Include="TexturedRectMesh.cpp" />
+    <ClCompile Include="TexturedRectMesh.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="ThirdPersonCamera.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TitleScene.cpp" />
@@ -322,6 +333,15 @@
     <ClInclude Include="SpaceShipCamera.h" />
     <ClInclude Include="SphereObject.h" />
     <ClInclude Include="SpriteImageManager.h" />
+    <ClInclude Include="SpriteImageMesh.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="SpriteImageObject.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="SpriteImageShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="StateObjectManager.h" />
     <ClInclude Include="stdafx.h" />
@@ -393,6 +413,7 @@
     <None Include="Shader HLSL File\ShadowGen.hlsli" />
     <None Include="Shader HLSL File\Spark.hlsli" />
     <None Include="Shader HLSL File\SpotLight.hlsli" />
+    <None Include="Shader HLSL File\SpriteImage.hlsli" />
     <None Include="Shader HLSL File\Terrain.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </None>

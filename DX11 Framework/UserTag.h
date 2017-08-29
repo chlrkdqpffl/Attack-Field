@@ -268,7 +268,7 @@ enum class SoundTag
 	eNone = -1,
 
 	// BGM
-	eBGM_TitleScene,
+	eBGM_Rain,
 
 	// Effect
 	eFire, eReload, eWalk, eRun, eDeath, eShellsFall,

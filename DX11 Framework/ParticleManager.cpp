@@ -26,7 +26,7 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 {
 	// Particle Texture 는 Resource Manager에 저장된 텍스쳐를 가져오고 
 	// 원하는 파티클의 형태마다 Particle Tag를 생성하여 해당 map에 넣어준다.
-
+	
 	vector<MapData> vecMapData;
 	CParticleSystem* pParticle = nullptr;
 	vector<CParticleSystem*> vecParticleSystemPool;

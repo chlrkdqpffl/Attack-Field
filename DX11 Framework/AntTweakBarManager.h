@@ -18,9 +18,6 @@ class CAntTweakBarManager : public CSingletonManager<CAntTweakBarManager>
 public:
 	TwBar *g_tweakBar;
 
-
-	// Option
-
 	// Etc
 	int g_nSelect = 0;
 	UINT g_nBoneIndex = 0;
@@ -38,6 +35,7 @@ public:
 
 	// HDR Option
 	OptionHDR g_OptionHDR;
+	static const float g_cfWhite;
 
 public:
 	CAntTweakBarManager();

@@ -71,7 +71,7 @@ void CSoundManager::LoadAllSound()
 void CSoundManager::LoadBGMSound()
 {
 //	g_pSystem->createStream("../Assets/Sound/BGM/Audiomachine.mp3",			FMOD_LOOP_NORMAL, 0, &g_pSound[static_cast<int>(SoundTag::eBGM_TitleScene)]);	
-	g_pSystem->createStream("../Assets/Sound/BGM/normalmode.mp3",			FMOD_LOOP_NORMAL, 0, &g_pSound[static_cast<int>(SoundTag::eBGM_TitleScene)]);	
+	g_pSystem->createStream("../Assets/Sound/BGM/Rain.mp3",				FMOD_LOOP_NORMAL, 0, &g_pSound[static_cast<int>(SoundTag::eBGM_Rain)]);
 }
  
 void CSoundManager::LoadEffectSound()
