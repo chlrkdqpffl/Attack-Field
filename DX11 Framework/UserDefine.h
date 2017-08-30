@@ -1,42 +1,25 @@
 #pragma once
 
-//#define _WITH_MSAA4_MULTISAMPLING
-//#define FRAME_BUFFER_WIDTH				1280
-//#define FRAME_BUFFER_HEIGHT				768
+#define PROJECT_NAME					L"Attack Field ("
 
-// 클라이언트 개발 모드
-#define DEVELOP_MODE
-
-//#define USE_SERVER
+#define DEVELOP_MODE				// 클라이언트 개발 모드
+//#define USE_SERVER					// 서버 활성화 모드
 
 #define USE_CONSOLE					// Open Console Windows
 #define USE_AUTOIP					// auto 127.0.0.1
 
 #define USE_DEFERRD_RENDER
 
-#define PROJECT_NAME					L"Attack Field ("
-
-#ifdef USE_SERVER
-	#define FRAME_BUFFER_WIDTH				1600 //800
-	#define FRAME_BUFFER_HEIGHT				900 //450
-#else
-	#define FRAME_BUFFER_WIDTH				1600
-	#define FRAME_BUFFER_HEIGHT				900
-#endif
-
-
-#define CUBEMAP_RENDER_TARGET_WIDTH		1024
-#define CUBEMAP_RENDER_TARGET_HEIGHT	1024
-
-#define SHADOW_RENDER_TARGET_WIDTH		1024
-#define SHADOW_RENDER_TARGET_HEIGHT		1024
-
-#define MAXBONECOUNT					60
+// ==================== Game System Option ==================== //
 #define OCCUPY_TIME						3000	// 점령 시간 3초
 #define RESPAWN_TIME					5000	// 리스폰 시간 5초
 #define TOTAL_KILLS						50		// 게임 종료 킬
+// ============================================================ //
+
+#define MAXBONECOUNT					60		// 캐릭터 최대 뼈대 갯수
 
 
+//#define _WITH_MSAA4_MULTISAMPLING
 #define _WITH_TERRAIN_PARTITION
 #define _WITH_FRUSTUM_CULLING_BY_OBJECT
 //#define _WITH_FRUSTUM_CULLING_BY_SUBMESH
@@ -79,6 +62,10 @@
 #define SafeDelete(x) { if(x) { delete x; x = nullptr;} }
 #define SafeDeleteArray(x) { if(x) { delete[] x; x = nullptr; }}
 //---------------------------------------------------------------------------------------
+
+// ===== FRAME SIZE 수정 금지 ===== //		--> UI 위치 안맞음
+#define FRAME_BUFFER_WIDTH		1600
+#define FRAME_BUFFER_HEIGHT		900
 
 
 // 사진 저장 매크로 D3DX11SaveTextureToFile(STATEOBJ_MGR->g_pd3dImmediateDeviceContext.Get(), &texture2d, D3DX11_IFF_JPG, L"save.jpg");

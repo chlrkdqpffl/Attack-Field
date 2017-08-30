@@ -121,8 +121,13 @@ void CResourceManager::LoadUIData()
 	AddResourece(TextureTag::eOccupyGageBar,	"../Assets/Image/UI/RespawnGage.png");	// 현재는 동일한 텍스쳐 사용중
 	AddResourece(TextureTag::eOccupyGageWhiteBar, "../Assets/Image/UI/RespawnGage(White).png");
 
-//	AddResourece(TextureTag::eDamagedParts,		"../Assets/Image/UI/DamagedParts.png");
-	
+	// Damage Direction
+	AddResourece(TextureTag::eDamageDirection_Left,		"../Assets/Image/UI/DamageDirection/DamageDir_Left.png");
+	AddResourece(TextureTag::eDamageDirection_LeftTop,	"../Assets/Image/UI/DamageDirection/DamageDir_LeftTop.png");
+	AddResourece(TextureTag::eDamageDirection_Top,		"../Assets/Image/UI/DamageDirection/DamageDir_Top.png");
+	AddResourece(TextureTag::eDamageDirection_RightTop, "../Assets/Image/UI/DamageDirection/DamageDir_RightTop.png");
+	AddResourece(TextureTag::eDamageDirection_Right,	"../Assets/Image/UI/DamageDirection/DamageDir_Right.png");
+	AddResourece(TextureTag::eDamageDirection_Bottom,	"../Assets/Image/UI/DamageDirection/DamageDir_Bottom.png");
 }
 
 void CResourceManager::LoadSpriteData()

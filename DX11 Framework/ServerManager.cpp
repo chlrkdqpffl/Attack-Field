@@ -34,7 +34,8 @@ void CServerManager::processpacket(char *ptr)
 		id = my_Pos_packet->id;
 		if (id == m_myid)
 		{
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(my_Pos_packet->hp);
+			SCENE_MGR->g_pPlayerCharacter->SetLife(my_Pos_packet->hp);
+	//		SCENE_MGR->g_pPlayerCharacter->SetLife(my_Pos_packet->hp);
 		}
 		else
 		{
@@ -100,10 +101,10 @@ void CServerManager::processpacket(char *ptr)
 
 			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 			SCENE_MGR->g_pPlayer->SetPlayerlife(static_cast<UINT>(my_put_packet->hp));//SCENE_MGR->g_pMainScene->-> SetLife(static_cast<UINT>(my_put_packet->hp));
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetServerID(id);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetTagTeam(reinterpret_cast<TeamType &>(my_put_packet->Team));
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->Setmode(my_put_packet->mode);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->CreateMaterial();
+			SCENE_MGR->g_pPlayerCharacter->SetServerID(id);
+			SCENE_MGR->g_pPlayerCharacter->SetTagTeam(reinterpret_cast<TeamType &>(my_put_packet->Team));
+			SCENE_MGR->g_pPlayerCharacter->Setmode(my_put_packet->mode);
+			SCENE_MGR->g_pPlayerCharacter->CreateMaterial();
 		}
 		else
 		{
@@ -200,7 +201,7 @@ void CServerManager::processpacket(char *ptr)
 		if (id == m_myid)
 		{
 
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
+			//SCENE_MGR->g_pPlayerCharacter->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
 		}
 		else
 		{
@@ -233,6 +234,12 @@ void CServerManager::processpacket(char *ptr)
 		}
 		
 		bIsPartsCollisionCS = COLLISION_MGR->RayCastCollisionToCharacter_Parts(info, XMLoadFloat3(&my_collision->position), XMLoadFloat3(&my_collision->direction));
+		COLLISION_MGR->CreateFireDirectionLine(XMLoadFloat3(&my_collision->position), XMLoadFloat3(&my_collision->direction), 200);
+
+		cout << "Pos : "; ShowXMFloat3(my_collision->position);
+		cout << "Dir : "; ShowXMFloat3(my_collision->direction);
+	
+
 
 		if (bIsPartsCollisionCS) {
 			CS_Head_Collison Collison;
@@ -256,9 +263,8 @@ void CServerManager::processpacket(char *ptr)
 
 		if (id == m_myid)
 		{
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(packet->m_nLife);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsHeadHit(packet->m_bIsHeadHit);
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsDeath(packet->m_bIsAlive); -> 이제 Death는 Life가 0인지 아닌지로 판별하므로 필요없음
+			SCENE_MGR->g_pPlayerCharacter->SetLife(packet->m_nLife);
+			SCENE_MGR->g_pPlayerCharacter->SetIsHeadHit(packet->m_bIsHeadHit);
 		}
 		else
 		{
@@ -270,10 +276,7 @@ void CServerManager::processpacket(char *ptr)
 				i++;
 			}
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->m_nLife);
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetDeath();
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsHeadHit(packet->m_bIsHeadHit);
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsDeath(packet->m_bIsAlive); -> 이제 Death는 Life가 0인지 아닌지로 판별하므로 필요없음
-
 		}
 	}
 	break;
@@ -326,7 +329,7 @@ void CServerManager::processpacket(char *ptr)
 		id = packet->id;
 		if (id == m_myid)
 		{
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetIsRespawn(packet->m_bIsRespawn);
+			SCENE_MGR->g_pPlayerCharacter->SetIsRespawn(packet->m_bIsRespawn);
 			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
 		}
 		else

@@ -170,7 +170,7 @@ enum class TextureTag
 	// UI
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
 	eCaptureArea, eAim, eMagazineUI, eLifeUI, eScoreUI, eDamagedCharacterUI, eRespawnGageBar, eRespawnGageWhiteBar, eOccupyGageBar, eOccupyGageWhiteBar,
-//	eDamagedParts,
+	eDamageDirection_Left, eDamageDirection_LeftTop, eDamageDirection_Top, eDamageDirection_RightTop, eDamageDirection_Right, eDamageDirection_Bottom,
 
 	// Etc
 	eBarricadeD, eStoneWallD, eStoneWallN,
@@ -272,6 +272,7 @@ enum class SoundTag
 
 	// Effect
 	eFire, eReload, eWalk, eRun, eDeath, eShellsFall,
+	eThunderStrike, eThunderStrike2, eThunderStrike3, eThunderStrike4,
 
 	SoundCount
 };

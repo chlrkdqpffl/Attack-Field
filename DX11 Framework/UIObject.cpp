@@ -132,6 +132,11 @@ void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)
 
 	pDeviceContext->OMSetBlendState(STATEOBJ_MGR->g_pTransparentBS, NULL, 0xffffffff);
 	pDeviceContext->RSSetState(STATEOBJ_MGR->g_pNoCullRS);
+
+	ID3D11DepthStencilState* prevDSS; UINT prevStencil;
+	pDeviceContext->OMGetDepthStencilState(&prevDSS, &prevStencil);
+	pDeviceContext->OMSetDepthStencilState(STATEOBJ_MGR->g_pDisableDepthDSS, 0);
+
 	if(m_pBackGroundUI) 
 		m_pBackGroundUI->Render(pDeviceContext);
 
@@ -152,6 +157,8 @@ void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)
 			uiObj->Render(pDeviceContext);
 		}
 	}
+
+	pDeviceContext->OMSetDepthStencilState(prevDSS, prevStencil);
 	pDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 	pDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
 }

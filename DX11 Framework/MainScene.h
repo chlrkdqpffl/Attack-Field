@@ -44,6 +44,7 @@ public:
 	// UI
 	void PrepareRenderUI();
 	void RenderUI();
+	void ShowDamageDirection();
 	void ShowDeathRespawnUI();
 	void ShowOccupyUI();
 	void ShowDeadlyUI();
@@ -94,10 +95,5 @@ private:
 	int								m_OccupyTime = 0;
 	UINT							m_nRedTeamTotalKill = 0;
 	UINT							m_nBlueTeamTotalKill = 0;
-	BYTE							m_cOccupyteam = 0; //어떤팀이 점령했는지 알아야 한다.
-
-
-
-	// UI
-	CUIObject*						m_pDamageUI = nullptr;
+	BYTE							m_cOccupyteam = 0;			//어떤팀이 점령했는지 알아야 한다.
 };

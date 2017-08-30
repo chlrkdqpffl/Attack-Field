@@ -6,7 +6,7 @@ CMainScene::CMainScene()
 {
 	m_tagScene = SceneTag::eMainScene;
 	//TWBAR_MGR->g_xmf3SelectObjectPosition = XMFLOAT3(0, 0, 0);
-	TWBAR_MGR->g_xmf3SelectObjectRotate = XMFLOAT3(40, 50, 30.0f);
+	//TWBAR_MGR->g_xmf3SelectObjectRotate = XMFLOAT3(40, 50, 30.0f);
 
 	m_f3DirectionalColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	m_f3DirectionalDirection = XMFLOAT3(1.0f, -1.0f, 1.0f);
@@ -14,7 +14,7 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.5f, 0.5f, 0.0f);
+//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.5f, 0.5f, 0.0f);
 
 //	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(1.4f, 0.6f, 2.5f, 0.4f);
 }
@@ -416,7 +416,12 @@ void CMainScene::Initialize()
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
 //	pCharacter->SetLife(100);
+
+#ifdef DEVELOP_MODE
 	pCharacter->SetLife(100000);	// 파티클 테스트용
+#else
+	pCharacter->SetLife(100);
+#endif
 	pCharacter->SetPosition(60.0f, 2.5f, 15.0f);
 
 	m_vecBBoxRenderContainer.push_back(pCharacter);
@@ -436,7 +441,7 @@ void CMainScene::Initialize()
 	CreateTweakBars();
 	CreateUIImage();
 
-	SOUND_MGR->PlayBgm(SoundTag::eBGM_Rain);
+	SOUND_MGR->PlayBgm(SoundTag::eBGM_Rain, 1.0f);
 	m_dwLastLightningTime = GetTickCount();
 	cout << "================================== Scene Loading Complete ===================================" << endl;
 	cout << "=============================================================================================" << endl << endl;
@@ -1686,7 +1691,6 @@ void CMainScene::CreateUIImage()
 	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.0f);
 	pUIObject->AddOpacity(-1.0f);
 	m_pUIManager->AddUIObject(pUIObject);
-	m_pDamageUI = pUIObject;
 
 	// Respawn Gage
 	pUIObject = new CUIObject(TextureTag::eRespawnGageBar);
@@ -1711,6 +1715,36 @@ void CMainScene::CreateUIImage()
 	pUIObject->SetActive(false);
 	m_pUIManager->AddUIObject(pUIObject);
 	
+	// ===== Damage Direction ===== //
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_Top);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 550, 120 }, POINT{ 1050, 320 }, 0.1f, true);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_Bottom);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 550, 650 }, POINT{ 1050, 850 }, 0.1f, true);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	/*
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_Left);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 - 350}, POINT{ FRAME_BUFFER_WIDTH / 2 + 300, FRAME_BUFFER_HEIGHT / 2 - 100 }, 0.1f, true);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_LeftTop);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 - 350 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 300, FRAME_BUFFER_HEIGHT / 2 - 100 }, 0.1f, true);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	
+
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_RightTop);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 - 350 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 300, FRAME_BUFFER_HEIGHT / 2 - 100 }, 0.1f, true);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_Right);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 - 350 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 300, FRAME_BUFFER_HEIGHT / 2 - 100 }, 0.1f, true);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	
+	*/
 }
 
 void CMainScene::ReleaseObjects()
@@ -1838,14 +1872,54 @@ void CMainScene::RenderUI()
 	ShowDeadlyAttackUI();
 	ShowDeadlyUI();
 	ShowDeathRespawnUI();
+	ShowDamageDirection();
 
-	// ------ UI ----- // 뎁스스텐실 뷰 오류로 인하여 미리 그려줌
+	// ------ UI ----- //
 	m_pUIManager->RenderAll(m_pd3dDeviceContext);
+	
+	CUIObject* pUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Top);
+	pUI->SetStartPos(POINT{ 550 + (LONG)TWBAR_MGR->g_xmf3SelectObjectRotate.x, 120 + (LONG)TWBAR_MGR->g_xmf3SelectObjectRotate.y });
+	pUI->SetEndPos(POINT{ 1050 + (LONG)TWBAR_MGR->g_xmf3SelectObjectRotate.x, 320 + (LONG)TWBAR_MGR->g_xmf3SelectObjectRotate.y });
+	
+	pUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Bottom);
+	pUI->SetStartPos(POINT{ 550 + (LONG)TWBAR_MGR->g_xmf3Rotate.x, 650 + (LONG)TWBAR_MGR->g_xmf3Rotate.y });
+	pUI->SetEndPos(POINT{ 1050 + (LONG)TWBAR_MGR->g_xmf3Rotate.x, 850 + (LONG)TWBAR_MGR->g_xmf3Rotate.y });
+}
+
+void CMainScene::ShowDamageDirection()
+{
+	if (!m_pPlayer->GetIsDamage())
+		return;
+
+	CUIObject* pDamageDirectionUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Top);
+	
+	
+
+
+	//받은 방향과 현재 캐릭터 룩벡터를 내적한다.
+	// 내적의 결과가 둔각(양수인지 음수)일 때  정면에서 맞은 것
+	
+	//m_pPlayer->GetvLook()
+	
+
+	static bool bIsDeadlyAttack = true;
+	float opacityValue = 0.8f;
+
+	if (bIsDeadlyAttack) {
+		pDamageDirectionUI->AddOpacity(1.0f);
+		bIsDeadlyAttack = false;
+	}
+
+	pDamageDirectionUI->AddOpacity(-1 * opacityValue * m_fDeltaTime);
+
+	if (pDamageDirectionUI->GetOpacity() <= 0.0f) {
+		bIsDeadlyAttack = true;
+		m_pPlayer->SetIsDeadlyAttack(false);
+	}
 }
 
 void CMainScene::ShowOccupyUI()
 {
-
 	CUIObject* pGageUI = m_pUIManager->GetUIObject(TextureTag::eOccupyGageBar);
 	CUIObject* pWhiteGageUI = m_pUIManager->GetUIObject(TextureTag::eOccupyGageWhiteBar);
 
@@ -1855,8 +1929,7 @@ void CMainScene::ShowOccupyUI()
 		return;
 	}
 
-
-	if (m_cOccupyteam != static_cast<int>(SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetTagTeam()))
+	if (m_cOccupyteam != static_cast<int>(SCENE_MGR->g_pPlayerCharacter->GetTagTeam()))
 	{
 		pGageUI->SetActive(true);
 		pWhiteGageUI->SetActive(true);
@@ -1878,7 +1951,7 @@ void CMainScene::ShowOccupyUI()
 			sc_occupy packet;
 			packet.size = sizeof(sc_occupy);
 			packet.type = 9;
-			packet.redteam = static_cast<int>(SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetTagTeam());
+			packet.redteam = static_cast<int>(SCENE_MGR->g_pPlayerCharacter->GetTagTeam());
 
 			//cout << packet.redteam << endl;
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
@@ -1901,7 +1974,9 @@ void CMainScene::ShowDeathRespawnUI()
 		return;
 	}
 
-	m_pDamageUI->AddOpacity(-1.0f);
+	CUIObject* pDamageUI = m_pUIManager->GetUIObject(TextureTag::eDamagedCharacterUI);
+
+	pDamageUI->AddOpacity(-1.0f);
 	pGageUI->SetActive(true);
 	pWhiteGageUI->SetActive(true);
 
@@ -1916,19 +1991,20 @@ void CMainScene::ShowDeadlyUI()
 	if (!m_pPlayer->GetIsDeadly())
 		return;
 
+	CUIObject* pDamageUI = m_pUIManager->GetUIObject(TextureTag::eDamagedCharacterUI);
 	static bool bIsReverse = false;
 	float opacityValue = 0.8f;
 
 	if (bIsReverse) {
-		m_pDamageUI->AddOpacity(-1 * opacityValue * m_fDeltaTime);
+		pDamageUI->AddOpacity(-1 * opacityValue * m_fDeltaTime);
 
-		if (m_pDamageUI->GetOpacity() <= 0.0f)
+		if (pDamageUI->GetOpacity() <= 0.0f)
 			bIsReverse = false;
 	}
 	else {
-		m_pDamageUI->AddOpacity(opacityValue * m_fDeltaTime);
+		pDamageUI->AddOpacity(opacityValue * m_fDeltaTime);
 
-		if (m_pDamageUI->GetOpacity() >= 1.0f)
+		if (pDamageUI->GetOpacity() >= 1.0f)
 			bIsReverse = true;
 	}
 }
@@ -1938,17 +2014,18 @@ void CMainScene::ShowDeadlyAttackUI()
 	if (!m_pPlayer->GetIsDeadlyAttack())
 		return;
 
+	CUIObject* pDamageUI = m_pUIManager->GetUIObject(TextureTag::eDamagedCharacterUI);
 	static bool bIsDeadlyAttack = true;
 	float opacityValue = 0.8f;
 
 	if (bIsDeadlyAttack) {
-		m_pDamageUI->AddOpacity(1.0f);
+		pDamageUI->AddOpacity(1.0f);
 		bIsDeadlyAttack = false;
 	}
 	
-	m_pDamageUI->AddOpacity(-1 * opacityValue * m_fDeltaTime);
+	pDamageUI->AddOpacity(-1 * opacityValue * m_fDeltaTime);
 	
-	if (m_pDamageUI->GetOpacity() <= 0.0f) {
+	if (pDamageUI->GetOpacity() <= 0.0f) {
 		bIsDeadlyAttack = true;
 		m_pPlayer->SetIsDeadlyAttack(false);
 	}
@@ -1958,8 +2035,12 @@ void CMainScene::Update_Lightning(float fDeltaTime)
 {
 	static bool isFirstLightning = false;
 	static bool isLightning = false;
+	static bool isFirstThunderSound = false;
+	static bool isThunderSound = false;
+	static UINT nSoundCount = 0;
 	static DWORD dwFirstLightningTime = 0;
-	static const DWORD dwLightningPeriod = 5000;
+	static const DWORD dwLightningPeriod = 20000;
+	//static const DWORD dwLightningPeriod = 5000;
 
 	if (GetTickCount() - m_dwLastLightningTime > dwLightningPeriod - 4000) {
 		// 최초 번개 시작시 잠깐 밝아짐
@@ -1968,25 +2049,42 @@ void CMainScene::Update_Lightning(float fDeltaTime)
 			TWBAR_MGR->g_OptionHDR.g_fWhite = 0.3f;
 			dwFirstLightningTime = GetTickCount();
 		}
-		// 1초 뒤 번개
 		else {
 			if (false == isLightning) {
+				// 0.5초 뒤 소리
+				if (false == isFirstThunderSound) {
+					if (GetTickCount() - dwFirstLightningTime > 500) {
+						if(nSoundCount % 2 == 0)
+							SOUND_MGR->Play2DSound(SoundTag::eThunderStrike2, 1.0f);
+						else
+							SOUND_MGR->Play2DSound(SoundTag::eThunderStrike3, 1.0f);
+						isFirstThunderSound = true;
+					}
+				}
+				// 1초 뒤 번개
 				if (GetTickCount() - dwFirstLightningTime > 1000) {
 					isLightning = true;
 					TWBAR_MGR->g_OptionHDR.g_fWhite = 0.15f;
 				}
 			}
 		}
+		// 1.5초 뒤 소리
+		if (false == isThunderSound) {
+			if (GetTickCount() - dwFirstLightningTime > 1500) {
+				if (nSoundCount % 2 == 0)
+					SOUND_MGR->Play2DSound(SoundTag::eThunderStrike, 1.0f);
+				else
+					SOUND_MGR->Play2DSound(SoundTag::eThunderStrike4, 1.0f);
+				isThunderSound = true;
+			}
+		}
 
 		// 번개치고 밝아짐 계산
 		if (TWBAR_MGR->g_OptionHDR.g_fWhite < TWBAR_MGR->g_cfWhite) {
-			if (isFirstLightning && (isLightning == false)) {
-				//TWBAR_MGR->g_OptionHDR.g_fWhite += 0.04f;
-				TWBAR_MGR->g_OptionHDR.g_fWhite += TWBAR_MGR->g_xmf3Offset.x * fDeltaTime;
-				
-			}
-			TWBAR_MGR->g_OptionHDR.g_fWhite += TWBAR_MGR->g_xmf3Offset.y * fDeltaTime;
-			//TWBAR_MGR->g_OptionHDR.g_fWhite += 0.01f;
+			if (isFirstLightning && (isLightning == false))
+				TWBAR_MGR->g_OptionHDR.g_fWhite += 1.5f * fDeltaTime;
+
+			TWBAR_MGR->g_OptionHDR.g_fWhite += 0.5f * fDeltaTime;
 		}
 
 		// 초기화
@@ -1994,6 +2092,9 @@ void CMainScene::Update_Lightning(float fDeltaTime)
 			m_dwLastLightningTime = GetTickCount();
 			isFirstLightning = false;
 			isLightning = false;
+			isThunderSound = false;
+			isFirstThunderSound = false;
+			nSoundCount++;
 		}
 	}
 }

@@ -35,6 +35,9 @@ CSpriteImageMesh::CSpriteImageMesh(ID3D11Device *pd3dDevice, TextureTag tag, int
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
 	*/
+	
+	
+
 }
 
 CSpriteImageMesh::~CSpriteImageMesh()

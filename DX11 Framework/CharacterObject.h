@@ -30,7 +30,7 @@ protected:
 	bool				m_bIsJump = false;
 	bool				m_bIsReload = false;
 	bool				m_bIsRun = false;
-//	bool				m_bIsDeath = false;
+	bool				m_bIsDamage = false;
 	bool				m_bIsOccupy = false;
 	bool				m_bIsDeathHead = false;
 	bool				m_bIsHeadHit = false;
@@ -161,6 +161,8 @@ public:
 	bool GetIsHeadHit() const { return m_bIsHeadHit; }
 	void SetIsRespawn(bool set) { m_bIsRespawn = set; }
 	bool GetIsRespawn() const { return m_bIsRespawn; }
+	void SetIsDamage(bool set) { m_bIsDamage = set; }
+	bool GetIsDamage() const { return m_bIsDamage; }
 	void SetIsDeadly(bool set) { m_bIsDeadly = set; }
 	bool GetIsDeadly() const { return m_bIsDeadly; }
 	void SetIsDeadlyAttack(bool set) { m_bIsDeadlyAttack = set; }
