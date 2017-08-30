@@ -13,7 +13,7 @@ PARTICLE_INPUT VSParticleStreamOut(PARTICLE_INPUT input)
 [maxvertexcount(2)]
 void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTICLE_INPUT> pointStream)
 {
-    input[0].age += gfTimeStep * 0.4f;
+    input[0].age += gfTimeStep * 0.6f;
     if (input[0].type == PARTICLE_TYPE_EMITTER)
     {
         if (input[0].age > 0.005f)
@@ -24,11 +24,12 @@ void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTIC
 
             PARTICLE_INPUT particle = (PARTICLE_INPUT) 0;
             particle.position = gvParticleEmitPosition.xyz;
-            particle.velocity = 3.0f * vRandom;
+            particle.velocity = 2.5f * vRandom;        // 2.2f, 0.4f, 3
   //          particle.velocity = g_f4Var.z * vRandom;
   //          particle.size = float2(3.0f, 3.0f);
            // particle.size = float2(1.0f, 1.0f);
-            particle.size = float2(2.2f, 2.2f);
+           // particle.size = float2(2.2f, 2.2f);
+            particle.size = float2(1.4f, 1.4f);
             particle.age = 0.0f;
             particle.type = PARTICLE_TYPE_FLARE;
 
@@ -39,7 +40,7 @@ void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTIC
     }
     else
     {
-        if (input[0].age <= 1.0f)
+        if (input[0].age <= 0.4f)
             pointStream.Append(input[0]);
     }
 }
@@ -49,15 +50,11 @@ void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTIC
 PARTICLE_OUTPUT VSParticleDraw(PARTICLE_INPUT input)
 {
     PARTICLE_OUTPUT output;
-   
-//    float3 accel = { 0, g_f4Var.y, 0 };
     float t = input.age;
     output.position = (0.5f * t * t * gFireAccelW) + (t * input.velocity) + input.position;
-//    output.position = (0.5f * t * t * accel) + (t * input.velocity) + input.position;
-    
 
     float fOpacity = 1.0f - smoothstep(0.0f, 1.0f, t / 1.0f);
-  //  float fOpacity = 1.0f - smoothstep(0.0f, 1.0f, t);
+    //float fOpacity = 1.0f - smoothstep(0.0f, 1.0f, t);
 
     output.color = float4(1.0f, 1.0f, 1.0f, fOpacity);
     output.size = input.size;

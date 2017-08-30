@@ -14,9 +14,9 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-#ifdef DEVELOP_MODE
-	//m_f3DirectionalAmbientUpperColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
-#endif
+	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.5f, 0.5f, 0.0f);
+
+//	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(1.4f, 0.6f, 2.5f, 0.4f);
 }
 
 CMainScene::~CMainScene()
@@ -1958,51 +1958,44 @@ void CMainScene::Update_Lightning(float fDeltaTime)
 {
 	static bool isFirstLightning = false;
 	static bool isLightning = false;
-	DWORD dwFirstLightningInterval;
+	static DWORD dwFirstLightningTime = 0;
 	static const DWORD dwLightningPeriod = 5000;
 
-	/*
-	cout << TWBAR_MGR->g_OptionHDR.g_fWhite << endl;
+	if (GetTickCount() - m_dwLastLightningTime > dwLightningPeriod - 4000) {
+		// 최초 번개 시작시 잠깐 밝아짐
+		if (false == isFirstLightning) {
+			isFirstLightning = true;
+			TWBAR_MGR->g_OptionHDR.g_fWhite = 0.3f;
+			dwFirstLightningTime = GetTickCount();
+		}
+		// 1초 뒤 번개
+		else {
+			if (false == isLightning) {
+				if (GetTickCount() - dwFirstLightningTime > 1000) {
+					isLightning = true;
+					TWBAR_MGR->g_OptionHDR.g_fWhite = 0.15f;
+				}
+			}
+		}
 
-	if (GetTickCount() - m_dwLastLightningTime > dwLightningPeriod) {
+		// 번개치고 밝아짐 계산
+		if (TWBAR_MGR->g_OptionHDR.g_fWhite < TWBAR_MGR->g_cfWhite) {
+			if (isFirstLightning && (isLightning == false)) {
+				//TWBAR_MGR->g_OptionHDR.g_fWhite += 0.04f;
+				TWBAR_MGR->g_OptionHDR.g_fWhite += TWBAR_MGR->g_xmf3Offset.x * fDeltaTime;
+				
+			}
+			TWBAR_MGR->g_OptionHDR.g_fWhite += TWBAR_MGR->g_xmf3Offset.y * fDeltaTime;
+			//TWBAR_MGR->g_OptionHDR.g_fWhite += 0.01f;
+		}
 
-		dwFirstLightningInterval = GetTickCount();
-
-		TWBAR_MGR->g_OptionHDR.g_fWhite = 0.4f;
-		isFirstLightning = true;
-
-		cout << "ㅇㅇㅇㅇ"<< endl;
-		if (GetTickCount() - dwFirstLightningInterval > 1000) {
+		// 초기화
+		if (GetTickCount() - m_dwLastLightningTime > dwLightningPeriod) {
 			m_dwLastLightningTime = GetTickCount();
-			isLightning = true;
-			cout << "ㄴㄴㄴ" << endl;
+			isFirstLightning = false;
+			isLightning = false;
 		}
 	}
-	
-	
-	if (isFirstLightning) {
-		TWBAR_MGR->g_OptionHDR.g_fWhite += 0.2f;
-
-		if (TWBAR_MGR->g_OptionHDR.g_fWhite >= TWBAR_MGR->g_cfWhite)
-			isFirstLightning = false;
-
-	}
-	*/
-
-	if (isLightning) {
-		TWBAR_MGR->g_OptionHDR.g_fWhite += 0.01f;
-
-		if (TWBAR_MGR->g_OptionHDR.g_fWhite >= TWBAR_MGR->g_cfWhite)
-			isLightning = false;
-	}
-	
-	if (GetTickCount() - m_dwLastLightningTime> dwLightningPeriod) {	
-		m_dwLastLightningTime = GetTickCount();
-
-		TWBAR_MGR->g_OptionHDR.g_fWhite = 0.15f;
-		isLightning = true;
-	}
-	
 }
 
 void CMainScene::Update(float fDeltaTime)

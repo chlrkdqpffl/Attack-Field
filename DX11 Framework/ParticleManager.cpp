@@ -41,8 +41,8 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 		pParticle->CreateShader(pd3dDevice, wstrShaderName);
 
 		XMFLOAT3 offsetPos = vecMapData[count].m_Position;
-		offsetPos.y += 1.4f;
-		offsetPos.z -= 0.5f;
+		offsetPos.y += 1.1f;
+		offsetPos.z -= 0.7f;
 		pParticle->SetEmitPosition(offsetPos);
 
 		vecParticleSystemPool.push_back(pParticle);
@@ -58,7 +58,7 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 		pParticle->CreateShader(pd3dDevice, wstrShaderName);
 
 		XMFLOAT3 offsetPos = vecMapData[count].m_Position;
-		offsetPos.y += 2.8f;
+		offsetPos.y += 1.5f;
 		offsetPos.z -= 0.5f;
 		pParticle->SetEmitPosition(offsetPos);
 
