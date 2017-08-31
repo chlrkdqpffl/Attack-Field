@@ -91,7 +91,16 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 
 	// Mouse
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse))
+	{
 		m_pCharacter->SetIsFire(true);
+		CS_Fire packet;
+		packet.size = sizeof(packet);
+		packet.type = 10;
+		//packet.fire = true;
+		packet.FireDirection = m_pCharacter->GetFireDirection();
+		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+		//cout << "마우스 클릭!" << endl;
+	}
 	else
 		m_pCharacter->SetIsFire(false);
 
@@ -119,11 +128,16 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	packet.x = GetPosition().x;
 	packet.y = GetPosition().y;
 	packet.z = GetPosition().z;
-	packet.FireDirection = m_pCharacter->GetFireDirection();
+	
 
 	if ((m_wKeyState != 0) || count == 0)
 	{
-		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+		WORD temp = static_cast<int>(KeyInput::eLeftMouse);
+		if (m_wKeyState != temp)
+		{
+			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+			//cout << "여기타지나?" << endl;
+		}
 	}
 	count++;
 #endif
