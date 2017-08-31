@@ -235,10 +235,6 @@ void CServerManager::processpacket(char *ptr)
 		
 		bIsPartsCollisionCS = COLLISION_MGR->RayCastCollisionToCharacter_Parts(info, XMLoadFloat3(&my_collision->position), XMLoadFloat3(&my_collision->direction));
 
-//		COLLISION_MGR->CreateFireDirectionLine(XMLoadFloat3(&my_collision->position), XMLoadFloat3(&my_collision->direction), 200);
-//		cout << "Pos : "; ShowXMFloat3(my_collision->position);
-//		cout << "Dir : "; ShowXMFloat3(my_collision->direction);
-	
 		if (bIsPartsCollisionCS) {
 			CS_Head_Collison Collison;
 			Collison.Head = false;
@@ -251,14 +247,7 @@ void CServerManager::processpacket(char *ptr)
 
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&Collison));
 
-			/*
-			//여기서 추가해야함
-			DamagedInfo damagedInfo;
-			damagedInfo.m_bIsDamage = true;
-			damagedInfo.m_f3DamagedPosition = my_collision->position;
-			damagedInfo.m_f3DamagedDirection = my_collision->direction;
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[my_collision->id]->GetPlayer()->SetDamagedInfo(damagedInfo);
-			*/
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[my_collision->id]->GetPlayer()->SetDamagedInfo(DamagedInfo(true, my_collision->position, my_collision->direction));
 		}
 	}
 	break;
@@ -433,7 +422,14 @@ void CServerManager::processpacket(char *ptr)
 		
 		SCENE_MGR->g_pMainScene->SetOccupyTime(packet->Occupy_timer);
 		break;
-	
+	}
+	case 18:
+	{
+		SC_Damegedirection*   packet;
+		packet = reinterpret_cast<SC_Damegedirection *>(ptr);
+
+		SCENE_MGR->g_pPlayer->SetDamagedInfo(DamagedInfo(true, packet->position, packet->direction));
+		break;
 	}
 	
 	default:
@@ -488,12 +484,7 @@ void CServerManager::Server_init()
 {
 #ifdef USE_AUTOIP
 	char ip[20];
-	//config파일로 IP를 읽도록 변경했어!!
 	GetPrivateProfileStringA("Server", "IP", "127.0.0.1", ip, 20, "./Config.Ini");
-
-	//char ip[20] = "192.168.0.4";
-	//char ip[20] = "192.168.219.6";
-	//char ip[20] = "192.168.0.24";
 #else
 	char ip[20];		
 	cout << " ip 입력 : ";

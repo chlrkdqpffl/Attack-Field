@@ -8,6 +8,10 @@ struct DamagedInfo
 	bool			m_bIsDamage = false;
 	XMFLOAT3		m_f3DamagedPosition = XMFLOAT3(0, 0, 0);
 	XMFLOAT3		m_f3DamagedDirection = XMFLOAT3(0, 0, 0);
+
+	DamagedInfo() { m_bIsDamage = false; m_f3DamagedPosition = XMFLOAT3(0, 0, 0), m_f3DamagedDirection = XMFLOAT3(0, 0, 0); }
+	DamagedInfo(bool isDamage, XMFLOAT3 pos, XMFLOAT3 dir) { m_bIsDamage = isDamage, m_f3DamagedPosition = pos, m_f3DamagedDirection = dir; }
+	DamagedInfo(bool isDamage, XMVECTOR pos, XMVECTOR dir) { m_bIsDamage = isDamage, XMStoreFloat3(&m_f3DamagedPosition, pos), XMStoreFloat3(&m_f3DamagedDirection, dir); }
 };
 
 class CCharacterObject : public CSkinnedObject
