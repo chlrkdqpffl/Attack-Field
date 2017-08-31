@@ -115,6 +115,9 @@
     <Filter Include="HLSL\Particle">
       <UniqueIdentifier>{8f2ed613-93d3-4bc0-bb46-21ce10be5793}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\SpriteImage">
+      <UniqueIdentifier>{ad1505d7-3b82-4b95-84ff-7165426ea589}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -359,6 +362,18 @@
     </ClCompile>
     <ClCompile Include="ParticleManager.cpp">
       <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteImageManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteImageObject.cpp">
+      <Filter>Objects\SpriteImage</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteImageShader.cpp">
+      <Filter>Objects\SpriteImage</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteImageMesh.cpp">
+      <Filter>Objects\SpriteImage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -632,6 +647,18 @@
     <ClInclude Include="ParticleManager.h">
       <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteImageManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteImageObject.h">
+      <Filter>Objects\SpriteImage</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteImageMesh.h">
+      <Filter>Objects\SpriteImage</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteImageShader.h">
+      <Filter>Objects\SpriteImage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -750,6 +777,9 @@
     </None>
     <None Include="Shader HLSL File\CopiousBleeding.hlsli">
       <Filter>HLSL\Particle</Filter>
+    </None>
+    <None Include="Shader HLSL File\SpriteImage.hlsli">
+      <Filter>HLSL</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -76,7 +76,8 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	MAPDATA_MGR->InitializeManager();
 	RESOURCE_MGR->InitializeManager();
 	SOUND_MGR->InitializeManager();
-	
+	SPRITE_MGR->InitializeManager();
+
 	BuildObjects();
 	
 	return(true);
@@ -106,6 +107,7 @@ void CGameFramework::OnDestroy()
 	SOUND_MGR->ReleseInstance();
 	SERVER_MGR->ReleseInstance();
 	PARTICLE_MGR->ReleseInstance();
+	SPRITE_MGR->ReleseInstance();
 
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtDumpMemoryLeaks();

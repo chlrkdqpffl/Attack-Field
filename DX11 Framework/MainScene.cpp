@@ -5,23 +5,18 @@
 CMainScene::CMainScene()
 {
 	m_tagScene = SceneTag::eMainScene;
-	TWBAR_MGR->g_xmf3SelectObjectPosition = XMFLOAT3(0, 0, 0);
-	TWBAR_MGR->g_xmf3SelectObjectRotate = XMFLOAT3(40, 50, 30.0f);
+	//TWBAR_MGR->g_xmf3SelectObjectPosition = XMFLOAT3(0, 0, 0);
+	//TWBAR_MGR->g_xmf3SelectObjectRotate = XMFLOAT3(40, 50, 30.0f);
 
 	m_f3DirectionalColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	m_f3DirectionalDirection = XMFLOAT3(1.0f, -1.0f, 1.0f);
-//	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
-//	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-#ifdef DEVELOP_MODE
-	//m_f3DirectionalAmbientUpperColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
-#endif
+//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.5f, 0.5f, 0.0f);
 
-	TWBAR_MGR->g_xmf4TestVariable.x = 0.4f;
-	TWBAR_MGR->g_xmf4TestVariable.z = 3.0f;
+//	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(1.4f, 0.6f, 2.5f, 0.4f);
 }
 
 CMainScene::~CMainScene()
@@ -117,7 +112,14 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_F5:
+				TWBAR_MGR->g_OptionHDR.g_fWhite -= 0.1f;
+			//	TWBAR_MGR->g_xmf4TestVariable.x = 1.0f;
 				break;
+			case VK_F6:
+				TWBAR_MGR->g_OptionHDR.g_fWhite = 1.5f;
+			//	TWBAR_MGR->g_xmf4TestVariable.x = 0.0f;
+				break;
+			break;
 #ifndef USE_SERVER
 			case VK_Z:
 				// 임의로 죽어보기
@@ -410,12 +412,16 @@ void CMainScene::Initialize()
 
 #ifndef USE_SERVER
 	// ==== Test용 - 총 메쉬 오프셋 찾기용 ==== //
-	//CTerroristCharacterObject* pCharacter = new CTerroristCharacterObject(TeamType::eBlueTeam);
 	CCharacterObject* pCharacter = new CTerroristCharacterObject(TeamType::eBlueTeam);
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
-	//	17.08.21 병호 : 이걸 왜????
-	pCharacter->SetLife(100000);
+//	pCharacter->SetLife(100);
+
+#ifdef DEVELOP_MODE
+	pCharacter->SetLife(100000);	// 파티클 테스트용
+#else
+	pCharacter->SetLife(100);
+#endif
 	pCharacter->SetPosition(60.0f, 2.5f, 15.0f);
 
 	m_vecBBoxRenderContainer.push_back(pCharacter);
@@ -427,7 +433,7 @@ void CMainScene::Initialize()
 	PARTICLE_MGR->CreateParticleSystems(m_pd3dDevice);
 
 //	CreateMapDataObject();
-	CreateMapDataInstancingObject();
+	CreateMapDataInstancingObject();//	- 테스트용으로 잠시 맵  생성 제거
 //	CreateTestingObject();
 
 	CreateLights();
@@ -435,6 +441,8 @@ void CMainScene::Initialize()
 	CreateTweakBars();
 	CreateUIImage();
 
+	SOUND_MGR->PlayBgm(SoundTag::eBGM_Rain, 1.0f);
+	m_dwLastLightningTime = GetTickCount();
 	cout << "================================== Scene Loading Complete ===================================" << endl;
 	cout << "=============================================================================================" << endl << endl;
 }
@@ -1533,44 +1541,89 @@ void CMainScene::CreateTestingObject()
 	AddShaderObject(ShaderTag::eNormal, pObject);
 #pragma endregion
 	
-	// Not Instancing
-	/*
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pObject = new CGameObject();
-		pMesh = new CCubePatchMesh(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
-		
-		pObject->SetMaterial(2, TextureTag::eStoneD, TextureTag::eStoneND);
-		pObject->SetMesh(pMesh);
-		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation.x - 90, vecMapData[count].m_Rotation.y - 180, vecMapData[count].m_Rotation.z);
+#pragma region [Road]
+	// ==============================   Road   ============================== //
+	// Road1
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eRoad1).size());
 
-		pObject->CreateBoundingBox(m_pd3dDevice);
-		AddShaderObject(ShaderTag::eDisplacementMapping, pObject);
-	}
-	*/
-	
-	// Used Instancing
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall);
-	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall).size());
-	pMesh = new CCubePatchMesh(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
-	pInstancingShaders->SetMesh(pMesh);
-	pInstancingShaders->SetMaterial(2, TextureTag::eStoneD, TextureTag::eStoneND);
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eRoad);
+	pFbxMesh->Initialize(m_pd3dDevice);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(1, TextureTag::eRoad1D);
+
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
 
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eRoad1);
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pObject = new CGameObject();
-		pObject->SetMesh(pMesh);
+		pObject->SetMesh(pFbxMesh);
 		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation.x - 90, vecMapData[count].m_Rotation.y - 180, vecMapData[count].m_Rotation.z);
-		pObject->CreateBoundingBox(m_pd3dDevice, pMesh);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceDisplacementMapping, pObject);
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);
 		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
-	
+
+	// Road2
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eRoad2).size());
+
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eRoad);
+	pFbxMesh->Initialize(m_pd3dDevice);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(1, TextureTag::eRoad2D);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eRoad2);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCrossRoad);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eCrossRoad, vecMapData[count].m_Scale);
+		pFbxMesh->Initialize(m_pd3dDevice);
+
+		pObject->SetMaterial(1, TextureTag::eCrossRoadD);
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
+	}
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCenterRoad);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pObject = new CGameObject();
+		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eCenterRoad, vecMapData[count].m_Scale);
+		pFbxMesh->Initialize(m_pd3dDevice);
+
+		pObject->SetMaterial(1, TextureTag::eCenterRoadD);
+		pObject->SetMesh(pFbxMesh);
+		pObject->SetPosition(vecMapData[count].m_Position);
+		pObject->Rotate(vecMapData[count].m_Rotation);
+
+		pObject->CreateBoundingBox(m_pd3dDevice);
+
+		AddShaderObject(ShaderTag::eNormalTexture, pObject);
+	}
+#pragma endregion
+
+
 }
 
 void CMainScene::CreateTweakBars()
@@ -1638,7 +1691,6 @@ void CMainScene::CreateUIImage()
 	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.0f);
 	pUIObject->AddOpacity(-1.0f);
 	m_pUIManager->AddUIObject(pUIObject);
-	m_pDamageUI = pUIObject;
 
 	// Respawn Gage
 	pUIObject = new CUIObject(TextureTag::eRespawnGageBar);
@@ -1663,6 +1715,36 @@ void CMainScene::CreateUIImage()
 	pUIObject->SetActive(false);
 	m_pUIManager->AddUIObject(pUIObject);
 	
+	// ===== Damage Direction ===== //
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_Top);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 550, 120 }, POINT{ 1050, 320 }, 0.1f, true);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_Bottom);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 550, 650 }, POINT{ 1050, 850 }, 0.1f, true);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	/*
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_Left);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 - 350}, POINT{ FRAME_BUFFER_WIDTH / 2 + 300, FRAME_BUFFER_HEIGHT / 2 - 100 }, 0.1f, true);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_LeftTop);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 - 350 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 300, FRAME_BUFFER_HEIGHT / 2 - 100 }, 0.1f, true);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	
+
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_RightTop);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 - 350 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 300, FRAME_BUFFER_HEIGHT / 2 - 100 }, 0.1f, true);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_Right);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 - 350 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 300, FRAME_BUFFER_HEIGHT / 2 - 100 }, 0.1f, true);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	
+	*/
 }
 
 void CMainScene::ReleaseObjects()
@@ -1722,6 +1804,8 @@ void CMainScene::ReleaseConstantBuffers()
 
 void CMainScene::CreateLights()
 {
+	m_pLightManager->ClearLights();
+
 	vector<MapData> vecMapData;
 	XMFLOAT3 pos;
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
@@ -1729,12 +1813,10 @@ void CMainScene::CreateLights()
 	// Street Lamp
 	for (auto light : vecMapData) {
 		pos = light.m_Position;
-		//pos.y += TWBAR_MGR->g_xmf3SelectObjectPosition.y;
 		pos.y += 10.0f;
-		//m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), 40.0f, 60.0f, 50.0f, XMFLOAT3(1, 1, 1));
-		m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
+		m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), 45.0f, 50.0f, 30.0f, XMFLOAT3(1, 1, 1));
 	}
-
+	
 	// Player Light
 	{
 		pos = m_pPlayer->GetPosition();
@@ -1790,14 +1872,51 @@ void CMainScene::RenderUI()
 	ShowDeadlyAttackUI();
 	ShowDeadlyUI();
 	ShowDeathRespawnUI();
+	ShowDamageDirection();
 
-	// ------ UI ----- // 뎁스스텐실 뷰 오류로 인하여 미리 그려줌
+	// ------ UI ----- //
 	m_pUIManager->RenderAll(m_pd3dDeviceContext);
+	
+	CUIObject* pUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Top);
+	pUI->SetStartPos(POINT{ 550 + (LONG)TWBAR_MGR->g_xmf3SelectObjectRotate.x, 120 + (LONG)TWBAR_MGR->g_xmf3SelectObjectRotate.y });
+	pUI->SetEndPos(POINT{ 1050 + (LONG)TWBAR_MGR->g_xmf3SelectObjectRotate.x, 320 + (LONG)TWBAR_MGR->g_xmf3SelectObjectRotate.y });
+	
+	pUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Bottom);
+	pUI->SetStartPos(POINT{ 550 + (LONG)TWBAR_MGR->g_xmf3Rotate.x, 650 + (LONG)TWBAR_MGR->g_xmf3Rotate.y });
+	pUI->SetEndPos(POINT{ 1050 + (LONG)TWBAR_MGR->g_xmf3Rotate.x, 850 + (LONG)TWBAR_MGR->g_xmf3Rotate.y });
+}
+
+void CMainScene::ShowDamageDirection()
+{
+	if (!m_pPlayer->GetIsDamage())
+		return;
+
+	DamagedInfo info = m_pPlayer->GetDamageInfo();
+
+	XMVECTOR damagedDirection = XMLoadFloat3(&info.m_f3DamagedDirection);
+	
+	float dot = XMVectorGetX(XMVector3Dot(m_pPlayer->GetvLook(), damagedDirection));
+	if (dot < 0)
+		cout << "정면쪽에서 맞음" << endl;
+	else if (dot > 0)
+		cout << "뒤에서 맞음" << endl;
+	else
+		cout << "아예 90도??????????????" << endl;
+
+	CUIObject* pDamageDirectionUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Top);
+	
+	
+
+
+	//받은 방향과 현재 캐릭터 룩벡터를 내적한다.
+	// 내적의 결과가 둔각(양수인지 음수)일 때  정면에서 맞은 것
+	
+	//m_pPlayer->GetvLook()
+	
 }
 
 void CMainScene::ShowOccupyUI()
 {
-
 	CUIObject* pGageUI = m_pUIManager->GetUIObject(TextureTag::eOccupyGageBar);
 	CUIObject* pWhiteGageUI = m_pUIManager->GetUIObject(TextureTag::eOccupyGageWhiteBar);
 
@@ -1807,8 +1926,7 @@ void CMainScene::ShowOccupyUI()
 		return;
 	}
 
-
-	if (m_cOccupyteam != static_cast<int>(SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetTagTeam()))
+	if (m_cOccupyteam != static_cast<int>(SCENE_MGR->g_pPlayerCharacter->GetTagTeam()))
 	{
 		pGageUI->SetActive(true);
 		pWhiteGageUI->SetActive(true);
@@ -1830,7 +1948,7 @@ void CMainScene::ShowOccupyUI()
 			sc_occupy packet;
 			packet.size = sizeof(sc_occupy);
 			packet.type = 9;
-			packet.redteam = static_cast<int>(SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetTagTeam());
+			packet.redteam = static_cast<int>(SCENE_MGR->g_pPlayerCharacter->GetTagTeam());
 
 			//cout << packet.redteam << endl;
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
@@ -1853,7 +1971,9 @@ void CMainScene::ShowDeathRespawnUI()
 		return;
 	}
 
-	m_pDamageUI->AddOpacity(-1.0f);
+	CUIObject* pDamageUI = m_pUIManager->GetUIObject(TextureTag::eDamagedCharacterUI);
+
+	pDamageUI->AddOpacity(-1.0f);
 	pGageUI->SetActive(true);
 	pWhiteGageUI->SetActive(true);
 
@@ -1868,19 +1988,20 @@ void CMainScene::ShowDeadlyUI()
 	if (!m_pPlayer->GetIsDeadly())
 		return;
 
+	CUIObject* pDamageUI = m_pUIManager->GetUIObject(TextureTag::eDamagedCharacterUI);
 	static bool bIsReverse = false;
 	float opacityValue = 0.8f;
 
 	if (bIsReverse) {
-		m_pDamageUI->AddOpacity(-1 * opacityValue * m_fDeltaTime);
+		pDamageUI->AddOpacity(-1 * opacityValue * m_fDeltaTime);
 
-		if (m_pDamageUI->GetOpacity() <= 0.0f)
+		if (pDamageUI->GetOpacity() <= 0.0f)
 			bIsReverse = false;
 	}
 	else {
-		m_pDamageUI->AddOpacity(opacityValue * m_fDeltaTime);
+		pDamageUI->AddOpacity(opacityValue * m_fDeltaTime);
 
-		if (m_pDamageUI->GetOpacity() >= 1.0f)
+		if (pDamageUI->GetOpacity() >= 1.0f)
 			bIsReverse = true;
 	}
 }
@@ -1890,30 +2011,101 @@ void CMainScene::ShowDeadlyAttackUI()
 	if (!m_pPlayer->GetIsDeadlyAttack())
 		return;
 
+	CUIObject* pDamageUI = m_pUIManager->GetUIObject(TextureTag::eDamagedCharacterUI);
 	static bool bIsDeadlyAttack = true;
 	float opacityValue = 0.8f;
 
 	if (bIsDeadlyAttack) {
-		m_pDamageUI->AddOpacity(1.0f);
+		pDamageUI->AddOpacity(1.0f);
 		bIsDeadlyAttack = false;
 	}
 	
-	m_pDamageUI->AddOpacity(-1 * opacityValue * m_fDeltaTime);
+	pDamageUI->AddOpacity(-1 * opacityValue * m_fDeltaTime);
 	
-	if (m_pDamageUI->GetOpacity() <= 0.0f) {
+	if (pDamageUI->GetOpacity() <= 0.0f) {
 		bIsDeadlyAttack = true;
 		m_pPlayer->SetIsDeadlyAttack(false);
+	}
+}
+
+void CMainScene::Update_Lightning(float fDeltaTime)
+{
+	static bool isFirstLightning = false;
+	static bool isLightning = false;
+	static bool isFirstThunderSound = false;
+	static bool isThunderSound = false;
+	static UINT nSoundCount = 0;
+	static DWORD dwFirstLightningTime = 0;
+	static const DWORD dwLightningPeriod = 20000;
+	//static const DWORD dwLightningPeriod = 5000;
+
+	if (GetTickCount() - m_dwLastLightningTime > dwLightningPeriod - 4000) {
+		// 최초 번개 시작시 잠깐 밝아짐
+		if (false == isFirstLightning) {
+			isFirstLightning = true;
+			TWBAR_MGR->g_OptionHDR.g_fWhite = 0.3f;
+			dwFirstLightningTime = GetTickCount();
+		}
+		else {
+			if (false == isLightning) {
+				// 0.5초 뒤 소리
+				if (false == isFirstThunderSound) {
+					if (GetTickCount() - dwFirstLightningTime > 500) {
+						if(nSoundCount % 2 == 0)
+							SOUND_MGR->Play2DSound(SoundTag::eThunderStrike2, 1.0f);
+						else
+							SOUND_MGR->Play2DSound(SoundTag::eThunderStrike3, 1.0f);
+						isFirstThunderSound = true;
+					}
+				}
+				// 1초 뒤 번개
+				if (GetTickCount() - dwFirstLightningTime > 1000) {
+					isLightning = true;
+					TWBAR_MGR->g_OptionHDR.g_fWhite = 0.15f;
+				}
+			}
+		}
+		// 1.5초 뒤 소리
+		if (false == isThunderSound) {
+			if (GetTickCount() - dwFirstLightningTime > 1500) {
+				if (nSoundCount % 2 == 0)
+					SOUND_MGR->Play2DSound(SoundTag::eThunderStrike, 1.0f);
+				else
+					SOUND_MGR->Play2DSound(SoundTag::eThunderStrike4, 1.0f);
+				isThunderSound = true;
+			}
+		}
+
+		// 번개치고 밝아짐 계산
+		if (TWBAR_MGR->g_OptionHDR.g_fWhite < TWBAR_MGR->g_cfWhite) {
+			if (isFirstLightning && (isLightning == false))
+				TWBAR_MGR->g_OptionHDR.g_fWhite += 1.5f * fDeltaTime;
+
+			TWBAR_MGR->g_OptionHDR.g_fWhite += 0.5f * fDeltaTime;
+		}
+
+		// 초기화
+		if (GetTickCount() - m_dwLastLightningTime > dwLightningPeriod) {
+			m_dwLastLightningTime = GetTickCount();
+			isFirstLightning = false;
+			isLightning = false;
+			isThunderSound = false;
+			isFirstThunderSound = false;
+			nSoundCount++;
+		}
 	}
 }
 
 void CMainScene::Update(float fDeltaTime)
 {
 	// 충돌 정보 갱신
-//	COLLISION_MGR->InitCollisionInfo();	// 현재 플레이어만 적용되고있어서 주석처리함
+	COLLISION_MGR->InitCollisionInfo();	// 현재 플레이어만 적용되고있어서 주석처리함
 //	COLLISION_MGR->UpdateManager();
 
+	// ====== Update ===== //
 	GLOBAL_MGR->UpdateManager();
 	UpdateConstantBuffers();
+	Update_Lightning(fDeltaTime);
 
 	// ====== Object ===== //
 	CScene::Update(fDeltaTime);
@@ -1945,7 +2137,6 @@ void CMainScene::Update(float fDeltaTime)
 	m_pLightManager->SetAmbient(m_f3DirectionalAmbientLowerColor, m_f3DirectionalAmbientUpperColor);
 	m_pLightManager->SetDirectional(m_f3DirectionalDirection, m_f3DirectionalColor);
 
-	m_pLightManager->ClearLights();
 	CreateLights();
 }
 

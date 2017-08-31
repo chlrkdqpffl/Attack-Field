@@ -70,8 +70,7 @@ void CSoundManager::LoadAllSound()
 
 void CSoundManager::LoadBGMSound()
 {
-//	g_pSystem->createStream("../Assets/Sound/BGM/Audiomachine.mp3",			FMOD_LOOP_NORMAL, 0, &g_pSound[static_cast<int>(SoundTag::eBGM_TitleScene)]);	
-	g_pSystem->createStream("../Assets/Sound/BGM/normalmode.mp3",			FMOD_LOOP_NORMAL, 0, &g_pSound[static_cast<int>(SoundTag::eBGM_TitleScene)]);	
+	g_pSystem->createStream("../Assets/Sound/BGM/Rain.mp3",				FMOD_LOOP_NORMAL, 0, &g_pSound[static_cast<int>(SoundTag::eBGM_Rain)]);
 }
  
 void CSoundManager::LoadEffectSound()
@@ -82,6 +81,10 @@ void CSoundManager::LoadEffectSound()
 	g_pSystem->createSound("../Assets/Sound/Effect/Run.mp3",			FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eRun)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Death.mp3",			FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eDeath)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/ShellsFall.mp3",		FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eShellsFall)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike2.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike2)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike3.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike3)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike4.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike4)]);
 }
 
 void CSoundManager::Update(float fTimeDelta)

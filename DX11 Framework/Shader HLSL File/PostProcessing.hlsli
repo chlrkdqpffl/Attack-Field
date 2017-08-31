@@ -33,9 +33,8 @@ float4 PSPostProcessing(VS_OUTPUT input) : SV_Target
     SURFACE_DATA GBufferData = UnpackGBuffer_Loc(input.Position.xy);
 
     float3 position = CalcWorldPos(input.texCoord, GBufferData.LinearDepth);
-
     float4 cIllumination = Lighting(position, GBufferData.Normal * 2 - 1);
-    
+
     //return float4((GBufferData.Color), 1) * cIllumination;
     return float4((GBufferData.Color), 1);
 } 

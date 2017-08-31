@@ -71,22 +71,12 @@ void CResourceManager::LoadResourceTitleScene()
 
 bool CResourceManager::LoadResourceAll()
 {	
-	cout << endl << " ----- Character Data -----" << endl;
 	LoadCharacterData();
-
-	cout << endl << " ----- Map Data -----" << endl;
 	LoadMapData();
-	
-	cout << endl << " ----- Environment Data -----" << endl;
 //	LoadEnvironmentData();
-	
-	cout << endl << " ----- UI Data -----" << endl;
+	LoadSpriteData();
 	LoadUIData();
-
-	cout << endl << " ----- Particle Texture Data -----" << endl;
 	PARTICLE_MGR->InitializeManager();
-	
-	cout << endl << " ----- Etc Data -----" << endl;
 	LoadEtcData();
 
 	cout << endl;
@@ -98,6 +88,8 @@ bool CResourceManager::LoadResourceAll()
 
 void CResourceManager::LoadEnvironmentData()
 {
+	cout << endl << " ----- Environment Data -----" << endl;
+
 	// Environment
 	AddResourece(TextureTag::eTerrainD,				"../Assets/Image/Terrain/Base_Texture.jpg");
 	AddResourece(TextureTag::eTerrainDetailD,		"../Assets/Image/Terrain/Detail_Texture_7.jpg");
@@ -115,6 +107,8 @@ void CResourceManager::LoadEnvironmentData()
 
 void CResourceManager::LoadUIData()
 {
+	cout << endl << " ----- UI Data -----" << endl;
+
 	AddResourece(TextureTag::eAim,				"../Assets/Image/UI/AimUI.png");
 	AddResourece(TextureTag::eCaptureArea,		"../Assets/Image/UI/CaptureArea.png");
 	AddResourece(TextureTag::eScoreUI,			"../Assets/Image/UI/ScoreUI.png");
@@ -127,12 +121,26 @@ void CResourceManager::LoadUIData()
 	AddResourece(TextureTag::eOccupyGageBar,	"../Assets/Image/UI/RespawnGage.png");	// 현재는 동일한 텍스쳐 사용중
 	AddResourece(TextureTag::eOccupyGageWhiteBar, "../Assets/Image/UI/RespawnGage(White).png");
 
-//	AddResourece(TextureTag::eDamagedParts,		"../Assets/Image/UI/DamagedParts.png");
-	
+	// Damage Direction
+	AddResourece(TextureTag::eDamageDirection_Left,		"../Assets/Image/UI/DamageDirection/DamageDir_Left.png");
+	AddResourece(TextureTag::eDamageDirection_LeftTop,	"../Assets/Image/UI/DamageDirection/DamageDir_LeftTop.png");
+	AddResourece(TextureTag::eDamageDirection_Top,		"../Assets/Image/UI/DamageDirection/DamageDir_Top.png");
+	AddResourece(TextureTag::eDamageDirection_RightTop, "../Assets/Image/UI/DamageDirection/DamageDir_RightTop.png");
+	AddResourece(TextureTag::eDamageDirection_Right,	"../Assets/Image/UI/DamageDirection/DamageDir_Right.png");
+	AddResourece(TextureTag::eDamageDirection_Bottom,	"../Assets/Image/UI/DamageDirection/DamageDir_Bottom.png");
+}
+
+void CResourceManager::LoadSpriteData()
+{
+	cout << endl << " ----- Sprite Image Data -----" << endl;
+
+	AddResourece(TextureTag::eFireEffect,		"../Assets/Image/Sprite/smash_effect_sprite2.png");
 }
 
 void CResourceManager::LoadMapData()
 {
+	cout << endl << " ----- Map Data -----" << endl;
+
 	// ============== Building ============== //
 	AddResourece(TextureTag::eBuilding19D,		"../Assets/FBX Model/Building/Building19/19buildingD.jpg");
 	AddResourece(TextureTag::eBuilding20D,		"../Assets/FBX Model/Building/Building20/20buildingD.jpg");
@@ -216,28 +224,29 @@ void CResourceManager::LoadMapData()
 
 void CResourceManager::LoadCharacterData()
 {
+	cout << endl << " ----- Character Data -----" << endl;
+
 //	AddResourece(TextureTag::eTerroristD,		"../Assets/FBX Model/Character/Terrorist/TerrorristD.dds");
 	AddResourece(TextureTag::eTerroristD_Red,	"../Assets/FBX Model/Character/Terrorist/TerrorristD_R.jpg");
 	AddResourece(TextureTag::eTerroristD_Blue,	"../Assets/FBX Model/Character/Terrorist/TerrorristD_B.jpg");
 //	AddResourece(TextureTag::eTerroristD,		"../Assets/FBX Model/Character/Terrorist/test.jpg");
 	AddResourece(TextureTag::eTerroristND,		"../Assets/FBX Model/Character/Terrorist/TerrorristNM_D.dds.dds");
 
-//	AddResourece(TextureTag::ePoliceD,			"../Assets/FBX Model/Character/Police/AllTex.PNG");
-
-	AddResourece(TextureTag::eRifleD,			"../Assets/FBX Model/Weapon/Rifle/rifle.bmp");
-	AddResourece(TextureTag::eRifleN,			"../Assets/FBX Model/Weapon/Rifle/RifleNM.png");
-
-
 	AddResourece(MeshTag::eTerrorist,			"../Assets/FBX Model/Character/Terrorist/Terrorist.model");
 	AddResourece(MeshTag::eTerrorist_Arm,		"../Assets/FBX Model/Character/Terrorist/Terrorist(Arm).model");
 
+//	AddResourece(TextureTag::ePoliceD,			"../Assets/FBX Model/Character/Police/AllTex.PNG");
 
+	// Rifle
+	AddResourece(TextureTag::eRifleD,			"../Assets/FBX Model/Weapon/Rifle/rifle.bmp");
+	AddResourece(TextureTag::eRifleN,			"../Assets/FBX Model/Weapon/Rifle/RifleNM.png");
 	AddResourece(MeshTag::eRifle,				"../Assets/FBX Model/Weapon/Rifle/rifle.model");
-
 }
 
 void CResourceManager::LoadEtcData()
 {
+	cout << endl << " ----- Etc Data -----" << endl;
+
 	AddResourece(TextureTag::eStoneD,		"../Assets/Image/Miscellaneous/StonesD.dds");
 	AddResourece(TextureTag::eStoneND,		"../Assets/Image/Miscellaneous/StoneND.dds");
 	

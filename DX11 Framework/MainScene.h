@@ -37,16 +37,19 @@ public:
 	void ModifiedSelectObject();
 	void AddShaderObject(ShaderTag tag, CGameObject* pObject);
 
+	void Update_Lightning(float fDeltaTime);
 	void RenderBoundingBox();
 	void CalcTime();
 
 	// UI
 	void PrepareRenderUI();
 	void RenderUI();
+	void ShowDamageDirection();
 	void ShowDeathRespawnUI();
 	void ShowOccupyUI();
 	void ShowDeadlyUI();
 	void ShowDeadlyAttackUI();
+
 
 	vector<CCharacterObject*> &GetCharcontainer() { return m_vecCharacterContainer; }
 	vector<CGameObject*>	&GetBbBoxcontainer()	{return m_vecBBoxRenderContainer; }
@@ -87,14 +90,10 @@ private:
 
 	// ----- Game System ----- //
 	DWORD							m_dwTime = 0;
+	DWORD							m_dwLastLightningTime = 0;
 	UINT							m_nGameTime = 0;
-	int							m_OccupyTime = 0;
+	int								m_OccupyTime = 0;
 	UINT							m_nRedTeamTotalKill = 0;
 	UINT							m_nBlueTeamTotalKill = 0;
-	BYTE							m_cOccupyteam = 0; //어떤팀이 점령했는지 알아야 한다.
-
-
-
-	// UI
-	CUIObject*						m_pDamageUI = nullptr;
+	BYTE							m_cOccupyteam = 0;			//어떤팀이 점령했는지 알아야 한다.
 };

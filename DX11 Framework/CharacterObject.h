@@ -3,6 +3,13 @@
 #include "Weapon.h"
 #include "StateMachine.h"
 
+struct DamagedInfo
+{
+	bool			m_bIsDamage = false;
+	XMFLOAT3		m_f3DamagedPosition = XMFLOAT3(0, 0, 0);
+	XMFLOAT3		m_f3DamagedDirection = XMFLOAT3(0, 0, 0);
+};
+
 class CCharacterObject : public CSkinnedObject
 {
 public:
@@ -30,7 +37,6 @@ protected:
 	bool				m_bIsJump = false;
 	bool				m_bIsReload = false;
 	bool				m_bIsRun = false;
-//	bool				m_bIsDeath = false;
 	bool				m_bIsOccupy = false;
 	bool				m_bIsDeathHead = false;
 	bool				m_bIsHeadHit = false;

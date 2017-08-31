@@ -9,6 +9,9 @@ public:
 //	vector<CGameObject*>				m_vecDynamicMeshContainer;
 	vector<CCharacterObject*>			m_vecCharacterContainer;
 
+private:
+	DWORD								m_dwInitCollisionInfoTime = 0;
+
 public:
 	CCollisionManager();
 	virtual ~CCollisionManager();

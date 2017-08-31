@@ -68,8 +68,7 @@ enum class ParticleTag
 	// ======================================= // 
 	MaxPostProcessingParticle = 100,
 	// ======================================= // 
-
-	eRain, 
+	eRain,
 	eSpark, eFireSpark,
 	eBleeding, eCopiousBleeding,
 };
@@ -170,7 +169,7 @@ enum class TextureTag
 	// UI
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
 	eCaptureArea, eAim, eMagazineUI, eLifeUI, eScoreUI, eDamagedCharacterUI, eRespawnGageBar, eRespawnGageWhiteBar, eOccupyGageBar, eOccupyGageWhiteBar,
-//	eDamagedParts,
+	eDamageDirection_Left, eDamageDirection_LeftTop, eDamageDirection_Top, eDamageDirection_RightTop, eDamageDirection_Right, eDamageDirection_Bottom,
 
 	// Etc
 	eBarricadeD, eStoneWallD, eStoneWallN,
@@ -185,6 +184,9 @@ enum class TextureTag
 	// Particle
 	eFire, eRain, eSpark,
 	eBlood1, eBlood2, eBlood3,
+
+	// Sprite
+	eFireEffect,
 
 	//Search
 	eSearch1, eSearch2, eSearch3, eSearch4, eSearch5, eSearch6, eSearch7, eSearch8, eSearch9, eSearch10, eSearch11, eSearch12, eSearch13,
@@ -265,10 +267,11 @@ enum class SoundTag
 	eNone = -1,
 
 	// BGM
-	eBGM_TitleScene,
+	eBGM_Rain,
 
 	// Effect
 	eFire, eReload, eWalk, eRun, eDeath, eShellsFall,
+	eThunderStrike, eThunderStrike2, eThunderStrike3, eThunderStrike4,
 
 	SoundCount
 };

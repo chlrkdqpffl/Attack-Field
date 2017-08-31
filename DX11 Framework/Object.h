@@ -37,9 +37,6 @@ protected:
 	bool							m_bIsVisible = true;
 
 	vector<CMesh*>					m_vecMeshContainer;
-//	CMesh							**m_ppMeshes = nullptr;
-//	int								m_nMeshes = 0;
-
 	CMaterial						*m_pMaterial = nullptr;
 	CShader							*m_pShader = nullptr;
 	CAxisObjects					*m_pAxisObject = nullptr;

@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "AntTweakBarManager.h"
 
+const float CAntTweakBarManager::g_cfWhite = 1.5f;
+
 CAntTweakBarManager::CAntTweakBarManager()
 {
 }
-
 
 CAntTweakBarManager::~CAntTweakBarManager()
 {
@@ -111,7 +112,7 @@ void CAntTweakBarManager::CreateHDROption()
 	TwDefine("TweakBar/HDR opened = false ");
 
 	g_OptionHDR.g_fMiddleGrey = 2.0f;
-	g_OptionHDR.g_fWhite = 1.5f;
+	g_OptionHDR.g_fWhite = g_cfWhite;
 	g_OptionHDR.g_fAdaptation = 2.0f;
 	g_OptionHDR.g_fBloomThreshold = 1.0f;
 	g_OptionHDR.g_fBloomScale = 1.0f;

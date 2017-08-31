@@ -84,7 +84,7 @@ float4 DirLightPS(VS_OUTPUT input) : SV_TARGET
 //    float3 finalColor = CalcAmbient(mat.normal, mat.diffuseColor.rgb); - 버그로 인하여 주석 처리
 
 	// Calculate the directional light
-    //float3 finalColor = float3(g_f4Var.x, g_f4Var.x, g_f4Var.x);
+ //   float3 finalColor = float3(g_f4Var.x, g_f4Var.x, g_f4Var.x);
     float3 finalColor = float3(0.15f, 0.15f, 0.15f);
     finalColor += CalcDirectional(position, mat);
 
