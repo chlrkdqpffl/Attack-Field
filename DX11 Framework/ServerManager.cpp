@@ -45,10 +45,10 @@ void CServerManager::processpacket(char *ptr)
 			else 
 				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(false);
 
-			if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eLeftMouse))
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(true);
-			else
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(false);
+			//if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eLeftMouse))
+			//	SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(true);
+			//else
+			//	SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(false);
 
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(false);
 		}
