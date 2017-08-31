@@ -291,6 +291,14 @@ struct SC_Occupy_Timer
 
 };
 
+struct CS_Fire
+{
+	BYTE size;
+	BYTE type;
+
+	XMFLOAT3 FireDirection;
+};
+
 
 
 #pragma pack(pop)
