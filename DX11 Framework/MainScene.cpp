@@ -111,8 +111,11 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
-			case VK_F5:
-				m_vecCharacterContainer.back()->Firing();
+			case VK_F5:	
+			{
+				CUIObject* pDamageDirection_TopUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Top);
+				pDamageDirection_TopUI->AddOpacity(1.0);
+			}
 				break;
 			break;
 #ifndef USE_SERVER
@@ -428,8 +431,8 @@ void CMainScene::Initialize()
 	PARTICLE_MGR->CreateParticleSystems(m_pd3dDevice);
 
 //	CreateMapDataObject();
-	CreateMapDataInstancingObject();//	- 테스트용으로 잠시 맵  생성 제거
-//	CreateTestingObject();
+//	CreateMapDataInstancingObject();		//	- 테스트용으로 잠시 맵  생성 제거
+	CreateTestingObject();
 
 	CreateLights();
 	CreateConstantBuffers();
@@ -1712,34 +1715,34 @@ void CMainScene::CreateUIImage()
 	
 	// ===== Damage Direction ===== //
 	pUIObject = new CUIObject(TextureTag::eDamageDirection_Top);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ 550, 120 }, POINT{ 1050, 320 }, 0.1f, true);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 650, 180 }, POINT{ 950, 280 }, 0.1f);
+	pUIObject->AddOpacity(-1.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 
 	pUIObject = new CUIObject(TextureTag::eDamageDirection_Bottom);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ 550, 650 }, POINT{ 1050, 850 }, 0.1f, true);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 650, 580 }, POINT{ 950, 680 }, 0.1f);
+	pUIObject->AddOpacity(-1.0f);
 	m_pUIManager->AddUIObject(pUIObject);
-
-	/*
-	pUIObject = new CUIObject(TextureTag::eDamageDirection_Left);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 - 350}, POINT{ FRAME_BUFFER_WIDTH / 2 + 300, FRAME_BUFFER_HEIGHT / 2 - 100 }, 0.1f, true);
-	m_pUIManager->AddUIObject(pUIObject);
-
-	pUIObject = new CUIObject(TextureTag::eDamageDirection_LeftTop);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 - 350 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 300, FRAME_BUFFER_HEIGHT / 2 - 100 }, 0.1f, true);
-	m_pUIManager->AddUIObject(pUIObject);
-
 	
-
-	pUIObject = new CUIObject(TextureTag::eDamageDirection_RightTop);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 - 350 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 300, FRAME_BUFFER_HEIGHT / 2 - 100 }, 0.1f, true);
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_Left);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 555, 280 }, POINT{ 655, 580 }, 0.1f);
+	pUIObject->AddOpacity(-1.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 
 	pUIObject = new CUIObject(TextureTag::eDamageDirection_Right);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 300, FRAME_BUFFER_HEIGHT / 2 - 350 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 300, FRAME_BUFFER_HEIGHT / 2 - 100 }, 0.1f, true);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 945, 280 }, POINT{ 1045, 580 }, 0.1f);
+	pUIObject->AddOpacity(-1.0f);
+	m_pUIManager->AddUIObject(pUIObject);
+	
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_LeftTop);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 515, 135 }, POINT{ 815, 435 }, 0.1f);
+	pUIObject->AddOpacity(-1.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 
-	
-	*/
+	pUIObject = new CUIObject(TextureTag::eDamageDirection_RightTop);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 785, 135 }, POINT{ 1085, 435 }, 0.1f);
+	pUIObject->AddOpacity(-1.0f);
+	m_pUIManager->AddUIObject(pUIObject);
 }
 
 void CMainScene::ReleaseObjects()
@@ -1867,83 +1870,72 @@ void CMainScene::RenderUI()
 	ShowDeadlyAttackUI();
 	ShowDeadlyUI();
 	ShowDeathRespawnUI();
-//	ShowDamageDirection();
+	ShowDamageDirection();
 
 	// ------ UI ----- //
 	m_pUIManager->RenderAll(m_pd3dDeviceContext);
-	
-	CUIObject* pUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Top);
-	pUI->SetStartPos(POINT{ 550 + (LONG)TWBAR_MGR->g_xmf3SelectObjectRotate.x, 120 + (LONG)TWBAR_MGR->g_xmf3SelectObjectRotate.y });
-	pUI->SetEndPos(POINT{ 1050 + (LONG)TWBAR_MGR->g_xmf3SelectObjectRotate.x, 320 + (LONG)TWBAR_MGR->g_xmf3SelectObjectRotate.y });
-	
-	pUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Bottom);
-	pUI->SetStartPos(POINT{ 550 + (LONG)TWBAR_MGR->g_xmf3Rotate.x, 650 + (LONG)TWBAR_MGR->g_xmf3Rotate.y });
-	pUI->SetEndPos(POINT{ 1050 + (LONG)TWBAR_MGR->g_xmf3Rotate.x, 850 + (LONG)TWBAR_MGR->g_xmf3Rotate.y });
 }
 
 void CMainScene::ShowDamageDirection()
 {
+	CUIObject* pDamageDirection_TopUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Top);
+	CUIObject* pDamageDirection_LeftUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Left);
+	CUIObject* pDamageDirection_LeftTopUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_LeftTop);
+	CUIObject* pDamageDirection_RightUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Right);
+	CUIObject* pDamageDirection_RightTopUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_RightTop);
+	CUIObject* pDamageDirection_BottomUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Bottom);
+
+	float fAddOpacity = -0.3f;
+	pDamageDirection_TopUI->AddOpacity(fAddOpacity * m_fDeltaTime);
+	pDamageDirection_LeftUI->AddOpacity(fAddOpacity * m_fDeltaTime);
+	pDamageDirection_LeftTopUI->AddOpacity(fAddOpacity* m_fDeltaTime);
+	pDamageDirection_RightUI->AddOpacity(fAddOpacity* m_fDeltaTime);
+	pDamageDirection_RightTopUI->AddOpacity(fAddOpacity * m_fDeltaTime);
+	pDamageDirection_BottomUI->AddOpacity(fAddOpacity * m_fDeltaTime);
+
+	CalcDamagedDirection();
+}
+
+void CMainScene::CalcDamagedDirection()
+{
 	if (!m_pPlayer->GetIsDamage())
 		return;
 
-	DamagedInfo info = m_pPlayer->GetDamageInfo();
-//	info.m_f3DamagedPosition = XMFLOAT3(60.0286, 3.49304, 15.6136);
-//	info.m_f3DamagedDirection = XMFLOAT3(0, 0, 1);
+	XMFLOAT3 damagedPosition = m_pPlayer->GetDamageInfo().m_f3DamagedPosition;
+	//XMVECTOR damagedPosition = XMVectorSet(60.0f, 2.5f, 15.0f, 0.0f);
+	XMVECTOR damagedDirection = m_pPlayer->GetvPosition() - XMLoadFloat3(&damagedPosition);
+	damagedDirection = XMVector3Normalize(damagedDirection);
 
-	XMVECTOR damagedDirection = XMLoadFloat3(&info.m_f3DamagedDirection);
-	
 	float fDot = XMVectorGetX(XMVector3Dot(m_pPlayer->GetvLook(), damagedDirection));
 	float fDegree = XMConvertToDegrees(acosf(fDot));
 	XMVECTOR vCross = XMVector3Cross(m_pPlayer->GetvLook(), damagedDirection);
 
-	/*
-	// 테스트용으로 일단 만들어 놓기
-	CUIObject* pDamageDirection_TopUI		= m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Top);
-	CUIObject* pDamageDirection_LeftUI		= m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Left);
-	CUIObject* pDamageDirection_LeftTopUI	= m_pUIManager->GetUIObject(TextureTag::eDamageDirection_LeftTop);
-	CUIObject* pDamageDirection_RightUI		= m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Right);
-	CUIObject* pDamageDirection_RightTopUI	= m_pUIManager->GetUIObject(TextureTag::eDamageDirection_RightTop);
-	CUIObject* pDamageDirection_BottomUI	= m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Bottom);
+	CUIObject* pDamageDirection_TopUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Top);
+	CUIObject* pDamageDirection_LeftUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Left);
+	CUIObject* pDamageDirection_LeftTopUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_LeftTop);
+	CUIObject* pDamageDirection_RightUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Right);
+	CUIObject* pDamageDirection_RightTopUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_RightTop);
+	CUIObject* pDamageDirection_BottomUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Bottom);
 
-	pDamageDirection_TopUI->SetActive(false);
-	pDamageDirection_LeftUI->SetActive(false);
-	pDamageDirection_LeftTopUI->SetActive(false);
-	pDamageDirection_RightUI->SetActive(false);
-	pDamageDirection_RightTopUI->SetActive(false);
-	*/
-
-
-		/*
-									pDamageDirection_BottomUI	XMVectorGetY(vCross) 값이 양수이면 왼쪽 위
-		음수이면 오른쪽 위
-	
 	// 정면 각도 +- 30도
-	if (165 <= fDegree && fDegree <= 180) {
-		정면
+	if (165 <= fDegree && fDegree < 180) {
+		pDamageDirection_TopUI->AddOpacity(1.0f);
 	}
-	else if (100 < x < 165) {
-		RightTop
+	else if (100 <= fDegree && fDegree < 165) {
+		if(XMVectorGetY(vCross) < 0)
+			pDamageDirection_RightTopUI->AddOpacity(1.0f);
+		else
+			pDamageDirection_LeftTopUI->AddOpacity(1.0f);
 	}
-	else if (80 < x < 100) {
-		Right
-
+	else if (80 <= fDegree && fDegree < 100) {
+		if (XMVectorGetY(vCross) < 0)
+			pDamageDirection_RightUI->AddOpacity(1.0f);
+		else
+			pDamageDirection_LeftUI->AddOpacity(1.0f);
 	}
 	else {
-		Back
+		pDamageDirection_BottomUI->AddOpacity(1.0f);
 	}
-	
-	cout << "각도는 : " <<  << endl;
-	*/
-	CUIObject* pDamageDirectionUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Top);
-	
-	
-
-
-	//받은 방향과 현재 캐릭터 룩벡터를 내적한다.
-	// 내적의 결과가 둔각(양수인지 음수)일 때  정면에서 맞은 것
-	
-	//m_pPlayer->GetvLook()
-	
 }
 
 void CMainScene::ShowOccupyUI()

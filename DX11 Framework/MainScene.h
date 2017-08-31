@@ -49,6 +49,7 @@ public:
 	void ShowOccupyUI();
 	void ShowDeadlyUI();
 	void ShowDeadlyAttackUI();
+	void CalcDamagedDirection();
 
 
 	vector<CCharacterObject*> &GetCharcontainer() { return m_vecCharacterContainer; }

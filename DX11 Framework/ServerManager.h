@@ -22,12 +22,11 @@ class CServerManager : public CSingletonManager<CServerManager>
 
 	int					m_myid = 0;
 public:
-	CServerManager();
-	virtual ~CServerManager();
+	CServerManager() {};
+	virtual ~CServerManager() {};
 	
-	virtual void InitializeManager() override;
-	virtual void ReleseManager() override;
-
+	virtual void InitializeManager() {}
+	virtual void ReleseManager() {}
 
 	void sethandle(HWND handle) { m_handle = handle; }
 	void Server_init();

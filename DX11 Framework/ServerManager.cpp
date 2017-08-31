@@ -2,24 +2,6 @@
 #include "protocol.h"
 #include "ServerManager.h"
 
-
-CServerManager::CServerManager()
-{
-}
-
-CServerManager::~CServerManager()
-{
-
-}
-
-void CServerManager::InitializeManager()
-{
-}
-
-void CServerManager::ReleseManager()
-{
-}
-
 void CServerManager::processpacket(char *ptr)
 {
 	static bool first_time = true;
@@ -74,12 +56,11 @@ void CServerManager::processpacket(char *ptr)
 	break;
 	case 2:   //처음 받았을때.
 	{
-		static int a = 1;
 		sc_packet_put_player*   my_put_packet;
 		my_put_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
 		id = my_put_packet->id;
 
-		cout << a << endl;
+		
 
 		if (first_time)
 		{
@@ -139,8 +120,8 @@ void CServerManager::processpacket(char *ptr)
 		SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(my_put_packet->RED));
 		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(my_put_packet->Blue));
 
-	a++;
 	}
+
 
 
 	break;
@@ -242,15 +223,13 @@ void CServerManager::processpacket(char *ptr)
 			Collison.type = CS_HEAD_HIT;
 			Collison.size = sizeof(CS_Head_Collison);
 			Collison.id = my_collision->id;
-			Collison.direction = my_collision->direction;
 			Collison.position = my_collision->position;
+			Collison.direction = my_collision->direction;
 
 			if (info.m_HitParts == ChracterBoundingBoxParts::eHead)
 				Collison.Head = true;
 
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&Collison));
-
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[my_collision->id]->GetPlayer()->SetDamagedInfo(DamagedInfo(true, my_collision->position, my_collision->direction));
 		}
 	}
 	break;
@@ -428,13 +407,16 @@ void CServerManager::processpacket(char *ptr)
 	}
 	case 18:
 	{
-		SC_Damegedirection*   packet;
+		SC_Damegedirection* packet;
 		packet = reinterpret_cast<SC_Damegedirection *>(ptr);
 
-		SCENE_MGR->g_pPlayer->SetDamagedInfo(DamagedInfo(true, packet->position, packet->direction));
+		SCENE_MGR->g_pPlayer->SetDamagedInfo(DamagedInfo(true, packet->position));
+
+		cout << "상대방이 쏜 방향 정보" << endl;
+		ShowXMFloat3(packet->position);
+		cout << endl;
 		break;
 	}
-	
 	default:
 		std::cout << "Unknown PACKET type :" << (int)ptr[1] << "\n";
 		break;
