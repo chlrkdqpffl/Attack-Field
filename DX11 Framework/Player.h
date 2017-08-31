@@ -97,6 +97,7 @@ public:
 	void SetPlayerlife(UINT hp) { m_pCharacter->SetLife(hp); }
 
 	bool GetIsDamage() const { return m_infoDamage.m_bIsDamage; }
+	void SetIsDamage(bool set) { m_infoDamage.m_bIsDamage = set; }
 	DamagedInfo GetDamageInfo() const { return m_infoDamage; }
 	bool GetIsDeadly() const { return m_pCharacter->GetIsDeadly(); }
 	void SetIsDeadly(bool set) { m_pCharacter->SetIsDeadly(set); }
