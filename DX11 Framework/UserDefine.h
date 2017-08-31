@@ -6,7 +6,7 @@
 #define USE_SERVER					// 서버 활성화 모드
 
 #define USE_CONSOLE					// Open Console Windows
-#define USE_AUTOIP					// auto 127.0.0.1
+#define USE_AUTOIP					// Use Config File
 
 #define USE_DEFERRD_RENDER
 

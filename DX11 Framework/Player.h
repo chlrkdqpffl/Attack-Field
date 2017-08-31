@@ -1,5 +1,4 @@
 #pragma once
-//#include "SkinnedObject.h"
 #include "Object.h"
 #include "Camera.h"
 #include "CharacterObject.h"

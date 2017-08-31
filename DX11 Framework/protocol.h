@@ -141,8 +141,20 @@ struct CS_Head_Collison
 
 	BOOL Head;
 	BYTE id;
+
+	XMFLOAT3 position;
+	XMFLOAT3 direction;
 };
 
+
+struct SC_Damegedirection
+{
+	BYTE size;
+	BYTE type;
+
+	XMFLOAT3 position;
+	XMFLOAT3 direction;
+};
 
 
 struct SC_Player_Hp

@@ -172,7 +172,6 @@ void CCharacterObject::OnCollisionCheck()
 	*/
 } 
 
-
 void CCharacterObject::SetRotate(float fPitch, float fYaw, float fRoll, bool isLocal)
 {
 	CGameObject::SetRotate(0, fYaw, fRoll, isLocal);

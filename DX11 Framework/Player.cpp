@@ -66,19 +66,15 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 		relativeVelocity += XMVectorSet(1, 0, 0, 0);
 	}
 
-	if (m_wKeyState & static_cast<int>(KeyInput::eReload)) {
+	if (m_wKeyState & static_cast<int>(KeyInput::eReload))
 		m_pCharacter->SetIsReload(true);
-	}
 	else
 		m_pCharacter->SetIsReload(false);
 
-	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy)) {
+	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy))
 			m_pCharacter->SetOccupy(true);
-
-	}
 	else 
 		m_pCharacter->SetOccupy(false);
-
 
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
@@ -94,12 +90,10 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	}
 
 	// Mouse
-	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)) {
+	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse))
 		m_pCharacter->SetIsFire(true);
-	}
-	else {
+	else
 		m_pCharacter->SetIsFire(false);
-	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRightMouse)) {
 		
@@ -109,9 +103,9 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
 	m_pCharacter->SetVelocity(m_d3dxvVelocity);
 	m_pCharacter->SetRelativevVelocity(relativeVelocity);
-	if (m_pCharacter->IsMoving()) {
+
+	if (m_pCharacter->IsMoving())
 		m_pCharacter->Walking();
-	}
 	
 #ifdef	USE_SERVER
 	cs_key_input packet;

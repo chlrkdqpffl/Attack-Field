@@ -112,12 +112,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_F5:
-				TWBAR_MGR->g_OptionHDR.g_fWhite -= 0.1f;
-			//	TWBAR_MGR->g_xmf4TestVariable.x = 1.0f;
-				break;
-			case VK_F6:
-				TWBAR_MGR->g_OptionHDR.g_fWhite = 1.5f;
-			//	TWBAR_MGR->g_xmf4TestVariable.x = 0.0f;
+				m_vecCharacterContainer.back()->Firing();
 				break;
 			break;
 #ifndef USE_SERVER
@@ -1872,7 +1867,7 @@ void CMainScene::RenderUI()
 	ShowDeadlyAttackUI();
 	ShowDeadlyUI();
 	ShowDeathRespawnUI();
-	ShowDamageDirection();
+//	ShowDamageDirection();
 
 	// ------ UI ----- //
 	m_pUIManager->RenderAll(m_pd3dDeviceContext);
@@ -1892,17 +1887,53 @@ void CMainScene::ShowDamageDirection()
 		return;
 
 	DamagedInfo info = m_pPlayer->GetDamageInfo();
+//	info.m_f3DamagedPosition = XMFLOAT3(60.0286, 3.49304, 15.6136);
+//	info.m_f3DamagedDirection = XMFLOAT3(0, 0, 1);
 
 	XMVECTOR damagedDirection = XMLoadFloat3(&info.m_f3DamagedDirection);
 	
-	float dot = XMVectorGetX(XMVector3Dot(m_pPlayer->GetvLook(), damagedDirection));
-	if (dot < 0)
-		cout << "정면쪽에서 맞음" << endl;
-	else if (dot > 0)
-		cout << "뒤에서 맞음" << endl;
-	else
-		cout << "아예 90도??????????????" << endl;
+	float fDot = XMVectorGetX(XMVector3Dot(m_pPlayer->GetvLook(), damagedDirection));
+	float fDegree = XMConvertToDegrees(acosf(fDot));
+	XMVECTOR vCross = XMVector3Cross(m_pPlayer->GetvLook(), damagedDirection);
 
+	/*
+	// 테스트용으로 일단 만들어 놓기
+	CUIObject* pDamageDirection_TopUI		= m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Top);
+	CUIObject* pDamageDirection_LeftUI		= m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Left);
+	CUIObject* pDamageDirection_LeftTopUI	= m_pUIManager->GetUIObject(TextureTag::eDamageDirection_LeftTop);
+	CUIObject* pDamageDirection_RightUI		= m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Right);
+	CUIObject* pDamageDirection_RightTopUI	= m_pUIManager->GetUIObject(TextureTag::eDamageDirection_RightTop);
+	CUIObject* pDamageDirection_BottomUI	= m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Bottom);
+
+	pDamageDirection_TopUI->SetActive(false);
+	pDamageDirection_LeftUI->SetActive(false);
+	pDamageDirection_LeftTopUI->SetActive(false);
+	pDamageDirection_RightUI->SetActive(false);
+	pDamageDirection_RightTopUI->SetActive(false);
+	*/
+
+
+		/*
+									pDamageDirection_BottomUI	XMVectorGetY(vCross) 값이 양수이면 왼쪽 위
+		음수이면 오른쪽 위
+	
+	// 정면 각도 +- 30도
+	if (165 <= fDegree && fDegree <= 180) {
+		정면
+	}
+	else if (100 < x < 165) {
+		RightTop
+	}
+	else if (80 < x < 100) {
+		Right
+
+	}
+	else {
+		Back
+	}
+	
+	cout << "각도는 : " <<  << endl;
+	*/
 	CUIObject* pDamageDirectionUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Top);
 	
 	
