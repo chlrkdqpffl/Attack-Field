@@ -29,7 +29,7 @@ void CWeapon::Firing(XMVECTOR direction)
 #ifdef USE_SERVER
 
 		if (SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetIsFire()) //자기 자신이 쏠대만 보낸다.
-		{																 //이거 안해주면 자꾸 다른사람이 쏠때도 나간다...
+		{																 //이거 안해주면 자꾸 다른사람이 쏠때도 패킷을 보내서 자기 자신이 맞는 버그가 생긴다.
 			cs_weapon* packet = reinterpret_cast<cs_weapon *>(SERVER_MGR->GetSendbuffer());
 			packet->size = sizeof(cs_weapon);
 			packet->type = CS_WEAPONE;
