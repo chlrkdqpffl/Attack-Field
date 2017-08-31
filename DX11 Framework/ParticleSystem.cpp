@@ -26,7 +26,7 @@ CParticleSystem::~CParticleSystem()
 
 	// SRV
 	ReleaseCOM(m_pd3dsrvRandomTexture);
-	ReleaseCOM(m_pd3dsrvTextureArray);
+//	ReleaseCOM(m_pd3dsrvTextureArray);
 }
 
 void CParticleSystem::Initialize

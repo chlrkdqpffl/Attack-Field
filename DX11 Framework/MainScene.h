@@ -31,13 +31,14 @@ public:
 	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera) override;
 	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext) override;
 
+	void CreateSpriteImageObject();
 	void CreateMapDataObject();
 	void CreateMapDataInstancingObject();
 	void CreateTestingObject();
 	void ModifiedSelectObject();
 	void AddShaderObject(ShaderTag tag, CGameObject* pObject);
 
-	void Update_Lightning(float fDeltaTime);
+	void Update_LightningStrikes(float fDeltaTime);
 	void RenderBoundingBox();
 	void CalcTime();
 

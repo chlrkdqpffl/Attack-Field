@@ -26,6 +26,7 @@ CMaterial::CMaterial(CMaterialColors *pColors)
 CMaterial::~CMaterial()
 {
 	SafeDelete(m_pColors);
+	if(m_pTexture) m_pTexture->ReleaseShaderVariables();			// 만약에 이걸로 오류가 나면 지워도 됨, 미확실
 	SafeDelete(m_pTexture);
 }
 
@@ -40,6 +41,11 @@ void CMaterial::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	if (m_pColors) CGameObject::UpdateConstantBuffer_Material(pd3dDeviceContext, m_pColors);
 	if (m_pTexture) m_pTexture->UpdateShaderVariable(pd3dDeviceContext);
+}
+
+void CMaterial::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxTexture)
+{
+	if (m_pTexture) m_pTexture->UpdateShaderVariable(pd3dDeviceContext, pd3dxmtxTexture);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -123,7 +129,7 @@ void CTexture::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
 	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	d3dBufferDesc.ByteWidth = sizeof(XMMATRIX);
+	d3dBufferDesc.ByteWidth = sizeof(XMMATRIX);		// 이거 XMFLOAT4x4안해도 되는지 확인하기
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbTextureMatrix);

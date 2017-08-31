@@ -431,13 +431,14 @@ void CMainScene::Initialize()
 	PARTICLE_MGR->CreateParticleSystems(m_pd3dDevice);
 
 //	CreateMapDataObject();
-//	CreateMapDataInstancingObject();		//	- 테스트용으로 잠시 맵  생성 제거
-	CreateTestingObject();
+	CreateMapDataInstancingObject();		//	- 테스트용으로 잠시 맵  생성 제거
+//	CreateTestingObject();
 
 	CreateLights();
 	CreateConstantBuffers();
 	CreateTweakBars();
 	CreateUIImage();
+	CreateSpriteImageObject();
 
 	SOUND_MGR->PlayBgm(SoundTag::eBGM_Rain, 1.0f);
 	m_dwLastLightningTime = GetTickCount();
@@ -1656,6 +1657,15 @@ void CMainScene::CreateTweakBars()
 	*/
 }
 
+void CMainScene::CreateSpriteImageObject()
+{
+	CSpriteImageObject* pSpriteObject = new CSpriteImageObject(m_pPlayer, TextureTag::eFireEffect);
+	pSpriteObject->CreateObjectData(m_pd3dDevice);
+	pSpriteObject->SetPosition(XMFLOAT3(60, 5, 30));
+
+	m_vecObjectsContainer.push_back(pSpriteObject);
+}
+
 void CMainScene::CreateUIImage()
 {
 	m_pUIManager = new CUIManager();
@@ -1902,7 +1912,6 @@ void CMainScene::CalcDamagedDirection()
 		return;
 
 	XMFLOAT3 damagedPosition = m_pPlayer->GetDamageInfo().m_f3DamagedPosition;
-	//XMVECTOR damagedPosition = XMVectorSet(60.0f, 2.5f, 15.0f, 0.0f);
 	XMVECTOR damagedDirection = m_pPlayer->GetvPosition() - XMLoadFloat3(&damagedPosition);
 	damagedDirection = XMVector3Normalize(damagedDirection);
 
@@ -2051,7 +2060,7 @@ void CMainScene::ShowDeadlyAttackUI()
 	}
 }
 
-void CMainScene::Update_Lightning(float fDeltaTime)
+void CMainScene::Update_LightningStrikes(float fDeltaTime)
 {
 	static bool isFirstLightning = false;
 	static bool isLightning = false;
@@ -2128,7 +2137,7 @@ void CMainScene::Update(float fDeltaTime)
 	// ====== Update ===== //
 	GLOBAL_MGR->UpdateManager();
 	UpdateConstantBuffers();
-	Update_Lightning(fDeltaTime);
+	Update_LightningStrikes(fDeltaTime);
 
 	// ====== Object ===== //
 	CScene::Update(fDeltaTime);

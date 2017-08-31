@@ -15,9 +15,9 @@ void CSpriteImageManager::ReleseManager()
 
 void CSpriteImageManager::AddSpriteMesh(TextureTag tag, int frame, POINT perSize, float lifeTime, float totalTime)
 {
-	CSpriteImageMesh* pSpriteMesh = new CSpriteImageMesh(STATEOBJ_MGR->g_pd3dDevice, tag, frame, perSize, lifeTime, totalTime);
+//	CSpriteImageMesh* pSpriteMesh = new CSpriteImageMesh(STATEOBJ_MGR->g_pd3dDevice, tag, frame, perSize, lifeTime, totalTime);
 
-	m_mapSpriteMeshPool.insert(make_pair(tag, pSpriteMesh));
+//	m_mapSpriteMeshPool.insert(make_pair(tag, pSpriteMesh));
 
 	// 한 태그에 여러개 등록되었음
 	assert(m_mapSpriteMeshPool.count(tag) <= 1);

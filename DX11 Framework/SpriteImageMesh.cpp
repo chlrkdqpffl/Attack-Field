@@ -2,10 +2,8 @@
 #include "SpriteImageMesh.h"
 
 
-CSpriteImageMesh::CSpriteImageMesh(ID3D11Device *pd3dDevice, TextureTag tag, int frame, POINT perSize, float lifeTime, float totalTime)
-	: m_TagTexture(tag), m_nFrame(frame), m_nPerSize(perSize), m_fLifeTime(lifeTime), m_fTotalTime(totalTime)
+CSpriteImageMesh::CSpriteImageMesh(ID3D11Device *pd3dDevice, float fWidth, float fHeight, UINT nCount)
 {
-	/*
 	m_nVertices = 4;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
 
@@ -31,37 +29,11 @@ CSpriteImageMesh::CSpriteImageMesh(ID3D11Device *pd3dDevice, TextureTag tag, int
 
 	m_bcBoundingBox.Center = { 0.f, 0.f, 0.f };
 	m_bcBoundingBox.Extents = { fx, fy, 0.0f };
-	
+
 	DXUT_SetDebugName(m_pd3dPositionBuffer, "Position");
 	DXUT_SetDebugName(m_pd3dTexCoordBuffer, "TexCoord");
-	*/
-	
-	
-
 }
 
 CSpriteImageMesh::~CSpriteImageMesh()
 {
-}
-
-void CSpriteImageMesh::Update(const float& fDeltaTime)
-{
-	/*
-	m_fTotalTime += fDeltaTime;
-
-	if (m_fTotalTime >= m_fLifeTime)
-		m_fTotalTime = 0;
-		*/
-	
-	m_nFrame = int((m_fTotalTime / m_fLifeTime) * (m_nPerSize.x * m_nPerSize.y));
-
-
-	if (m_fTotalTime <= m_fLifeTime) {
-		m_fTotalTime += fDeltaTime;
-	}
-}
-
-void CSpriteImageMesh::Render(ID3D11DeviceContext *pd3dDeviceContext)
-{
-
 }

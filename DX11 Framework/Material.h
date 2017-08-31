@@ -64,6 +64,7 @@ private:
 public:
 	void SetTexture(CTexture *pTexture);
 	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext);
+	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxTexture);
 	
 	CTexture* GetTexture() const { return m_pTexture; }
 	TextureTag GetTextureTag() const { return m_tagTexture; }

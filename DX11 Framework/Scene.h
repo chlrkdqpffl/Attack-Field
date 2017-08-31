@@ -24,6 +24,7 @@
 #include "UIObject.h"
 #include "BillboardObject.h"
 #include "SphereObject.h"
+#include "SpriteImageObject.h"
 
 // ----- Character -----
 #include "TerrainPlayer.h"

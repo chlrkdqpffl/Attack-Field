@@ -535,6 +535,43 @@ void CGameObject::SetUp(XMFLOAT3 axis, bool isLocal)
 	}
 }
 
+void CGameObject::SetvRight(XMVECTOR axis, bool isLocal)
+{
+	XMFLOAT4X4 mtx;
+	XMFLOAT3 right; XMStoreFloat3(&right, axis);
+
+	if (isLocal) {
+		XMStoreFloat4x4(&mtx, m_mtxLocal);
+		mtx._11 = right.x, mtx._12 = right.y, mtx._13 = right.z;
+
+		m_mtxLocal = XMLoadFloat4x4(&mtx);
+	}
+	else {
+		XMStoreFloat4x4(&mtx, m_mtxWorld);
+		mtx._11 = right.x, mtx._12 = right.y, mtx._13 = right.z;
+		m_mtxWorld = XMLoadFloat4x4(&mtx);
+	}
+}
+
+void CGameObject::SetvUp(XMVECTOR axis, bool isLocal)
+{
+	XMFLOAT4X4 mtx;
+	XMFLOAT3 up; XMStoreFloat3(&up, axis);
+
+	if (isLocal) {
+		XMStoreFloat4x4(&mtx, m_mtxLocal);
+		mtx._21 = up.x, mtx._22 = up.y, mtx._23 = up.z;
+
+		m_mtxLocal = XMLoadFloat4x4(&mtx);
+	}
+	else {
+		XMStoreFloat4x4(&mtx, m_mtxWorld);
+		mtx._21 = up.x, mtx._22 = up.y, mtx._23 = up.z;
+		m_mtxWorld = XMLoadFloat4x4(&mtx);
+	}
+}
+
+
 void CGameObject::SetLook(XMFLOAT3 axis, bool isLocal)
 {
 	XMFLOAT4X4 mtx;

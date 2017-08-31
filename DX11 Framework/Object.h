@@ -116,7 +116,10 @@ public:
 	void SetLook(XMFLOAT3 axis, bool bIsLocal = false);
 	void SetvLook(XMVECTOR axis, bool bIsLocal = false);
 	void SetUp(XMFLOAT3 axis, bool bIsLocal = false);
+	void SetvUp(XMVECTOR axis, bool bIsLocal = false);
 	void SetRight(XMFLOAT3 axis, bool bIsLocal = false);
+	void SetvRight(XMVECTOR axis, bool bIsLocal = false);
+
 
 	void SetShaderTag(ShaderTag tag) { m_tagShader = tag; } ShaderTag GetShaderTag() const { return m_tagShader; }
 	void SetMeshTag(MeshTag tag) { m_tagMesh = tag; }		MeshTag GetMeshTag() const { return m_tagMesh; }

@@ -21,15 +21,9 @@ void CBillboardObject::SetLookAt(XMFLOAT3 cameraPos)
 	XMVECTOR right = XMVector3Cross(look, up);
 	right = XMVector4NormalizeEst(right);
 	
-	XMFLOAT3 temp;
-	XMStoreFloat3(&temp, right);
-	SetRight(temp, false);
-
-	XMStoreFloat3(&temp, up);
-	SetUp(temp, false);
-
-	XMStoreFloat3(&temp, look);
-	SetLook(temp, false);
+	SetvRight(right);
+	SetvUp(up);
+	SetvLook(look);
 }
 
 void CBillboardObject::Update(float fDeltaTime)
@@ -46,7 +40,12 @@ void CBillboardObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *p
 
 	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &m_mtxWorld);
 
+	ID3D11DepthStencilState* prevDSS; UINT prevStencil;
+	pd3dDeviceContext->OMGetDepthStencilState(&prevDSS, &prevStencil);
+
+//	pd3dDeviceContext->OMSetDepthStencilState(STATEOBJ_MGR->g_pNoDepthWritesDSS, 0);
 	pd3dDeviceContext->OMSetBlendState(STATEOBJ_MGR->g_pTransparentBS, NULL, 0xffffffff);
 	RenderMesh(pd3dDeviceContext, pCamera);
+//	pd3dDeviceContext->OMSetDepthStencilState(prevDSS, prevStencil);
 	pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
 }

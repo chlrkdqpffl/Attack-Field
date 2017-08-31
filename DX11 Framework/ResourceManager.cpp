@@ -134,7 +134,7 @@ void CResourceManager::LoadSpriteData()
 {
 	cout << endl << " ----- Sprite Image Data -----" << endl;
 
-	AddResourece(TextureTag::eFireEffect,		"../Assets/Image/Sprite/smash_effect_sprite2.png");
+	AddResourece(TextureTag::eFireEffect,		"../Assets/Image/Sprite/smash_effect_sprite.png");
 }
 
 void CResourceManager::LoadMapData()

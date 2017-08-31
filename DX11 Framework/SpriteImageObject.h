@@ -1,12 +1,14 @@
 #pragma once
 #include "Object.h"
-#include "SpriteImageShader.h"
+#include "BillboardObject.h"
 #include "SpriteImageMesh.h"
+//#include "TextureToScreenRectMesh.h"
+#include "SpriteImageShader.h"
 
-class CSpriteImageObject : public CGameObject
+class CSpriteImageObject : public CBillboardObject
 {
 public:
-	CSpriteImageObject(TextureTag tag);
+	CSpriteImageObject(CPlayer* player, TextureTag tag);
 	virtual ~CSpriteImageObject();
 
 	virtual void CreateMesh(ID3D11Device *pd3dDevice) override;
@@ -14,4 +16,7 @@ public:
 	virtual void CreateMaterial() override;
 
 	virtual void Update(float fDeltaTime) override;
+
+private:
+	XMFLOAT4X4	m_mtxTexture;
 };
