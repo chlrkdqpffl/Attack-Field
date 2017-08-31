@@ -2,8 +2,8 @@
 
 #define PROJECT_NAME					L"Attack Field ("
 
-#define DEVELOP_MODE				// 클라이언트 개발 모드
-//#define USE_SERVER					// 서버 활성화 모드
+//#define DEVELOP_MODE				// 클라이언트 개발 모드
+#define USE_SERVER					// 서버 활성화 모드
 
 #define USE_CONSOLE					// Open Console Windows
 #define USE_AUTOIP					// auto 127.0.0.1
