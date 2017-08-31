@@ -1891,6 +1891,18 @@ void CMainScene::ShowDamageDirection()
 	if (!m_pPlayer->GetIsDamage())
 		return;
 
+	DamagedInfo info = m_pPlayer->GetDamageInfo();
+
+	XMVECTOR damagedDirection = XMLoadFloat3(&info.m_f3DamagedDirection);
+	
+	float dot = XMVectorGetX(XMVector3Dot(m_pPlayer->GetvLook(), damagedDirection));
+	if (dot < 0)
+		cout << "정면쪽에서 맞음" << endl;
+	else if (dot > 0)
+		cout << "뒤에서 맞음" << endl;
+	else
+		cout << "아예 90도??????????????" << endl;
+
 	CUIObject* pDamageDirectionUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Top);
 	
 	
@@ -1901,21 +1913,6 @@ void CMainScene::ShowDamageDirection()
 	
 	//m_pPlayer->GetvLook()
 	
-
-	static bool bIsDeadlyAttack = true;
-	float opacityValue = 0.8f;
-
-	if (bIsDeadlyAttack) {
-		pDamageDirectionUI->AddOpacity(1.0f);
-		bIsDeadlyAttack = false;
-	}
-
-	pDamageDirectionUI->AddOpacity(-1 * opacityValue * m_fDeltaTime);
-
-	if (pDamageDirectionUI->GetOpacity() <= 0.0f) {
-		bIsDeadlyAttack = true;
-		m_pPlayer->SetIsDeadlyAttack(false);
-	}
 }
 
 void CMainScene::ShowOccupyUI()

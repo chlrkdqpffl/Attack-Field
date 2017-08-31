@@ -68,8 +68,7 @@ enum class ParticleTag
 	// ======================================= // 
 	MaxPostProcessingParticle = 100,
 	// ======================================= // 
-
-	eRain, 
+	eRain,
 	eSpark, eFireSpark,
 	eBleeding, eCopiousBleeding,
 };

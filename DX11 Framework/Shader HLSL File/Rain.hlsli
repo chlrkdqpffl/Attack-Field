@@ -1,7 +1,7 @@
 #include "ParticleCommon.hlsli"
 
 // fxc /E DrawGS /T gs_5_0 /Od /Zi /Fo CompiledVS.fxo Rain.hlsli
-static const float3 gRainAccelW = { -6.0f, -20.0f, 0.0f };
+static const float3 gRainAccelW = { -6.0f, -25.0f, 0.0f };
 
 PARTICLE_INPUT VSParticleStreamOut(PARTICLE_INPUT vin)
 {
@@ -23,7 +23,7 @@ void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTIC
                 PARTICLE_INPUT particle = (PARTICLE_INPUT) 0;
                 particle.position = gvParticleEmitPosition.xyz + vRandom;
  
-                particle.velocity = float3(-10.0f, -30.0f, 0.0f);
+                particle.velocity = float3(-15.0f, -50.0f, 0.0f);
                 particle.size = float2(1.0f, 1.0f);
                 particle.age = 0.0f;
                 particle.type = PARTICLE_TYPE_FLARE;

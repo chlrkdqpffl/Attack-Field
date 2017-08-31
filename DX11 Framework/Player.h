@@ -30,6 +30,9 @@ protected:
 
 	int							count;
 
+	// Damage Direction
+	DamagedInfo					m_infoDamage;
+
 	// DOF Variable
 	int							m_nPrevDOFStart = 0;
 	DWORD						m_dwDOFPreiodTime = 0;
@@ -85,7 +88,7 @@ public:
 	void SetKeyUp(KeyInput key);
 	WORD GetKeyState() const { return m_wKeyState; }
 	void SetLook(float x, float y, float z);
-
+	void SetDamagedInfo(DamagedInfo info) { m_infoDamage = info; }
 
 	// --- Draw UI Text --- //
 	UINT GetWeaponBulletCount() const { return m_pCharacter->GetWeaponBulletCount(); }
@@ -94,7 +97,8 @@ public:
 	UINT GetPlayerArmorPoint() const { return m_pCharacter->GetArmorPoint(); }
 	void SetPlayerlife(UINT hp) { m_pCharacter->SetLife(hp); }
 
-	bool GetIsDamage() const { return m_pCharacter->GetIsDamage(); }
+	bool GetIsDamage() const { return m_infoDamage.m_bIsDamage; }
+	DamagedInfo GetDamageInfo() const { return m_infoDamage; }
 	bool GetIsDeadly() const { return m_pCharacter->GetIsDeadly(); }
 	void SetIsDeadly(bool set) { m_pCharacter->SetIsDeadly(set); }
 	bool GetIsDeadlyAttack() const { return m_pCharacter->GetIsDeadlyAttack(); }
