@@ -153,9 +153,7 @@ struct SC_Damegedirection
 	BYTE type;
 
 	XMFLOAT3 position;
-	XMFLOAT3 direction;
 };
-
 
 struct SC_Player_Hp
 {

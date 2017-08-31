@@ -76,8 +76,7 @@ void CWeapon::Firing(XMVECTOR direction)
 				// Head Shot 판정
 				if (info.m_HitParts == ChracterBoundingBoxParts::eHead) {
 					hitCharacter->SetIsHeadHit(true);
-					//hitCharacter->DamagedCharacter(m_fDamage * 2.5f);
-					hitCharacter->DamagedCharacter(1.0f);	// 테스트용으로 수정
+					hitCharacter->DamagedCharacter(m_fDamage * 2.5f);
 
 					PARTICLE_MGR->CreateParticle(ParticleTag::eCopiousBleeding, bloodOffset);
 				}
@@ -97,7 +96,7 @@ void CWeapon::Firing(XMVECTOR direction)
 		}
 
 #endif
-		COLLISION_MGR->CreateFireDirectionLine(firePosOffset, direction, m_fRange);
+//		COLLISION_MGR->CreateFireDirectionLine(firePosOffset, direction, m_fRange);
 	}
 }
 
