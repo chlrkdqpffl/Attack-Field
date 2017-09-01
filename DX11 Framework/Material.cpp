@@ -26,7 +26,7 @@ CMaterial::CMaterial(CMaterialColors *pColors)
 CMaterial::~CMaterial()
 {
 	SafeDelete(m_pColors);
-	if(m_pTexture) m_pTexture->ReleaseShaderVariables();			// 만약에 이걸로 오류가 나면 지워도 됨, 미확실
+//	if(m_pTexture) m_pTexture->ReleaseShaderVariables();			// 만약에 이걸로 오류가 나면 지워도 됨, 미확실
 	SafeDelete(m_pTexture);
 }
 

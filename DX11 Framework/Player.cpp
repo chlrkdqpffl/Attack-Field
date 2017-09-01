@@ -93,13 +93,15 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse))
 	{
 		m_pCharacter->SetIsFire(true);
+
+#ifdef USE_SERVER
 		CS_Fire packet;
 		packet.size = sizeof(packet);
 		packet.type = 10;
 		//packet.fire = true;
 		packet.FireDirection = m_pCharacter->GetFireDirection();
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-		//cout << "마우스 클릭!" << endl;
+#endif
 	}
 	else
 		m_pCharacter->SetIsFire(false);

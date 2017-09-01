@@ -1659,11 +1659,11 @@ void CMainScene::CreateTweakBars()
 
 void CMainScene::CreateSpriteImageObject()
 {
-	//CSpriteImageObject* pSpriteObject = new CSpriteImageObject(m_pPlayer, TextureTag::eFireEffect);
-//	pSpriteObject->CreateObjectData(m_pd3dDevice);
-//	pSpriteObject->SetPosition(XMFLOAT3(60, 5, 30));
+	CSpriteImageObject* pSpriteObject = new CSpriteImageObject(m_pPlayer, TextureTag::eFireEffect);
+	pSpriteObject->CreateObjectData(m_pd3dDevice);
+	pSpriteObject->SetPosition(XMFLOAT3(60, 5, 30));
 
-//	m_vecObjectsContainer.push_back(pSpriteObject);
+	m_vecObjectsContainer.push_back(pSpriteObject);
 }
 
 void CMainScene::CreateUIImage()

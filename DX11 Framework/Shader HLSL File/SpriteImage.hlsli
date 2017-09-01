@@ -18,6 +18,11 @@ cbuffer cbTextureMatrix : register(b2) // VS Set
     matrix gmtxTexture : packoffset(c0);
 };
 
+cbuffer cbTestVariable : register(b11) // VS, GS, PS Buffer
+{
+    float4 g_f4Var : packoffset(c0); // 이 변수 x 값이 frame, yz가 사이즈임 w는 무시 일단은 하나의 변수에 만들어놓았음 나중에 수정할거
+};
+
 Texture2D gtxDiffuse : register(t0);
 SamplerState gssDefault : register(s0);
 
@@ -43,7 +48,16 @@ VS_OUTPUT VSSpriteImage(VS_INPUT input)
     output.positionW = mul(float4(input.position, 1.0f), gmtxWorld).xyz;
     output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
     output.texCoord = input.texCoord;
-  //  output.texCoord = mul(float4(input.texCoord, 0.0f, 1.0f), gmtxTexture).xy;
+
+    int iX = (int) g_f4Var.x % (int) g_f4Var.y;
+    int iY = (int) g_f4Var.x / (int) g_f4Var.y;
+
+    float fX = output.texCoord.x / (float) g_f4Var.y;
+    float fY = output.texCoord.y / (float) g_f4Var.z;
+
+    output.texCoord.x = fX + (1.f / (float) g_f4Var.y * iX);
+    output.texCoord.y = fY + (1.f / (float) g_f4Var.z * iY);
+    
     return (output);
 }
 

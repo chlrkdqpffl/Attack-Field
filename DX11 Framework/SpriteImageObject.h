@@ -1,8 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "BillboardObject.h"
-#include "SpriteImageMesh.h"
-//#include "TextureToScreenRectMesh.h"
+#include "TextureToScreenRectMesh.h"
 #include "SpriteImageShader.h"
 
 class CSpriteImageObject : public CBillboardObject
@@ -18,5 +17,9 @@ public:
 	virtual void Update(float fDeltaTime) override;
 
 private:
-	XMFLOAT4X4	m_mtxTexture;
+	int			m_nFrame = 0;
+	int			m_nSizeX = 0;
+	int			m_nSizeY = 0;
+	float		m_fLifeTime = 0.0f;
+	float		m_fTotalTime = 0.0f;
 };
