@@ -53,6 +53,7 @@ class CSoundManager : public CSingletonManager<CSoundManager>
 	list<CSound3D*> g_listSound3DContainer;
 
 public:
+#ifdef USE_SOUND
 	CSoundManager();
 	virtual ~CSoundManager();
 
@@ -72,4 +73,24 @@ public:
 	void PlayBgm(SoundTag soundTag, float vol = 0.7f);
 
 	void VolumeControl(float volume);
+#else
+	CSoundManager() {}
+	virtual ~CSoundManager() {}
+
+	virtual void InitializeManager() {}
+	virtual void ReleseManager() {}
+
+	void LoadAllSound() {}
+	void LoadBGMSound() {}
+	void LoadEffectSound() {}
+
+	void Update(float fTimeDelta) {}
+	void AllStop() {}
+	void Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f) {}
+	void Play3DSound(SoundTag soundTag, SoundChannel channel, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f) {}
+	void StopSound(SoundChannel channel) {}
+	void Play2DSound(SoundTag soundTag, float volume = 1.0f) {}
+	void PlayBgm(SoundTag soundTag, float vol = 0.7f) {}
+	void VolumeControl(float volume) {}
+#endif
 };

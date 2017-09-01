@@ -25,6 +25,10 @@ void CWeapon::Firing(XMVECTOR direction)
 		m_nhasBulletCount--;
 
 		XMVECTOR firePosOffset = GetvPosition() + (-1 * GetvRight() * (GetBoundingBox().Extents.z - 0.6f)) + (-1 * GetvLook() * 0.225) + (GetvUp() * 0.1f);
+
+		XMVECTOR muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
+		XMFLOAT3 f3muzzlePosition; XMStoreFloat3(&f3muzzlePosition, muzzlePosition);
+		SPRITE_MGR->CreateSpriteImage(TextureTag::eExplosionSprite2, f3muzzlePosition, TWBAR_MGR->g_xmf3Quaternion.x, TWBAR_MGR->g_xmf3Quaternion.y, true);
 	
 #ifdef USE_SERVER
 

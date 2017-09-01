@@ -1,19 +1,13 @@
 #include "stdafx.h"
 #include "SpriteImageObject.h"
 
+ID3D11Buffer*	CSpriteImageObject::m_pSpriteInfoCB = NULL;
 
-CSpriteImageObject::CSpriteImageObject(CPlayer* player, TextureTag tag) 
-	: CBillboardObject(player)
+CSpriteImageObject::CSpriteImageObject(CPlayer* player, TextureTag tag, float sizeX, float sizeY, bool bIsInfinity)
+	: CBillboardObject(player), m_fSizeX(sizeX), m_fSizeY(sizeY), m_bIsInfinity(bIsInfinity)
 {
 	m_tagTexture = tag;
-
-	m_nFrame = 0; //현재스프라이트의 프레임
-	m_nSizeX = 7; //가로로 스프라이트 갯수
-	m_nSizeY = 1; //세로로 스프라이트 갯수
-
-	m_fLifeTime = 0.9f; //생명시간(스프라이트 속도와 연관) 값이 낮을수록 속도 빨라짐
-	m_fTotalTime = 0.0f;
-
+	m_infoSprite = SPRITE_MGR->CloneSpriteInfo(tag);
 }
 
 CSpriteImageObject::~CSpriteImageObject()
@@ -22,8 +16,7 @@ CSpriteImageObject::~CSpriteImageObject()
 
 void CSpriteImageObject::CreateMesh(ID3D11Device *pd3dDevice)
 {
-	//CMesh* pMesh = SPRITE_MGR->CloneSpriteMesh(m_tagTexture);
-	CMesh* pMesh = new CTextureToScreenRectMesh(pd3dDevice, 5, 5);
+	CMesh* pMesh = new CTextureToScreenRectMesh(pd3dDevice, m_fSizeX, m_fSizeY);
 	SetMesh(pMesh);
 }
 
@@ -44,18 +37,67 @@ void CSpriteImageObject::CreateMaterial()
 	m_pMaterial->SetTexture(pTexture);
 }
 
+void CSpriteImageObject::CreateConstantBuffers()
+{
+	D3D11_BUFFER_DESC d3dBufferDesc;
+	ZeroMemory(&d3dBufferDesc, sizeof(d3dBufferDesc));
+	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	d3dBufferDesc.ByteWidth = sizeof(XMFLOAT4);
+	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	HR(STATEOBJ_MGR->g_pd3dDevice->CreateBuffer(&d3dBufferDesc, nullptr, &m_pSpriteInfoCB));
+
+	DXUT_SetDebugName(m_pSpriteInfoCB, "Sprite Info CB");
+}
+
+void CSpriteImageObject::UpdateConstantBuffers(int frame, SpriteInfo info)
+{
+	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+	STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Map(m_pSpriteInfoCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	XMFLOAT4 *pSpriteInfo = (XMFLOAT4 *)d3dMappedResource.pData;
+	memcpy(pSpriteInfo, &XMFLOAT4(frame, info.m_nSizeX, info.m_nSizeY, 0.0f), sizeof(XMFLOAT4));
+
+	STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(m_pSpriteInfoCB, 0);
+
+	STATEOBJ_MGR->g_pd3dImmediateDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_SPRITEINFO, 1, &m_pSpriteInfoCB);
+}
+
+void CSpriteImageObject::ReleaseConstantBuffers()
+{
+	ReleaseCOM(m_pSpriteInfoCB);
+}
+
 void CSpriteImageObject::Update(float fDeltaTime)
 {
+	if (!m_bIsActive)
+		return;
+
 	CBillboardObject::Update(fDeltaTime);
 
 	m_fTotalTime += fDeltaTime;
-	m_nFrame = int((m_fTotalTime / m_fLifeTime) * (m_nSizeX * m_nSizeY));
-
-	if (m_fTotalTime >= m_fLifeTime)
-		m_fTotalTime -= m_fLifeTime;
+	m_nFrame = int((m_fTotalTime / m_infoSprite.m_fLifeTime ) * (m_infoSprite.m_nSizeX * m_infoSprite.m_nSizeY));
 	
 
-	TWBAR_MGR->g_xmf4TestVariable.x = m_nFrame;
-	TWBAR_MGR->g_xmf4TestVariable.y = m_nSizeX;
-	TWBAR_MGR->g_xmf4TestVariable.z = m_nSizeY;
+	if (m_bIsInfinity) {
+		if (m_fTotalTime >= m_infoSprite.m_fLifeTime)
+			m_fTotalTime -= m_infoSprite.m_fLifeTime;
+	}
+	else {
+		if (m_fTotalTime >= m_infoSprite.m_fLifeTime)
+			m_bIsActive = false;
+	}
+}
+
+void CSpriteImageObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
+{
+	if (!m_bIsActive)
+		return;
+
+	if (m_pShader) m_pShader->Render(pd3dDeviceContext, pCamera);
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
+
+	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &m_mtxWorld);
+	CSpriteImageObject::UpdateConstantBuffers(m_nFrame, SpriteInfo(m_infoSprite));
+
+	RenderMesh(pd3dDeviceContext, pCamera);
 }

@@ -32,7 +32,6 @@ public:
 	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext) override;
 
 	void CreateSpriteImageObject();
-	void CreateMapDataObject();
 	void CreateMapDataInstancingObject();
 	void CreateTestingObject();
 	void ModifiedSelectObject();
@@ -78,6 +77,7 @@ private:
 	bool							m_bIsPreCollisionCheck = false;
 	CBoundingBoxShader				*m_pBoundingBoxShader = nullptr;
 
+	// Container
 	vector<CGameObject*>			m_vecBBoxRenderContainer;
 	vector<CCharacterObject*>		m_vecCharacterContainer;
 

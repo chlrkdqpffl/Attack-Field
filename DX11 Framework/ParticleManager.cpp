@@ -136,6 +136,7 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 
 void CParticleManager::CreateParticle(ParticleTag tag, XMVECTOR pos)
 {
+#ifndef FASTLOAD_MODE
 	auto findParticlePool = m_mapParticlePool.find(tag);
 	
 	if (findParticlePool == m_mapParticlePool.end())
@@ -156,6 +157,7 @@ void CParticleManager::CreateParticle(ParticleTag tag, XMVECTOR pos)
 
 	pParticle->ParticleRestart();
 	pParticle->SetEmitvPosition(pos);
+#endif
 }
 
 void CParticleManager::Update_Rain(float fDeltaTime)
@@ -170,7 +172,8 @@ void CParticleManager::Update_Rain(float fDeltaTime)
 
 void CParticleManager::UpdateManager(float fDeltaTime)
 {
-	Update_Rain(fDeltaTime);
+	if(m_pRainParticle)
+		Update_Rain(fDeltaTime);
 
 	for (auto& container : m_mapParticlePool)
 		for (auto& system : container.second)
@@ -180,7 +183,8 @@ void CParticleManager::UpdateManager(float fDeltaTime)
 
 void CParticleManager::RenderAllNoEffect(ID3D11DeviceContext *pd3dDeviceContext)
 {
-	m_pRainParticle->Render(pd3dDeviceContext);
+	if(m_pRainParticle)
+		m_pRainParticle->Render(pd3dDeviceContext);
 
 	for (auto& container : m_mapParticlePool)
 		if (static_cast<UINT>(container.first) > static_cast<UINT>(ParticleTag::MaxPostProcessingParticle)) {

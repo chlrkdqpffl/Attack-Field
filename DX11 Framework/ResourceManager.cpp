@@ -133,8 +133,9 @@ void CResourceManager::LoadUIData()
 void CResourceManager::LoadSpriteData()
 {
 	cout << endl << " ----- Sprite Image Data -----" << endl;
-
-	AddResourece(TextureTag::eFireEffect,		"../Assets/Image/Sprite/smash_effect_sprite.png");
+	
+	AddResourece(TextureTag::eExplosionSprite,		"../Assets/Image/Sprite/smash_effect_sprite.png");
+	AddResourece(TextureTag::eExplosionSprite2,		"../Assets/Image/Sprite/smash_effect_sprite2.png");
 }
 
 void CResourceManager::LoadMapData()

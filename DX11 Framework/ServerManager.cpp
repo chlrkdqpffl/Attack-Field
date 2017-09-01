@@ -398,7 +398,7 @@ void CServerManager::processpacket(char *ptr)
 
 	case 17:
 	{		
-		SC_Occupy_Timer*   packet;
+		SC_Occupy_Timer* packet;
 		packet = reinterpret_cast<SC_Occupy_Timer *>(ptr);
 
 		
@@ -411,10 +411,6 @@ void CServerManager::processpacket(char *ptr)
 		packet = reinterpret_cast<SC_Damegedirection *>(ptr);
 
 		SCENE_MGR->g_pPlayer->SetDamagedInfo(DamagedInfo(true, packet->position));
-
-		cout << "상대방이 쏜 방향 정보" << endl;
-		ShowXMFloat3(packet->position);
-		cout << endl;
 		break;
 	}
 	default:

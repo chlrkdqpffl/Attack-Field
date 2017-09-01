@@ -200,9 +200,6 @@
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SphereObject.cpp" />
     <ClCompile Include="SpriteImageManager.cpp" />
-    <ClCompile Include="SpriteImageMesh.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="SpriteImageObject.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -333,9 +330,6 @@
     <ClInclude Include="SpaceShipCamera.h" />
     <ClInclude Include="SphereObject.h" />
     <ClInclude Include="SpriteImageManager.h" />
-    <ClInclude Include="SpriteImageMesh.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="SpriteImageObject.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>

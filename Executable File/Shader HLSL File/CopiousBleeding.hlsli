@@ -52,7 +52,7 @@ PARTICLE_OUTPUT VSParticleDraw(PARTICLE_INPUT input)
 
     float fOpacity = 1.0f - smoothstep(0.0f, 1.0f, t * 2.5f);
  
-    output.color = float4(1.0f, 1.0f, 1.0f, fOpacity);
+    output.color = float4(0.6f, 0.1f, 0.1f, fOpacity);
     output.size = input.size;
     output.type = input.type;
 

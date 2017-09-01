@@ -1,40 +1,67 @@
 #include "stdafx.h"
 #include "SpriteImageManager.h"
+#include "SpriteImageObject.h"
 
 void CSpriteImageManager::InitializeManager()
 {
-	AddSpriteMesh(TextureTag::eFireEffect, 7, POINT{ 200,200 }, 3.0f, 10.0f);
+//	AddSpriteInfo(TextureTag::eExplosionSprite, SpriteInfo(10, 5, 1.0f));
+//	AddSpriteInfo(TextureTag::eExplosionSprite2, SpriteInfo(5, 3, 1.0f));
+
+	AddSpriteInfo(TextureTag::eExplosionSprite, SpriteInfo(7, 1, 0.6f));
+	AddSpriteInfo(TextureTag::eExplosionSprite2, SpriteInfo(7, 1, 0.6f));
+	CSpriteImageObject::CreateConstantBuffers();
+
 
 }
 
 void CSpriteImageManager::ReleseManager()
 {
-	for (auto& index = m_mapSpriteMeshPool.begin(); index != m_mapSpriteMeshPool.end(); ++index)
-		SafeDelete(index->second);
+	for (auto& object : m_vecSpriteObjectContainer)
+		SafeDelete(object);
+
+	CSpriteImageObject::ReleaseConstantBuffers();
 }
 
-void CSpriteImageManager::AddSpriteMesh(TextureTag tag, int frame, POINT perSize, float lifeTime, float totalTime)
+void CSpriteImageManager::AddSpriteInfo(TextureTag tag, SpriteInfo info)
 {
-//	CSpriteImageMesh* pSpriteMesh = new CSpriteImageMesh(STATEOBJ_MGR->g_pd3dDevice, tag, frame, perSize, lifeTime, totalTime);
-
-//	m_mapSpriteMeshPool.insert(make_pair(tag, pSpriteMesh));
+	m_mapSpriteInfoPool.insert(make_pair(tag, info));
 
 	// 한 태그에 여러개 등록되었음
-	assert(m_mapSpriteMeshPool.count(tag) <= 1);
+	assert(m_mapSpriteInfoPool.count(tag) <= 1);
 }
 
-CSpriteImageMesh* CSpriteImageManager::CloneSpriteMesh(TextureTag tag)
+SpriteInfo CSpriteImageManager::CloneSpriteInfo(TextureTag tag)
 {
-	auto findResource = m_mapSpriteMeshPool.find(tag);
+	auto findResource = m_mapSpriteInfoPool.find(tag);
 
 	// Pool에 해당 데이터가 존재하지 않는다.
-	if (findResource == m_mapSpriteMeshPool.end())
+	if (findResource == m_mapSpriteInfoPool.end())
 		MessageBox(NULL, s_to_ws("Texture Tag : " + to_string(static_cast<int>(tag))).c_str(), L"Sprite Image Error", MB_OK);
 
 	return (*findResource).second;
 }
 
+void CSpriteImageManager::CreateSpriteImage(TextureTag tag, XMFLOAT3 position, float sizeX, float sizeY, bool bIsInfinity)
+{
+	CSpriteImageObject* pSpriteObject = new CSpriteImageObject(SCENE_MGR->g_pPlayer, tag, sizeX, sizeY, bIsInfinity);
+	pSpriteObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
+	pSpriteObject->SetPosition(position);
+
+	m_vecSpriteObjectContainer.push_back(pSpriteObject);
+}
+
 void CSpriteImageManager::UpdateManager(float fDeltaTime)
 {
+	for (auto& object : m_vecSpriteObjectContainer)
+		object->Update(fDeltaTime);
+}
 
+void CSpriteImageManager::RenderAll(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
+{
+	pd3dDeviceContext->OMSetBlendState(STATEOBJ_MGR->g_pFireBS, nullptr, 0xffffffff);
+
+	for (auto& object : m_vecSpriteObjectContainer)
+		object->Render(pd3dDeviceContext, pCamera);
+
+	pd3dDeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 }

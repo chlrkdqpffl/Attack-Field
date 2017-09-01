@@ -372,9 +372,6 @@
     <ClCompile Include="SpriteImageShader.cpp">
       <Filter>Objects\SpriteImage</Filter>
     </ClCompile>
-    <ClCompile Include="SpriteImageMesh.cpp">
-      <Filter>Objects\SpriteImage</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -651,9 +648,6 @@
       <Filter>헤더 파일\Manager</Filter>
     </ClInclude>
     <ClInclude Include="SpriteImageObject.h">
-      <Filter>Objects\SpriteImage</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteImageMesh.h">
       <Filter>Objects\SpriteImage</Filter>
     </ClInclude>
     <ClInclude Include="SpriteImageShader.h">
