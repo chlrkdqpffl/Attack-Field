@@ -103,7 +103,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 #endif
 	}
-	else
+	else 
 		m_pCharacter->SetIsFire(false);
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRightMouse)) {

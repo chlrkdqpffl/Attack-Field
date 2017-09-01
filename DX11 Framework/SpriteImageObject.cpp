@@ -3,8 +3,8 @@
 
 ID3D11Buffer*	CSpriteImageObject::m_pSpriteInfoCB = NULL;
 
-CSpriteImageObject::CSpriteImageObject(CPlayer* player, TextureTag tag, float sizeX, float sizeY, bool bIsInfinity)
-	: CBillboardObject(player), m_fSizeX(sizeX), m_fSizeY(sizeY), m_bIsInfinity(bIsInfinity)
+CSpriteImageObject::CSpriteImageObject(CPlayer* player, TextureTag tag, bool bIsInfinity)
+	: CBillboardObject(player), m_bIsInfinity(bIsInfinity)
 {
 	m_tagTexture = tag;
 	m_infoSprite = SPRITE_MGR->CloneSpriteInfo(tag);
@@ -16,7 +16,7 @@ CSpriteImageObject::~CSpriteImageObject()
 
 void CSpriteImageObject::CreateMesh(ID3D11Device *pd3dDevice)
 {
-	CMesh* pMesh = new CTextureToScreenRectMesh(pd3dDevice, m_fSizeX, m_fSizeY);
+	CMesh* pMesh = new CTextureToScreenRectMesh(pd3dDevice, m_infoSprite.m_fMeshSizeX, m_infoSprite.m_fMeshSizeY);
 	SetMesh(pMesh);
 }
 
@@ -55,7 +55,7 @@ void CSpriteImageObject::UpdateConstantBuffers(int frame, SpriteInfo info)
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Map(m_pSpriteInfoCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	XMFLOAT4 *pSpriteInfo = (XMFLOAT4 *)d3dMappedResource.pData;
-	memcpy(pSpriteInfo, &XMFLOAT4(frame, info.m_nSizeX, info.m_nSizeY, 0.0f), sizeof(XMFLOAT4));
+	memcpy(pSpriteInfo, &XMFLOAT4(frame, info.m_nSpriteCount.x, info.m_nSpriteCount.y, 0.0f), sizeof(XMFLOAT4));
 
 	STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(m_pSpriteInfoCB, 0);
 
@@ -69,14 +69,13 @@ void CSpriteImageObject::ReleaseConstantBuffers()
 
 void CSpriteImageObject::Update(float fDeltaTime)
 {
-	if (!m_bIsActive)
-		return;
-
 	CBillboardObject::Update(fDeltaTime);
 
 	m_fTotalTime += fDeltaTime;
-	m_nFrame = int((m_fTotalTime / m_infoSprite.m_fLifeTime ) * (m_infoSprite.m_nSizeX * m_infoSprite.m_nSizeY));
-	
+	m_nFrame = int((m_fTotalTime / m_infoSprite.m_fLifeTime ) * (m_infoSprite.m_nSpriteCount.x * m_infoSprite.m_nSpriteCount.y));
+//	m_nFrame++;
+//	if (m_nFrame > m_infoSprite.m_nSizeX * m_infoSprite.m_nSizeY)
+//		m_nFrame = 0;
 
 	if (m_bIsInfinity) {
 		if (m_fTotalTime >= m_infoSprite.m_fLifeTime)
@@ -84,15 +83,12 @@ void CSpriteImageObject::Update(float fDeltaTime)
 	}
 	else {
 		if (m_fTotalTime >= m_infoSprite.m_fLifeTime)
-			m_bIsActive = false;
+			m_bActive = false;
 	}
 }
 
 void CSpriteImageObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	if (!m_bIsActive)
-		return;
-
 	if (m_pShader) m_pShader->Render(pd3dDeviceContext, pCamera);
 	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
 

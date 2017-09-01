@@ -212,19 +212,21 @@ void CState_Fire::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	}
 
 	// Check Reload
+	/*
 #ifdef USE_SERVER
 	if (pCharacter->GetIsReload()) {
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());
 		return;
 	}
 #else
+*/
 	if (pCharacter->GetIsReload()) {
 		if (pCharacter->GetWeaponBulletCount() != pCharacter->GetWeaponMaxBulletCount()) {
 			pUpperFSM->ChangeState(CState_Reload::GetInstance());
 			return;
 		}
 	}
-#endif
+//#endif
 	
 	// Check not Fire
 	if (!pCharacter->GetIsFire()) {
@@ -240,6 +242,7 @@ void CState_Fire::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 void CState_Fire::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	SPRITE_MGR->DisableSprite(TextureTag::eExplosionSprite2, pCharacter->GetServerID());
 }
 
 // ---------------------------- Run ---------------------------- //

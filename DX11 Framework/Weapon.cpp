@@ -16,20 +16,17 @@ CWeapon::~CWeapon()
 
 void CWeapon::Firing(XMVECTOR direction)
 {
+	cout << m_pOwner->GetServerID() << endl;
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed) {
 		m_dwLastAttackTime = GetTickCount();
 #ifndef DEVELOP_MODE
 		SOUND_MGR->Play3DSound(SoundTag::eFire, m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);	// 너무 시끄러워서 임시 제거
 #endif
+		SPRITE_MGR->ActivationSprite(TextureTag::eExplosionSprite2, m_pOwner->GetServerID());
 		SOUND_MGR->Play3DSound(SoundTag::eShellsFall, m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);
 		m_nhasBulletCount--;
 
 		XMVECTOR firePosOffset = GetvPosition() + (-1 * GetvRight() * (GetBoundingBox().Extents.z - 0.6f)) + (-1 * GetvLook() * 0.225) + (GetvUp() * 0.1f);
-
-		XMVECTOR muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
-		XMFLOAT3 f3muzzlePosition; XMStoreFloat3(&f3muzzlePosition, muzzlePosition);
-		SPRITE_MGR->CreateSpriteImage(TextureTag::eExplosionSprite2, f3muzzlePosition, TWBAR_MGR->g_xmf3Quaternion.x, TWBAR_MGR->g_xmf3Quaternion.y, true);
-	
 #ifdef USE_SERVER
 
 		if (SCENE_MGR->g_pPlayerCharacter->GetIsFire()) //자기 자신이 쏠대만 보낸다.
@@ -81,7 +78,6 @@ void CWeapon::Firing(XMVECTOR direction)
 				if (info.m_HitParts == ChracterBoundingBoxParts::eHead) {
 					hitCharacter->SetIsHeadHit(true);
 					hitCharacter->DamagedCharacter(m_fDamage * 2.5f);
-
 					PARTICLE_MGR->CreateParticle(ParticleTag::eCopiousBleeding, bloodOffset);
 				}
 				else {
@@ -118,4 +114,9 @@ void CWeapon::Update(float fDeltaTime)
 	m_mtxWorld = m_mtxLocal * m_mtxParent * m_pOwner->m_mtxWorld;
 //	SetRotate(TWBAR_MGR->g_xmf3Rotate, true);
 //	SetPosition(TWBAR_MGR->g_xmf3Offset, true);
+	
+	// 총구 위치에 스프라이트 오브젝트 대기
+	XMVECTOR muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
+	XMFLOAT3 f3muzzlePosition; XMStoreFloat3(&f3muzzlePosition, muzzlePosition);
+	SPRITE_MGR->SetPosition(TextureTag::eExplosionSprite2, f3muzzlePosition, m_pOwner->GetServerID());
 }

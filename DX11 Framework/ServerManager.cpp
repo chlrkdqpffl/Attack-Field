@@ -94,16 +94,16 @@ void CServerManager::processpacket(char *ptr)
 			pCharObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
 			pCharObject->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 
-				pCharObject->SetRelativeVelocity(my_put_packet->Animation);
-				pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
-				pCharObject->SetServerID(id);
-				pCharObject->Setmode(my_put_packet->mode);
+			pCharObject->SetRelativeVelocity(my_put_packet->Animation);
+			pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
+			pCharObject->SetServerID(id);
+			pCharObject->Setmode(my_put_packet->mode);
 
 			SCENE_MGR->g_pMainScene->GetCharcontainer().push_back(pCharObject);
 			SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);
 
 			COLLISION_MGR->m_vecCharacterContainer.push_back(pCharObject);
-		
+			SPRITE_MGR->CreateSpriteImage(TextureTag::eExplosionSprite2, XMFLOAT3(0, 0, 0), true);		// 캐릭터 개수만큼 스프라이트 추가 생성
 			/*
 			UINT index;
 			int i = 0;

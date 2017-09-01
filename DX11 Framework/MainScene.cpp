@@ -14,8 +14,9 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-2.0f, 0.0f, 0.2f);
-	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(0.2f, 0.2f, 0.0f, 0.0f);
+//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.9f, 0.0f, 0.2f);
+	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.1f, 0.03f, 0.02f);
+//	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(0.2f, 0.2f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(1.4f, 0.6f, 2.5f, 0.4f);
 }
 
@@ -113,8 +114,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_F5:	
 			{
-				CUIObject* pDamageDirection_TopUI = m_pUIManager->GetUIObject(TextureTag::eDamageDirection_Top);
-				pDamageDirection_TopUI->AddOpacity(1.0);
+				m_vecCharacterContainer.back()->Firing();
 			}
 				break;
 			break;
@@ -421,10 +421,11 @@ void CMainScene::Initialize()
 	pCharacter->SetLife(100);
 #endif
 	pCharacter->SetPosition(60.0f, 2.5f, 15.0f);
+	pCharacter->SetServerID(1);
 
 	m_vecBBoxRenderContainer.push_back(pCharacter);
 	m_vecCharacterContainer.push_back(pCharacter);
-
+	SPRITE_MGR->CreateSpriteImage(TextureTag::eExplosionSprite2, XMFLOAT3(0, 0, 0), true);		// 캐릭터 개수만큼 스프라이트 추가 생성
 	COLLISION_MGR->m_vecCharacterContainer.push_back(pCharacter);
 #endif
 

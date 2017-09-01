@@ -102,6 +102,8 @@ void CScene::CreatePlayer()
 	SCENE_MGR->g_pPlayerCharacter = m_pPlayerCharacter;
 	SCENE_MGR->g_pPlayer = m_pPlayer;
 	m_pPlayer->SetPosition(XMVectorSet(60.0f, 2.5f, 20.0f, 0.0f));
+
+	SPRITE_MGR->CreateSpriteImage(TextureTag::eExplosionSprite2, XMFLOAT3(0, 0, 0), true);
 }
 
 void CScene::ReleaseObjects()
