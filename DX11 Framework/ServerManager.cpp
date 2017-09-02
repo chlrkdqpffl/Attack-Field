@@ -276,6 +276,7 @@ void CServerManager::processpacket(char *ptr)
 	{
 		SC_Respawn *packet;
 		packet = reinterpret_cast<SC_Respawn *>(ptr);
+		ShowXMFloat3(packet->m_f3Position);
 		id = packet->id;
 		if (id == m_myid)
 		{
@@ -292,7 +293,7 @@ void CServerManager::processpacket(char *ptr)
 				i++;
 			}
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(packet->m_f3Position);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(PLAYER_HP);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Revival();
 		}
 		break;
 	}

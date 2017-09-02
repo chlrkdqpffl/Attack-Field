@@ -86,7 +86,7 @@ public:
 	void Walking();
 	void Running();
 	void Reloading();
-	void Revival(UINT life);
+	void Revival();
 
 	void DamagedCharacter(UINT damage);
 
