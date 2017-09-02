@@ -78,11 +78,7 @@ void CCharacterObject::Reloading()
 
 void CCharacterObject::Revival(UINT life)
 {
-#ifdef USE_SERVER
-
-#else
 	m_nLife = life;
-#endif
 }
 
 void CCharacterObject::DamagedCharacter(UINT damage)

@@ -7,6 +7,7 @@ void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 
 	if (pCharacter->GetIsDeath()) {
+		cout << "디졌다 " << endl;
 		pUpperFSM->ChangeState(CState_Death::GetInstance());
 		pLowerFSM->ChangeState(CState_Death::GetInstance());
 		return;
@@ -330,6 +331,7 @@ void CState_Death::UpdateUpperBodyState(CCharacterObject* pCharacter)
 
 #ifdef USE_SERVER
 	if (pCharacter->GetIsRespawn()) {
+		cout << "리스폰 되었습니다 " << endl;
 		pUpperFSM->ChangeState(CState_Idle::GetInstance());
 		pLowerFSM->ChangeState(CState_Idle::GetInstance());
 		pCharacter->SetControllerActive(AnimationData::Parts::UpperBody, true);
@@ -364,8 +366,8 @@ void CState_Death::ExitState(CCharacterObject* pCharacter, AnimationData::Parts 
 
 	pCharacter->SetIsDeadly(false);
 	pCharacter->SetIsRespawn(false);
-#ifndef USE_SERVER
 	pCharacter->Revival(100);
+#ifndef USE_SERVER
 	pCharacter->SetPosition(m_Position);
 #endif
 }
