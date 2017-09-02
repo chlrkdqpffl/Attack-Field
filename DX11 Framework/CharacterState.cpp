@@ -9,10 +9,8 @@ void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	// 죽은 상태일 때에는 상태 확인 X
 	if (pUpperFSM->GetCurrentState() == CState_Death::GetInstance())
 		return;
-	
-	if (pCharacter->GetIsDeath()) {
-		cout << "데스상태 " << pCharacter->GetLife() << endl;
 
+	if (pCharacter->GetIsDeath()) {
 		pUpperFSM->ChangeState(CState_Death::GetInstance());
 		pLowerFSM->ChangeState(CState_Death::GetInstance());
 		return;
@@ -288,8 +286,7 @@ void CState_Death::EnterState(CCharacterObject* pCharacter, AnimationData::Parts
 {
 	if (type == AnimationData::Parts::LowerBody)
 		return;
-	cout << "데스 상태 진입" << endl;
-	cout << "그때의 HP : " << pCharacter->GetLife() << endl;
+
 	// 리스폰 대기 시간 5초
 	m_dwDeathWaitingTime = RESPAWN_TIME;
 	m_dwDeathStartTime = GetTickCount();
