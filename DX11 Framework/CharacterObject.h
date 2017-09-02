@@ -123,6 +123,8 @@ public:
 	XMFLOAT3 GetFireDirection() const { return m_f3FiringDirection; }
 	void SetFireDirection(XMFLOAT3 GetFireDirection) { m_f3FiringDirection = GetFireDirection; }
 
+	CSpriteImageObject* GetMuzzleSprite() const { return m_pWeapon->GetMuzzleSprite(); }
+
 	// --- 파츠별 바운딩 박스 월드 매트릭스 적용 함수 --- //
 	void SetPartsWorldMtx();
 

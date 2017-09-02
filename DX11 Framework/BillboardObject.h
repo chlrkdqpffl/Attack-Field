@@ -3,10 +3,9 @@
 
 class CBillboardObject : public CGameObject
 {
-	CPlayer*	m_pPlayer = nullptr;
 
 public:
-	CBillboardObject(CPlayer* pPlayer);
+	CBillboardObject();
 	virtual ~CBillboardObject();
 
 	void SetLookAt(XMFLOAT3 cameraPos);

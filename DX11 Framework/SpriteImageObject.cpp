@@ -3,8 +3,8 @@
 
 ID3D11Buffer*	CSpriteImageObject::m_pSpriteInfoCB = NULL;
 
-CSpriteImageObject::CSpriteImageObject(CPlayer* player, TextureTag tag, bool bIsInfinity)
-	: CBillboardObject(player), m_bIsInfinity(bIsInfinity)
+CSpriteImageObject::CSpriteImageObject(TextureTag tag, bool bIsInfinity)
+	: m_bIsInfinity(bIsInfinity)
 {
 	m_tagTexture = tag;
 	m_infoSprite = SPRITE_MGR->CloneSpriteInfo(tag);

@@ -4,6 +4,7 @@
 #include "LineObject.h"
 
 class CCharacterObject;
+class CSpriteImageObject;
 
 class CWeapon :	public CGameObject
 {
@@ -13,6 +14,7 @@ public:
 
 protected:
 	CCharacterObject*		m_pOwner;
+	CSpriteImageObject*		m_pMuzzleSpirte = nullptr;
 
 	UINT					m_nBoneIndex = 0;
 	XMMATRIX				m_mtxParent;
@@ -35,4 +37,5 @@ public:
 	bool IsExistBullet() const { return ( 0 < m_nhasBulletCount); }
 	UINT GetBulletCount() const { return m_nhasBulletCount; }
 	UINT GetMaxBulletCount() const { return m_nMaxhasBulletCount; }
+	CSpriteImageObject*	GetMuzzleSprite() const { return m_pMuzzleSpirte; }
 };

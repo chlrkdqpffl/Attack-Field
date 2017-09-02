@@ -113,9 +113,10 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
 			case VK_F5:	
-			{
-				m_vecCharacterContainer.back()->Firing();
-			}
+				m_vecCharacterContainer.back()->SetIsFire(true);
+				break;
+			case VK_F6:
+				m_vecCharacterContainer.back()->SetIsFire(false);
 				break;
 			break;
 #ifndef USE_SERVER
@@ -254,6 +255,7 @@ void CMainScene::Initialize()
 	cout << "=============================================================================================" << endl;
 	cout << "==================================== Scene Main Loading =====================================" << endl;
 
+	SPRITE_MGR->InitializeManager();
 	ShowCursor(false);
 
 	m_pWorldCenterAxis = new CAxisObjects();
@@ -425,7 +427,6 @@ void CMainScene::Initialize()
 
 	m_vecBBoxRenderContainer.push_back(pCharacter);
 	m_vecCharacterContainer.push_back(pCharacter);
-	SPRITE_MGR->CreateSpriteImage(TextureTag::eExplosionSprite2, XMFLOAT3(0, 0, 0), true);		// 캐릭터 개수만큼 스프라이트 추가 생성
 	COLLISION_MGR->m_vecCharacterContainer.push_back(pCharacter);
 #endif
 

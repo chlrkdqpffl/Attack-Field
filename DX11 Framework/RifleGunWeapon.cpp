@@ -35,6 +35,10 @@ void CRifleGunWeapon::CreateMesh(ID3D11Device *pd3dDevice)
 	pMesh->Initialize(pd3dDevice);
 
 	SetMesh(pMesh);
+
+	// Sprite Image
+	m_pMuzzleSpirte = SPRITE_MGR->CreateSpriteImage(TextureTag::eExplosionSprite2, XMFLOAT3(0, 0, 0), true);
+	m_pMuzzleSpirte->SetActive(false);
 }
 
 void CRifleGunWeapon::CreateShader(ID3D11Device *pd3dDevice)

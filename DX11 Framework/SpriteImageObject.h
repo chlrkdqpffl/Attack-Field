@@ -8,7 +8,7 @@
 class CSpriteImageObject : public CBillboardObject
 {
 public:
-	CSpriteImageObject(CPlayer* player, TextureTag tag, bool bIsInfinity = false);
+	CSpriteImageObject(TextureTag tag, bool bIsInfinity = false);
 	virtual ~CSpriteImageObject();
 
 	virtual void CreateMesh(ID3D11Device *pd3dDevice) override;

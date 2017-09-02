@@ -76,7 +76,6 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	MAPDATA_MGR->InitializeManager();
 	RESOURCE_MGR->InitializeManager();
 	SOUND_MGR->InitializeManager();
-	SPRITE_MGR->InitializeManager();
 
 	BuildObjects();
 	

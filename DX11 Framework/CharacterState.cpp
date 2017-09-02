@@ -242,7 +242,7 @@ void CState_Fire::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 void CState_Fire::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-	SPRITE_MGR->DisableSprite(TextureTag::eExplosionSprite2, pCharacter->GetServerID());
+	SPRITE_MGR->DisableSprite(pCharacter->GetMuzzleSprite());
 }
 
 // ---------------------------- Run ---------------------------- //

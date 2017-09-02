@@ -2,11 +2,9 @@
 #include "BillboardObject.h"
 
 
-CBillboardObject::CBillboardObject(CPlayer* pPlayer)
-	: m_pPlayer(pPlayer)
+CBillboardObject::CBillboardObject()
 {
 }
-
 
 CBillboardObject::~CBillboardObject()
 {
@@ -30,7 +28,7 @@ void CBillboardObject::Update(float fDeltaTime)
 {
 	CGameObject::Update(fDeltaTime);
 
-	SetLookAt(m_pPlayer->GetCamera()->GetPosition());
+	SetLookAt(SCENE_MGR->g_pCamera->GetPosition());
 }
 
 void CBillboardObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)

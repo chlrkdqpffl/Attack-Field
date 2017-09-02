@@ -7,17 +7,17 @@ void CSpriteImageManager::InitializeManager()
 //	AddSpriteInfo(TextureTag::eExplosionSprite, SpriteInfo(10, 5, 1.0f));
 //	AddSpriteInfo(TextureTag::eExplosionSprite2, SpriteInfo(5, 3, 1.0f));
 
-//	AddSpriteInfo(TextureTag::eExplosionSprite, SpriteInfo(7, 1, 0.6f));
+	AddSpriteInfo(TextureTag::eExplosionSprite, SpriteInfo(POINT{5, 3}, 0.05f, 0.05f, 0.1f));
 	AddSpriteInfo(TextureTag::eExplosionSprite2, SpriteInfo(POINT{ 7, 1 }, 0.05f, 0.05f, 0.1f));
+	AddSpriteInfo(TextureTag::eExplosionSprite3, SpriteInfo(POINT{ 5, 1 }, 0.05f, 0.05f, 0.1f));
 
 	CSpriteImageObject::CreateConstantBuffers();
 }
 
 void CSpriteImageManager::ReleseManager()
 {
-	for (auto& index = m_mapSpriteObjectContainer.begin(); index != m_mapSpriteObjectContainer.end(); ++index)
-		for (auto& system : index->second)
-			SafeDelete(system);
+	for (auto& obj : m_vecSpriteObjectContainer)
+		SafeDelete(obj);
 
 	CSpriteImageObject::ReleaseConstantBuffers();
 }
@@ -41,76 +41,58 @@ SpriteInfo CSpriteImageManager::CloneSpriteInfo(TextureTag tag)
 	return (*findResource).second;
 }
 
-void CSpriteImageManager::CreateSpriteImage(TextureTag tag, XMFLOAT3 position, bool bIsInfinity)
+CSpriteImageObject* CSpriteImageManager::CreateSpriteImage(TextureTag tag, XMFLOAT3 position, bool bIsInfinity)
 {
-	CSpriteImageObject* pSpriteObject = new CSpriteImageObject(SCENE_MGR->g_pPlayer, tag, bIsInfinity);
-	pSpriteObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
-	pSpriteObject->SetPosition(position);
+	CSpriteImageObject* spriteID = new CSpriteImageObject(tag, bIsInfinity);
+	spriteID->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
+	spriteID->SetPosition(position);
 
-	auto findSprite = m_mapSpriteObjectContainer.find(tag);
-	if (findSprite != m_mapSpriteObjectContainer.end()) {
-		findSprite->second.push_back(pSpriteObject);
-		return;
-	}
+	m_vecSpriteObjectContainer.push_back(spriteID);
 
-	// Not Found Sprite - new Sprite Container
-	vector<CSpriteImageObject*> vecObjectContainer;
-	vecObjectContainer.reserve(5);
-	vecObjectContainer.push_back(pSpriteObject);
-
-	m_mapSpriteObjectContainer.insert(make_pair(tag, vecObjectContainer));
+	return spriteID;
 }
 
-void CSpriteImageManager::ActivationSprite(TextureTag tag, UINT objectID)
+void CSpriteImageManager::ActivationSprite(CSpriteImageObject* spriteID)
 {
-	auto findSpriteContainer = m_mapSpriteObjectContainer.find(tag);
-	if (findSpriteContainer != m_mapSpriteObjectContainer.end()) {
-		auto spriteObject = findSpriteContainer->second[objectID];
-		spriteObject->SetActive(true);
-	}
-	else
-		MessageBox(NULL, s_to_ws("Texture Tag : " + to_string(static_cast<int>(tag))).c_str(), L"Sprite Image Error", MB_OK);
+	for (auto& spriteObject : m_vecSpriteObjectContainer)
+		if (spriteObject == spriteID) {
+			spriteObject->SetActive(true);
+			return;
+		}
 }
 
-void CSpriteImageManager::SetPosition(TextureTag tag, XMFLOAT3 position, UINT objectID)
+void CSpriteImageManager::SetPosition(CSpriteImageObject* spriteID, XMFLOAT3 position)
 {
-	auto findSpriteContainer = m_mapSpriteObjectContainer.find(tag);
-	if (findSpriteContainer != m_mapSpriteObjectContainer.end()) {
-		auto spriteObject = findSpriteContainer->second[objectID];
-		spriteObject->SetPosition(position);
-	}
-	else
-		MessageBox(NULL, s_to_ws("Texture Tag : " + to_string(static_cast<int>(tag))).c_str(), L"Sprite Image Error", MB_OK);
+	for (auto& spriteObject : m_vecSpriteObjectContainer)
+		if (spriteObject == spriteID) {
+			spriteObject->SetPosition(position);
+			return;
+		}
 }
 
-void CSpriteImageManager::DisableSprite(TextureTag tag, UINT objectID)
+void CSpriteImageManager::DisableSprite(CSpriteImageObject* spriteID)
 {
-	auto findSpriteContainer = m_mapSpriteObjectContainer.find(tag);
-	if (findSpriteContainer != m_mapSpriteObjectContainer.end()) {
-		auto spriteObject = findSpriteContainer->second[objectID];
-		spriteObject->SetActive(false);
-	}
-	else
-		MessageBox(NULL, s_to_ws("Texture Tag : " + to_string(static_cast<int>(tag))).c_str(), L"Sprite Image Error", MB_OK);
+	for (auto& spriteObject : m_vecSpriteObjectContainer)
+		if (spriteObject == spriteID) {
+			spriteObject->SetActive(false);
+			return;
+		}
 }
 
 void CSpriteImageManager::UpdateManager(float fDeltaTime)
 {
-	for (auto& container : m_mapSpriteObjectContainer)
-		for (auto& system : container.second)
-			if (system->GetActive())
-				system->Update(fDeltaTime);
+	for (auto& spriteObject : m_vecSpriteObjectContainer)
+		if (spriteObject->GetActive())
+			spriteObject->Update(fDeltaTime);
 }
 
 void CSpriteImageManager::RenderAll(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 {
 	pd3dDeviceContext->OMSetBlendState(STATEOBJ_MGR->g_pFireBS, nullptr, 0xffffffff);
 
-	for (auto& container : m_mapSpriteObjectContainer) {
-			for (auto& system : container.second)
-				if (system->GetActive())
-					system->Render(pd3dDeviceContext, pCamera);
-	}
+	for (auto& spriteObject : m_vecSpriteObjectContainer)
+		if (spriteObject->GetActive())
+			spriteObject->Render(pd3dDeviceContext, pCamera);
 
 	pd3dDeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 }

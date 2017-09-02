@@ -27,13 +27,13 @@ public:
 	void AddSpriteInfo(TextureTag tag, SpriteInfo info);
 	SpriteInfo CloneSpriteInfo(TextureTag tag);
 
-	void CreateSpriteImage(TextureTag tag, XMFLOAT3 position, bool bIsInfinity = false);
-	void ActivationSprite(TextureTag tag, UINT objectID);
-	void SetPosition(TextureTag tag, XMFLOAT3 position, UINT objectID);
-	void DisableSprite(TextureTag tag, UINT objectID);
+	CSpriteImageObject* CreateSpriteImage(TextureTag tag, XMFLOAT3 position, bool bIsInfinity = false);
+	void ActivationSprite(CSpriteImageObject* spriteID);
+	void SetPosition(CSpriteImageObject* spriteID, XMFLOAT3 position);
+	void DisableSprite(CSpriteImageObject* spriteID);
 	void RenderAll(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera);
 
 private:
-	map<TextureTag, SpriteInfo>						m_mapSpriteInfoPool;
-	map<TextureTag, vector<CSpriteImageObject*>>	m_mapSpriteObjectContainer;
+	map<TextureTag, SpriteInfo>		m_mapSpriteInfoPool;
+	vector<CSpriteImageObject*>		m_vecSpriteObjectContainer;
 };
