@@ -276,7 +276,6 @@ void CServerManager::processpacket(char *ptr)
 	{
 		SC_Respawn *packet;
 		packet = reinterpret_cast<SC_Respawn *>(ptr);
-		ShowXMFloat3(packet->m_f3Position);
 		id = packet->id;
 		if (id == m_myid)
 		{

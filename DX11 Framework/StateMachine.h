@@ -30,10 +30,10 @@ public:
 
 	virtual void Update()
 	{
-		m_pAnyState->UpdateUpperBodyState(m_pOwner);
-
-		if (m_partsBody == AnimationData::Parts::UpperBody)
+		if (m_partsBody == AnimationData::Parts::UpperBody) {
+			m_pAnyState->UpdateUpperBodyState(m_pOwner);
 			m_pCurrentState->UpdateUpperBodyState(m_pOwner);
+		}
 		else
 			m_pCurrentState->UpdateLowerBodyState(m_pOwner);
 	}
