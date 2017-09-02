@@ -38,11 +38,13 @@ enum class TeamType
 	eRedTeam, eBlueTeam
 };
 
-enum class SceneTag {
+enum class SceneTag 
+{
 	eNone, eTitleScene, eLoadingScene, eMainScene, eWaitScene
 };
 
-enum class ShaderTag {
+enum class ShaderTag
+{
 	eNone,
 	eColor, eNormal, eTexture, eNormalTexture, eNormalTangentTexture, eDisplacementMapping,
 
@@ -117,7 +119,6 @@ namespace AnimationData
 		eWalk_Left, eWalk_ForwardLeft, eWalk_Forward, eWalk_ForwardRight, eWalk_Right, eWalk_BackwardRight, eWalk_Backward, eWalk_BackwardLeft,
 	};
 }
-
 
 // =========================================================================================================================== //
 // ===================================================== Texture Data ======================================================== //
@@ -194,10 +195,8 @@ enum class TextureTag
 
 };
 
-
 // ========================================================================================================================= //
 // ======================================================= Mesh Data ======================================================= //
-
 enum class MeshTag
 {
 	eNone,
@@ -259,7 +258,6 @@ enum class ObjectTag
 	eGrass, eStreetLamp, eBarricade
 };
 
-
 // =========================================================================================================================== //
 // ===================================================== Sound Data ======================================================== //
 enum class SoundTag
@@ -275,6 +273,17 @@ enum class SoundTag
 
 	SoundCount
 };
+
+/*
+enum SoundChannel
+{
+	eChannel_Bgm,
+	eChannel_Player,
+	eChannel_OtherPlayer,
+
+	ChannelCount
+};
+*/
 
 
 enum class GBufferType

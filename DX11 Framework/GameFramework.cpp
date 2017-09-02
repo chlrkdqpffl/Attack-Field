@@ -737,7 +737,7 @@ void CGameFramework::UpdateObjects()
 
 	SCENE_MGR->g_fDeltaTime = m_fDeltaTime;
 	SCENE_MGR->g_nowScene->Update(m_fDeltaTime);
-	SOUND_MGR->Update(m_fDeltaTime);
+	SOUND_MGR->UpdateManager(m_fDeltaTime);
 }
 
 //#define _WITH_PLAYER_TOP

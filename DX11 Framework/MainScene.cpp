@@ -15,7 +15,7 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 //	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.9f, 0.0f, 0.2f);
-	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.15f, 0.035f, 0.0f);
+	//TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.15f, 0.035f, 0.0f);
 	TWBAR_MGR->g_nSelect = 5.0f;
 //	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(0.2f, 0.2f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(1.4f, 0.6f, 2.5f, 0.4f);
@@ -117,6 +117,9 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_F6:
 				m_vecCharacterContainer.back()->SetIsFire(false);
+				break;
+			case VK_F7:
+				SOUND_MGR->AllStop();
 				break;
 			break;
 #ifndef USE_SERVER
@@ -1796,7 +1799,9 @@ void CMainScene::Update_LightningStrikes(float fDeltaTime)
 
 void CMainScene::Update(float fDeltaTime)
 {
-	// 충돌 정보 갱신
+	SOUND_MGR->SetVolume(TWBAR_MGR->g_xmf3Offset.x);
+
+
 	COLLISION_MGR->InitCollisionInfo();	// 현재 플레이어만 적용되고있어서 주석처리함
 //	COLLISION_MGR->UpdateManager();
 	Update_Light();

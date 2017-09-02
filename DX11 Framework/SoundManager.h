@@ -16,20 +16,11 @@ using namespace FMOD;
 #define BACK_MAX_DISTANCE 75
 #define MAXDISTANCE 300
 
-enum SoundChannel
-{
-	eChannel_Bgm,
-	eChannel_Effect,
-	eChannel_Walk,
-
-	ChannelCount
-};
-
 struct CSound3D 
 {
 public:
 	CSound3D() {};
-	CSound3D(XMFLOAT3 listenerPos, XMFLOAT3 pos, XMFLOAT3 dir, float nowSpeed, float addSpeed, float maxVolume, Channel* channel);
+	CSound3D(XMFLOAT3 pos, XMFLOAT3 dir, float nowSpeed, float addSpeed, float maxVolume, Channel* channel);
 	virtual ~CSound3D() {};
 
 	void Update(float fTimeDelta);
@@ -46,51 +37,31 @@ public:
 
 class CSoundManager : public CSingletonManager<CSoundManager>
 {
-	System*			g_pSystem;
-	Sound*			g_pSound[static_cast<int>(SoundTag::SoundCount)];
-	Channel*		g_pChannel[ChannelCount];
-	float			g_fMainVolume = 1.0f;
-	list<CSound3D*> g_listSound3DContainer;
+	System*				g_pSystem;
+	Sound*				g_pSound[static_cast<int>(SoundTag::SoundCount)];
+	float				g_fMainVolume = 1.0f;
+	list<CSound3D*>		g_listSound3DContainer;
+	Channel*			g_pChannel;
+	Channel*			g_pBGMChannel;
 
 public:
-#ifdef USE_SOUND
 	CSoundManager();
 	virtual ~CSoundManager();
 
 	virtual void InitializeManager() override;
+	void UpdateManager(float fTimeDelta);
 	virtual void ReleseManager() override;
 
 	void LoadAllSound();
 	void LoadBGMSound();
 	void LoadEffectSound();
 
-	void Update(float fTimeDelta);
+	void AddChennel();
 	void AllStop();
-	void Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f);
-	void Play3DSound(SoundTag soundTag, SoundChannel channel, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f);
-	void StopSound(SoundChannel channel);
+	void Play3DSound(SoundTag soundTag, UINT channelID, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f);
+	void StopSound(UINT channelID);
 	void Play2DSound(SoundTag soundTag, float volume = 1.0f);
 	void PlayBgm(SoundTag soundTag, float vol = 0.7f);
 
-	void VolumeControl(float volume);
-#else
-	CSoundManager() {}
-	virtual ~CSoundManager() {}
-
-	virtual void InitializeManager() {}
-	virtual void ReleseManager() {}
-
-	void LoadAllSound() {}
-	void LoadBGMSound() {}
-	void LoadEffectSound() {}
-
-	void Update(float fTimeDelta) {}
-	void AllStop() {}
-	void Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f) {}
-	void Play3DSound(SoundTag soundTag, SoundChannel channel, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f) {}
-	void StopSound(SoundChannel channel) {}
-	void Play2DSound(SoundTag soundTag, float volume = 1.0f) {}
-	void PlayBgm(SoundTag soundTag, float vol = 0.7f) {}
-	void VolumeControl(float volume) {}
-#endif
+	void SetVolume(float volume);
 };

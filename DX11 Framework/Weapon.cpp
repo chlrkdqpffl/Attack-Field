@@ -19,22 +19,17 @@ void CWeapon::Firing(XMVECTOR direction)
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed) {
 		m_dwLastAttackTime = GetTickCount();
 #ifndef DEVELOP_MODE
-		SOUND_MGR->Play3DSound(SoundTag::eFire, m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);	// 너무 시끄러워서 임시 제거
+		SOUND_MGR->Play3DSound(SoundTag::eFire, m_pOwner->GetServerID(), m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);	// 너무 시끄러워서 임시 제거
 #endif
-		XMVECTOR muzzlePosition = XMLoadFloat3(&m_f3MuzzlePosition);
-		
-	//	XMFLOAT3 pos; XMStoreFloat3(&pos, muzzlePosition + (GetvRight() * TWBAR_MGR->g_xmf3Quaternion.x));
-
+		SOUND_MGR->Play3DSound(SoundTag::eShellsFall, m_pOwner->GetServerID(), m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);
 		LIGHT_MGR->AddPointLight(m_f3MuzzlePosition, 8.0f, XMFLOAT3(0.9f, 0.9f, 0.6f));
 		SPRITE_MGR->ActivationSprite(m_pMuzzleSpirte);
-		SOUND_MGR->Play3DSound(SoundTag::eShellsFall, m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);
 		m_nhasBulletCount--;
 
 		XMVECTOR firePosOffset = GetvPosition() + (-1 * GetvRight() * (GetBoundingBox().Extents.z - 0.6f)) + (-1 * GetvLook() * 0.225) + (GetvUp() * 0.1f);
 #ifdef USE_SERVER
-
-		if (SCENE_MGR->g_pPlayerCharacter->GetIsFire()) //자기 자신이 쏠대만 보낸다.
-		{																 //이거 안해주면 자꾸 다른사람이 쏠때도 나간다...
+		if (m_pOwner->GetServerID() == 0) //자기 자신이 쏠대만 보낸다.
+		{
 			cs_weapon* packet = reinterpret_cast<cs_weapon *>(SERVER_MGR->GetSendbuffer());
 			packet->size = sizeof(cs_weapon);
 			packet->type = CS_WEAPONE;
@@ -43,6 +38,8 @@ void CWeapon::Firing(XMVECTOR direction)
 
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(packet));
 		}
+		else
+			m_pOwner->SetIsFire(false);
 
 		// Particle용 충돌체크 - 임시방편
 		CollisionInfo info;
@@ -120,7 +117,7 @@ void CWeapon::Update(float fDeltaTime)
 	XMVECTOR muzzlePosition;
 	if (m_pOwner->GetServerID() == 0)
 		//muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
-		muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
+		muzzlePosition = GetvPosition() + (GetvRight() * -1.15f) + (GetvUp() * 0.035f);
 	else
 		muzzlePosition = GetvPosition() + (GetvRight() * -1.0f) + (GetvUp() * 0.03f) + (GetvLook() * 0.02f);
 

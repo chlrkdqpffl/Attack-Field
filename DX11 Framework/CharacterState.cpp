@@ -165,14 +165,14 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 void CState_Walk::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-	SOUND_MGR->StopSound(SoundChannel::eChannel_Walk);
+	SOUND_MGR->StopSound(pCharacter->GetServerID());
 }
 
 // ---------------------------- Reload ---------------------------- //
 void CState_Reload::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.6f);
-	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 1);
+	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetServerID(), pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 1);
 }
 
 void CState_Reload::UpdateUpperBodyState(CCharacterObject* pCharacter)
@@ -240,7 +240,7 @@ void CState_Run::EnterState(CCharacterObject* pCharacter, AnimationData::Parts t
 	if (type == AnimationData::Parts::LowerBody)
 		return;
 
-	SOUND_MGR->Play3DSound(SoundTag::eRun, SoundChannel::eChannel_Walk, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
+	SOUND_MGR->Play3DSound(SoundTag::eRun, pCharacter->GetServerID(), pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun, 1.5f);
 	pCharacter->SetIsTempRun(true);
 }
@@ -274,7 +274,7 @@ void CState_Run::ExitState(CCharacterObject* pCharacter, AnimationData::Parts ty
 		return;
 
 	pCharacter->SetIsTempRun(false);
-	SOUND_MGR->StopSound(SoundChannel::eChannel_Walk);
+	SOUND_MGR->StopSound(pCharacter->GetServerID());
 }
 
 // ---------------------------- Death ---------------------------- //
@@ -296,7 +296,7 @@ void CState_Death::EnterState(CCharacterObject* pCharacter, AnimationData::Parts
 	m_Position = pCharacter->GetvPosition();
 #endif
 
-	SOUND_MGR->Play3DSound(SoundTag::eDeath, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 1);
+	SOUND_MGR->Play3DSound(SoundTag::eDeath, pCharacter->GetServerID(), pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 1);
 }
 
 void CState_Death::UpdateUpperBodyState(CCharacterObject* pCharacter)
