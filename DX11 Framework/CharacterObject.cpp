@@ -56,7 +56,7 @@ void CCharacterObject::Firing()
 void CCharacterObject::Walking()
 {
 	if (GetTickCount() - m_dwWalkSoundWatingTime > 1000) {
-		SOUND_MGR->Play3DSound(SoundTag::eWalk, m_nServerID, GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
+		SOUND_MGR->Play3DSound(SoundTag::eWalk, m_nServerID, GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 		m_dwWalkSoundWatingTime = GetTickCount();
 	}
 }
@@ -66,7 +66,7 @@ void CCharacterObject::Running()
 	m_bIsRun = true;
 //	m_pPlayer->GetCamera()->Move(GetLook() * 1);			// 추후 구현
 	if (GetTickCount() - m_dwWalkSoundWatingTime > 1000) {
-		SOUND_MGR->Play3DSound(SoundTag::eRun, m_nServerID, GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
+		SOUND_MGR->Play3DSound(SoundTag::eRun, m_nServerID, GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 		m_dwWalkSoundWatingTime = GetTickCount();
 	}
 }

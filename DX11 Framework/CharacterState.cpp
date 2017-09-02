@@ -15,7 +15,7 @@ void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		pUpperFSM->ChangeState(CState_HeadHit::GetInstance());
 		return;
 	}
-	else if (pCharacter->GetLife() <= 20) {
+	else if (pCharacter->GetLife() <= 30) {
 		pCharacter->SetIsDeadly(true);		// Show Deadly UI
 	}
 }
@@ -172,7 +172,7 @@ void CState_Walk::ExitState(CCharacterObject* pCharacter, AnimationData::Parts t
 void CState_Reload::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.6f);
-	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetCharacterID(), pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 1);
+	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetCharacterID(), pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 }
 
 void CState_Reload::UpdateUpperBodyState(CCharacterObject* pCharacter)
@@ -240,7 +240,7 @@ void CState_Run::EnterState(CCharacterObject* pCharacter, AnimationData::Parts t
 	if (type == AnimationData::Parts::LowerBody)
 		return;
 
-	SOUND_MGR->Play3DSound(SoundTag::eRun, pCharacter->GetCharacterID(), pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 0.7f);
+	SOUND_MGR->Play3DSound(SoundTag::eRun, pCharacter->GetCharacterID(), pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun, 1.5f);
 	pCharacter->SetIsTempRun(true);
 }
@@ -280,6 +280,7 @@ void CState_Run::ExitState(CCharacterObject* pCharacter, AnimationData::Parts ty
 // ---------------------------- Death ---------------------------- //
 void CState_Death::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	cout << "데스상태 진입" << endl;
 	if (type == AnimationData::Parts::LowerBody)
 		return;
 
@@ -296,7 +297,7 @@ void CState_Death::EnterState(CCharacterObject* pCharacter, AnimationData::Parts
 	m_Position = pCharacter->GetvPosition();
 #endif
 
-	SOUND_MGR->Play3DSound(SoundTag::eDeath, pCharacter->GetCharacterID(), pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 1, 1);
+	SOUND_MGR->Play3DSound(SoundTag::eDeath, pCharacter->GetCharacterID(), pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 }
 
 void CState_Death::UpdateUpperBodyState(CCharacterObject* pCharacter)
@@ -325,7 +326,7 @@ void CState_Death::UpdateUpperBodyState(CCharacterObject* pCharacter)
 			pCharacter->SetPosition(prevPos);
 		}
 	}
-
+	cout << "상체 데스" << endl;
 
 #ifdef USE_SERVER
 	if (pCharacter->GetIsRespawn()) {
@@ -356,6 +357,8 @@ void CState_Death::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 void CState_Death::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	cout << "상체 나가기" << endl;
+
 	if (type == AnimationData::Parts::LowerBody)
 		return;
 

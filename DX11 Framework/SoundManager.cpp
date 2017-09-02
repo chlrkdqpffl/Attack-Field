@@ -10,17 +10,18 @@ void CSound3D::Update(float fTimeDelta)
 {
 	XMVECTOR position = XMLoadFloat3(&m_f3Position);
 	XMVECTOR listenerPosition = SCENE_MGR->g_pCamera->GetvPosition();
-
-	float distance = XMVectorGetX(XMVector3LengthEst(position - listenerPosition));
-
-	if (distance > MAXDISTANCE)
-		m_pChannel->stop();
+	XMVECTOR direction = position - listenerPosition;
 
 	m_fNowSpeed += m_fAddSpeed;
 	position += m_fNowSpeed * XMLoadFloat3(&m_f3Direction);
 
+	float distance = XMVectorGetX(XMVector3LengthEst(direction));
+	if (distance > MAXDISTANCE)
+		m_pChannel->stop();
+
+	direction = XMVector3Normalize(direction);
 	XMVECTOR vLook = SCENE_MGR->g_pCamera->GetvLook();
-	float fDot = XMVectorGetX(XMVector3Dot(vLook, position));
+	float fDot = XMVectorGetX(XMVector3Dot(vLook, direction));
 	
 	float maxDistance = 0.0f;
 	if (fDot < 0)
@@ -29,14 +30,11 @@ void CSound3D::Update(float fTimeDelta)
 		maxDistance = MAXDISTANCE;
 
 	float volume = ((maxDistance - distance) / maxDistance) * m_fMaxVolume;
-	cout << volume << endl;
-
 	if (volume <= 0)
 		m_pChannel->stop();
 	else
 		m_pChannel->setVolume(volume);
 }
-
 
 // ----------------------------------------------------------------------------------------------------------------------------- //
 // ---------------------------------------------------- Sound Manager ---------------------------------------------------------- //
@@ -95,13 +93,10 @@ void CSoundManager::UpdateManager(float fTimeDelta)
 	for (auto& iter = g_listSound3DContainer.begin(); iter != g_listSound3DContainer.end(); ++iter) {
 		bool bIsPlay = false;
 		(*iter)->m_pChannel->isPlaying(&bIsPlay);
-//		(*iter)->m_pChannel->getPaused(&bIsPlay);
 		if (bIsPlay)
 			(*iter)->Update(fTimeDelta);
-		else {
+		else
 			g_listSound3DContainer.erase(iter++);
-			cout << "Áö¿ò " << endl;
-		}
 	}
 	
 	g_pSystem->update();
@@ -147,5 +142,7 @@ void CSoundManager::SetVolume(float volume)
 	else if (g_fMainVolume < 0)
 		g_fMainVolume = 0.0f;
 
+	cout << g_fMainVolume << endl;
+	g_pBGMChannel->setVolume(g_fMainVolume);
 	g_pChannel->setVolume(g_fMainVolume);
 }
