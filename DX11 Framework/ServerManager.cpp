@@ -29,8 +29,6 @@ void CServerManager::processpacket(char *ptr)
 				i++;
 			}
 
-			
-
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRelativeVelocity(my_Pos_packet->Animation);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(my_Pos_packet->hp);

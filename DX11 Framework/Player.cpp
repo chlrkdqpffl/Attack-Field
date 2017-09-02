@@ -41,10 +41,6 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	if (m_pCharacter->GetIsDeath())
 		return;
 
-	// Bullet Check
-	if (m_pCharacter->GetWeaponBulletCount() == m_pCharacter->GetWeaponMaxBulletCount())
-		m_wKeyState ^= static_cast<int>(KeyInput::eReload);
-
 	// Keyboard
 	XMVECTOR d3dxvShift = XMVectorZero();
 	XMVECTOR relativeVelocity = XMVectorZero();
@@ -70,8 +66,13 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 		relativeVelocity += XMVectorSet(1, 0, 0, 0);
 	}
 
-	if (m_wKeyState & static_cast<int>(KeyInput::eReload))
-		m_pCharacter->SetIsReload(true);
+	if (m_wKeyState & static_cast<int>(KeyInput::eReload)) {
+		// Bullet Check
+		if (m_pCharacter->GetWeaponBulletCount() == m_pCharacter->GetWeaponMaxBulletCount())
+			m_wKeyState ^= static_cast<int>(KeyInput::eReload);
+		else
+			m_pCharacter->SetIsReload(true);
+	}
 	else
 		m_pCharacter->SetIsReload(false);
 
