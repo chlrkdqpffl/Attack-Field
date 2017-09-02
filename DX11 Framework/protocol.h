@@ -297,6 +297,16 @@ struct CS_Fire
 	XMFLOAT3 FireDirection;
 };
 
+struct SC_fullHPpacket
+{
+	BYTE size;
+	BYTE type;
+
+	BYTE Hp;
+	BYTE id;
+
+};
+
 
 
 #pragma pack(pop)

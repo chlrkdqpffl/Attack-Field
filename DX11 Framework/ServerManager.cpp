@@ -143,6 +143,7 @@ void CServerManager::processpacket(char *ptr)
 						break;
 					i++;
 				}
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(my_put_bulletfire->fire);
 				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_bulletfire->FireDirection);
 				//         SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Firing();
 			}
@@ -402,12 +403,36 @@ void CServerManager::processpacket(char *ptr)
 		SCENE_MGR->g_pMainScene->SetOccupyTime(packet->Occupy_timer);
 		break;
 	}
-	case 18:
+	case 18:	//데미지?
 	{
 		SC_Damegedirection* packet;
 		packet = reinterpret_cast<SC_Damegedirection *>(ptr);
 
 		SCENE_MGR->g_pPlayer->SetDamagedInfo(DamagedInfo(true, packet->position));
+		break;
+	}
+	case 19:	//리스폰시 체력 100을 보내는 패킷을 따로 만듬.
+	{
+		SC_fullHPpacket *packet;
+		packet = reinterpret_cast<SC_fullHPpacket *>(ptr);
+		id = packet->id;
+
+		if (id == m_myid)
+		{
+			SCENE_MGR->g_pPlayerCharacter->SetLife(packet->Hp);
+		}
+		else
+		{
+			int i = 0;
+			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+			{
+				if (character->GetServerID() == id)
+					break;
+				i++;
+			}
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->Hp);
+		}
+	
 		break;
 	}
 	default:
