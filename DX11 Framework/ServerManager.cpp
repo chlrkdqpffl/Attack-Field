@@ -43,10 +43,10 @@ void CServerManager::processpacket(char *ptr)
 			else 
 				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(false);
 
-			//if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eLeftMouse))
-			//	SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(true);
-			//else
-			//	SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(false);
+	//		if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eLeftMouse))
+	//			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(true);
+	//		else
+	//			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(false);
 
 			//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(false);
 		}
@@ -145,7 +145,7 @@ void CServerManager::processpacket(char *ptr)
 				}
 				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(my_put_bulletfire->fire);
 				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_bulletfire->FireDirection);
-				//         SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Firing();
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(true);
 			}
 		}
 	}
@@ -274,30 +274,6 @@ void CServerManager::processpacket(char *ptr)
 		SCENE_MGR->g_pMainScene->SetGameTime(packet->Starting_timer);
 		break;
 	}
-	case 10:   //재장전
-	{
-		sc_Reload* packet;
-		packet = reinterpret_cast<sc_Reload *>(ptr);
-		id = packet->id;
-
-		if (id == m_myid)
-		{
-
-		}
-		else
-		{
-			int i = 0;
-			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
-			{
-				if (character->GetServerID() == id)
-					break;
-				i++;
-			}
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(packet->reload);
-
-		}
-		break;
-	}
 	case 11:   //리스폰
 	{
 		SC_Respawn *packet;
@@ -320,35 +296,6 @@ void CServerManager::processpacket(char *ptr)
 
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRespawn(packet->m_bIsRespawn);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(packet->m_f3Position);
-		}
-		break;
-	}
-	case 12:   //달리기 애니메이션.
-	{
-		SC_Run *packet;
-		packet = reinterpret_cast<SC_Run *>(ptr);
-		id = packet->id;
-		if (id == m_myid)
-		{
-
-		}
-		else
-		{
-			int i = 0;
-			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
-			{
-				if (character->GetServerID() == id)
-					break;
-				i++;
-			}
-
-			//if (packet->Run)
-			{
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(packet->Run);
-				//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Running();
-			}
-
-
 		}
 		break;
 	}

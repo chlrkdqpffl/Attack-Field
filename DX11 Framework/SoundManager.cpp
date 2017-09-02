@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "SoundManager.h"
 
-#ifdef USE_SOUND
-CSound3D::CSound3D(XMFLOAT3 listenerPos, XMFLOAT3 pos, XMFLOAT3 dir, float nowSpeed, float addSpeed, float maxVolume, Channel* channel)
-	: m_f3ListenerPosition(listenerPos), m_f3Position(pos), m_f3Direction(dir), m_fNowSpeed(nowSpeed), m_fAddSpeed(addSpeed), m_fMaxVolume(maxVolume), m_pChannel(channel)
+CSound3D::CSound3D(XMFLOAT3 pos, XMFLOAT3 dir, float nowSpeed, float addSpeed, float maxVolume, Channel* channel)
+	: m_f3Position(pos), m_f3Direction(dir), m_fNowSpeed(nowSpeed), m_fAddSpeed(addSpeed), m_fMaxVolume(maxVolume), m_pChannel(channel)
 {
 }
 
 void CSound3D::Update(float fTimeDelta)
 {
+	/*
 	XMVECTOR position = XMLoadFloat3(&m_f3Position);
 	XMVECTOR listenerPosition = XMLoadFloat3(&m_f3ListenerPosition);
 
@@ -31,6 +31,7 @@ void CSound3D::Update(float fTimeDelta)
 		m_pChannel->stop();
 	else
 		m_pChannel->setVolume(volume);
+		*/
 }
 
 
@@ -47,7 +48,7 @@ CSoundManager::~CSoundManager()
 void CSoundManager::InitializeManager()
 {
 	System_Create(&g_pSystem);
-	g_pSystem->init(64, FMOD_INIT_NORMAL, 0);
+	g_pSystem->init(16, FMOD_INIT_NORMAL, 0);
 	LoadAllSound();
 
 	//VolumeControl(0.2f); 왜 적용안되지?
@@ -87,59 +88,60 @@ void CSoundManager::LoadEffectSound()
 	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike4.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike4)]);
 }
 
-void CSoundManager::Update(float fTimeDelta)
+void CSoundManager::AddChennel()
 {
-	g_pSystem->update();
+	Channel* pChannel;
+	//g_vecChannelContainer.push_back(pChannel);
+}
 
-	for (auto& iter = g_listSound3DContainer.begin(); iter != g_listSound3DContainer.end(); ) {
+void CSoundManager::UpdateManager(float fTimeDelta)
+{
+	
+	for (auto& iter = g_listSound3DContainer.begin(); iter != g_listSound3DContainer.end(); ++iter) {
 		bool bIsPlay = false;
 		(*iter)->m_pChannel->isPlaying(&bIsPlay);
-		//	(*iter)->m_pChannel->getPaused(&bIsPlay);
+		(*iter)->m_pChannel->getPaused(&bIsPlay);
 		if (bIsPlay)
 			(*iter)->Update(fTimeDelta);
-		else
+		else 
 			g_listSound3DContainer.erase(iter++);
 	}
+	
+	g_pSystem->update();
 }
 
 void CSoundManager::AllStop()
 {
-	for (int i = 0; i < ChannelCount; ++i)
-		g_pChannel[i]->stop();
+//	for (auto& channel : g_vecChannelContainer)
+	g_pChannel->stop();
 }
 
-void CSoundManager::StopSound(SoundChannel channel)
+void CSoundManager::StopSound(UINT channelID)
 {
-	g_pChannel[channel]->stop();
+	g_pChannel->stop();
 }
 
-void CSoundManager::Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume)
+void CSoundManager::Play3DSound(SoundTag soundTag, UINT channelID, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume)
 {
-	FMOD_RESULT result;
-	g_pChannel[eChannel_Effect]->setVolume(volume);
-	result = g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel[eChannel_Effect]);
-	//	g_listSound3DContainer.push_back(new CSound3D(SCENE_MGR->g_pCamera->GetPosition(), position, direction, nowSpeed, addSpeed, volume, g_pChannel[eChannel_Effect]));
-}
+	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel);
+	g_pChannel->setVolume(volume);
 
-void CSoundManager::Play3DSound(SoundTag soundTag, SoundChannel channel, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume)
-{
-	g_pChannel[eChannel_Effect]->setVolume(volume);
-	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel[channel]);
+	g_listSound3DContainer.push_front(new CSound3D(position, direction, nowSpeed, addSpeed, volume, g_pChannel));
 }
 
 void CSoundManager::PlayBgm(SoundTag soundTag, float volume)
 {
-	g_pChannel[eChannel_Bgm]->setVolume(volume);
-	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], 0, &g_pChannel[eChannel_Bgm]);
+	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], 0, &g_pBGMChannel);
+	g_pBGMChannel->setVolume(volume);
 }
 
 void CSoundManager::Play2DSound(SoundTag soundTag, float volume)
 {
-	g_pChannel[eChannel_Effect]->setVolume(volume);
-	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel[eChannel_Effect]);
+	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel);
+	g_pChannel->setVolume(volume);
 }
 
-void CSoundManager::VolumeControl(float volume)
+void CSoundManager::SetVolume(float volume)
 {
 	g_fMainVolume += volume;
 
@@ -148,7 +150,5 @@ void CSoundManager::VolumeControl(float volume)
 	else if (g_fMainVolume < 0)
 		g_fMainVolume = 0.0f;
 
-	for (int i = 0; i < ChannelCount; ++i)
-		g_pChannel[i]->setVolume(g_fMainVolume);
+	g_pChannel->setVolume(g_fMainVolume);
 }
-#endif
