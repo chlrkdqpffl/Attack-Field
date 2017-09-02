@@ -82,7 +82,6 @@ public:
 	void SetDevice(ID3D11Device* pDevice) { m_pd3dDevice = pDevice; }
 	void SetDeviceContext(ID3D11DeviceContext* pDeviceContext) { m_pd3dDeviceContext = pDeviceContext; }
 	void SetTag(SceneTag tag) { m_tagScene = tag; }
-	ID3D11Device* Get3dDevice()  { return m_pd3dDevice; }
 	SceneTag GetSceneTag() const { return m_tagScene; }
 
 protected:

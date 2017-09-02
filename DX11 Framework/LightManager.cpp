@@ -207,12 +207,21 @@ void CLightManager::DoLighting(ID3D11DeviceContext* pd3dImmediateContext, CCamer
 	pd3dImmediateContext->RSGetState(&pPrevRSState);
 	pd3dImmediateContext->RSSetState(m_pNoDepthClipFrontRS);
 
-	//int count = 0;
 	// 절두체 컬링이 스피어라서 제대로 안됨
 	for (auto light : m_arrLights) {
 		if (!pCamera->IsInFrustum(&light.m_bsBoundingSphere))
+			continue;	
+		if (light.eLightType == TYPE_POINT)
+			PointLight(pd3dImmediateContext, light.vPosition, light.fRange, light.vColor, false);
+		else if (light.eLightType == TYPE_SPOT)
+			SpotLight(pd3dImmediateContext, light.vPosition, light.vDirection, light.fRange, light.fInnerAngle, light.fOuterAngle, light.vColor, false);
+		else if (light.eLightType == TYPE_CAPSULE)
+			CapsuleLight(pd3dImmediateContext, light.vPosition, light.vDirection, light.fRange, light.fLength, light.vColor, false);
+	}
+
+	for (auto light : m_vecDynamicLights) {
+		if (!pCamera->IsInFrustum(&light.m_bsBoundingSphere))
 			continue;
-	//	count++;
 		if (light.eLightType == TYPE_POINT)
 			PointLight(pd3dImmediateContext, light.vPosition, light.fRange, light.vColor, false);
 		else if (light.eLightType == TYPE_SPOT)
@@ -248,7 +257,7 @@ void CLightManager::DrawLightVolume(ID3D11DeviceContext* pd3dImmediateContext)
 	pd3dImmediateContext->RSGetState(&pPrevRSState);
 	pd3dImmediateContext->RSSetState(m_pWireframeRS);
 
-	for (auto light : m_arrLights) {
+	for (auto& light : m_arrLights) {
 		if (light.eLightType == TYPE_POINT)
 			PointLight(pd3dImmediateContext, light.vPosition, light.fRange, light.vColor, true);
 		else if (light.eLightType == TYPE_SPOT)
@@ -256,6 +265,16 @@ void CLightManager::DrawLightVolume(ID3D11DeviceContext* pd3dImmediateContext)
 		else if (light.eLightType == TYPE_CAPSULE)
 			CapsuleLight(pd3dImmediateContext, light.vPosition, light.vDirection, light.fRange, light.fLength, light.vColor, true);
 	}
+
+	for (auto& light : m_vecDynamicLights) {
+		if (light.eLightType == TYPE_POINT)
+			PointLight(pd3dImmediateContext, light.vPosition, light.fRange, light.vColor, true);
+		else if (light.eLightType == TYPE_SPOT)
+			SpotLight(pd3dImmediateContext, light.vPosition, light.vDirection, light.fRange, light.fInnerAngle, light.fOuterAngle, light.vColor, true);
+		else if (light.eLightType == TYPE_CAPSULE)
+			CapsuleLight(pd3dImmediateContext, light.vPosition, light.vDirection, light.fRange, light.fLength, light.vColor, true);
+	}
+
 
 	// Cleanup
 	pd3dImmediateContext->VSSetShader(NULL, NULL, 0);

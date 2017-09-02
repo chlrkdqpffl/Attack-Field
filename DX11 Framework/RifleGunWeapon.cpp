@@ -38,9 +38,9 @@ void CRifleGunWeapon::CreateMesh(ID3D11Device *pd3dDevice)
 
 	// Sprite Image
 	if (m_pOwner->GetServerID() == 0)
-		m_pMuzzleSpirte = SPRITE_MGR->CreateSpriteImage(TextureTag::eExplosionSprite3, XMFLOAT3(0, 0, 0), true);
+		m_pMuzzleSpirte = SPRITE_MGR->CreateSpriteImage(TextureTag::eGunExplosionPlayer, XMFLOAT3(0, 0, 0), true);
 	else 
-		m_pMuzzleSpirte = SPRITE_MGR->CreateSpriteImage(TextureTag::eExplosionSprite2, XMFLOAT3(0, 0, 0), true);
+		m_pMuzzleSpirte = SPRITE_MGR->CreateSpriteImage(TextureTag::eGunExplosionOtherPlayer, XMFLOAT3(0, 0, 0), true);
 	
 	m_pMuzzleSpirte->SetActive(false);
 }

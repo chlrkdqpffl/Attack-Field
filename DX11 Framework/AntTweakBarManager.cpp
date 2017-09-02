@@ -46,9 +46,9 @@ void CAntTweakBarManager::InitializeManager()
 	
 
 	// Select Object
-	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Position X", TW_TYPE_FLOAT, &g_xmf3SelectObjectPosition.x, "group = SelectObject step=5");
-	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Position Y", TW_TYPE_FLOAT, &g_xmf3SelectObjectPosition.y, "group = SelectObject step=5");
-	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Position Z", TW_TYPE_FLOAT, &g_xmf3SelectObjectPosition.z, "group = SelectObject step=5");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Position X", TW_TYPE_FLOAT, &g_xmf3SelectObjectPosition.x, "group = SelectObject step=0.1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Position Y", TW_TYPE_FLOAT, &g_xmf3SelectObjectPosition.y, "group = SelectObject step=0.1");
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Position Z", TW_TYPE_FLOAT, &g_xmf3SelectObjectPosition.z, "group = SelectObject step=0.1");
 
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Rotate X", TW_TYPE_FLOAT, &g_xmf3SelectObjectRotate.x, "group = SelectObject step=5");
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Select Rotate Y", TW_TYPE_FLOAT, &g_xmf3SelectObjectRotate.y, "group = SelectObject step=5");

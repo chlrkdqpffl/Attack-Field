@@ -21,8 +21,11 @@ void CWeapon::Firing(XMVECTOR direction)
 #ifndef DEVELOP_MODE
 		SOUND_MGR->Play3DSound(SoundTag::eFire, m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);	// 너무 시끄러워서 임시 제거
 #endif
+		XMVECTOR muzzlePosition = XMLoadFloat3(&m_f3MuzzlePosition);
+		
+	//	XMFLOAT3 pos; XMStoreFloat3(&pos, muzzlePosition + (GetvRight() * TWBAR_MGR->g_xmf3Quaternion.x));
 
-		LIGHT_MGR->AddPointLight(m_f3MuzzlePosition, TWBAR_MGR->g_nSelect, XMFLOAT3(1.0f, 1.0f, 1.0f));
+		LIGHT_MGR->AddPointLight(m_f3MuzzlePosition, 8.0f, XMFLOAT3(0.9f, 0.9f, 0.6f));
 		SPRITE_MGR->ActivationSprite(m_pMuzzleSpirte);
 		SOUND_MGR->Play3DSound(SoundTag::eShellsFall, m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);
 		m_nhasBulletCount--;

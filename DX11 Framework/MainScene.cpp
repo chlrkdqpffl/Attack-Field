@@ -15,7 +15,8 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 //	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.9f, 0.0f, 0.2f);
-	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.1f, 0.03f, 0.0f);
+	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.15f, 0.035f, 0.0f);
+	TWBAR_MGR->g_nSelect = 5.0f;
 //	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(0.2f, 0.2f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(1.4f, 0.6f, 2.5f, 0.4f);
 }
@@ -1471,8 +1472,6 @@ void CMainScene::ReleaseConstantBuffers()
 
 void CMainScene::CreateLights()
 {
-	LIGHT_MGR->ClearLights();
-
 	vector<MapData> vecMapData;
 	XMFLOAT3 pos;
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
@@ -1481,21 +1480,7 @@ void CMainScene::CreateLights()
 	for (auto light : vecMapData) {
 		pos = light.m_Position;
 		pos.y += 10.0f;
-		LIGHT_MGR->AddSpotLight(pos, XMFLOAT3(0, -1, 0), 45.0f, 50.0f, 30.0f, XMFLOAT3(1, 1, 1));
-	}
-	
-	// Player Light
-	{
-		pos = m_pPlayer->GetPosition();
-		XMFLOAT3 look = m_pPlayerCharacter->GetFireDirection();
-		//m_pLightManager->AddSpotLight(pos, look, TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
-	//	LIGHT_MGR->AddSpotLight(pos, look, 35.0f, 30.0f, 10.0f, XMFLOAT3(1, 1, 1));
-
-		XMVECTOR vPos = m_pPlayer->GetvPosition();
-		vPos += 1.3f * m_pPlayer->GetvLook();
-
-		XMStoreFloat3(&pos, vPos);
-		LIGHT_MGR->AddPointLight(pos, 5.0f, XMFLOAT3(1, 1, 1));
+		LIGHT_MGR->AddSpotLight(pos, XMFLOAT3(0, -1, 0), 45.0f, 50.0f, 30.0f, XMFLOAT3(1, 1, 1), true);
 	}
 }
 
@@ -1721,6 +1706,26 @@ void CMainScene::ShowDeadlyAttackUI()
 	}
 }
 
+void CMainScene::Update_Light()
+{
+	LIGHT_MGR->ClearLights();
+	XMFLOAT3 pos;
+
+	// Player Light
+	{
+		pos = m_pPlayer->GetPosition();
+		XMFLOAT3 look = m_pPlayerCharacter->GetFireDirection();
+		//m_pLightManager->AddSpotLight(pos, look, TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
+		//	LIGHT_MGR->AddSpotLight(pos, look, 35.0f, 30.0f, 10.0f, XMFLOAT3(1, 1, 1));
+
+		XMVECTOR vPos = m_pPlayer->GetvPosition();
+		vPos += 1.3f * m_pPlayer->GetvLook();
+
+		XMStoreFloat3(&pos, vPos);
+		LIGHT_MGR->AddPointLight(pos, 5.0f, XMFLOAT3(1, 1, 1));
+	}
+}
+
 void CMainScene::Update_LightningStrikes(float fDeltaTime)
 {
 	static bool isFirstLightning = false;
@@ -1794,7 +1799,7 @@ void CMainScene::Update(float fDeltaTime)
 	// 충돌 정보 갱신
 	COLLISION_MGR->InitCollisionInfo();	// 현재 플레이어만 적용되고있어서 주석처리함
 //	COLLISION_MGR->UpdateManager();
-	CreateLights();
+	Update_Light();
 
 	// ====== Update ===== //
 	GLOBAL_MGR->UpdateManager();

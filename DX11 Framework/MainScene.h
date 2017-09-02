@@ -36,6 +36,7 @@ public:
 	void ModifiedSelectObject();
 	void AddShaderObject(ShaderTag tag, CGameObject* pObject);
 
+	void Update_Light();
 	void Update_LightningStrikes(float fDeltaTime);
 	void RenderBoundingBox();
 	void CalcTime();
@@ -61,6 +62,7 @@ public:
 	void SetOccupyTeam(BYTE team) { m_cOccupyteam = team; }
 	BYTE GetOcuupyTeam() { return m_cOccupyteam; }
 
+	CGBuffer* GetGBuffer() const { return m_GBuffer; }
 private:
 	// Light Info
 	XMFLOAT3						m_f3DirectionalAmbientLowerColor = XMFLOAT3(0, 0, 0);

@@ -101,7 +101,6 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);
 
 			COLLISION_MGR->m_vecCharacterContainer.push_back(pCharObject);
-			SPRITE_MGR->CreateSpriteImage(TextureTag::eExplosionSprite2, XMFLOAT3(0, 0, 0), true);		// 캐릭터 개수만큼 스프라이트 추가 생성
 			/*
 			UINT index;
 			int i = 0;

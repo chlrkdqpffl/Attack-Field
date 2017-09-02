@@ -134,9 +134,9 @@ void CResourceManager::LoadSpriteData()
 {
 	cout << endl << " ----- Sprite Image Data -----" << endl;
 	
-	AddResourece(TextureTag::eExplosionSprite,		"../Assets/Image/Sprite/Explosion.png");
-	AddResourece(TextureTag::eExplosionSprite2,		"../Assets/Image/Sprite/Explosion3.png");
-	AddResourece(TextureTag::eExplosionSprite3,		"../Assets/Image/Sprite/Explosion3.png");
+	AddResourece(TextureTag::eExplosionSprite,			"../Assets/Image/Sprite/Explosion.png");
+	AddResourece(TextureTag::eGunExplosionOtherPlayer,	"../Assets/Image/Sprite/Explosion3.png");
+	AddResourece(TextureTag::eGunExplosionPlayer,		"../Assets/Image/Sprite/Explosion3.png");
 }
 
 void CResourceManager::LoadMapData()

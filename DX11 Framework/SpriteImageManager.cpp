@@ -7,9 +7,9 @@ void CSpriteImageManager::InitializeManager()
 //	AddSpriteInfo(TextureTag::eExplosionSprite, SpriteInfo(10, 5, 1.0f));
 //	AddSpriteInfo(TextureTag::eExplosionSprite2, SpriteInfo(5, 3, 1.0f));
 
-	AddSpriteInfo(TextureTag::eExplosionSprite, SpriteInfo(POINT{ 10, 5 }, 0.4f, 0.2f, 0.1f));
-	AddSpriteInfo(TextureTag::eExplosionSprite2, SpriteInfo(POINT{ 5, 1 }, 0.3f, 0.2f, 0.1f));
-	AddSpriteInfo(TextureTag::eExplosionSprite3, SpriteInfo(POINT{ 5, 1 }, 0.05f, 0.05f, 0.1f));
+//	AddSpriteInfo(TextureTag::eExplosionSprite, SpriteInfo(POINT{ 10, 5 }, 0.4f, 0.2f, 0.1f));
+	AddSpriteInfo(TextureTag::eGunExplosionOtherPlayer, SpriteInfo(POINT{ 5, 1 }, 0.3f, 0.2f, 0.1f));
+	AddSpriteInfo(TextureTag::eGunExplosionPlayer,		SpriteInfo(POINT{ 5, 1 }, 0.05f, 0.05f, 0.1f));
 
 	CSpriteImageObject::CreateConstantBuffers();
 }

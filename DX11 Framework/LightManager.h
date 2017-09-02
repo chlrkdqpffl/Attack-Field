@@ -101,10 +101,10 @@ public:
 	}
 
 	// Clear the lights from the previous frame
-	void ClearLights() { m_arrLights.clear(); }
+	void ClearLights() { m_vecDynamicLights.clear(); }
 
 	// Add a single point light
-	void AddPointLight(const XMFLOAT3& vPointPosition, float fPointRange, const XMFLOAT3& vPointColor)
+	void AddPointLight(const XMFLOAT3& vPointPosition, float fPointRange, const XMFLOAT3& vPointColor, bool bIsInfinity = false)
 	{
 		LIGHT pointLight;
 
@@ -114,11 +114,14 @@ public:
 		pointLight.vColor = vPointColor;
 		pointLight.m_bsBoundingSphere = BoundingSphere(XMFLOAT3(vPointPosition), fPointRange);
 
-		m_arrLights.push_back(pointLight);
+		if (bIsInfinity)
+			m_arrLights.push_back(pointLight);
+		else
+			m_vecDynamicLights.push_back(pointLight);
 	}
 
 	void AddSpotLight(const XMFLOAT3& vSpotPosition, const XMFLOAT3& vSpotDirection, float fSpotRange,
-		float fSpotOuterAngle, float fSpotInnerAngle, const XMFLOAT3& vSpotColor)
+		float fSpotOuterAngle, float fSpotInnerAngle, const XMFLOAT3& vSpotColor, bool bIsInfinity = false)
 	{
 		LIGHT spotLight;
 
@@ -131,11 +134,14 @@ public:
 		spotLight.vColor = vSpotColor;
 		spotLight.m_bsBoundingSphere = BoundingSphere(XMFLOAT3(vSpotPosition), fSpotRange);
 
-		m_arrLights.push_back(spotLight);
+		if (bIsInfinity)
+			m_arrLights.push_back(spotLight);
+		else
+			m_vecDynamicLights.push_back(spotLight);
 	}
 
 	void AddCapsuleLight(const XMFLOAT3& vCapsulePosition, const XMFLOAT3& vCapsuleDirection, float fCapsuleRange,
-		float fCapsuleLength, const XMFLOAT3& vCapsuleColor)
+		float fCapsuleLength, const XMFLOAT3& vCapsuleColor, bool bIsInfinity = false)
 	{
 		LIGHT capsuleLight;
 
@@ -147,7 +153,10 @@ public:
 		capsuleLight.vColor = vCapsuleColor;
 		capsuleLight.m_bsBoundingSphere = BoundingSphere(XMFLOAT3(vCapsulePosition), fCapsuleRange);
 
-		m_arrLights.push_back(capsuleLight);
+		if (bIsInfinity)
+			m_arrLights.push_back(capsuleLight);
+		else
+			m_vecDynamicLights.push_back(capsuleLight);
 	}
 
 	void DoLighting(ID3D11DeviceContext* pd3dImmediateContext, CCamera *pCamera);
@@ -239,6 +248,7 @@ private:
 	XMFLOAT3 m_vDirectionalColor = XMFLOAT3(0, 0, 0);
 
 	// Linked list with the active lights
-	std::vector<LIGHT> m_arrLights;
+	vector<LIGHT> m_arrLights;
+	vector<LIGHT> m_vecDynamicLights;
 	CGBuffer* m_pGBuffer = nullptr;
 };
