@@ -83,13 +83,12 @@ void CSoundManager::LoadEffectSound()
 
 void CSoundManager::AddChennel()
 {
-	Channel* pChannel;
+//	Channel* pChannel;
 	//g_vecChannelContainer.push_back(pChannel);
 }
 
 void CSoundManager::UpdateManager(float fTimeDelta)
-{
-	
+{	
 	for (auto& iter = g_listSound3DContainer.begin(); iter != g_listSound3DContainer.end(); ++iter) {
 		bool bIsPlay = false;
 		(*iter)->m_pChannel->isPlaying(&bIsPlay);

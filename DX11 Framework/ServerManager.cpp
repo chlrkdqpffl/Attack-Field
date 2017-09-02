@@ -280,7 +280,7 @@ void CServerManager::processpacket(char *ptr)
 		if (id == m_myid)
 		{
 			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
-		
+			SCENE_MGR->g_pPlayer->SetPlayerlife(PLAYER_HP);
 		}
 		else
 		{
@@ -291,8 +291,8 @@ void CServerManager::processpacket(char *ptr)
 					break;
 				i++;
 			}
-
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(packet->m_f3Position);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(PLAYER_HP);
 		}
 		break;
 	}
@@ -338,7 +338,7 @@ void CServerManager::processpacket(char *ptr)
 		break;
 	}
 
-	case 17:
+	case 17:	// 점령 패킷
 	{		
 		SC_Occupy_Timer* packet;
 		packet = reinterpret_cast<SC_Occupy_Timer *>(ptr);
@@ -347,38 +347,12 @@ void CServerManager::processpacket(char *ptr)
 		SCENE_MGR->g_pMainScene->SetOccupyTime(packet->Occupy_timer);
 		break;
 	}
-	case 18:	//데미지?
+	case 18:	// 피격 UI 표현용 패킷
 	{
 		SC_Damegedirection* packet;
 		packet = reinterpret_cast<SC_Damegedirection *>(ptr);
 
 		SCENE_MGR->g_pPlayer->SetDamagedInfo(DamagedInfo(true, packet->position));
-		break;
-	}
-	case 19:	//리스폰시 체력 100을 보내는 패킷을 따로 만듬.
-	{
-		SC_fullHPpacket *packet;
-		packet = reinterpret_cast<SC_fullHPpacket *>(ptr);
-		id = packet->id;
-
-		if (id == m_myid)
-		{
-			SCENE_MGR->g_pPlayerCharacter->SetLife(packet->Hp);
-			//SCENE_MGR->g_pPlayerCharacter->SetIsRespawn(packet->live);
-		}
-		else
-		{
-			int i = 0;
-			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
-			{
-				if (character->GetServerID() == id)
-					break;
-				i++;
-			}
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->Hp);
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRespawn(packet->live);
-		}
-	
 		break;
 	}
 	default:
