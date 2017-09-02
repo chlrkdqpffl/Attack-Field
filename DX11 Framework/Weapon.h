@@ -18,6 +18,7 @@ protected:
 
 	UINT					m_nBoneIndex = 0;
 	XMMATRIX				m_mtxParent;
+	XMFLOAT3				m_f3MuzzlePosition = XMFLOAT3(0, 0, 0);
 
 	// 명중률, 총기 반동은 추후 구현
 	WeaponData::Type		m_Type = WeaponData::Type::eNone;	// 총기 타입

@@ -20,8 +20,10 @@ CLightManager::~CLightManager()
 {
 }
 
-void CLightManager::Initialize(ID3D11Device *pd3dDevice)
+void CLightManager::InitializeManager()
 {
+	ID3D11Device* pd3dDevice = STATEOBJ_MGR->g_pd3dDevice;
+
 	// Create constant buffers
 	D3D11_BUFFER_DESC cbDesc;
 	ZeroMemory(&cbDesc, sizeof(cbDesc));
@@ -143,7 +145,7 @@ void CLightManager::Initialize(ID3D11Device *pd3dDevice)
 	DXUT_SetDebugName(m_pWireframeRS, "Wireframe RS");
 }
 
-void CLightManager::DeInitialize()
+void CLightManager::ReleseManager()
 {
 	ReleaseCOM(m_pDirLightVertexShader);
 	ReleaseCOM(m_pDirLightPixelShader);

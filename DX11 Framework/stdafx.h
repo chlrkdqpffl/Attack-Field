@@ -84,6 +84,7 @@ using namespace std;
 #include "SoundManager.h"
 #include "ParticleManager.h"
 #include "SpriteImageManager.h"
+#include "LightManager.h"
 // ------------------------------- //
 
 template <typename T>

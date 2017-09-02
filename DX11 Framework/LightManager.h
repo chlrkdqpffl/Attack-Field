@@ -1,4 +1,5 @@
 #pragma once
+#include "SingletonManager.h"
 #include "GBuffer.h"
 
 inline const XMFLOAT3 GammaToLinear(const XMFLOAT3& color)
@@ -72,15 +73,15 @@ struct CB_CAPSULE_LIGHT_PIXEL
 };
 #pragma pack(pop)
 
-class CLightManager
+class CLightManager : public CSingletonManager<CLightManager>
 {
 public:
 
 	CLightManager();
 	~CLightManager();
 
-	void Initialize(ID3D11Device *pd3dDevice);
-	void DeInitialize();
+	virtual void InitializeManager() override;
+	virtual void ReleseManager() override;
 
 	//	void Update();
 

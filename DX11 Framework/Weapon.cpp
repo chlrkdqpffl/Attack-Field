@@ -21,7 +21,8 @@ void CWeapon::Firing(XMVECTOR direction)
 #ifndef DEVELOP_MODE
 		SOUND_MGR->Play3DSound(SoundTag::eFire, m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);	// 너무 시끄러워서 임시 제거
 #endif
-		
+
+		LIGHT_MGR->AddPointLight(m_f3MuzzlePosition, TWBAR_MGR->g_nSelect, XMFLOAT3(1.0f, 1.0f, 1.0f));
 		SPRITE_MGR->ActivationSprite(m_pMuzzleSpirte);
 		SOUND_MGR->Play3DSound(SoundTag::eShellsFall, m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);
 		m_nhasBulletCount--;
@@ -113,13 +114,13 @@ void CWeapon::Update(float fDeltaTime)
 //	SetRotate(TWBAR_MGR->g_xmf3Rotate, true);
 //	SetPosition(TWBAR_MGR->g_xmf3Offset, true);
 	
-	// 총구 위치에 스프라이트 오브젝트 대기
 	XMVECTOR muzzlePosition;
 	if (m_pOwner->GetServerID() == 0)
+		//muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
 		muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
 	else
 		muzzlePosition = GetvPosition() + (GetvRight() * -1.0f) + (GetvUp() * 0.03f) + (GetvLook() * 0.02f);
 
-	XMFLOAT3 f3muzzlePosition; XMStoreFloat3(&f3muzzlePosition, muzzlePosition);
-	SPRITE_MGR->SetPosition(m_pMuzzleSpirte, f3muzzlePosition);
+	XMStoreFloat3(&m_f3MuzzlePosition, muzzlePosition);
+	SPRITE_MGR->SetPosition(m_pMuzzleSpirte, m_f3MuzzlePosition);
 }

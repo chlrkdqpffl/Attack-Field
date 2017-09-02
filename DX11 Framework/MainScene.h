@@ -3,7 +3,6 @@
 #include "BoundingBoxShader.h"
 #include "GBuffer.h"
 #include "PostFX.h"
-#include "LightManager.h"
 
 class CMainScene : public CScene 
 {
@@ -82,7 +81,6 @@ private:
 	vector<CCharacterObject*>		m_vecCharacterContainer;
 
 	// Deferred Rendering
-	CLightManager*					m_pLightManager = nullptr;
 	CGBuffer*						m_GBuffer = nullptr;
 	CPostFX*						m_PostFX = nullptr;
 

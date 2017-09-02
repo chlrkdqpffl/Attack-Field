@@ -15,7 +15,7 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 //	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.9f, 0.0f, 0.2f);
-	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.0f, 0.03f, 0.02f);
+	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.1f, 0.03f, 0.0f);
 //	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(0.2f, 0.2f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(1.4f, 0.6f, 2.5f, 0.4f);
 }
@@ -23,7 +23,6 @@ CMainScene::CMainScene()
 CMainScene::~CMainScene()
 {
 	delete(m_GBuffer);
-	delete(m_pLightManager);
 	delete(m_PostFX);
 
 	ReleaseCOM(m_pHDRTexture);
@@ -267,9 +266,8 @@ void CMainScene::Initialize()
 	m_GBuffer = new CGBuffer();
 	m_PostFX = new CPostFX();
 
-	m_pLightManager = new CLightManager();
-	m_pLightManager->Initialize(m_pd3dDevice);
-	m_pLightManager->SetGBuffer(m_GBuffer);
+	LIGHT_MGR->InitializeManager();
+	LIGHT_MGR->SetGBuffer(m_GBuffer);
 //	m_pSphereObject = new CSphereObject();
 //	m_pSphereObject->CreateObjectData(m_pd3dDevice);
 //	m_vecObjectsContainer.push_back(m_pSphereObject);
@@ -1425,7 +1423,8 @@ void CMainScene::ReleaseObjects()
 	for (auto& object : m_vecCharacterContainer)
 		SafeDelete(object);
 
-	m_pLightManager->DeInitialize();
+
+	LIGHT_MGR->ReleseInstance();
 }
 
 void CMainScene::AddShaderObject(ShaderTag tag, CGameObject* pObject)
@@ -1472,7 +1471,7 @@ void CMainScene::ReleaseConstantBuffers()
 
 void CMainScene::CreateLights()
 {
-	m_pLightManager->ClearLights();
+	LIGHT_MGR->ClearLights();
 
 	vector<MapData> vecMapData;
 	XMFLOAT3 pos;
@@ -1482,7 +1481,7 @@ void CMainScene::CreateLights()
 	for (auto light : vecMapData) {
 		pos = light.m_Position;
 		pos.y += 10.0f;
-		m_pLightManager->AddSpotLight(pos, XMFLOAT3(0, -1, 0), 45.0f, 50.0f, 30.0f, XMFLOAT3(1, 1, 1));
+		LIGHT_MGR->AddSpotLight(pos, XMFLOAT3(0, -1, 0), 45.0f, 50.0f, 30.0f, XMFLOAT3(1, 1, 1));
 	}
 	
 	// Player Light
@@ -1490,13 +1489,13 @@ void CMainScene::CreateLights()
 		pos = m_pPlayer->GetPosition();
 		XMFLOAT3 look = m_pPlayerCharacter->GetFireDirection();
 		//m_pLightManager->AddSpotLight(pos, look, TWBAR_MGR->g_xmf3SelectObjectRotate.x, TWBAR_MGR->g_xmf3SelectObjectRotate.y, TWBAR_MGR->g_xmf3SelectObjectRotate.z, XMFLOAT3(1, 1, 1));
-		m_pLightManager->AddSpotLight(pos, look, 35.0f, 30.0f, 10.0f, XMFLOAT3(1, 1, 1));
+	//	LIGHT_MGR->AddSpotLight(pos, look, 35.0f, 30.0f, 10.0f, XMFLOAT3(1, 1, 1));
 
 		XMVECTOR vPos = m_pPlayer->GetvPosition();
 		vPos += 1.3f * m_pPlayer->GetvLook();
 
 		XMStoreFloat3(&pos, vPos);
-		m_pLightManager->AddPointLight(pos, 5.0f, XMFLOAT3(1, 1, 1));
+		LIGHT_MGR->AddPointLight(pos, 5.0f, XMFLOAT3(1, 1, 1));
 	}
 }
 
@@ -1795,6 +1794,7 @@ void CMainScene::Update(float fDeltaTime)
 	// 충돌 정보 갱신
 	COLLISION_MGR->InitCollisionInfo();	// 현재 플레이어만 적용되고있어서 주석처리함
 //	COLLISION_MGR->UpdateManager();
+	CreateLights();
 
 	// ====== Update ===== //
 	GLOBAL_MGR->UpdateManager();
@@ -1830,10 +1830,8 @@ void CMainScene::Update(float fDeltaTime)
 		TWBAR_MGR->g_OptionHDR.g_fBloomThreshold, TWBAR_MGR->g_OptionHDR.g_fBloomScale, TWBAR_MGR->g_OptionHDR.g_fDOFFarStart, TWBAR_MGR->g_OptionHDR.g_fDOFFarRange);
 
 	// ===== Light ===== //
-	m_pLightManager->SetAmbient(m_f3DirectionalAmbientLowerColor, m_f3DirectionalAmbientUpperColor);
-	m_pLightManager->SetDirectional(m_f3DirectionalDirection, m_f3DirectionalColor);
-
-	CreateLights();
+	LIGHT_MGR->SetAmbient(m_f3DirectionalAmbientLowerColor, m_f3DirectionalAmbientUpperColor);
+	LIGHT_MGR->SetDirectional(m_f3DirectionalDirection, m_f3DirectionalColor);
 }
 
 void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
@@ -1865,7 +1863,7 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 
 	// ------ Final Scene Rendering ------ //
 	m_GBuffer->DeferredRender(pd3dDeviceContext);
-	m_pLightManager->DoLighting(pd3dDeviceContext, pCamera);
+	LIGHT_MGR->DoLighting(pd3dDeviceContext, pCamera);
 
 	// ----- UI ----- // 
 	PrepareRenderUI();
@@ -1874,7 +1872,7 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	PARTICLE_MGR->RenderAllEffect(m_pd3dDeviceContext);
 	
 	if (GLOBAL_MGR->g_bShowLightVolume)
-		m_pLightManager->DrawLightVolume(pd3dDeviceContext);
+		LIGHT_MGR->DrawLightVolume(pd3dDeviceContext);
 
 	if (GLOBAL_MGR->g_bEnablePostFX) {
 		m_PostFX->PostProcessing(pd3dDeviceContext, m_HDRSRV, m_GBuffer->GetDepthView(), SCENE_MGR->g_pd3dRenderTargetView);
