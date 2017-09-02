@@ -114,7 +114,12 @@ void CWeapon::Update(float fDeltaTime)
 //	SetPosition(TWBAR_MGR->g_xmf3Offset, true);
 	
 	// 총구 위치에 스프라이트 오브젝트 대기
-	XMVECTOR muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
+	XMVECTOR muzzlePosition;
+	if (m_pOwner->GetServerID() == 0)
+		muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
+	else
+		muzzlePosition = GetvPosition() + (GetvRight() * -1.0f) + (GetvUp() * 0.03f) + (GetvLook() * 0.02f);
+
 	XMFLOAT3 f3muzzlePosition; XMStoreFloat3(&f3muzzlePosition, muzzlePosition);
 	SPRITE_MGR->SetPosition(m_pMuzzleSpirte, f3muzzlePosition);
 }

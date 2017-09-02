@@ -212,22 +212,11 @@ void CState_Fire::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	}
 
 	// Check Reload
-	/*
-#ifdef USE_SERVER
 	if (pCharacter->GetIsReload()) {
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());
 		return;
 	}
-#else
-*/
-	if (pCharacter->GetIsReload()) {
-		if (pCharacter->GetWeaponBulletCount() != pCharacter->GetWeaponMaxBulletCount()) {
-			pUpperFSM->ChangeState(CState_Reload::GetInstance());
-			return;
-		}
-	}
-//#endif
-	
+
 	// Check not Fire
 	if (!pCharacter->GetIsFire()) {
 		pUpperFSM->ChangeState(CState_Idle::GetInstance());

@@ -12,7 +12,8 @@ CBillboardObject::~CBillboardObject()
 
 void CBillboardObject::SetLookAt(XMFLOAT3 cameraPos)
 {
-	XMVECTOR up = XMVectorSet(0.f, 1.f, 0.f, 1.f);
+	//XMVECTOR up = XMVectorSet(0.f, 1.f, 0.f, 1.f);
+	XMVECTOR up = SCENE_MGR->g_pCamera->GetvUp();
 	XMVECTOR look = XMLoadFloat3(&cameraPos) - GetvPosition();
 	look = XMVector4NormalizeEst(look);
 

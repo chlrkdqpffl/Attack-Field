@@ -7,8 +7,8 @@ void CSpriteImageManager::InitializeManager()
 //	AddSpriteInfo(TextureTag::eExplosionSprite, SpriteInfo(10, 5, 1.0f));
 //	AddSpriteInfo(TextureTag::eExplosionSprite2, SpriteInfo(5, 3, 1.0f));
 
-	AddSpriteInfo(TextureTag::eExplosionSprite, SpriteInfo(POINT{5, 3}, 0.05f, 0.05f, 0.1f));
-	AddSpriteInfo(TextureTag::eExplosionSprite2, SpriteInfo(POINT{ 7, 1 }, 0.05f, 0.05f, 0.1f));
+	AddSpriteInfo(TextureTag::eExplosionSprite, SpriteInfo(POINT{ 10, 5 }, 0.4f, 0.2f, 0.1f));
+	AddSpriteInfo(TextureTag::eExplosionSprite2, SpriteInfo(POINT{ 5, 1 }, 0.3f, 0.2f, 0.1f));
 	AddSpriteInfo(TextureTag::eExplosionSprite3, SpriteInfo(POINT{ 5, 1 }, 0.05f, 0.05f, 0.1f));
 
 	CSpriteImageObject::CreateConstantBuffers();
@@ -88,11 +88,16 @@ void CSpriteImageManager::UpdateManager(float fDeltaTime)
 
 void CSpriteImageManager::RenderAll(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera)
 {
+	ID3D11DepthStencilState* prevDSS; UINT prevStencil;
+	pd3dDeviceContext->OMGetDepthStencilState(&prevDSS, &prevStencil);
+
 	pd3dDeviceContext->OMSetBlendState(STATEOBJ_MGR->g_pFireBS, nullptr, 0xffffffff);
+	pd3dDeviceContext->OMSetDepthStencilState(STATEOBJ_MGR->g_pNoDepthWritesDSS, 0);
 
 	for (auto& spriteObject : m_vecSpriteObjectContainer)
 		if (spriteObject->GetActive())
 			spriteObject->Render(pd3dDeviceContext, pCamera);
 
+	pd3dDeviceContext->OMSetDepthStencilState(prevDSS, prevStencil);
 	pd3dDeviceContext->OMSetBlendState(nullptr, nullptr, 0xffffffff);
 }

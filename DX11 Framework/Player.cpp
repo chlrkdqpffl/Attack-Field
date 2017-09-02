@@ -41,6 +41,10 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	if (m_pCharacter->GetIsDeath())
 		return;
 
+	// Bullet Check
+	if (m_pCharacter->GetWeaponBulletCount() == m_pCharacter->GetWeaponMaxBulletCount())
+		m_wKeyState ^= static_cast<int>(KeyInput::eReload);
+
 	// Keyboard
 	XMVECTOR d3dxvShift = XMVectorZero();
 	XMVECTOR relativeVelocity = XMVectorZero();
@@ -72,8 +76,8 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 		m_pCharacter->SetIsReload(false);
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy))
-			m_pCharacter->SetOccupy(true);
-	else 
+		m_pCharacter->SetOccupy(true);
+	else
 		m_pCharacter->SetOccupy(false);
 
 
@@ -93,7 +97,6 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse))
 	{
 		m_pCharacter->SetIsFire(true);
-
 #ifdef USE_SERVER
 		CS_Fire packet;
 		packet.size = sizeof(packet);
@@ -103,11 +106,11 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 #endif
 	}
-	else 
+	else
 		m_pCharacter->SetIsFire(false);
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRightMouse)) {
-		
+
 	}
 
 	d3dxvShift *= m_fSpeed * fDeltaTime;
@@ -117,7 +120,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 
 	if (m_pCharacter->IsMoving())
 		m_pCharacter->Walking();
-	
+
 #ifdef	USE_SERVER
 	cs_key_input packet;
 
@@ -130,16 +133,12 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	packet.x = GetPosition().x;
 	packet.y = GetPosition().y;
 	packet.z = GetPosition().z;
-	
 
-	if ((m_wKeyState != 0) || count == 0)
-	{
+
+	if ((m_wKeyState != 0) || count == 0) {
 		WORD temp = static_cast<int>(KeyInput::eLeftMouse);
 		if (m_wKeyState != temp)
-		{
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-			//cout << "여기타지나?" << endl;
-		}
 	}
 	count++;
 #endif
