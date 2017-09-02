@@ -305,6 +305,8 @@ struct SC_fullHPpacket
 	BYTE Hp;
 	BYTE id;
 
+	bool live;
+
 };
 
 

@@ -279,8 +279,8 @@ void CServerManager::processpacket(char *ptr)
 		id = packet->id;
 		if (id == m_myid)
 		{
-			SCENE_MGR->g_pPlayerCharacter->SetIsRespawn(packet->m_bIsRespawn);
 			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
+			SCENE_MGR->g_pPlayerCharacter->SetIsRespawn(packet->m_bIsRespawn);
 		}
 		else
 		{
@@ -292,8 +292,17 @@ void CServerManager::processpacket(char *ptr)
 				i++;
 			}
 
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRespawn(packet->m_bIsRespawn);
+			if (packet->m_bIsRespawn)
+			{
+				cout << "true !!" << endl;
+			}
+			else
+			{
+				cout << "false" << endl;
+			}
+
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(packet->m_f3Position);
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRespawn(packet->m_bIsRespawn);
 		}
 		break;
 	}
@@ -365,6 +374,7 @@ void CServerManager::processpacket(char *ptr)
 		if (id == m_myid)
 		{
 			SCENE_MGR->g_pPlayerCharacter->SetLife(packet->Hp);
+			SCENE_MGR->g_pPlayerCharacter->SetIsRespawn(packet->live);
 		}
 		else
 		{
@@ -376,6 +386,7 @@ void CServerManager::processpacket(char *ptr)
 				i++;
 			}
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->Hp);
+			SCENE_MGR->g_pPlayerCharacter->SetIsRespawn(packet->live);
 		}
 	
 		break;
