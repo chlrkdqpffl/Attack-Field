@@ -1663,7 +1663,7 @@ void CMainScene::ShowDeathRespawnUI()
 
 void CMainScene::ShowDeadlyUI()
 {
-	if (!m_pPlayer->GetIsDeadly())
+	if (false == m_pPlayer->GetIsDeadly())
 		return;
 
 	CUIObject* pDamageUI = m_pUIManager->GetUIObject(TextureTag::eDamagedCharacterUI);
@@ -1686,7 +1686,7 @@ void CMainScene::ShowDeadlyUI()
 
 void CMainScene::ShowDeadlyAttackUI()
 {
-	if (!m_pPlayer->GetIsDeadlyAttack())
+	if (false == m_pPlayer->GetIsDeadlyAttack())
 		return;
 
 	CUIObject* pDamageUI = m_pUIManager->GetUIObject(TextureTag::eDamagedCharacterUI);

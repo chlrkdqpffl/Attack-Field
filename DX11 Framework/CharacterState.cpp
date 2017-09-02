@@ -7,6 +7,8 @@ void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 
 	if (pCharacter->GetIsDeath()) {
+		cout << "데스상태 " << pCharacter->GetLife() << endl;
+
 		pUpperFSM->ChangeState(CState_Death::GetInstance());
 		pLowerFSM->ChangeState(CState_Death::GetInstance());
 		return;
@@ -280,10 +282,10 @@ void CState_Run::ExitState(CCharacterObject* pCharacter, AnimationData::Parts ty
 // ---------------------------- Death ---------------------------- //
 void CState_Death::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-	cout << "데스상태 진입" << endl;
 	if (type == AnimationData::Parts::LowerBody)
 		return;
-
+	cout << "데스 상태 진입" << endl;
+	cout << "그때의 HP : " << pCharacter->GetLife() << endl;
 	// 리스폰 대기 시간 5초
 	m_dwDeathWaitingTime = RESPAWN_TIME;
 	m_dwDeathStartTime = GetTickCount();
@@ -329,9 +331,6 @@ void CState_Death::UpdateUpperBodyState(CCharacterObject* pCharacter)
 
 #ifdef USE_SERVER
 	if (pCharacter->GetAlive()) {
-		cout << "리스폰 되었습니다 " << endl;
-		cout << "HP : " << pCharacter->GetLife() << endl;
-
 		pUpperFSM->ChangeState(CState_Idle::GetInstance());
 		pLowerFSM->ChangeState(CState_Idle::GetInstance());
 		pCharacter->SetControllerActive(AnimationData::Parts::UpperBody, true);
@@ -359,8 +358,6 @@ void CState_Death::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 void CState_Death::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-	cout << "상체 나가기" << endl;
-
 	if (type == AnimationData::Parts::LowerBody)
 		return;
 
