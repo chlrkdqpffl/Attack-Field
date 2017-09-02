@@ -8,43 +8,38 @@ CSound3D::CSound3D(XMFLOAT3 pos, XMFLOAT3 dir, float nowSpeed, float addSpeed, f
 
 void CSound3D::Update(float fTimeDelta)
 {
-	/*
 	XMVECTOR position = XMLoadFloat3(&m_f3Position);
-	XMVECTOR listenerPosition = XMLoadFloat3(&m_f3ListenerPosition);
+	XMVECTOR listenerPosition = SCENE_MGR->g_pCamera->GetvPosition();
 
-	if (XMVectorGetX(XMVector3LengthEst(position - listenerPosition)) > MAXDISTANCE)
+	float distance = XMVectorGetX(XMVector3LengthEst(position - listenerPosition));
+
+	if (distance > MAXDISTANCE)
 		m_pChannel->stop();
 
 	m_fNowSpeed += m_fAddSpeed;
 	position += m_fNowSpeed * XMLoadFloat3(&m_f3Direction);
 
-	float maxDistance = FRONT_MAX_DISTANCE;
-	float volume = 1.0f;
-
-	XMVECTOR direction = XMVectorSet(m_f3Position.x - m_f3ListenerPosition.x, m_f3Position.y - m_f3ListenerPosition.y, m_f3Position.z - m_f3ListenerPosition.z, 0.0f);
-	if (XMVectorGetZ(direction) < 0)
+	XMVECTOR vLook = SCENE_MGR->g_pCamera->GetvLook();
+	float fDot = XMVectorGetX(XMVector3Dot(vLook, position));
+	
+	float maxDistance = 0.0f;
+	if (fDot < 0)
 		maxDistance = BACK_MAX_DISTANCE;
+	else
+		maxDistance = MAXDISTANCE;
 
-	volume = ((maxDistance - XMVectorGetX(XMVector3LengthEst(direction))) / maxDistance) * m_fMaxVolume;
+	float volume = ((maxDistance - distance) / maxDistance) * m_fMaxVolume;
+	cout << volume << endl;
 
 	if (volume <= 0)
 		m_pChannel->stop();
 	else
 		m_pChannel->setVolume(volume);
-		*/
 }
 
 
 // ----------------------------------------------------------------------------------------------------------------------------- //
 // ---------------------------------------------------- Sound Manager ---------------------------------------------------------- //
-CSoundManager::CSoundManager()
-{
-}
-
-CSoundManager::~CSoundManager()
-{
-}
-
 void CSoundManager::InitializeManager()
 {
 	System_Create(&g_pSystem);
@@ -100,11 +95,13 @@ void CSoundManager::UpdateManager(float fTimeDelta)
 	for (auto& iter = g_listSound3DContainer.begin(); iter != g_listSound3DContainer.end(); ++iter) {
 		bool bIsPlay = false;
 		(*iter)->m_pChannel->isPlaying(&bIsPlay);
-		(*iter)->m_pChannel->getPaused(&bIsPlay);
+//		(*iter)->m_pChannel->getPaused(&bIsPlay);
 		if (bIsPlay)
 			(*iter)->Update(fTimeDelta);
-		else 
+		else {
 			g_listSound3DContainer.erase(iter++);
+			cout << "Áö¿ò " << endl;
+		}
 	}
 	
 	g_pSystem->update();

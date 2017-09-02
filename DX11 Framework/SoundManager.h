@@ -12,9 +12,8 @@
 
 using namespace FMOD;
 
-#define FRONT_MAX_DISTANCE 150
-#define BACK_MAX_DISTANCE 75
-#define MAXDISTANCE 300
+#define MAXDISTANCE 75
+#define BACK_MAX_DISTANCE 50
 
 struct CSound3D 
 {
@@ -26,7 +25,6 @@ public:
 	void Update(float fTimeDelta);
 
 public:
-	XMFLOAT3	m_f3ListenerPosition = XMFLOAT3(0, 0, 0);
 	XMFLOAT3	m_f3Position = XMFLOAT3(0, 0, 0);
 	XMFLOAT3	m_f3Direction = XMFLOAT3(0, 0, 0);;
 	float		m_fNowSpeed = 0.0f;
@@ -45,8 +43,8 @@ class CSoundManager : public CSingletonManager<CSoundManager>
 	Channel*			g_pBGMChannel;
 
 public:
-	CSoundManager();
-	virtual ~CSoundManager();
+	CSoundManager() {}
+	virtual ~CSoundManager() {}
 
 	virtual void InitializeManager() override;
 	void UpdateManager(float fTimeDelta);
