@@ -2009,12 +2009,12 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
 	}
 
-	/*
+	
 	if (m_pPlayerCharacter->GetIsOccupy()) {
 		str = "점령중";
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
 	}
-	*/
+	
 	if (m_cOccupyteam == 1) {
 		str = "Red팀 점령";
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1430, 430, 0xFFFFFFFF, FW1_LEFT);
