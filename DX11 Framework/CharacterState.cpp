@@ -6,6 +6,10 @@ void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 
+	// 죽은 상태일 때에는 상태 확인 X
+	if (pUpperFSM->GetCurrentState() == CState_Death::GetInstance())
+		return;
+	
 	if (pCharacter->GetIsDeath()) {
 		cout << "데스상태 " << pCharacter->GetLife() << endl;
 
