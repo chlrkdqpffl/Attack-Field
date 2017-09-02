@@ -37,7 +37,7 @@ void CRifleGunWeapon::CreateMesh(ID3D11Device *pd3dDevice)
 	SetMesh(pMesh);
 
 	// Sprite Image
-	if (m_pOwner == SCENE_MGR->g_pMainScene->GetCharcontainer()[0]) {
+	if (m_pOwner->GetCharacterID() == 0) {
 		m_pMuzzleSpirte = SPRITE_MGR->CreateSpriteImage(TextureTag::eGunExplosionPlayer, XMFLOAT3(0, 0, 0), true);
 		cout << "여기로 두 번 오면 안된다." << endl;
 	}

@@ -18,10 +18,10 @@ void CWeapon::Firing(XMVECTOR direction)
 {
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed) {
 		m_dwLastAttackTime = GetTickCount();
-		SOUND_MGR->Play3DSound(SoundTag::eFire, m_pOwner->GetServerID(), m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);	// 너무 시끄러워서 임시 제거
+		SOUND_MGR->Play3DSound(SoundTag::eFire, m_pOwner->GetCharacterID(), m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);	// 너무 시끄러워서 임시 제거
 #ifndef DEVELOP_MODE
 #endif
-		SOUND_MGR->Play3DSound(SoundTag::eShellsFall, m_pOwner->GetServerID(), m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);
+		SOUND_MGR->Play3DSound(SoundTag::eShellsFall, m_pOwner->GetCharacterID(), m_pOwner->GetPosition(), m_pOwner->GetLook(), 1, 1);
 		LIGHT_MGR->AddPointLight(m_f3MuzzlePosition, 8.0f, XMFLOAT3(0.9f, 0.9f, 0.6f));
 		SPRITE_MGR->ActivationSprite(m_pMuzzleSpirte);
 		m_nhasBulletCount--;
@@ -122,7 +122,7 @@ void CWeapon::Update(float fDeltaTime)
 //	SetPosition(TWBAR_MGR->g_xmf3Offset, true);
 	
 	XMVECTOR muzzlePosition;
-	if (m_pOwner->GetServerID() == 0)
+	if (m_pOwner->GetCharacterID() == 0)
 		//muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
 		muzzlePosition = GetvPosition() + (GetvRight() * -1.15f) + (GetvUp() * 0.035f);
 	else

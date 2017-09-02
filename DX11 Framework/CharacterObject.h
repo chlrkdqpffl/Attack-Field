@@ -35,6 +35,8 @@ protected:
 	XMFLOAT3            m_f3Velocity = XMFLOAT3(0, 0, 0);
 	XMFLOAT3            m_f3RelativeVelocity = XMFLOAT3(0, 0, 0);
 
+	UINT				m_nCharacterID = 0;
+	static UINT			g_nCharacterCount;
 	// ----- State Variable ----- //
 	bool				m_bIsFire = false;
 	bool				m_bIsJump = false;
@@ -61,7 +63,6 @@ protected:
 	BoundingOrientedBox		m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
 	XMMATRIX				m_mtxPartsBoundingWorld[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
 	CBoundingBoxMesh		*m_pPartsBoundingBoxMesh[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
-
 
 protected:
 	virtual void CreateWeapon(ID3D11Device *pd3dDevice) = 0;
@@ -178,6 +179,7 @@ public:
 	bool GetIsDeadlyAttack() const { return m_bIsDeadlyAttack; }
 	void SetTagTeam(TeamType Team) { m_tagTeam = Team; }
 	TeamType GetTagTeam() { return m_tagTeam; }
+	UINT GetCharacterID() const { return m_nCharacterID; }
 
 	// ----- Game System Function ----- //
 	void SetLife(UINT life) { m_nLife = life; if (m_nLife <= 0) SetDeath();	} //피가 0 이하이면 셋 데스 함수를 호출.

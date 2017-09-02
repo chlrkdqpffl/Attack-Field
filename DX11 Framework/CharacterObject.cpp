@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "CharacterObject.h"
 
+UINT CCharacterObject::g_nCharacterCount = 0;
+
 CCharacterObject::CCharacterObject(TeamType team)
 {
 	for (int i = 0; i < static_cast<int>(ChracterBoundingBoxParts::ePartsCount); ++i)
@@ -9,7 +11,7 @@ CCharacterObject::CCharacterObject(TeamType team)
 	m_tagTeam = team;
 	Revival(100);
 
-	SOUND_MGR->AddChennel();
+	m_nCharacterID = g_nCharacterCount++;
 }
 
 CCharacterObject::~CCharacterObject()
