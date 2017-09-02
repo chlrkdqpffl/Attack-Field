@@ -184,7 +184,6 @@ struct SC_Respawn
 	BYTE type;
 	BYTE id;
 
-	BOOL m_bIsRespawn;
 	XMFLOAT3 m_f3Position;
 };
 
@@ -297,17 +296,6 @@ struct CS_Fire
 	XMFLOAT3 FireDirection;
 };
 
-struct SC_fullHPpacket
-{
-	BYTE size;
-	BYTE type;
-
-	BYTE Hp;
-	BYTE id;
-
-	bool live;
-
-};
 
 
 

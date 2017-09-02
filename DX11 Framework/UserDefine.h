@@ -17,6 +17,7 @@
 #define OCCUPY_TIME						3000	// 점령 시간 3초
 #define RESPAWN_TIME					5000	// 리스폰 시간 5초
 #define TOTAL_KILLS						50		// 게임 종료 킬
+#define PLAYER_HP						100		// 캐릭터 기본 HP
 // ============================================================ //
 
 #define MAXBONECOUNT					60		// 캐릭터 최대 뼈대 갯수

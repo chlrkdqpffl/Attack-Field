@@ -47,7 +47,6 @@ protected:
 	bool				m_bIsHeadHit = false;
 	bool				m_bTempIsRun = false;   // 임시로 달리기 속력 맞추려고 넣은 변수 이므로 사용 금지 - 추후 수정
 	DWORD               m_dwWalkSoundWatingTime = 0;
-	bool				m_bIsRespawn = false;
 	bool				m_bIsDeadly = false;
 	bool				m_bIsDeadlyAttack = false;
 
@@ -166,13 +165,13 @@ public:
 		m_dwDeathStartTime = GetTickCount();
 		m_nLife = 0;
 	}
+	bool GetAlive() const { return m_nLife; }
+
 	bool GetIsDeath() const { return (m_nLife <= 0); }
 	void SetIsDeathHead(bool set) { m_bIsDeathHead = set; }
 	bool GetIsDeathHead() const { return m_bIsDeathHead; }
 	void SetIsHeadHit(bool set) { m_bIsHeadHit = set; }
 	bool GetIsHeadHit() const { return m_bIsHeadHit; }
-	void SetIsRespawn(bool set) { m_bIsRespawn = set; }
-	bool GetIsRespawn() const { return m_bIsRespawn; }
 	void SetIsDeadly(bool set) { m_bIsDeadly = set; }
 	bool GetIsDeadly() const { return m_bIsDeadly; }
 	void SetIsDeadlyAttack(bool set) { m_bIsDeadlyAttack = set; }

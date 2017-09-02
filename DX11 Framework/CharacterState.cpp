@@ -327,10 +327,9 @@ void CState_Death::UpdateUpperBodyState(CCharacterObject* pCharacter)
 			pCharacter->SetPosition(prevPos);
 		}
 	}
-	cout << "상체 데스" << endl;
 
 #ifdef USE_SERVER
-	if (pCharacter->GetIsRespawn()) {
+	if (pCharacter->GetAlive()) {
 		cout << "리스폰 되었습니다 " << endl;
 		pUpperFSM->ChangeState(CState_Idle::GetInstance());
 		pLowerFSM->ChangeState(CState_Idle::GetInstance());
@@ -364,8 +363,8 @@ void CState_Death::ExitState(CCharacterObject* pCharacter, AnimationData::Parts 
 	if (type == AnimationData::Parts::LowerBody)
 		return;
 
+	pCharacter->SetIsDeadlyAttack(false);
 	pCharacter->SetIsDeadly(false);
-	pCharacter->SetIsRespawn(false);
 	pCharacter->Revival(100);
 #ifndef USE_SERVER
 	pCharacter->SetPosition(m_Position);
