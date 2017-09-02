@@ -184,7 +184,6 @@ struct SC_Respawn
 	BYTE type;
 	BYTE id;
 
-	BOOL m_bIsRespawn;
 	XMFLOAT3 m_f3Position;
 };
 
