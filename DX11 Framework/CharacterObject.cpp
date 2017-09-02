@@ -9,7 +9,7 @@ CCharacterObject::CCharacterObject(TeamType team)
 		m_pPartsBoundingBoxMesh[i] = nullptr;
 
 	m_tagTeam = team;
-	Revival(100);
+	Revival();
 
 	m_nCharacterID = g_nCharacterCount++;
 }
@@ -76,9 +76,9 @@ void CCharacterObject::Reloading()
 	m_pWeapon->Reloading();
 }
 
-void CCharacterObject::Revival(UINT life)
+void CCharacterObject::Revival()
 {
-	m_nLife = life;
+	m_nLife = PLAYER_HP;
 }
 
 void CCharacterObject::DamagedCharacter(UINT damage)
