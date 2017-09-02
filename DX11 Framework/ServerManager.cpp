@@ -17,7 +17,6 @@ void CServerManager::processpacket(char *ptr)
 		if (id == m_myid)
 		{
 			SCENE_MGR->g_pPlayerCharacter->SetLife(my_Pos_packet->hp);
-	//		SCENE_MGR->g_pPlayerCharacter->SetLife(my_Pos_packet->hp);
 		}
 		else
 		{
@@ -143,9 +142,8 @@ void CServerManager::processpacket(char *ptr)
 						break;
 					i++;
 				}
-				//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(my_put_bulletfire->fire);
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_bulletfire->FireDirection);
 				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(true);
+				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_bulletfire->FireDirection);
 			}
 		}
 	}
