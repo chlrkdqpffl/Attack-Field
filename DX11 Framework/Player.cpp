@@ -76,8 +76,10 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	else
 		m_pCharacter->SetIsReload(false);
 
-	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy))
-		m_pCharacter->SetOccupy(true);
+	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy)) {
+		if (m_pCharacter->GetAlive())
+			m_pCharacter->SetOccupy(true);
+	}
 	else
 		m_pCharacter->SetOccupy(false);
 

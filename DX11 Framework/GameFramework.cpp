@@ -50,7 +50,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 //	_CrtSetBreakAlloc(1013998);
-	_CrtSetBreakAlloc(962843);
+//	_CrtSetBreakAlloc(962843);
 //	_CrtSetBreakAlloc(289);
 //	_CrtSetBreakAlloc(205);		// 16
 //	_CrtSetBreakAlloc(206);		// 16

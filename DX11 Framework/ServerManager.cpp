@@ -212,9 +212,9 @@ void CServerManager::processpacket(char *ptr)
 				packet = reinterpret_cast<SC_Respawn *>(ptr);
 				id = packet->id;
 				if (id == m_myid){
-					if (SCENE_MGR->g_pPlayer) {
-						SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
-						SCENE_MGR->g_pPlayer->SetPlayerlife(PLAYER_HP);
+					if (SCENE_MGR->g_pMainScene->GetCharcontainer()[0]) {
+						SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
+						SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(PLAYER_HP);
 					}
 				}
 				else
