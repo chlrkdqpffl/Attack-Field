@@ -8,244 +8,245 @@ void CServerManager::processpacket(char *ptr)
 	int id = 0;
 
 	switch (ptr[1]) {
-	case ePacket_Update:   //계속 받을때
-	{
-		sc_packet_pos*         my_Pos_packet;
-		my_Pos_packet = reinterpret_cast<sc_packet_pos *>(ptr);
-		id = my_Pos_packet->id;
-		if (id == m_myid)
-		{
-			SCENE_MGR->g_pPlayerCharacter->SetLife(my_Pos_packet->hp);
-		}
-		else
-		{
-			int i = 0;
-			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+		if (SCENE_MGR->g_nowScene->GetSceneTag() == SceneTag::eMainScene) {
+			case ePacket_Update:   //계속 받을때
 			{
-				if (character->GetServerID() == id)
-					break;
-				i++;
-			}
-
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRelativeVelocity(my_Pos_packet->Animation);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(my_Pos_packet->hp);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_Pos_packet->FireDirection);
-
-			if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eReload))
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(true);
-			else
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(false);
-
-			if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eRun))
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(true);
-			else 
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(false);
-
-			if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eLeftMouse))
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(true);
-			else
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(false);
-
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(false);
-		}
-	}
-	break;
-
-	case ePacket_CreateOthderPlayer:   //처음 받았을때.
-	{
-		sc_packet_put_player*   my_put_packet;
-		my_put_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
-		id = my_put_packet->id;
-
-		if (first_time) {
-			m_myid = id;
-
-			first_time = false;
-		}
-		// ================================================================================================================ //
-		// - 05. 10 - 레이캐스트 세부 충돌 구현 중
-		// 서버에서 생성한 아이디를 클라이언트에도 해당 똑같이 적용하기 위해서 ServerID 만들었다 이거 짚고 넘어가
-		// ServerID는 클라이언트 자체적으로 ID만 가지고 어떤 객체인지 알 수 있게 만든거임 
-		// ObjectID는 클라이언트 자체 ID이니까 ServerID랑 구분 하셈!
-
-		// 그리고 이제 여러 캐릭터 받도록 if문 수정해야겠다.
-		// ================================================================================================================ //
-
-		if (id == m_myid) {
-			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
-			SCENE_MGR->g_pPlayer->SetPlayerlife(static_cast<UINT>(my_put_packet->hp));//SCENE_MGR->g_pMainScene->-> SetLife(static_cast<UINT>(my_put_packet->hp));
-			SCENE_MGR->g_pPlayerCharacter->SetServerID(id);
-			SCENE_MGR->g_pPlayerCharacter->SetTagTeam(reinterpret_cast<TeamType &>(my_put_packet->Team));
-			SCENE_MGR->g_pPlayerCharacter->Setmode(my_put_packet->mode);
-			SCENE_MGR->g_pPlayerCharacter->CreateMaterial();
-		}
-		else
-		{
-			CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject(static_cast<TeamType>(my_put_packet->Team));   //객체 생성
-			pCharObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
-			pCharObject->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
-
-			pCharObject->SetRelativeVelocity(my_put_packet->Animation);
-			pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
-			pCharObject->SetServerID(id);
-			pCharObject->Setmode(my_put_packet->mode);
-
-			SCENE_MGR->g_pMainScene->GetCharcontainer().push_back(pCharObject);
-			SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);
-
-			COLLISION_MGR->m_vecCharacterContainer.push_back(pCharObject);
-		}
-		SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(my_put_packet->RED));
-		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(my_put_packet->Blue));
-	}
-
-	break;
-	case ePacket_MouseRotate :   //rotate된 값 처리
-	{
-		sc_rotate_vector*      my_put_rotate;
-		my_put_rotate = reinterpret_cast<sc_rotate_vector *>(ptr);
-		id = my_put_rotate->id;
-
-		if (id == m_myid)
-		{
-
-			//SCENE_MGR->g_pPlayerCharacter->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
-		}
-		else
-		{
-
-			int i = 0;
-			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
-			{
-				if (character->GetServerID() == id)
-					break;
-				i++;
-			}
-
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
-		}
-	}
-	break;
-
-	case ePacket_CollisionCheck :	// 총알 충돌 체크
-	{
-		SC_Collison*         my_collision;
-		my_collision = reinterpret_cast<SC_Collison*>(ptr);
-
-		// 서버로부터 받은 아이디를 컨테이너에서 같은 아이디를 찾으면 해당 객체가 충돌 객체가 된다.
-		// 그 객체의 바운딩 박스를 검사해서 충돌 확인하고 서버로 정보를 보내준다.
-		CollisionInfo info;
-		bool bIsPartsCollisionCS = false;
-		for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
-			if (character->GetServerID() == my_collision->id)
-				info.m_pHitObject = character;
-		}
+				sc_packet_pos*         my_Pos_packet;
+				my_Pos_packet = reinterpret_cast<sc_packet_pos *>(ptr);
+				id = my_Pos_packet->id;
+				if (id == m_myid)
+				{
+					SCENE_MGR->g_pPlayerCharacter->SetLife(my_Pos_packet->hp);
+				}
+				else
+				{
+					int i = 0;
+					for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+					{
+						if (character->GetServerID() == id)
+							break;
+						i++;
+					}
 		
-		bIsPartsCollisionCS = COLLISION_MGR->RayCastCollisionToCharacter_Parts(info, XMLoadFloat3(&my_collision->position), XMLoadFloat3(&my_collision->direction));
-
-		if (bIsPartsCollisionCS) {
-			CS_Head_Collison Collison;
-			Collison.Head = false;
-			Collison.type = CS_HEAD_HIT;
-			Collison.size = sizeof(CS_Head_Collison);
-			Collison.id = my_collision->id;
-			Collison.position = my_collision->position;
-			Collison.direction = my_collision->direction;
-
-			if (info.m_HitParts == ChracterBoundingBoxParts::eHead)
-				Collison.Head = true;
-
-			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&Collison));
-		}
-	}
-	break;
-	case ePacket_HP :
-	{
-		SC_Player_Hp *packet;
-		packet = reinterpret_cast<SC_Player_Hp *>(ptr);
-		id = packet->m_nCharacterID;
-
-		if (id == m_myid)
-		{
-			SCENE_MGR->g_pPlayerCharacter->SetLife(packet->m_nLife);
-			SCENE_MGR->g_pPlayerCharacter->SetIsHeadHit(packet->m_bIsHeadHit);
-		}
-		else
-		{
-			int i = 0;
-			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
-			{
-				if (character->GetServerID() == id)
-					break;
-				i++;
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRelativeVelocity(my_Pos_packet->Animation);
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(my_Pos_packet->hp);
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_Pos_packet->FireDirection);
+		
+					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eReload))
+						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(true);
+					else
+						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(false);
+		
+					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eRun))
+						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(true);
+					else
+						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(false);
+		
+					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eLeftMouse))
+						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(true);
+					else
+						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(false);
+		
+					//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(false);
+				}
 			}
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->m_nLife);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsHeadHit(packet->m_bIsHeadHit);
-		}
-	}
-	break;
-
-	case ePacket_KillUpdate :
-	{
-		SC_System_kill* packet;
-		packet = reinterpret_cast<SC_System_kill *>(ptr);
-
-		assert(packet->m_nRedTeamTotalKill < 128 && packet->m_nBlueTeamTotalKill < 128);
-
-		SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(packet->m_nRedTeamTotalKill));
-		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(packet->m_nBlueTeamTotalKill));
-	}
-	break;
-
-	case ePacket_GameTimer :   //게임 타이머
-	{
-		SC_Starting_Timer*   packet;
-		packet = reinterpret_cast<SC_Starting_Timer *>(ptr);
-		SCENE_MGR->g_pMainScene->SetGameTime(packet->Starting_timer);
-		break;
-	}
-	case ePacket_Respawn :   //리스폰
-	{
-		SC_Respawn *packet;
-		packet = reinterpret_cast<SC_Respawn *>(ptr);
-		id = packet->id;
-		if (id == m_myid)
-		{
-			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
-			SCENE_MGR->g_pPlayer->SetPlayerlife(PLAYER_HP);
-		}
-		else
-		{
-			int i = 0;
-			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+			break;
+		
+			case ePacket_CreateOthderPlayer:   //처음 받았을때.
 			{
-				if (character->GetServerID() == id)
-					break;
-				i++;
+				sc_packet_put_player*   my_put_packet;
+				my_put_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
+				id = my_put_packet->id;
+		
+				if (first_time) {
+					m_myid = id;
+		
+					first_time = false;
+				}
+				// ================================================================================================================ //
+				// - 05. 10 - 레이캐스트 세부 충돌 구현 중
+				// 서버에서 생성한 아이디를 클라이언트에도 해당 똑같이 적용하기 위해서 ServerID 만들었다 이거 짚고 넘어가
+				// ServerID는 클라이언트 자체적으로 ID만 가지고 어떤 객체인지 알 수 있게 만든거임 
+				// ObjectID는 클라이언트 자체 ID이니까 ServerID랑 구분 하셈!
+		
+				// 그리고 이제 여러 캐릭터 받도록 if문 수정해야겠다.
+				// ================================================================================================================ //
+		
+				if (id == m_myid) {
+					SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
+					SCENE_MGR->g_pPlayer->SetPlayerlife(static_cast<UINT>(my_put_packet->hp));//SCENE_MGR->g_pMainScene->-> SetLife(static_cast<UINT>(my_put_packet->hp));
+					SCENE_MGR->g_pPlayerCharacter->SetServerID(id);
+					SCENE_MGR->g_pPlayerCharacter->SetTagTeam(reinterpret_cast<TeamType &>(my_put_packet->Team));
+					SCENE_MGR->g_pPlayerCharacter->Setmode(my_put_packet->mode);
+					SCENE_MGR->g_pPlayerCharacter->CreateMaterial();
+				}
+				else
+				{
+					CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject(static_cast<TeamType>(my_put_packet->Team));   //객체 생성
+					pCharObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
+					pCharObject->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
+		
+					pCharObject->SetRelativeVelocity(my_put_packet->Animation);
+					pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
+					pCharObject->SetServerID(id);
+					pCharObject->Setmode(my_put_packet->mode);
+		
+					SCENE_MGR->g_pMainScene->GetCharcontainer().push_back(pCharObject);
+					SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);
+		
+					COLLISION_MGR->m_vecCharacterContainer.push_back(pCharObject);
+				}
+				SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(my_put_packet->RED));
+				SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(my_put_packet->Blue));
 			}
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(packet->m_f3Position);
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Revival();
-		}
-		break;
+		
+			break;
+			case ePacket_MouseRotate:   //rotate된 값 처리
+			{
+				sc_rotate_vector*      my_put_rotate;
+				my_put_rotate = reinterpret_cast<sc_rotate_vector *>(ptr);
+				id = my_put_rotate->id;
+		
+				if (id == m_myid)
+				{
+		
+					//SCENE_MGR->g_pPlayerCharacter->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
+				}
+				else
+				{
+		
+					int i = 0;
+					for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+					{
+						if (character->GetServerID() == id)
+							break;
+						i++;
+					}
+		
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
+				}
+			}
+			break;
+		
+			case ePacket_CollisionCheck:	// 총알 충돌 체크
+			{
+				SC_Collison*         my_collision;
+				my_collision = reinterpret_cast<SC_Collison*>(ptr);
+		
+				// 서버로부터 받은 아이디를 컨테이너에서 같은 아이디를 찾으면 해당 객체가 충돌 객체가 된다.
+				// 그 객체의 바운딩 박스를 검사해서 충돌 확인하고 서버로 정보를 보내준다.
+				CollisionInfo info;
+				bool bIsPartsCollisionCS = false;
+				for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
+					if (character->GetServerID() == my_collision->id)
+						info.m_pHitObject = character;
+				}
+		
+				bIsPartsCollisionCS = COLLISION_MGR->RayCastCollisionToCharacter_Parts(info, XMLoadFloat3(&my_collision->position), XMLoadFloat3(&my_collision->direction));
+		
+				if (bIsPartsCollisionCS) {
+					CS_Head_Collison Collison;
+					Collison.Head = false;
+					Collison.type = CS_HEAD_HIT;
+					Collison.size = sizeof(CS_Head_Collison);
+					Collison.id = my_collision->id;
+					Collison.position = my_collision->position;
+					Collison.direction = my_collision->direction;
+		
+					if (info.m_HitParts == ChracterBoundingBoxParts::eHead)
+						Collison.Head = true;
+		
+					SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&Collison));
+				}
+			}
+			break;
+			case ePacket_HP:
+			{
+				SC_Player_Hp *packet;
+				packet = reinterpret_cast<SC_Player_Hp *>(ptr);
+				id = packet->m_nCharacterID;
+		
+				if (id == m_myid)
+				{
+					SCENE_MGR->g_pPlayerCharacter->SetLife(packet->m_nLife);
+					SCENE_MGR->g_pPlayerCharacter->SetIsHeadHit(packet->m_bIsHeadHit);
+				}
+				else
+				{
+					int i = 0;
+					for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+					{
+						if (character->GetServerID() == id)
+							break;
+						i++;
+					}
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->m_nLife);
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsHeadHit(packet->m_bIsHeadHit);
+				}
+			}
+			break;
+		
+			case ePacket_KillUpdate:
+			{
+				SC_System_kill* packet;
+				packet = reinterpret_cast<SC_System_kill *>(ptr);
+		
+				assert(packet->m_nRedTeamTotalKill < 128 && packet->m_nBlueTeamTotalKill < 128);
+		
+				SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(packet->m_nRedTeamTotalKill));
+				SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(packet->m_nBlueTeamTotalKill));
+			}
+			break;
+		
+			case ePacket_GameTimer:   //게임 타이머
+			{
+				SC_Starting_Timer*   packet;
+				packet = reinterpret_cast<SC_Starting_Timer *>(ptr);
+				SCENE_MGR->g_pMainScene->SetGameTime(packet->Starting_timer);
+				break;
+			}
+			case ePacket_Respawn:   //리스폰
+			{
+				SC_Respawn *packet;
+				packet = reinterpret_cast<SC_Respawn *>(ptr);
+				id = packet->id;
+				if (id == m_myid)
+				{
+					SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
+					SCENE_MGR->g_pPlayer->SetPlayerlife(PLAYER_HP);
+				}
+				else
+				{
+					int i = 0;
+					for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
+					{
+						if (character->GetServerID() == id)
+							break;
+						i++;
+					}
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(packet->m_f3Position);
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Revival();
+				}
+				break;
+			}
+			case ePacket_OccupyTeam:	//어떤팀이 점령했는지 보낸다.
+			{
+				sc_occupy *packet = reinterpret_cast<sc_occupy *>(ptr);
+				SCENE_MGR->g_pMainScene->SetOccupyTeam(packet->redteam);
+				SCENE_MGR->g_pMainScene->SetOccupyTime(0);
+				break;
+			}
+		
+			case ePacket_DamageInfo:	// 피격 UI 표현용 패킷
+			{
+				SC_Damegedirection* packet;
+				packet = reinterpret_cast<SC_Damegedirection *>(ptr);
+		
+				SCENE_MGR->g_pPlayer->SetDamagedInfo(DamagedInfo(true, packet->position));
+				break;
+			}
 	}
-	case ePacket_OccupyTeam :	//어떤팀이 점령했는지 보낸다.
-	{
-		sc_occupy *packet = reinterpret_cast<sc_occupy *>(ptr);
-		SCENE_MGR->g_pMainScene->SetOccupyTeam(packet->redteam);
-		SCENE_MGR->g_pMainScene->SetOccupyTime(0);
-		break;
-	}
-	
-	case ePacket_DamageInfo :	// 피격 UI 표현용 패킷
-	{
-		SC_Damegedirection* packet;
-		packet = reinterpret_cast<SC_Damegedirection *>(ptr);
-	
-		SCENE_MGR->g_pPlayer->SetDamagedInfo(DamagedInfo(true, packet->position));
-		break;
-	}
-
 	case ePacket_LoginFail:	//로그인 실패시 클라이언트종료
 	{
 		SC_login_CONNECT *packet;
