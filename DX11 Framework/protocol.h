@@ -19,7 +19,6 @@ enum PacketType
 	ePacket_GameTimer,
 	ePacket_Respawn,
 	ePacket_OccupyTeam,
-	ePacket_OccupyTimer,
 	ePacket_DamageInfo,
 
 

@@ -237,16 +237,6 @@ void CServerManager::processpacket(char *ptr)
 		break;
 	}
 	
-	case ePacket_OccupyTimer :	// 점령 패킷
-	{
-		SC_Occupy_Timer* packet;
-		packet = reinterpret_cast<SC_Occupy_Timer *>(ptr);
-	
-	
-		SCENE_MGR->g_pMainScene->SetOccupyTime(packet->Occupy_timer);
-		break;
-	}
-
 	case ePacket_DamageInfo :	// 피격 UI 표현용 패킷
 	{
 		SC_Damegedirection* packet;
