@@ -211,11 +211,12 @@ void CServerManager::processpacket(char *ptr)
 				SC_Respawn *packet;
 				packet = reinterpret_cast<SC_Respawn *>(ptr);
 				id = packet->id;
-				if (id == m_myid){
-					if (SCENE_MGR->g_pMainScene->GetCharcontainer()[0]) {
+				if (id == m_myid)
+				{
+					
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(PLAYER_HP);
-					}
+					
 				}
 				else
 				{
@@ -226,6 +227,7 @@ void CServerManager::processpacket(char *ptr)
 						findCharacterID++;
 					}
 					if (SCENE_MGR->g_pMainScene->GetCharcontainer().size() > 0) {
+						cout << "Å¸Áø´Ù?" << endl;
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->SetPosition(packet->m_f3Position);
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->Revival();
 					}
