@@ -204,8 +204,8 @@ void CServerManager::processpacket(char *ptr)
 				SC_Starting_Timer*   packet;
 				packet = reinterpret_cast<SC_Starting_Timer *>(ptr);
 				SCENE_MGR->g_pMainScene->SetGameTime(packet->Starting_timer);
-				break;
 			}
+			break;
 			case ePacket_Respawn:   //리스폰
 			{
 				cout << "여기 타지나?"<<endl;
@@ -230,8 +230,8 @@ void CServerManager::processpacket(char *ptr)
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->SetPosition(packet->m_f3Position);
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->Revival();
 				}
-				break;
 			}
+			break;
 			case ePacket_OccupyTeam:	//어떤팀이 점령했는지 보낸다.
 			{
 				sc_occupy *packet = reinterpret_cast<sc_occupy *>(ptr);
@@ -241,8 +241,8 @@ void CServerManager::processpacket(char *ptr)
 				else
 					SCENE_MGR->g_pMainScene->SetOccupyTeam(TeamType::eBlueTeam);
 				SCENE_MGR->g_pMainScene->SetOccupyTime(0);
-				break;
 			}
+			break;
 		
 			case ePacket_DamageInfo:	// 피격 UI 표현용 패킷
 			{
@@ -250,8 +250,8 @@ void CServerManager::processpacket(char *ptr)
 				packet = reinterpret_cast<SC_Damegedirection *>(ptr);
 		
 				SCENE_MGR->g_pPlayer->SetDamagedInfo(DamagedInfo(true, packet->position));
-				break;
 			}
+			break;
 	}
 	case ePacket_LoginFail:	//로그인 실패시 클라이언트종료
 	{
@@ -264,8 +264,9 @@ void CServerManager::processpacket(char *ptr)
 			exit(1);
 			//PostQuitMessage(0);
 		}
-		break;
 	}
+	break;
+	/*
 	case ePacket_SceneChange:	//게임종료 신변경!
 	{
 		sc_change_scene *packet;
@@ -274,7 +275,7 @@ void CServerManager::processpacket(char *ptr)
 		SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
 		break;
 	}
-
+	*/
 	case ePacket_SuccessMyCharacter:	//방에 들어가지면 받고 신변경해주고 서버에 정보 넣어달라고 보낸다.
 	{
 		SCENE_MGR->ChangeScene(SceneTag::eLoadingScene);
@@ -283,8 +284,8 @@ void CServerManager::processpacket(char *ptr)
 
 		sendpacket.size = sizeof(cs_create_charter);
 		sendpacket.type = 8;
-		break;
 	}
+	break;
 
 	case ePacket_Disconnect :	// 다른클라이언트 종료시 벡터에서 팝해준다.
 	{

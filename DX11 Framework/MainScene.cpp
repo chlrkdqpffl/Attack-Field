@@ -1543,7 +1543,6 @@ void CMainScene::CalcTime()
 
 void CMainScene::CalcOccupyTime()
 {
-	cout << "È£Ãâ" << m_OccupyTime << endl;
 	if (TeamType::eNone != m_typeOccupyTeam)
 		m_OccupyTime++;
 

@@ -23,7 +23,7 @@ enum PacketType
 
 
 	ePacket_SuccessMyCharacter,
-	ePacket_SceneChange,
+//	ePacket_SceneChange,
 	ePacket_LoginFail,
 	ePacket_Disconnect
 };
