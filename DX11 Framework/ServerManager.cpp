@@ -212,7 +212,6 @@ void CServerManager::processpacket(char *ptr)
 				packet = reinterpret_cast<SC_Respawn *>(ptr);
 				id = packet->id;
 				if (id == m_myid){
-					cout << "리스폰 위치 : "; ShowXMFloat3(packet->m_f3Position);
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->Revival();
 				}
@@ -224,8 +223,6 @@ void CServerManager::processpacket(char *ptr)
 							break;
 						findCharacterID++;
 					}
-
-					cout << "리스폰 위치 : "; ShowXMFloat3(packet->m_f3Position);
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->SetPosition(packet->m_f3Position);
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->Revival();
 				}
@@ -234,7 +231,7 @@ void CServerManager::processpacket(char *ptr)
 			case ePacket_OccupyTeam:	//어떤팀이 점령했는지 보낸다.
 			{
 				sc_occupy *packet = reinterpret_cast<sc_occupy *>(ptr);
-				cout << "점령 패킷옴 " << packet->redteam << endl;
+				cout << "점령 팀" << static_cast<BYTE>(packet->redteam) << endl;
 				if(packet->redteam == static_cast<BYTE>(TeamType::eRedTeam))
 					SCENE_MGR->g_pMainScene->SetOccupyTeam(TeamType::eRedTeam);
 				else

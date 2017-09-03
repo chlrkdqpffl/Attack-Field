@@ -86,18 +86,10 @@ void CCharacterObject::Revival()
 	XMVECTOR blueTeamStartPosition = XMVectorSet(270, 2.4f, 230, 0.0f);
 
 	if (m_pPlayer) {
-		cout << "ÇÃ·¹ÀÌ¾î °´Ã¼" << endl;
 		if (m_tagTeam == TeamType::eRedTeam)
 			m_pPlayer->SetPosition(redTeamStartPosition);
 		else
 			m_pPlayer->SetPosition(blueTeamStartPosition);
-	}
-	else {
-		cout << "Å¸ °´Ã¼" << endl;
-		if (m_tagTeam == TeamType::eRedTeam)
-			SetPosition(redTeamStartPosition);
-		else
-			SetPosition(blueTeamStartPosition);
 	}
 }
 

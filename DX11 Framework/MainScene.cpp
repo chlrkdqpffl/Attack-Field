@@ -1552,6 +1552,9 @@ void CMainScene::CalcOccupyTime()
 		else if (m_typeOccupyTeam == TeamType::eBlueTeam)
 			m_nBlueScore++;
 
+		cout << "레드 : " << m_nRedScore << endl;
+		cout << "블루 : " << m_nBlueScore << endl;
+
 		if (m_nRedScore == TOTAL_OCCUPYSCORE || m_nBlueScore == TOTAL_OCCUPYSCORE)
 			SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
 
@@ -1734,8 +1737,6 @@ void CMainScene::ShowOccupyUI()
 			packet.size = sizeof(sc_occupy);
 			packet.type = 9;
 			packet.redteam = static_cast<int>(m_pPlayerCharacter->GetTagTeam());
-
-			//cout << packet.redteam << endl;
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 		}
 #endif
@@ -1743,7 +1744,6 @@ void CMainScene::ShowOccupyUI()
 		m_typeOccupyTeam = m_pPlayerCharacter->GetTagTeam();
 		pGageUI->SetActive(false);
 		pWhiteGageUI->SetActive(false);
-
 	}
 }
 
