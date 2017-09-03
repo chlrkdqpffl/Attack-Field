@@ -1558,7 +1558,7 @@ void CMainScene::CalcOccupyTime()
 		if (m_nRedScore == TOTAL_OCCUPYSCORE || m_nBlueScore == TOTAL_OCCUPYSCORE) {
 
 			cout << "니 여기오냐" << endl;
-			SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
+//			SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
 
 		}
 
