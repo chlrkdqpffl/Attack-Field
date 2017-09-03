@@ -102,4 +102,7 @@ private:
 	UINT							m_nRedTeamTotalKill = 0;
 	UINT							m_nBlueTeamTotalKill = 0;
 	BYTE							m_cOccupyteam = 0;			//어떤팀이 점령했는지 알아야 한다.
+	BYTE							m_nRedwin = 2;
+	BYTE							m_nBluewin = 2;
+
 };
