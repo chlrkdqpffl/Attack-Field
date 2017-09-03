@@ -95,14 +95,16 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	}
 
 	// Mouse
-	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)) {
+	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse))
+	{
 		m_pCharacter->SetIsFire(true);
 #ifdef USE_SERVER
-//		CS_Fire packet;
-//		packet.size = sizeof(packet);
-//		packet.type = 10;
-//		packet.FireDirection = m_pCharacter->GetFireDirection();
-//		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+		//CS_Fire packet;
+		//packet.size = sizeof(packet);
+		//packet.type = 10;
+		////packet.fire = true;
+		//packet.FireDirection = m_pCharacter->GetFireDirection();
+		//SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 #endif
 	}
 	else
@@ -132,12 +134,13 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	packet.x = GetPosition().x;
 	packet.y = GetPosition().y;
 	packet.z = GetPosition().z;
+	packet.FireDirection = m_pCharacter->GetFireDirection();
 
 
 	if ((m_wKeyState != 0) || count == 0) {
-		WORD temp = static_cast<int>(KeyInput::eLeftMouse);
+		//WORD temp = static_cast<int>(KeyInput::eLeftMouse);
 		WORD key_button_e = static_cast<int>(KeyInput::eOccupy);
-		if (m_wKeyState != temp && key_button_e != m_wKeyState)
+		if ( key_button_e != m_wKeyState)
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 	}
 	count++;

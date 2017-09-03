@@ -78,9 +78,8 @@ struct sc_packet_pos   //서버에서 처리된 값을 클라에게 보낸다.
 	float   z;
 
 	XMFLOAT3   Animation;
+	XMFLOAT3 FireDirection;
 	BYTE   hp;
-
-
 };
 
 struct sc_rotate_vector

@@ -32,6 +32,8 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRelativeVelocity(my_Pos_packet->Animation);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(my_Pos_packet->hp);
 
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_Pos_packet->FireDirection);
+
 			if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eReload))
 				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(true);
 			else
@@ -122,6 +124,7 @@ void CServerManager::processpacket(char *ptr)
 
 	break;
 	case 3:   // 총 발사시
+		cout << "여기 타면 안된다!" << endl;
 	{
 		sc_bullet_fire*         my_put_bulletfire;
 		my_put_bulletfire = reinterpret_cast<sc_bullet_fire *>(ptr);
@@ -315,7 +318,7 @@ void CServerManager::processpacket(char *ptr)
 		sc_change_scene *packet;
 		packet = reinterpret_cast<sc_change_scene *>(ptr);
 
-		//SCENE_MGR->ChangeScene(SceneTag::eTitleScene);
+		SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
 		break;
 	}
 
