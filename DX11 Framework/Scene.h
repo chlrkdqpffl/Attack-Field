@@ -83,6 +83,7 @@ public:
 	void SetDeviceContext(ID3D11DeviceContext* pDeviceContext) { m_pd3dDeviceContext = pDeviceContext; }
 	void SetTag(SceneTag tag) { m_tagScene = tag; }
 	SceneTag GetSceneTag() const { return m_tagScene; }
+	float GetFrameSpeed() const { return m_fFrameSpeed; }
 
 protected:
 	SceneTag							m_tagScene = SceneTag::eNone;
@@ -113,4 +114,5 @@ protected:
 	CObjectsShader						m_vecShaderObjectContainer;
 	
 	CSphereObject*						m_pSphereObject = nullptr;
+	float								m_fFrameSpeed = 1.0f;
 };

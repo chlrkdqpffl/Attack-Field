@@ -236,7 +236,7 @@ void CParticleSystem::UpdateConstantBuffer(ID3D11DeviceContext* pd3dDeviceContex
 	pd3dDeviceContext->Map(m_pCBParticleInfo, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 
 	CB_PARTICLEINFO *pcbParticleInfo = (CB_PARTICLEINFO*)d3dMappedResource.pData;
-	pcbParticleInfo->m_fGameTime = m_fGameTime;
+	pcbParticleInfo->m_fGameTime = m_fGameTime / SCENE_MGR->g_nowScene->GetFrameSpeed();
 	pcbParticleInfo->m_fTimeStep = m_fTimeStep;
 	pcbParticleInfo->m_d3dxvEmitPosition = m_f3EmitPosition;
 	pcbParticleInfo->m_d3dxvEmitDirection = m_f3EmitDirection;

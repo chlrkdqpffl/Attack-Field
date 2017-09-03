@@ -132,7 +132,7 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 
 	// ========================== Rain ================================= //
 	m_pRainParticle = new CParticleSystem();
-	m_pRainParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eRain), m_pRainParticle->CreateRandomTexture1DSRV(pd3dDevice), 5000, STATEOBJ_MGR->g_pFireBS);
+	m_pRainParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eRain), m_pRainParticle->CreateRandomTexture1DSRV(pd3dDevice), 10000, STATEOBJ_MGR->g_pFireBS);
 	m_pRainParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Rain.hlsli");
 }
 
