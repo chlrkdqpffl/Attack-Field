@@ -314,9 +314,7 @@ void CServerManager::processpacket(char *ptr)
 		sc_change_scene *packet;
 		packet = reinterpret_cast<sc_change_scene *>(ptr);
 
-		SCENE_MGR->ChangeScene(SceneTag::eTitleScene);
-
-
+		//SCENE_MGR->ChangeScene(SceneTag::eTitleScene);
 		break;
 	}
 

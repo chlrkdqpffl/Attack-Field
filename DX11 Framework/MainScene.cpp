@@ -1519,19 +1519,34 @@ void CMainScene::CalcTime()
 		m_nGameTime--;
 		if(m_cOccupyteam != 0  && m_OccupyTime < 30)
 			m_OccupyTime++;
-
-		if (m_OccupyTime >= 30)
+#ifdef	USE_SERVER
 		{
-			cs_temp_exit packet;
-			packet.size = sizeof(packet);
-			packet.type = 11;
-			packet.Winner = m_cOccupyteam;
+			if (m_OccupyTime >= 30)
+			{
+				cs_temp_exit packet;
+				packet.size = sizeof(packet);
+				packet.type = 11;
+				packet.Winner = m_cOccupyteam;
 
-			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-			cout << "여기 타나?" << endl;
+				SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+
+				if (m_cOccupyteam == 1)
+				{
+					m_nRedwin++;
+				}
+				else if (m_cOccupyteam == 2)
+				{
+					m_nBluewin++;
+				}
+				m_OccupyTime = 0;
+				m_cOccupyteam = 0;
+
+			}
 
 		}
-
+#endif
+		{
+		}
 		m_dwTime = GetTickCount();
 	}
 }
@@ -2025,19 +2040,25 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	TEXT_MGR->RenderText(pd3dDeviceContext, str, 48, 843, 85, 0xFFFFFFFF, FW1_RIGHT);
 
 	// ----- Total Kill ----- //
-	str = to_string(m_nRedTeamTotalKill);
-	TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 698, 10, 0xFF0020FF, FW1_CENTER);
-
-	str = to_string(m_nBlueTeamTotalKill);
-	TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 913, 10, 0xFFFF4500, FW1_CENTER);
-
 	if (SCENE_MGR->g_pPlayerCharacter->Getmode() == 1)	//데스매치일때
 	{
+		str = to_string(m_nRedTeamTotalKill);
+		TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 698, 10, 0xFF0020FF, FW1_CENTER);
+
+		str = to_string(m_nBlueTeamTotalKill);
+		TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 913, 10, 0xFFFF4500, FW1_CENTER);
+
 		str = to_string(TOTAL_KILLS);
 		TEXT_MGR->RenderText(pd3dDeviceContext, str, 65, 800, 10, 0xFFFFFFFF, FW1_CENTER);
 	}
 	else    // 점령모드일때
 	{
+		str = to_string(m_nRedwin);
+		TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 698, 10, 0xFF0020FF, FW1_CENTER);
+
+		str = to_string(m_nBluewin);
+		TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 913, 10, 0xFFFF4500, FW1_CENTER);
+
 		str = to_string(3);
 		TEXT_MGR->RenderText(pd3dDeviceContext, str, 65, 800, 10, 0xFFFFFFFF, FW1_CENTER);
 	}
