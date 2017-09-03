@@ -2017,8 +2017,17 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	str = to_string(m_nBlueTeamTotalKill);
 	TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 913, 10, 0xFFFF4500, FW1_CENTER);
 
-	str = to_string(TOTAL_KILLS);
-	TEXT_MGR->RenderText(pd3dDeviceContext, str, 65, 800, 10, 0xFFFFFFFF, FW1_CENTER);
+	if (SCENE_MGR->g_pPlayerCharacter->Getmode() == 1)	//데스매치일때
+	{
+		str = to_string(TOTAL_KILLS);
+		TEXT_MGR->RenderText(pd3dDeviceContext, str, 65, 800, 10, 0xFFFFFFFF, FW1_CENTER);
+	}
+	else    // 점령모드일때
+	{
+		str = to_string(3);
+		TEXT_MGR->RenderText(pd3dDeviceContext, str, 65, 800, 10, 0xFFFFFFFF, FW1_CENTER);
+	}
+
 
 	// ----- Respawn ------ //
 	if (m_pPlayerCharacter->GetIsDeath()) {
