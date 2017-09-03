@@ -208,9 +208,13 @@ void CServerManager::processpacket(char *ptr)
 			}
 			case ePacket_Respawn:   //리스폰
 			{
+				cout << "여기 타지나?"<<endl;
 				SC_Respawn *packet;
 				packet = reinterpret_cast<SC_Respawn *>(ptr);
+
 				id = packet->id;
+
+				cout << packet->m_f3Position.x << "	" << packet->m_f3Position.y << "	" << packet->m_f3Position.z << endl;
 				if (id == m_myid){
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->Revival();
