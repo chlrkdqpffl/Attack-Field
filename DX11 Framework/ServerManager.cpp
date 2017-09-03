@@ -142,8 +142,11 @@ void CServerManager::processpacket(char *ptr)
 						break;
 					i++;
 				}
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(true);
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_bulletfire->FireDirection);
+
+				if (SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->GetAlive()) {
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(true);
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_bulletfire->FireDirection);
+				}
 			}
 		}
 	}
