@@ -441,6 +441,7 @@ void CMainScene::Initialize()
 	CreateTweakBars();
 	CreateUIImage();
 	CreateSpriteImageObject();
+//	CreateSound();		 불소리가 안남. 채널 문제인듯
 
 	SOUND_MGR->PlayBgm(SoundTag::eBGM_Rain, 1.0f);
 	m_dwLastLightningTime = GetTickCount();
@@ -1484,6 +1485,16 @@ void CMainScene::CreateLights()
 	}
 }
 
+void CMainScene::CreateSound()
+{
+	vector<MapData> vecMapData;
+
+	// ========================== Fire ================================= //
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel);
+	for (auto& object : vecMapData)
+		SOUND_MGR->Play3DSound_Environment(SoundTag::eFire, object.m_Position, 30.0f);
+}
+
 void CMainScene::ModifiedSelectObject()
 {
 	XMFLOAT3 pos = m_pSelectedObject->GetPosition();
@@ -1798,12 +1809,12 @@ void CMainScene::Update(float fDeltaTime)
 {
 	COLLISION_MGR->InitCollisionInfo();	// 현재 플레이어만 적용되고있어서 주석처리함
 //	COLLISION_MGR->UpdateManager();
-	Update_Light();
 
 	// ====== Update ===== //
 	GLOBAL_MGR->UpdateManager();
 	UpdateConstantBuffers();
 	Update_LightningStrikes(fDeltaTime);
+	Update_Light();
 
 	// ====== Object ===== //
 	CScene::Update(fDeltaTime);

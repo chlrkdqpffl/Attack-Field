@@ -176,7 +176,7 @@ void CState_Walk::ExitState(CCharacterObject* pCharacter, AnimationData::Parts t
 void CState_Reload::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.6f);
-	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetCharacterID(), pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
+	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 }
 
 void CState_Reload::UpdateUpperBodyState(CCharacterObject* pCharacter)
@@ -244,7 +244,7 @@ void CState_Run::EnterState(CCharacterObject* pCharacter, AnimationData::Parts t
 	if (type == AnimationData::Parts::LowerBody)
 		return;
 
-	SOUND_MGR->Play3DSound(SoundTag::eRun, pCharacter->GetCharacterID(), pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
+	SOUND_MGR->Play3DSound(SoundTag::eRun, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun, 1.5f);
 	pCharacter->SetIsTempRun(true);
 }
@@ -300,7 +300,7 @@ void CState_Death::EnterState(CCharacterObject* pCharacter, AnimationData::Parts
 	m_Position = pCharacter->GetvPosition();
 #endif
 
-	SOUND_MGR->Play3DSound(SoundTag::eDeath, pCharacter->GetCharacterID(), pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
+	SOUND_MGR->Play3DSound(SoundTag::eDeath, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 }
 
 void CState_Death::UpdateUpperBodyState(CCharacterObject* pCharacter)
