@@ -1427,8 +1427,15 @@ void CMainScene::ReleaseObjects()
 	for (auto& object : m_vecCharacterContainer)
 		SafeDelete(object);
 
-
+	SPRITE_MGR->ReleseManager();
 	LIGHT_MGR->ReleseInstance();
+	COLLISION_MGR->ClearContainer();
+	PARTICLE_MGR->ReleseManager();
+	SOUND_MGR->ClearContainer();
+	SOUND_MGR->StopBGMSound();
+	SOUND_MGR->StopSound();
+	TWBAR_MGR->g_OptionHDR.g_fWhite = TWBAR_MGR->g_cfWhite;
+	CCharacterObject::g_nCharacterCount = 0;
 }
 
 void CMainScene::AddShaderObject(ShaderTag tag, CGameObject* pObject)

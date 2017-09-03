@@ -66,13 +66,15 @@ public:
 	void UpdateManager(float fTimeDelta);
 	virtual void ReleseManager() override;
 
+	void ClearContainer();
 	void LoadAllSound();
 	void LoadBGMSound();
 	void LoadEffectSound();
 
 	void Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f);
 	void Play3DSound_Environment(SoundTag soundTag, XMFLOAT3 position, float maxDistance, float volume = 1.0f);
-	void StopSound(UINT channelID);
+	void StopSound();
+	void StopBGMSound();
 	void Play2DSound(SoundTag soundTag, float volume = 1.0f);
 	void PlayBgm(SoundTag soundTag, float vol = 0.7f);
 
@@ -85,17 +87,17 @@ public:
 	void UpdateManager(float fTimeDelta) {};
 	virtual void ReleseManager() {};
 
-	void LoadAllSound() {};
-	void LoadBGMSound() {};
-	void LoadEffectSound() {};
+	void LoadAllSound() {}
+	void LoadBGMSound() {}
+	void LoadEffectSound() {}
 
-	void AddChennel() {};
-	void AllStop() {};
-	void Play3DSound(SoundTag soundTag, UINT channelID, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f) {};
-	void StopSound(UINT channelID) {};
-	void Play2DSound(SoundTag soundTag, float volume = 1.0f) {};
-	void PlayBgm(SoundTag soundTag, float vol = 0.7f) {};
+	void Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f) {}
+	void Play3DSound_Environment(SoundTag soundTag, XMFLOAT3 position, float maxDistance, float volume = 1.0f) {}
+	void StopBGMSound() {}
+	void StopSound() {}
+	void Play2DSound(SoundTag soundTag, float volume = 1.0f) {}
+	void PlayBgm(SoundTag soundTag, float vol = 0.7f) {}
 
-	void SetVolume(float volume) {};
+	void SetVolume(float volume) {}
 #endif
 };

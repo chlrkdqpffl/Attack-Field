@@ -19,6 +19,9 @@ void CSpriteImageManager::ReleseManager()
 	for (auto& obj : m_vecSpriteObjectContainer)
 		SafeDelete(obj);
 
+	m_mapSpriteInfoPool.clear();
+	m_vecSpriteObjectContainer.clear();
+
 	CSpriteImageObject::ReleaseConstantBuffers();
 }
 

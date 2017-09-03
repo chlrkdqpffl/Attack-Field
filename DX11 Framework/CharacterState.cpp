@@ -169,7 +169,7 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 void CState_Walk::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-	SOUND_MGR->StopSound(pCharacter->GetCharacterID());
+	SOUND_MGR->StopSound();
 }
 
 // ---------------------------- Reload ---------------------------- //
@@ -278,7 +278,7 @@ void CState_Run::ExitState(CCharacterObject* pCharacter, AnimationData::Parts ty
 		return;
 
 	pCharacter->SetIsTempRun(false);
-	SOUND_MGR->StopSound(pCharacter->GetCharacterID());
+	SOUND_MGR->StopSound();
 }
 
 // ---------------------------- Death ---------------------------- //

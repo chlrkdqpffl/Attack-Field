@@ -60,6 +60,12 @@ void CCollisionManager::InitCollisionInfo()
 	}
 }
 
+void CCollisionManager::ClearContainer()
+{
+	m_vecStaticMeshContainer.clear();
+	m_vecCharacterContainer.clear();
+}
+
 bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
 {
 	bool isCollision = false;
