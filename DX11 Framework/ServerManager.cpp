@@ -216,6 +216,7 @@ void CServerManager::processpacket(char *ptr)
 
 				cout << packet->m_f3Position.x << "	" << packet->m_f3Position.y << "	" << packet->m_f3Position.z << endl;
 				if (id == m_myid){
+					cout << "리스폰 위치 : "; ShowXMFloat3(packet->m_f3Position);
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->Revival();
 				}
@@ -227,6 +228,8 @@ void CServerManager::processpacket(char *ptr)
 							break;
 						findCharacterID++;
 					}
+
+					cout << "리스폰 위치 : "; ShowXMFloat3(packet->m_f3Position);
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->SetPosition(packet->m_f3Position);
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->Revival();
 				}
