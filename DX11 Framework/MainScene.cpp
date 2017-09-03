@@ -108,11 +108,10 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_F4:	
 				m_pPlayer->SetPosition(XMVectorSet(60, 10, 30, 0));
-			//	m_pPlayer->SetPosition(XMVectorSet(60, 10, 100, 0));
 				m_pPlayer->SetGravityTimeElpased(0.0f);
-
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
+#ifndef USE_SERVER
 			case VK_F5:	
 				m_vecCharacterContainer.back()->SetIsFire(true);
 				break;
@@ -122,8 +121,6 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			case VK_F7:
 				m_bIsGameRoundOver = true;
 				break;
-			break;
-#ifndef USE_SERVER
 			case VK_Z:
 				// 임의로 죽어보기
 				m_pPlayerCharacter->SetDeath();
@@ -1535,43 +1532,28 @@ void CMainScene::CalcTime()
 		if (m_nGameTime <= 0)
 			return;
 		m_nGameTime--;
-		if(m_cOccupyteam != 0  && m_OccupyTime < 30)
+		if (m_cOccupyteam != 0 && m_OccupyTime < OCCUPY_TIME / 1000)
 			m_OccupyTime++;
-#ifdef	USE_SERVER
-		{
-			if (m_OccupyTime >= 10)
-			{
-				cs_temp_exit packet;
-				packet.size = sizeof(packet);
-				packet.type = 11;
-				packet.Winner = m_cOccupyteam;
 
-				SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+		if (m_OccupyTime >= OCCUPY_TIME / 1000) {
+#ifdef USE_SERVER
+			cs_temp_exit packet;
+			packet.size = sizeof(packet);
+			packet.type = 11;
+			packet.Winner = m_cOccupyteam;
 
-				if (m_cOccupyteam == 1)
-				{
-					m_nRedwin++;
-				}
-				else if (m_cOccupyteam == 2)
-				{
-					m_nBluewin++;
-				}
-
-				if (m_nRedwin == 3 || m_nBluewin == 3)
-				{
-					
-					m_nRedwin = 2;
-					m_nBluewin = 2;
-				}
-
-				m_OccupyTime = 0;
-				m_cOccupyteam = 0;
-
-			}
-
-		}
+			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 #endif
-		{
+			if (m_cOccupyteam == 1)
+				m_nRedwin++;
+			else if (m_cOccupyteam == 2)
+				m_nBluewin++;
+
+			if (m_nRedwin == 1 || m_nBluewin == 1)
+				SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
+			
+			m_OccupyTime = 0;
+			m_cOccupyteam = 0;
 		}
 		m_dwTime = GetTickCount();
 	}
@@ -1581,21 +1563,48 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 {
 	static bool bIsGameRoundOverTimer = false;
 
+	// 게임 라운드 종료시 슬로우되며 하얗게 변한다.
 	if (false == bIsGameRoundOverTimer) {
 		bIsGameRoundOverTimer = true;
 		m_dwGameRoundOverTime = GetTickCount();
 		m_fFrameSpeed = 0.3f;
+		TWBAR_MGR->g_OptionHDR.g_fWhite = TWBAR_MGR->g_cfWhite;
 	}
-//	m_fFrameSpeed -= 0.001f * ;
-//	TWBAR_MGR->g_OptionHDR.g_fWhite -= 
+
+	m_fFrameSpeed -= 0.2f * fDeltaTime;
+	TWBAR_MGR->g_OptionHDR.g_fWhite -= 1.5f * fDeltaTime;
+
 	if (m_fFrameSpeed < 0.1f)
 		m_fFrameSpeed = 0.1f;
 
-	cout << m_fFrameSpeed << endl;
-	if (GetTickCount() - m_dwGameRoundOverTime > 5000) {
+	if (TWBAR_MGR->g_OptionHDR.g_fWhite < 0.1f)
+		TWBAR_MGR->g_OptionHDR.g_fWhite = 0.1f;
+
+
+	// 라운드 종료 - 6초 뒤 새 게임 시작
+	if (GetTickCount() - m_dwGameRoundOverTime > ROUNDWAIT_TIME) {
 		m_bIsGameRoundOver = false;
 		m_fFrameSpeed = 1.0f;
 		bIsGameRoundOverTimer = false;
+		m_nGameTime = 0;
+		TWBAR_MGR->g_OptionHDR.g_fWhite = TWBAR_MGR->g_cfWhite;
+
+		XMVECTOR redTeamStartPosition = XMVectorSet(65, 2.4f, 12, 0.0f);
+		XMVECTOR blueTeamStartPosition = XMVectorSet(270, 2.4f, 230, 0.0f);
+
+		if (m_pPlayer->GetServerID() % 2 == 0)
+			m_pPlayer->SetPosition(redTeamStartPosition);
+		else
+			m_pPlayer->SetPosition(blueTeamStartPosition);
+
+		for (auto& character : m_vecCharacterContainer) {
+			if (character->GetServerID() % 2 == 0)
+				m_pPlayer->SetPosition(redTeamStartPosition);
+			else
+				character->SetPosition(blueTeamStartPosition);
+		}
+
+		m_pPlayer->SetWeaponBulletMax();
 	}
 }
 
@@ -1706,7 +1715,7 @@ void CMainScene::ShowOccupyUI()
 		pWhiteGageUI->SetActive(false);
 	}
 	const UINT gageLength = 600;	// UI x축 길이 600 
-	float percentage = (float)(GetTickCount() - m_pPlayerCharacter->GetOccupyTime()) / OCCUPY_TIME;
+	float percentage = (float)(GetTickCount() - m_pPlayerCharacter->GetOccupyTime()) / OCCUPY_TRYTIME;
 
 	pWhiteGageUI->SetEndPos(POINT{ FRAME_BUFFER_WIDTH / 2 - 300 + (LONG)(percentage * gageLength), FRAME_BUFFER_HEIGHT / 2 + 62 });
 
@@ -1896,14 +1905,14 @@ void CMainScene::Update(float fDeltaTime)
 
 	// ====== Update ===== //
 	GLOBAL_MGR->UpdateManager();
-
 	UpdateConstantBuffers();
-	Update_LightningStrikes(fCalcDeltatime);
 	Update_Light();
 
 	if (m_bIsGameRoundOver)
 		GameRoundOver(fCalcDeltatime);
-
+	else {
+		Update_LightningStrikes(fCalcDeltatime);
+	}
 	// ====== Object ===== //
 	CScene::Update(fCalcDeltatime);
 
