@@ -211,26 +211,25 @@ void CServerManager::processpacket(char *ptr)
 				SC_Respawn *packet;
 				packet = reinterpret_cast<SC_Respawn *>(ptr);
 				id = packet->id;
-				if (id == m_myid)
-				{
-					if (SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetAlive()) {
+				if (id == m_myid){
+					if (SCENE_MGR->g_pPlayer) {
 						SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
 						SCENE_MGR->g_pPlayer->SetPlayerlife(PLAYER_HP);
 					}
 				}
 				else
 				{
-					int i = 0;
-					for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
-					{
+					int findCharacterID = 0;
+					for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
 						if (character->GetServerID() == id)
 							break;
-						i++;
+						findCharacterID++;
 					}
-					if (SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->GetAlive()) {
-						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(packet->m_f3Position);
-						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->Revival();
+					if (SCENE_MGR->g_pMainScene->GetCharcontainer().size() > 0) {
+						SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->SetPosition(packet->m_f3Position);
+						SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->Revival();
 					}
+
 				}
 				break;
 			}

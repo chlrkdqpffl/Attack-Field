@@ -1426,6 +1426,8 @@ void CMainScene::ReleaseObjects()
 	for (auto& object : m_vecCharacterContainer)
 		SafeDelete(object);
 
+	m_vecCharacterContainer.clear();
+
 	SPRITE_MGR->ReleseManager();
 	LIGHT_MGR->ReleseInstance();
 	COLLISION_MGR->ClearContainer();
