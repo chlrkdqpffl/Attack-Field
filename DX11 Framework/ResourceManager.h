@@ -11,6 +11,7 @@ class CResourceManager : public CSingletonManager<CResourceManager>
 	multimap<TextureTag, string>						m_mapPathPool;
 	multimap<MeshTag, CFbxMeshData>						m_mapFbxMeshPool;
 	multimap<MeshTag, CMesh*>							m_mapNoneFbxMeshPool;
+	bool												m_bIsLoading = false;
 
 public:
 	CResourceManager();

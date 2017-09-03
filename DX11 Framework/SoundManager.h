@@ -54,7 +54,8 @@ public:
 class CSoundManager : public CSingletonManager<CSoundManager>
 {
 	float				g_fMainVolume = 1.0f;
-	list<CSound3D*>		g_listSound3DContainer;
+
+	list<CSound3D*>		g_listSound3DContainer;	
 	list<CSound3D*>		g_listSound3DEnvironmentContainer;
 public:
 #ifdef USE_SOUND
@@ -69,8 +70,6 @@ public:
 	void LoadBGMSound();
 	void LoadEffectSound();
 
-	void AddChennel();
-	void AllStop();
 	void Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f);
 	void Play3DSound_Environment(SoundTag soundTag, XMFLOAT3 position, float maxDistance, float volume = 1.0f);
 	void StopSound(UINT channelID);

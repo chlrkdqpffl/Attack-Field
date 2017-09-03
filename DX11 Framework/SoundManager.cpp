@@ -137,34 +137,20 @@ void CSoundManager::LoadEffectSound()
 
 }
 
-void CSoundManager::AddChennel()
-{
-//	Channel* pChannel;
-	//g_vecChannelContainer.push_back(pChannel);
-}
-
-void CSoundManager::UpdateManager(float fTimeDelta)
+void CSoundManager::UpdateManager(float fDeltaTime)
 {	
-	for (auto& iter = g_listSound3DContainer.begin(); iter != g_listSound3DContainer.end(); ++iter) {
+	for (auto iter = g_listSound3DContainer.begin(); iter != g_listSound3DContainer.end();) {
 		bool bIsPlay = false;
 		(*iter)->m_pChannel->isPlaying(&bIsPlay);
-		if (bIsPlay)
-			(*iter)->Update(fTimeDelta);
+		if (bIsPlay) {
+			(*iter)->Update(fDeltaTime);
+			++iter;
+		}
 		else
 			g_listSound3DContainer.erase(iter++);
 	}
 
-	for (auto& sound : g_listSound3DEnvironmentContainer)
-		sound->Update(fTimeDelta);
-
-	
 	g_pSystem->update();
-}
-
-void CSoundManager::AllStop()
-{
-//	for (auto& channel : g_vecChannelContainer)
-	g_pChannel->stop();
 }
 
 void CSoundManager::StopSound(UINT channelID)
@@ -177,7 +163,7 @@ void CSoundManager::Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 d
 	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel);
 	g_pChannel->setVolume(volume);
 
-	g_listSound3DContainer.push_front(new CSound3D(soundTag, position, direction, nowSpeed, addSpeed, volume, g_pChannel));
+	g_listSound3DContainer.push_back(new CSound3D(soundTag, position, direction, nowSpeed, addSpeed, volume, g_pChannel));
 }
 
 void CSoundManager::Play3DSound_Environment(SoundTag soundTag, XMFLOAT3 position, float maxDistance, float volume)

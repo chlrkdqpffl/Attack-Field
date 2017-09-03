@@ -117,7 +117,9 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			case VK_F6:
 				m_vecCharacterContainer.back()->SetIsFire(false);
 				break;
-		
+			case VK_F7:
+				SCENE_MGR->ChangeScene(SceneTag::eTitleScene);
+				break;
 			break;
 #ifndef USE_SERVER
 			case VK_Z:
@@ -1827,6 +1829,7 @@ void CMainScene::Update(float fDeltaTime)
 
 	// ====== Update ===== //
 	GLOBAL_MGR->UpdateManager();
+
 	UpdateConstantBuffers();
 	Update_LightningStrikes(fDeltaTime);
 	Update_Light();
