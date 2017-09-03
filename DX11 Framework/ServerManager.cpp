@@ -263,7 +263,7 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->m_loginfail = true;
 			exit(1);
 			//PostQuitMessage(0);
-		}//올립니다
+		}
 		break;
 	}
 	case ePacket_SceneChange:	//게임종료 신변경!
