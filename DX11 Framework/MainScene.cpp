@@ -1534,7 +1534,8 @@ void CMainScene::CalcTime()
 		if (m_nGameTime <= 0)
 			return;
 		m_nGameTime--;
-		if (m_cOccupyteam != 0 && m_OccupyTime < OCCUPY_TIME / 1000)
+
+		if (m_typeOccupyTeam != TeamType::eNone && m_OccupyTime < OCCUPY_TIME / 1000)
 			m_OccupyTime++;
 
 		if (m_OccupyTime >= OCCUPY_TIME / 1000) {
@@ -1542,20 +1543,20 @@ void CMainScene::CalcTime()
 			cs_temp_exit packet;
 			packet.size = sizeof(packet);
 			packet.type = 11;
-			packet.Winner = m_cOccupyteam;
+			packet.Winner = static_cast<int>(m_typeOccupyTeam);
 
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 #endif
-			if (m_cOccupyteam == 1)
+			if (m_typeOccupyTeam == TeamType::eRedTeam)
 				m_nRedwin++;
-			else if (m_cOccupyteam == 2)
+			else if (m_typeOccupyTeam == TeamType::eBlueTeam)
 				m_nBluewin++;
 
 			if (m_nRedwin == 2 || m_nBluewin == 2)
 				SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
 			
 			m_OccupyTime = 0;
-			m_cOccupyteam = 0;
+			m_typeOccupyTeam = TeamType::eNone;
 		}
 		m_dwTime = GetTickCount();
 	}
@@ -1701,12 +1702,14 @@ void CMainScene::ShowOccupyUI()
 	CUIObject* pWhiteGageUI = m_pUIManager->GetUIObject(TextureTag::eOccupyGageWhiteBar);
 
 	if (!m_pPlayerCharacter->GetIsOccupy()) {
-		pWhiteGageUI->SetActive(false);
-		pGageUI->SetActive(false);
-		return;
+		if (m_pPlayerCharacter->GetTagTeam() == m_typeOccupyTeam) {
+			pWhiteGageUI->SetActive(false);
+			pGageUI->SetActive(false);
+			return;
+		}
 	}
 
-	if (m_cOccupyteam != static_cast<int>(SCENE_MGR->g_pPlayerCharacter->GetTagTeam()))
+	if (m_typeOccupyTeam != m_pPlayerCharacter->GetTagTeam())
 	{
 		pGageUI->SetActive(true);
 		pWhiteGageUI->SetActive(true);
@@ -2136,28 +2139,25 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
 	}
 
-	
-	if (m_pPlayerCharacter->GetIsOccupy()) {
-		str = "Á¡·ÉÁß";
-		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
+	if (m_pPlayerCharacter->GetTagTeam() != m_typeOccupyTeam) {
+		if (m_pPlayerCharacter->GetIsOccupy()) {
+			str = "Á¡·ÉÁß";
+			TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
+		}
 	}
 	
-	if (m_cOccupyteam == 1) {
+	if (m_typeOccupyTeam == TeamType::eRedTeam) {
 		str = "RedÆÀ Á¡·É";
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1430, 430, 0xFFFFFFFF, FW1_LEFT);
-	}
-	if (m_cOccupyteam == 2) {
-		str = "BlueÆÀ Á¡·É";
-		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1400, 430, 0xFFFFFFFF, FW1_LEFT);
-	}
 
-	if (m_cOccupyteam != 0)
-	{
 		str = to_string(m_OccupyTime);
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1500, 500, 0xFFFFFFFF, FW1_LEFT);
 	}
-//	if (m_pPlayerCharacter->GetIsOccupy()) {
-//		str = "Á¡·ÉÁß";
-//		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_CENTER);
-//	}
+	if (m_typeOccupyTeam == TeamType::eRedTeam == 2) {
+		str = "BlueÆÀ Á¡·É";
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1400, 430, 0xFFFFFFFF, FW1_LEFT);
+
+		str = to_string(m_OccupyTime);
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1500, 500, 0xFFFFFFFF, FW1_LEFT);
+	}
 }

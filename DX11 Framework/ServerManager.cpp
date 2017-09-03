@@ -212,10 +212,8 @@ void CServerManager::processpacket(char *ptr)
 				packet = reinterpret_cast<SC_Respawn *>(ptr);
 				id = packet->id;
 				if (id == m_myid){
-					if (SCENE_MGR->g_pMainScene->GetCharcontainer()[0]) {
-						SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
-						SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetLife(PLAYER_HP);
-					}
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->Revival();
 				}
 				else
 				{
@@ -225,18 +223,19 @@ void CServerManager::processpacket(char *ptr)
 							break;
 						findCharacterID++;
 					}
-					if (SCENE_MGR->g_pMainScene->GetCharcontainer().size() > 0) {
-						SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->SetPosition(packet->m_f3Position);
-						SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->Revival();
-					}
-
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->SetPosition(packet->m_f3Position);
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->Revival();
 				}
 				break;
 			}
 			case ePacket_OccupyTeam:	//어떤팀이 점령했는지 보낸다.
 			{
 				sc_occupy *packet = reinterpret_cast<sc_occupy *>(ptr);
-				SCENE_MGR->g_pMainScene->SetOccupyTeam(packet->redteam);
+
+				if(packet->redteam == static_cast<BYTE>(TeamType::eRedTeam))
+					SCENE_MGR->g_pMainScene->SetOccupyTeam(TeamType::eRedTeam);
+				else
+					SCENE_MGR->g_pMainScene->SetOccupyTeam(TeamType::eBlueTeam);
 				SCENE_MGR->g_pMainScene->SetOccupyTime(0);
 				break;
 			}

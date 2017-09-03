@@ -33,7 +33,6 @@ enum class CameraTag
 
 enum class TeamType
 {
-	// 현재 안쓰고 있음 - 서버에서 따로 생성하였기 때문
 	eNone,
 	eRedTeam, eBlueTeam
 };
