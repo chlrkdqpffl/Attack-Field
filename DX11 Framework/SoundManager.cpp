@@ -1,8 +1,13 @@
 #include "stdafx.h"
 #include "SoundManager.h"
 
-CSound3D::CSound3D(XMFLOAT3 pos, XMFLOAT3 dir, float nowSpeed, float addSpeed, float maxVolume, Channel* channel)
-	: m_f3Position(pos), m_f3Direction(dir), m_fNowSpeed(nowSpeed), m_fAddSpeed(addSpeed), m_fMaxVolume(maxVolume), m_pChannel(channel)
+CSound3D::CSound3D(SoundTag tag, XMFLOAT3 pos, XMFLOAT3 dir, float nowSpeed, float addSpeed, float maxVolume, Channel* channel)
+	: m_tagSound(tag), m_f3Position(pos), m_f3Direction(dir), m_fNowSpeed(nowSpeed), m_fAddSpeed(addSpeed), m_fMaxVolume(maxVolume), m_pChannel(channel)
+{
+}
+
+CSound3D::CSound3D(SoundTag tag, XMFLOAT3 pos, float maxVolume, Channel* channel)
+	: m_tagSound(tag), m_f3Position(pos), m_fMaxVolume(maxVolume), m_pChannel(channel)
 {
 }
 
@@ -36,6 +41,50 @@ void CSound3D::Update(float fTimeDelta)
 		m_pChannel->setVolume(volume);
 }
 
+CEnvironmentSound::CEnvironmentSound(SoundTag tag, XMFLOAT3 pos, float maxDistance, float maxVolume, Channel* channel)
+	: CSound3D(tag, pos, maxVolume, channel), m_fMaxDistance(maxDistance)
+{
+}
+
+void CEnvironmentSound::Update(float fTimeDelta)
+{
+	XMVECTOR position = XMLoadFloat3(&m_f3Position);
+	XMVECTOR listenerPosition = SCENE_MGR->g_pCamera->GetvPosition();
+	XMVECTOR direction = position - listenerPosition;
+	static bool bIsEnviromentSound = false;
+
+	float distance = XMVectorGetX(XMVector3LengthEst(direction));
+	if (distance > m_fMaxDistance) {
+		m_pChannel->stop();
+		return;
+	}
+	else {
+		if (false == bIsEnviromentSound) {
+			bIsEnviromentSound = true;
+			g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(m_tagSound)], 0, &m_pChannel);
+		}
+	}
+
+	direction = XMVector3Normalize(direction);
+	XMVECTOR vLook = SCENE_MGR->g_pCamera->GetvLook();
+	float fDot = XMVectorGetX(XMVector3Dot(vLook, direction));
+
+	float maxDistance = 0.0f;
+	if (fDot < 0)
+		maxDistance = BACK_MAX_DISTANCE;
+	else
+		maxDistance = MAXDISTANCE;
+
+	float volume = ((maxDistance - distance) / maxDistance) * m_fMaxVolume;
+//	cout << volume << endl;
+	if (volume <= 0) {
+		m_pChannel->stop();
+		bIsEnviromentSound = false;
+	}
+	else
+		m_pChannel->setVolume(volume);
+}
+
 // ----------------------------------------------------------------------------------------------------------------------------- //
 // ---------------------------------------------------- Sound Manager ---------------------------------------------------------- //
 
@@ -54,6 +103,9 @@ void CSoundManager::ReleseManager()
 
 	for (auto& sound : g_listSound3DContainer)
 		SafeDelete(sound);
+
+	for (auto& sound : g_listSound3DEnvironmentContainer)
+		SafeDelete(sound); 
 }
 
 void CSoundManager::LoadAllSound()
@@ -69,42 +121,36 @@ void CSoundManager::LoadBGMSound()
 
 void CSoundManager::LoadEffectSound()
 {
-	g_pSystem->createSound("../Assets/Sound/Effect/Fire.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eFire)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/GunFire.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eGunFire)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Reload.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eReload)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Walk.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eWalk)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Run.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eRun)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Death.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eDeath)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/ShellsFall.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eShellsFall)]);
+
+	// Environment
+	g_pSystem->createSound("../Assets/Sound/Effect/Fire.ogg", FMOD_LOOP_NORMAL, 0, &g_pSound[static_cast<int>(SoundTag::eFire)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike2.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike2)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike3.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike3)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike4.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike4)]);
+
 }
 
-void CSoundManager::AddChennel()
-{
-//	Channel* pChannel;
-	//g_vecChannelContainer.push_back(pChannel);
-}
-
-void CSoundManager::UpdateManager(float fTimeDelta)
+void CSoundManager::UpdateManager(float fDeltaTime)
 {	
-	for (auto& iter = g_listSound3DContainer.begin(); iter != g_listSound3DContainer.end(); ++iter) {
+	for (auto iter = g_listSound3DContainer.begin(); iter != g_listSound3DContainer.end();) {
 		bool bIsPlay = false;
 		(*iter)->m_pChannel->isPlaying(&bIsPlay);
-		if (bIsPlay)
-			(*iter)->Update(fTimeDelta);
+		if (bIsPlay) {
+			(*iter)->Update(fDeltaTime);
+			++iter;
+		}
 		else
 			g_listSound3DContainer.erase(iter++);
 	}
-	
-	g_pSystem->update();
-}
 
-void CSoundManager::AllStop()
-{
-//	for (auto& channel : g_vecChannelContainer)
-	g_pChannel->stop();
+	g_pSystem->update();
 }
 
 void CSoundManager::StopSound(UINT channelID)
@@ -112,12 +158,17 @@ void CSoundManager::StopSound(UINT channelID)
 	g_pChannel->stop();
 }
 
-void CSoundManager::Play3DSound(SoundTag soundTag, UINT channelID, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume)
+void CSoundManager::Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume)
 {
 	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel);
 	g_pChannel->setVolume(volume);
 
-	g_listSound3DContainer.push_front(new CSound3D(position, direction, nowSpeed, addSpeed, volume, g_pChannel));
+	g_listSound3DContainer.push_back(new CSound3D(soundTag, position, direction, nowSpeed, addSpeed, volume, g_pChannel));
+}
+
+void CSoundManager::Play3DSound_Environment(SoundTag soundTag, XMFLOAT3 position, float maxDistance, float volume)
+{
+	g_listSound3DEnvironmentContainer.push_front(new CEnvironmentSound(soundTag, position, maxDistance, volume, g_pEnvironmentChannel));
 }
 
 void CSoundManager::PlayBgm(SoundTag soundTag, float volume)

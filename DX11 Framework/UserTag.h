@@ -179,7 +179,7 @@ enum class TextureTag
 	eStoneD, eStoneND, eBricksD, eBricksN,
 	eWallD, eWallND,
 
-	//UI2
+	// UI2
 	eID, ePassword, eIDClick, ePasswordClick, eLogin, eLoginon,eDeathOn, eOccupyOn, eDeathOff, eOccupyOff, eLoginBack,
 
 	// Particle
@@ -189,7 +189,7 @@ enum class TextureTag
 	// Sprite
 	eExplosionSprite, eGunExplosionOtherPlayer, eGunExplosionPlayer,
 
-	//Search
+	// Search
 	eSearch1, eSearch2, eSearch3, eSearch4, eSearch5, eSearch6, eSearch7, eSearch8, eSearch9, eSearch10, eSearch11, eSearch12, eSearch13,
 	eDeathSearch, eOccupySearch
 
@@ -268,8 +268,10 @@ enum class SoundTag
 	eBGM_Rain,
 
 	// Effect
-	eFire, eReload, eWalk, eRun, eDeath, eShellsFall,
-	eThunderStrike, eThunderStrike2, eThunderStrike3, eThunderStrike4,
+	eGunFire, eReload, eWalk, eRun, eDeath, eShellsFall,
+
+	// Environment
+	eFire, eThunderStrike, eThunderStrike2, eThunderStrike3, eThunderStrike4,
 
 	SoundCount
 };

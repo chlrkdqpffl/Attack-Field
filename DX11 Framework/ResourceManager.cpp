@@ -71,6 +71,9 @@ void CResourceManager::LoadResourceTitleScene()
 
 bool CResourceManager::LoadResourceAll()
 {	
+	if (m_bIsLoading)
+		return true;
+
 	LoadCharacterData();
 	LoadMapData();
 //	LoadEnvironmentData();
@@ -83,6 +86,7 @@ bool CResourceManager::LoadResourceAll()
 	cout << "=============================== Resource Loading Complete ==================================" << endl;
 	cout << "============================================================================================" << endl << endl;
 
+	m_bIsLoading = true;
 	return true;
 }
 

@@ -19,13 +19,7 @@ public:
 
 	void CreateConstantBuffers();
 	void ReleaseConstantBuffers();
-	// ----- Blurring ----- //
-	void SceneBlurring(int nBlurCount);
-	void SetGaussianWeights(float fSigma);
-	void CreateConstantBuffer_Weights();
-	void DrawBlurredSceneToScreen(ID3D11DeviceContext* pd3dDeviceContext);
-	void CreateComputeShader(ID3D11Device* pd3dDevice);
-	// -------------------- //
+	
 	void BuildObjects();
 	void ReleaseObjects();
 
@@ -53,23 +47,6 @@ private:
 	ID3D11RenderTargetView			*m_pd3dRenderTargetView;
 	ID3D11Device					*m_pd3dDevice			= nullptr;
 	ID3D11DeviceContext				*m_pd3dDeviceContext	= nullptr;
-
-	// ----- Blurring ----- //
-	ID3D11ShaderResourceView		*m_pd3dSRVOffScreen		= nullptr;
-	ID3D11UnorderedAccessView		*m_pd3dUAVOffScreen		= nullptr;
-	ID3D11RenderTargetView			*m_pd3dRTVOffScreen		= nullptr;
-
-	ID3D11ShaderResourceView		*m_pd3dSRVTexture		= nullptr;
-	ID3D11UnorderedAccessView		*m_pd3dUAVTexture		= nullptr;
-
-	float							m_fGaussianWeights[11];
-	ID3D11Buffer					*m_pd3dcbWeights		= nullptr;
-	CScreenShader					*m_pScreenShader		= nullptr;
-
-	ID3D11ComputeShader				*m_pHorizontalBlurShader	= nullptr;
-	ID3D11ComputeShader				*m_pVerticalBlurShader		= nullptr;
-	UINT							m_nBlurCount = 0;
-	// -------------------- //
 
 	UINT							m_n4xMSAAQualities;
 

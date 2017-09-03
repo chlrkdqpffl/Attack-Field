@@ -49,7 +49,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(1722115);
+//	_CrtSetBreakAlloc(988162);
 //	_CrtSetBreakAlloc(4060409);
 //	_CrtSetBreakAlloc(289);
 //	_CrtSetBreakAlloc(205);		// 16
@@ -303,60 +303,6 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 
 	m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3dRenderTargetView, m_pd3dDepthStencilView);
 
-
-	// Create Off Screen
-	D3D11_TEXTURE2D_DESC d3dTextureBufferDesc;
-	ZeroMemory(&d3dTextureBufferDesc, sizeof(D3D11_TEXTURE2D_DESC));
-	d3dTextureBufferDesc.Width				= m_nWndClientSize.x;
-	d3dTextureBufferDesc.Height				= m_nWndClientSize.y;
-	d3dTextureBufferDesc.MipLevels			= 1;
-	d3dTextureBufferDesc.ArraySize			= 1;
-	d3dTextureBufferDesc.Format				= DXGI_FORMAT_R8G8B8A8_UNORM;
-	d3dTextureBufferDesc.SampleDesc.Count	= 1;
-	d3dTextureBufferDesc.SampleDesc.Quality = 0;
-	d3dTextureBufferDesc.Usage				= D3D11_USAGE_DEFAULT;
-	d3dTextureBufferDesc.BindFlags			= D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
-	d3dTextureBufferDesc.CPUAccessFlags		= 0;
-	d3dTextureBufferDesc.MiscFlags			= 0;
-
-	ID3D11Texture2D* offScreenTexture = nullptr;
-	HR(m_pd3dDevice->CreateTexture2D(&d3dTextureBufferDesc, 0, &offScreenTexture));
-	HR(m_pd3dDevice->CreateShaderResourceView(offScreenTexture, 0, &m_pd3dSRVOffScreen));
-	HR(m_pd3dDevice->CreateUnorderedAccessView(offScreenTexture, 0, &m_pd3dUAVOffScreen));
-	HR(m_pd3dDevice->CreateRenderTargetView(offScreenTexture, 0, &m_pd3dRTVOffScreen));
-
-	offScreenTexture->Release();
-
-	DXUT_SetDebugName(offScreenTexture, "OffScreenTexture2D");
-	DXUT_SetDebugName(m_pd3dSRVOffScreen, "SRVOffScreen");
-	DXUT_SetDebugName(m_pd3dUAVOffScreen, "UAVOffScreen");
-	DXUT_SetDebugName(m_pd3dRTVOffScreen, "RTVOffScreen");
-
-
-	d3dTextureBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;;
-	HR(m_pd3dDevice->CreateTexture2D(&d3dTextureBufferDesc, 0, &offScreenTexture));;
-	
-	D3D11_SHADER_RESOURCE_VIEW_DESC d3dSRViewDesc;
-	ZeroMemory(&d3dSRViewDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-	d3dSRViewDesc.Format				= DXGI_FORMAT_R8G8B8A8_UNORM;
-	d3dSRViewDesc.ViewDimension			= D3D11_SRV_DIMENSION_TEXTURE2D;
-	d3dSRViewDesc.Texture2D.MipLevels	= 1;
-	d3dSRViewDesc.Texture2D.MostDetailedMip = 0;
-
-	HR(m_pd3dDevice->CreateShaderResourceView(offScreenTexture, &d3dSRViewDesc, &m_pd3dSRVTexture));
-
-	D3D11_UNORDERED_ACCESS_VIEW_DESC d3dUAViewDesc;
-	ZeroMemory(&d3dUAViewDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
-	d3dUAViewDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	d3dUAViewDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
-	d3dUAViewDesc.Texture2D.MipSlice = 0;
-
-	HR(m_pd3dDevice->CreateUnorderedAccessView(offScreenTexture, &d3dUAViewDesc, &m_pd3dUAVTexture));
-	offScreenTexture->Release();
-
-	DXUT_SetDebugName(m_pd3dSRVTexture, "SRVTexture");
-	DXUT_SetDebugName(m_pd3dUAVTexture, "UAVTexture");
-
 	return(true);
 }
 
@@ -468,6 +414,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	switch (nMessageID) {
 	case WM_SIZE:
 	{
+		m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3dRenderTargetView, m_pd3dDepthStencilView);
 		SCENE_MGR->g_nowScene->OnChangedWindowsSize(hWnd, nMessageID, wParam, lParam);
 		SCENE_MGR->g_lParam = lParam;
 		m_nWndClientSize.x = LOWORD(lParam);
@@ -543,98 +490,12 @@ void CGameFramework::ScreenCapture(ID3D11View* resourceView)
 		cout << "스크린샷 저장 실패" << endl;
 }
 
-void CGameFramework::SceneBlurring(int nBlurCount)
-{
-	if (nBlurCount == 0)
-		return;
-
-	UINT cxGroups = (UINT)ceilf(m_nWndClientSize.x / 256.0f);
-	UINT cyGroups = (UINT)ceilf(m_nWndClientSize.y / 256.0f);
-
-	ID3D11ShaderResourceView *pd3dNullResourceViews[1] = { nullptr };
-	ID3D11UnorderedAccessView *pd3dNullUnorderedViews[1] = { nullptr };
-
-	SetGaussianWeights(2);
-
-	for (int i = 0; i < nBlurCount; ++i)
-	{
-		m_pd3dDeviceContext->CSSetShaderResources(CS_TEXTURE_SLOT_BLUR, 1, &m_pd3dSRVOffScreen);
-		m_pd3dDeviceContext->CSSetUnorderedAccessViews(0, 1, &m_pd3dUAVTexture, nullptr);
-		m_pd3dDeviceContext->CSSetShader(m_pHorizontalBlurShader, nullptr, 0);
-		m_pd3dDeviceContext->Dispatch(cxGroups, m_nWndClientSize.y, 1);
-
-		m_pd3dDeviceContext->CSSetShaderResources(0, 1, pd3dNullResourceViews);
-		m_pd3dDeviceContext->CSSetUnorderedAccessViews(0, 1, pd3dNullUnorderedViews, nullptr);
-
-		m_pd3dDeviceContext->CSSetShaderResources(CS_TEXTURE_SLOT_BLUR, 1, &m_pd3dSRVTexture);
-		m_pd3dDeviceContext->CSSetUnorderedAccessViews(0, 1, &m_pd3dUAVOffScreen, nullptr);
-		m_pd3dDeviceContext->CSSetShader(m_pVerticalBlurShader, nullptr, 0);
-		m_pd3dDeviceContext->Dispatch(m_nWndClientSize.x, cyGroups, 1);
-
-		m_pd3dDeviceContext->CSSetShaderResources(0, 1, pd3dNullResourceViews);
-		m_pd3dDeviceContext->CSSetUnorderedAccessViews(0, 1, pd3dNullUnorderedViews, nullptr);
-		m_pd3dDeviceContext->CSSetShader(nullptr, nullptr, NULL);
-	}
-}
-
-void CGameFramework::SetGaussianWeights(float fSigma)
-{
-	float fSum = 0.0f, f2Sigma = 2.0f * fSigma * fSigma;
-	for (int i = 0; i < 11; ++i)
-	{
-		m_fGaussianWeights[i] = expf(-(float)(i*i) / f2Sigma);
-		fSum += m_fGaussianWeights[i];
-	}
-	for (int i = 0; i < 11; ++i) {
-		m_fGaussianWeights[i] /= fSum;
-
-	}
-
-	cout << fSum << endl;
-	D3D11_MAPPED_SUBRESOURCE d3dMapResource;
-	m_pd3dDeviceContext->Map(m_pd3dcbWeights, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMapResource);
-
-	float* pcbWeights = (float*)d3dMapResource.pData;
-	memcpy(pcbWeights, m_fGaussianWeights, sizeof(float) * 11);
-
-	m_pd3dDeviceContext->Unmap(m_pd3dcbWeights, 0);
-	m_pd3dDeviceContext->CSSetConstantBuffers(CS_SLOT_WEIGHTS, 1, &m_pd3dcbWeights);
-}
-
-void CGameFramework::CreateConstantBuffer_Weights()
-{
-	D3D11_BUFFER_DESC d3dBufferDesc;
-	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
-	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	d3dBufferDesc.ByteWidth = sizeof(float) * 16;		// 16의 배수
-	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	HR(m_pd3dDevice->CreateBuffer(&d3dBufferDesc, nullptr, &m_pd3dcbWeights));
-
-	DXUT_SetDebugName(m_pd3dcbWeights, "Weights");
-}
-
-void CGameFramework::CreateComputeShader(ID3D11Device* pd3dDevice)
-{
-	CShader* pComputeShader = new CShader();
-	pComputeShader->CreateComputeShaderFromFile(pd3dDevice, L"Shader HLSL File/Blurring.hlsli", "HorizFilter", "cs_5_0", &m_pHorizontalBlurShader);
-	pComputeShader->CreateComputeShaderFromFile(pd3dDevice, L"Shader HLSL File/Blurring.hlsli", "VerticalFilter", "cs_5_0", &m_pVerticalBlurShader);
-
-	SafeDelete(pComputeShader);
-}
-
-void CGameFramework::DrawBlurredSceneToScreen(ID3D11DeviceContext* pd3dDeviceContext)
-{
-	m_pScreenShader->SetTexture(m_pd3dSRVTexture);
-	m_pScreenShader->Render(m_pd3dDeviceContext);
-}
-
 void CGameFramework::BuildObjects()
 {
 	CreateConstantBuffers(); 
 
 #ifdef DEVELOP_MODE
-	SceneTag startTag = SceneTag::eMainScene;		// Main Scene 시작
+	SceneTag startTag = SceneTag::eTitleScene;		// Main Scene 시작
 #else
 	SceneTag startTag = SceneTag::eTitleScene;		// Title Scene 시작
 #endif 
@@ -655,14 +516,6 @@ void CGameFramework::BuildObjects()
 
 	SCENE_MGR->g_nowScene->SetCamera(m_pCamera);
 	SCENE_MGR->g_pCamera = m_pCamera;
-
-	// Screen Shader
-	m_pScreenShader = new CScreenShader();
-	m_pScreenShader->CreateMesh(m_pd3dDevice);
-	m_pScreenShader->CreateShader(m_pd3dDevice);
-	
-	// Create ComputeShader
-	CreateComputeShader(m_pd3dDevice);
 }
 
 void CGameFramework::ReleaseObjects()
@@ -671,8 +524,6 @@ void CGameFramework::ReleaseObjects()
 
 	SCENE_MGR->g_nowScene->ReleaseObjects();
 	delete SCENE_MGR->g_nowScene;
-
-	SafeDelete(m_pScreenShader);
 }
 
 void CGameFramework::CreateConstantBuffers()
@@ -693,14 +544,10 @@ void CGameFramework::CreateConstantBuffers()
 
 	CCamera::CreateShaderVariables(m_pd3dDevice);
 	CTexture::CreateShaderVariables(m_pd3dDevice);
-
-	CreateConstantBuffer_Weights();
 }
 
 void CGameFramework::ReleaseConstantBuffers()
 {
-	if(m_pd3dcbWeights) m_pd3dcbWeights->Release();
-
 	CGameObject::ReleaseConstantBuffers();
 	CCamera::ReleaseShaderVariables();
 	CTexture::ReleaseShaderVariables();
@@ -750,42 +597,6 @@ void CGameFramework::FrameAdvance()
 	ProcessInput();
 	UpdateObjects();
 
-	/*
-	// 블러링
-	ID3D11RenderTargetView *pd3dRenderTargetView[1] = { m_pd3dRTVOffScreen };
-	m_pd3dDeviceContext->OMSetRenderTargets(1, pd3dRenderTargetView, m_pd3dDepthStencilView);
-
-	float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRTVOffScreen, fClearColor);
-	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-
-	if (m_pPlayer) m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
-	m_pCamera->SetViewport(m_pd3dDeviceContext);
-
-	// WireFrame Mode
-	if (GetAsyncKeyState('3') & 0x8000)
-		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
-	else 
-		m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
-	
-
-	SCENE_MGR->m_nowScene->Render(m_pd3dDeviceContext, m_pCamera);
-
-#ifdef _WITH_PLAYER_TOP
-	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-#endif
-
-	pd3dRenderTargetView[0] = m_pd3dRenderTargetView;
-	m_pd3dDeviceContext->OMSetRenderTargets(1, pd3dRenderTargetView, m_pd3dDepthStencilView);
-
-	SceneBlurring(3);
-
-	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
-	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-	
-	DrawBlurredSceneToScreen(m_pd3dDeviceContext);
-	*/
-	
 	float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
@@ -796,9 +607,9 @@ void CGameFramework::FrameAdvance()
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
 
-// #if defined(DEBUG) || defined(_DEBUG)
+//#if defined(DEBUG) || defined(_DEBUG)
 	RenderDebugText();
-// #endif
+//#endif
 
 	// Draw tweak bars
 	if (true == m_bMouseBindFlag) {

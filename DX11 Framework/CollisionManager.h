@@ -21,6 +21,7 @@ public:
 	virtual void ReleseManager() override;
 
 	void InitCollisionInfo();
+	void ClearContainer();
 
 	bool RayCastCollision(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);
 	bool RayCastCollisionToCharacter(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction);

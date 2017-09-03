@@ -31,6 +31,7 @@ public:
 	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext) override;
 
 	void CreateSpriteImageObject();
+	void CreateSound();
 	void CreateMapDataInstancingObject();
 	void CreateTestingObject();
 	void ModifiedSelectObject();

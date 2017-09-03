@@ -14,15 +14,21 @@ using namespace FMOD;
 
 #define MAXDISTANCE 75
 #define BACK_MAX_DISTANCE 50
+static System*		g_pSystem;
+static Sound*		g_pSound[static_cast<int>(SoundTag::SoundCount)];
+static Channel*	g_pChannel;
+static Channel*	g_pBGMChannel;
+static Channel*	g_pEnvironmentChannel;
 
 struct CSound3D 
 {
 public:
 	CSound3D() {};
-	CSound3D(XMFLOAT3 pos, XMFLOAT3 dir, float nowSpeed, float addSpeed, float maxVolume, Channel* channel);
+	CSound3D(SoundTag tag, XMFLOAT3 pos, float maxVolume, Channel* channel);
+	CSound3D(SoundTag tag, XMFLOAT3 pos, XMFLOAT3 dir, float nowSpeed, float addSpeed, float maxVolume, Channel* channel);
 	virtual ~CSound3D() {};
 
-	void Update(float fTimeDelta);
+	virtual void Update(float fTimeDelta);
 
 public:
 	XMFLOAT3	m_f3Position = XMFLOAT3(0, 0, 0);
@@ -30,18 +36,27 @@ public:
 	float		m_fNowSpeed = 0.0f;
 	float		m_fAddSpeed = 0.0f;
 	float		m_fMaxVolume = 1.0f;
+	SoundTag	m_tagSound = SoundTag::eNone;
 	Channel*	m_pChannel = nullptr;
+};
+
+struct CEnvironmentSound : public CSound3D
+{
+	CEnvironmentSound(SoundTag tag, XMFLOAT3 pos, float fMaxDistance, float maxVolume, Channel* channel);
+	virtual ~CEnvironmentSound() {};
+
+	virtual void Update(float fDeltaTime);
+public:
+	float m_fMaxDistance = 0.0f;
+
 };
 
 class CSoundManager : public CSingletonManager<CSoundManager>
 {
-	System*				g_pSystem;
-	Sound*				g_pSound[static_cast<int>(SoundTag::SoundCount)];
 	float				g_fMainVolume = 1.0f;
-	list<CSound3D*>		g_listSound3DContainer;
-	Channel*			g_pChannel;
-	Channel*			g_pBGMChannel;
 
+	list<CSound3D*>		g_listSound3DContainer;	
+	list<CSound3D*>		g_listSound3DEnvironmentContainer;
 public:
 #ifdef USE_SOUND
 	CSoundManager() {}
@@ -55,9 +70,8 @@ public:
 	void LoadBGMSound();
 	void LoadEffectSound();
 
-	void AddChennel();
-	void AllStop();
-	void Play3DSound(SoundTag soundTag, UINT channelID, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f);
+	void Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume = 1.0f);
+	void Play3DSound_Environment(SoundTag soundTag, XMFLOAT3 position, float maxDistance, float volume = 1.0f);
 	void StopSound(UINT channelID);
 	void Play2DSound(SoundTag soundTag, float volume = 1.0f);
 	void PlayBgm(SoundTag soundTag, float vol = 0.7f);
