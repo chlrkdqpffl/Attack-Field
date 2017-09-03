@@ -2,13 +2,32 @@
 
 
 #define CS_KEYTYPE      1
-#define CS_ROTATE      2
-#define   CS_WEAPONE      3
-#define CS_HEAD_HIT      4
+#define CS_ROTATE       2
+#define CS_WEAPONE      3
+#define CS_HEAD_HIT     4
+
+#define RemovePlayer    6
+
+enum PacketType
+{
+	ePacket_Update = 1,
+	ePacket_CreateOthderPlayer,
+	ePacket_MouseRotate,
+	ePacket_CollisionCheck,
+	ePacket_HP,
+	ePacket_KillUpdate,
+	ePacket_GameTimer,
+	ePacket_Respawn,
+	ePacket_OccupyTeam,
+	ePacket_OccupyTimer,
+	ePacket_DamageInfo,
 
 
-#define RemovePlayer   6
-
+	ePacket_SuccessMyCharacter,
+	ePacket_SceneChange,
+	ePacket_LoginFail,
+	ePacket_Disconnect
+};
 
 
 #pragma pack(push, 1)
@@ -35,9 +54,6 @@ struct cs_rotate {   //클라에서 화면을 움직였을때
 
 	float cx;
 	float cy;
-
-
-
 };
 
 struct sc_packet_put_player {   //서버에서 처음 접속했을때 위치값과 ID를 부여한다.

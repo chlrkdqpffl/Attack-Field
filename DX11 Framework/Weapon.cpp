@@ -35,12 +35,6 @@ void CWeapon::Firing(XMVECTOR direction)
 
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(packet));
 		}
-		/*
-		else {
-			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
-				character->SetIsFire(false);
-		}
-		*/
 		// Particle용 충돌체크 - 임시방편
 		CollisionInfo info;
 		if (COLLISION_MGR->RayCastCollisionToCharacter(info, firePosOffset, direction)) {

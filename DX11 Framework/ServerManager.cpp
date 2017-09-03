@@ -7,9 +7,8 @@ void CServerManager::processpacket(char *ptr)
 	static bool first_time = true;
 	int id = 0;
 
-	switch (ptr[1])
-	{
-	case 1:   //계속 받을때
+	switch (ptr[1]) {
+	case ePacket_Update:   //계속 받을때
 	{
 		sc_packet_pos*         my_Pos_packet;
 		my_Pos_packet = reinterpret_cast<sc_packet_pos *>(ptr);
@@ -31,7 +30,6 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRelativeVelocity(my_Pos_packet->Animation);
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(my_Pos_packet->hp);
-
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_Pos_packet->FireDirection);
 
 			if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eReload))
@@ -53,16 +51,14 @@ void CServerManager::processpacket(char *ptr)
 		}
 	}
 	break;
-	case 2:   //처음 받았을때.
+
+	case ePacket_CreateOthderPlayer:   //처음 받았을때.
 	{
 		sc_packet_put_player*   my_put_packet;
 		my_put_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
 		id = my_put_packet->id;
 
-		
-
-		if (first_time)
-		{
+		if (first_time) {
 			m_myid = id;
 
 			first_time = false;
@@ -76,10 +72,7 @@ void CServerManager::processpacket(char *ptr)
 		// 그리고 이제 여러 캐릭터 받도록 if문 수정해야겠다.
 		// ================================================================================================================ //
 
-		if (id == m_myid)
-		{
-			//SCENE_MGR->g_pMainScene->GetCharcontainer()[id]->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
-
+		if (id == m_myid) {
 			SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 			SCENE_MGR->g_pPlayer->SetPlayerlife(static_cast<UINT>(my_put_packet->hp));//SCENE_MGR->g_pMainScene->-> SetLife(static_cast<UINT>(my_put_packet->hp));
 			SCENE_MGR->g_pPlayerCharacter->SetServerID(id);
@@ -102,79 +95,13 @@ void CServerManager::processpacket(char *ptr)
 			SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);
 
 			COLLISION_MGR->m_vecCharacterContainer.push_back(pCharObject);
-			/*
-			UINT index;
-			int i = 0;
-			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
-			if (character->GetServerID() == my_put_packet->id) {
-			index = i;
-			}
-			i++;
-			}
-			*/
-
 		}
-
 		SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(my_put_packet->RED));
 		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(my_put_packet->Blue));
-
 	}
 
-
-
 	break;
-	case 3:   // 총 발사시
-		cout << "여기 타면 안된다!" << endl;
-	{
-		sc_bullet_fire*         my_put_bulletfire;
-		my_put_bulletfire = reinterpret_cast<sc_bullet_fire *>(ptr);
-		id = my_put_bulletfire->id;
-
-		if (id == m_myid)
-		{
-			//SCENE_MGR->g_pPlayer->m_pCharacter->Firing();
-		}
-		else
-		{
-			if (my_put_bulletfire->fire == true)
-			{
-				int i = 0;
-				for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
-				{
-					if (character->GetServerID() == id)
-						break;
-					i++;
-				}
-
-			//	SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(true);
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_bulletfire->FireDirection);
-			}
-		}
-	}
-	break;
-
-	case 4:	// 다른클라이언트 종료시 벡터에서 팝해준다.
-	{
-		sc_packet_remove_player *my_packet = reinterpret_cast<sc_packet_remove_player *>(ptr);
-		int other_id = my_packet->id;
-		if (other_id == m_myid) {
-			//상태를 없애준다.
-		}
-		else
-		{
-			int i = 0;
-			auto& container = SCENE_MGR->g_pMainScene->GetCharcontainer();
-			for (auto iter = begin(container); iter != end(container); ++iter)
-			{
-				if ((*iter)->GetServerID() != id) continue;
-				delete *iter;
-				container.erase(iter);
-				break;
-			}
-		}
-	}
-	break;
-	case 5:   //rotate된 값 처리
+	case ePacket_MouseRotate :   //rotate된 값 처리
 	{
 		sc_rotate_vector*      my_put_rotate;
 		my_put_rotate = reinterpret_cast<sc_rotate_vector *>(ptr);
@@ -201,7 +128,7 @@ void CServerManager::processpacket(char *ptr)
 	}
 	break;
 
-	case 6:	// 총알 충돌 체크
+	case ePacket_CollisionCheck :	// 총알 충돌 체크
 	{
 		SC_Collison*         my_collision;
 		my_collision = reinterpret_cast<SC_Collison*>(ptr);
@@ -233,7 +160,7 @@ void CServerManager::processpacket(char *ptr)
 		}
 	}
 	break;
-	case 7:
+	case ePacket_HP :
 	{
 		SC_Player_Hp *packet;
 		packet = reinterpret_cast<SC_Player_Hp *>(ptr);
@@ -258,7 +185,8 @@ void CServerManager::processpacket(char *ptr)
 		}
 	}
 	break;
-	case 8:
+
+	case ePacket_KillUpdate :
 	{
 		SC_System_kill* packet;
 		packet = reinterpret_cast<SC_System_kill *>(ptr);
@@ -269,14 +197,15 @@ void CServerManager::processpacket(char *ptr)
 		SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(packet->m_nBlueTeamTotalKill));
 	}
 	break;
-	case 9:   //게임 타이머
+
+	case ePacket_GameTimer :   //게임 타이머
 	{
 		SC_Starting_Timer*   packet;
 		packet = reinterpret_cast<SC_Starting_Timer *>(ptr);
 		SCENE_MGR->g_pMainScene->SetGameTime(packet->Starting_timer);
 		break;
 	}
-	case 11:   //리스폰
+	case ePacket_Respawn :   //리스폰
 	{
 		SC_Respawn *packet;
 		packet = reinterpret_cast<SC_Respawn *>(ptr);
@@ -300,7 +229,34 @@ void CServerManager::processpacket(char *ptr)
 		}
 		break;
 	}
-	case 13:	//로그인 실패시 클라이언트종료
+	case ePacket_OccupyTeam :	//어떤팀이 점령했는지 보낸다.
+	{
+		sc_occupy *packet = reinterpret_cast<sc_occupy *>(ptr);
+		SCENE_MGR->g_pMainScene->SetOccupyTeam(packet->redteam);
+		SCENE_MGR->g_pMainScene->SetOccupyTime(0);
+		break;
+	}
+	
+	case ePacket_OccupyTimer :	// 점령 패킷
+	{
+		SC_Occupy_Timer* packet;
+		packet = reinterpret_cast<SC_Occupy_Timer *>(ptr);
+	
+	
+		SCENE_MGR->g_pMainScene->SetOccupyTime(packet->Occupy_timer);
+		break;
+	}
+
+	case ePacket_DamageInfo :	// 피격 UI 표현용 패킷
+	{
+		SC_Damegedirection* packet;
+		packet = reinterpret_cast<SC_Damegedirection *>(ptr);
+	
+		SCENE_MGR->g_pPlayer->SetDamagedInfo(DamagedInfo(true, packet->position));
+		break;
+	}
+
+	case ePacket_LoginFail:	//로그인 실패시 클라이언트종료
 	{
 		SC_login_CONNECT *packet;
 		packet = reinterpret_cast<SC_login_CONNECT *>(ptr);
@@ -313,7 +269,7 @@ void CServerManager::processpacket(char *ptr)
 		}
 		break;
 	}
-	case 14:	//게임종료 신변경!
+	case ePacket_SceneChange:	//게임종료 신변경!
 	{
 		sc_change_scene *packet;
 		packet = reinterpret_cast<sc_change_scene *>(ptr);
@@ -322,10 +278,10 @@ void CServerManager::processpacket(char *ptr)
 		break;
 	}
 
-	case 15:	//방에 들어가지면 받고 신변경해주고 서버에 정보 넣어달라고 보낸다.
+	case ePacket_SuccessMyCharacter:	//방에 들어가지면 받고 신변경해주고 서버에 정보 넣어달라고 보낸다.
 	{
 		SCENE_MGR->ChangeScene(SceneTag::eLoadingScene);
-		
+
 		cs_create_charter sendpacket;
 
 		sendpacket.size = sizeof(cs_create_charter);
@@ -333,31 +289,27 @@ void CServerManager::processpacket(char *ptr)
 		break;
 	}
 
-	case 16:	//어떤팀이 점령했는지 보낸다.
+	case ePacket_Disconnect :	// 다른클라이언트 종료시 벡터에서 팝해준다.
 	{
-		sc_occupy *packet = reinterpret_cast<sc_occupy *>(ptr);
-		SCENE_MGR->g_pMainScene->SetOccupyTeam(packet->redteam);	
-		SCENE_MGR->g_pMainScene->SetOccupyTime(0);
-		break;
+		sc_packet_remove_player *my_packet = reinterpret_cast<sc_packet_remove_player *>(ptr);
+		int other_id = my_packet->id;
+		if (other_id == m_myid) {
+			//상태를 없애준다.
+		}
+		else
+		{
+			int i = 0;
+			auto& container = SCENE_MGR->g_pMainScene->GetCharcontainer();
+			for (auto iter = begin(container); iter != end(container); ++iter)
+			{
+				if ((*iter)->GetServerID() != id) continue;
+				delete *iter;
+				container.erase(iter);
+				break;
+			}
+		}
 	}
-
-	case 17:	// 점령 패킷
-	{		
-		SC_Occupy_Timer* packet;
-		packet = reinterpret_cast<SC_Occupy_Timer *>(ptr);
-
-		
-		SCENE_MGR->g_pMainScene->SetOccupyTime(packet->Occupy_timer);
 		break;
-	}
-	case 18:	// 피격 UI 표현용 패킷
-	{
-		SC_Damegedirection* packet;
-		packet = reinterpret_cast<SC_Damegedirection *>(ptr);
-
-		SCENE_MGR->g_pPlayer->SetDamagedInfo(DamagedInfo(true, packet->position));
-		break;
-	}
 	default:
 		std::cout << "Unknown PACKET type :" << (int)ptr[1] << "\n";
 		break;
@@ -439,13 +391,7 @@ void CServerManager::Server_init()
 		Sleep(3000);
 		exit(1);
 	}
-
-
-
-
-
 	WSAAsyncSelect(g_socket, m_handle, WM_SOCKET, FD_CLOSE | FD_READ);
-
 
 	send_wsabuf.buf = send_buffer;
 	send_wsabuf.len = BUF_SIZE;
