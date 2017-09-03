@@ -1539,7 +1539,7 @@ void CMainScene::CalcTime()
 			m_OccupyTime++;
 #ifdef	USE_SERVER
 		{
-			if (m_OccupyTime >= 30)
+			if (m_OccupyTime >= 10)
 			{
 				cs_temp_exit packet;
 				packet.size = sizeof(packet);
@@ -1559,7 +1559,7 @@ void CMainScene::CalcTime()
 
 				if (m_nRedwin == 3 || m_nBluewin == 3)
 				{
-					SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
+					
 					m_nRedwin = 2;
 					m_nBluewin = 2;
 				}
