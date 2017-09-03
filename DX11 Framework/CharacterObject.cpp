@@ -79,17 +79,21 @@ void CCharacterObject::Reloading()
 void CCharacterObject::Revival()
 {
 	m_nLife = PLAYER_HP;
+	if(m_pPlayer)
+		m_pWeapon->Reloading();
 
 	XMVECTOR redTeamStartPosition = XMVectorSet(65, 2.4f, 12, 0.0f);
 	XMVECTOR blueTeamStartPosition = XMVectorSet(270, 2.4f, 230, 0.0f);
 
 	if (m_pPlayer) {
+		cout << "ÇÃ·¹ÀÌ¾î °´Ã¼" << endl;
 		if (m_tagTeam == TeamType::eRedTeam)
-			SetPosition(redTeamStartPosition);
+			m_pPlayer->SetPosition(redTeamStartPosition);
 		else
-			SetPosition(blueTeamStartPosition);
+			m_pPlayer->SetPosition(blueTeamStartPosition);
 	}
 	else {
+		cout << "Å¸ °´Ã¼" << endl;
 		if (m_tagTeam == TeamType::eRedTeam)
 			SetPosition(redTeamStartPosition);
 		else
