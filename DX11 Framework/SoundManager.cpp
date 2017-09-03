@@ -38,13 +38,13 @@ void CSound3D::Update(float fTimeDelta)
 
 // ----------------------------------------------------------------------------------------------------------------------------- //
 // ---------------------------------------------------- Sound Manager ---------------------------------------------------------- //
+
+#ifdef USE_SOUND
 void CSoundManager::InitializeManager()
 {
 	System_Create(&g_pSystem);
 	g_pSystem->init(16, FMOD_INIT_NORMAL, 0);
 	LoadAllSound();
-
-	//VolumeControl(0.2f); 왜 적용안되지?
 }
 
 void CSoundManager::ReleseManager()
@@ -145,3 +145,4 @@ void CSoundManager::SetVolume(float volume)
 	g_pBGMChannel->setVolume(g_fMainVolume);
 	g_pChannel->setVolume(g_fMainVolume);
 }
+#endif
