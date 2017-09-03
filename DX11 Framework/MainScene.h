@@ -94,7 +94,7 @@ private:
 	DWORD							m_dwTime = 0;
 	DWORD							m_dwLastLightningTime = 0;
 	UINT							m_nGameTime = 0;
-	int								m_OccupyTime = 0;
+	int								m_OccupyTime = 0;	//점령시간. 30초 이상이 되면 체인지 씬!
 	UINT							m_nRedTeamTotalKill = 0;
 	UINT							m_nBlueTeamTotalKill = 0;
 	BYTE							m_cOccupyteam = 0;			//어떤팀이 점령했는지 알아야 한다.

@@ -1504,6 +1504,21 @@ void CMainScene::CalcTime()
 		if (m_nGameTime <= 0)
 			return;
 		m_nGameTime--;
+		if(m_cOccupyteam != 0  && m_OccupyTime < 30)
+			m_OccupyTime++;
+
+		if (m_OccupyTime >= 30)
+		{
+			cs_temp_exit packet;
+			packet.size = sizeof(packet);
+			packet.type = 11;
+			packet.Winner = m_cOccupyteam;
+
+			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+			cout << "여기 타나?" << endl;
+
+		}
+
 		m_dwTime = GetTickCount();
 	}
 }

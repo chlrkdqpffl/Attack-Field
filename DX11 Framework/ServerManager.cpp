@@ -309,10 +309,10 @@ void CServerManager::processpacket(char *ptr)
 		}
 		break;
 	}
-	case 14:	//임시
+	case 14:	//게임종료 신변경!
 	{
-		cs_temp_exit *packet;
-		packet = reinterpret_cast<cs_temp_exit *>(ptr);
+		sc_change_scene *packet;
+		packet = reinterpret_cast<sc_change_scene *>(ptr);
 
 		SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
 
@@ -335,6 +335,7 @@ void CServerManager::processpacket(char *ptr)
 	{
 		sc_occupy *packet = reinterpret_cast<sc_occupy *>(ptr);
 		SCENE_MGR->g_pMainScene->SetOccupyTeam(packet->redteam);	
+		SCENE_MGR->g_pMainScene->SetOccupyTime(0);
 		break;
 	}
 
