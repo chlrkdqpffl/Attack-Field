@@ -20,6 +20,8 @@ void CParticleManager::ReleseManager()
 	for (auto& index = m_mapParticlePool.begin(); index != m_mapParticlePool.end(); ++index)
 		for(auto& system : index->second)
 			SafeDelete(system);
+
+	m_mapParticlePool.clear();
 }
 
 void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)

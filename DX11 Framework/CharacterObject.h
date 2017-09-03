@@ -19,6 +19,7 @@ public:
 	CCharacterObject(TeamType team);
 	virtual ~CCharacterObject();
 
+	static UINT			g_nCharacterCount;
 protected:
 	CStateMachine<CCharacterObject>*   m_pStateUpper = nullptr;
 	CStateMachine<CCharacterObject>*   m_pStateLower = nullptr;
@@ -36,7 +37,7 @@ protected:
 	XMFLOAT3            m_f3RelativeVelocity = XMFLOAT3(0, 0, 0);
 
 	UINT				m_nCharacterID = 0;
-	static UINT			g_nCharacterCount;
+
 	// ----- State Variable ----- //
 	bool				m_bIsFire = false;
 	bool				m_bIsJump = false;

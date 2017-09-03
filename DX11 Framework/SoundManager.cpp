@@ -103,9 +103,17 @@ void CSoundManager::ReleseManager()
 
 	for (auto& sound : g_listSound3DContainer)
 		SafeDelete(sound);
+	g_listSound3DContainer.clear();
 
 	for (auto& sound : g_listSound3DEnvironmentContainer)
 		SafeDelete(sound); 
+	g_listSound3DEnvironmentContainer.clear();
+}
+
+void CSoundManager::ClearContainer()
+{
+	g_listSound3DContainer.clear();
+	g_listSound3DEnvironmentContainer.clear();
 }
 
 void CSoundManager::LoadAllSound()
@@ -153,9 +161,14 @@ void CSoundManager::UpdateManager(float fDeltaTime)
 	g_pSystem->update();
 }
 
-void CSoundManager::StopSound(UINT channelID)
+void CSoundManager::StopSound()
 {
 	g_pChannel->stop();
+}
+
+void CSoundManager::StopBGMSound()
+{
+	g_pBGMChannel->stop();
 }
 
 void CSoundManager::Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume)

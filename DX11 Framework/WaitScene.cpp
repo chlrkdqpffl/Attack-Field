@@ -312,10 +312,9 @@ void CWaitScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 
 	break;
 	}
-
-
 	case TextureTag::eOccupyOn:
 	{
+#ifdef USE_SERVER
 		cs_Gamemode packet;
 		packet.size = sizeof(cs_Gamemode);
 		packet.mode = 2;
@@ -335,7 +334,9 @@ void CWaitScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 			m_pUIManager->GetUIObject(TextureTag::eOccupySearch)->SetActive(true);
 			m_pUIManager->GetUIObject(TextureTag::eSearch1)->SetActive(true);
 		}
-
+#else
+		SCENE_MGR->ChangeScene(SceneTag::eLoadingScene);
+#endif
 		break;
 	}
 	case TextureTag::eOccupyOff:
