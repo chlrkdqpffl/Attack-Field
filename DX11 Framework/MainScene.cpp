@@ -1545,6 +1545,14 @@ void CMainScene::CalcTime()
 				{
 					m_nBluewin++;
 				}
+
+				if (m_nRedwin == 3 || m_nBluewin == 3)
+				{
+					SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
+					m_nRedwin = 2;
+					m_nBluewin = 2;
+				}
+
 				m_OccupyTime = 0;
 				m_cOccupyteam = 0;
 
