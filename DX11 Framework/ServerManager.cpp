@@ -266,16 +266,16 @@ void CServerManager::processpacket(char *ptr)
 		}
 	}
 	break;
-	/*
-	case ePacket_SceneChange:	//게임종료 신변경!
-	{
-		sc_change_scene *packet;
-		packet = reinterpret_cast<sc_change_scene *>(ptr);
+	//
+	//case ePacket_SceneChange:	//게임종료 신변경!
+	//{
+	//	sc_change_scene *packet;
+	//	packet = reinterpret_cast<sc_change_scene *>(ptr);
 
-		SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
-		break;
-	}
-	*/
+	//	SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
+	//	break;
+	//}
+	//
 	case ePacket_SuccessMyCharacter:	//방에 들어가지면 받고 신변경해주고 서버에 정보 넣어달라고 보낸다.
 	{
 		SCENE_MGR->ChangeScene(SceneTag::eLoadingScene);

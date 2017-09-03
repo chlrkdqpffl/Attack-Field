@@ -1606,7 +1606,7 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 		XMVECTOR redTeamStartPosition = XMVectorSet(65, 2.4f, 12, 0.0f);
 		XMVECTOR blueTeamStartPosition = XMVectorSet(270, 2.4f, 230, 0.0f);
 
-		if(m_pPlayerCharacter->GetTagTeam == TeamType::eRedTeam)
+		if(m_pPlayerCharacter->GetTagTeam() == TeamType::eRedTeam)
 			m_pPlayer->SetPosition(redTeamStartPosition);
 		else
 			m_pPlayer->SetPosition(blueTeamStartPosition);
