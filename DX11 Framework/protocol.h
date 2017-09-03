@@ -297,6 +297,13 @@ struct CS_Fire
 	XMFLOAT3 FireDirection;
 };
 
+struct sc_change_scene
+{
+	BYTE size;
+	BYTE type;
+	BYTE Winner;
+};
+
 
 
 
