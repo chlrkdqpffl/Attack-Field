@@ -1552,29 +1552,24 @@ void CMainScene::CalcOccupyTime()
 		else if (m_typeOccupyTeam == TeamType::eBlueTeam)
 			m_nBlueScore++;
 
-		cout << "레드 : " << m_nRedScore << endl;
-		cout << "블루 : " << m_nBlueScore << endl;
-
 		if (m_nRedScore == TOTAL_OCCUPYSCORE || m_nBlueScore == TOTAL_OCCUPYSCORE) {
-
 			cout << "니 여기오냐" << endl;
-//			SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
+			//	SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
 
+#ifdef USE_SERVER
+			cs_temp_exit packet;
+			packet.size = sizeof(packet);
+			packet.type = 11;
+			packet.Winner = static_cast<int>(m_typeOccupyTeam);
+
+			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+#endif
 		}
 
 		m_OccupyTime = 0;
 		m_bIsGameRoundOver = true;
 		m_typeOccupyTeam = TeamType::eNone;
 		m_nGameTime = DEATHMATCH_TIME;
-
-#ifdef USE_SERVER
-		cs_temp_exit packet;
-		packet.size = sizeof(packet);
-		packet.type = 11;
-		packet.Winner = static_cast<int>(m_typeOccupyTeam);
-
-		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-#endif
 	}
 }
 
@@ -1611,17 +1606,10 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 		XMVECTOR redTeamStartPosition = XMVectorSet(65, 2.4f, 12, 0.0f);
 		XMVECTOR blueTeamStartPosition = XMVectorSet(270, 2.4f, 230, 0.0f);
 
-		if (m_pPlayer->GetServerID() % 2 == 0)
+		if(m_pPlayerCharacter->GetTagTeam == TeamType::eRedTeam)
 			m_pPlayer->SetPosition(redTeamStartPosition);
 		else
 			m_pPlayer->SetPosition(blueTeamStartPosition);
-
-		for (auto& character : m_vecCharacterContainer) {
-			if (character->GetServerID() % 2 == 0)
-				m_pPlayer->SetPosition(redTeamStartPosition);
-			else
-				character->SetPosition(blueTeamStartPosition);
-		}
 
 		m_pPlayer->SetWeaponBulletMax();
 	}
