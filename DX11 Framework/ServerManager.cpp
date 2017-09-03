@@ -235,8 +235,8 @@ void CServerManager::processpacket(char *ptr)
 			case ePacket_OccupyTeam:	//어떤팀이 점령했는지 보낸다.
 			{
 				sc_occupy *packet = reinterpret_cast<sc_occupy *>(ptr);
-				cout << "점령 팀" << static_cast<BYTE>(packet->redteam) << endl;
-				if(packet->redteam == static_cast<BYTE>(TeamType::eRedTeam))
+				cout << "점령 팀" << static_cast<int>(packet->redteam) << endl;
+				if(packet->redteam == static_cast<int>(TeamType::eRedTeam))
 					SCENE_MGR->g_pMainScene->SetOccupyTeam(TeamType::eRedTeam);
 				else
 					SCENE_MGR->g_pMainScene->SetOccupyTeam(TeamType::eBlueTeam);

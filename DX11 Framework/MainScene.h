@@ -104,6 +104,6 @@ private:
 	UINT							m_nBlueTeamTotalKill = 0;
 	TeamType						m_typeOccupyTeam = TeamType::eNone;
 
-	BYTE							m_nRedScore = 0;
-	BYTE							m_nBlueScore = 0;
+	UINT							m_nRedScore = 0;
+	UINT							m_nBlueScore = 0;
 };

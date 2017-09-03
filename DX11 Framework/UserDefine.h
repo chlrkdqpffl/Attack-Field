@@ -15,7 +15,7 @@
 
 // ==================== Game System Option ==================== //
 #define OCCUPY_TRYTIME					3000	// 점령 시도 시간 3초
-#define OCCUPY_TIME						10000	// 점령 시간 30초
+#define OCCUPY_TIME						4000	// 점령 시간 30초
 #define ROUNDWAIT_TIME					6000	// 라운드 종료 6초 후 새 게임
 #define RESPAWN_TIME					5000	// 리스폰 시간 5초
 #define TOTAL_KILLSCORE					50		// 게임 종료 킬
