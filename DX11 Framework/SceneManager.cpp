@@ -18,17 +18,7 @@ void CSceneManager::ChangeScene(SceneTag tagScene)
 	CScene* pScene;
 	switch (tagScene) {
 	case SceneTag::eTitleScene:
-	{
 		pScene = new CTitleScene();
-
-		GLOBAL_MGR->g_vRenderOption = XMFLOAT4(0, 0, 0, 1.0f);
-
-		D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-		STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Map(GLOBAL_MGR->g_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-		XMFLOAT4 *pcbRenderOption = (XMFLOAT4 *)d3dMappedResource.pData;
-		*pcbRenderOption = GLOBAL_MGR->g_vRenderOption;
-		STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
-	}
 		break;
 	case SceneTag::eWaitScene:
 		pScene = new CWaitScene();

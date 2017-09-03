@@ -16,7 +16,7 @@ CWeapon::~CWeapon()
 
 void CWeapon::Firing(XMVECTOR direction)
 {
-	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed) {
+	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed / SCENE_MGR->g_nowScene->GetFrameSpeed()) {
 		m_dwLastAttackTime = GetTickCount();
 		SOUND_MGR->Play3DSound(SoundTag::eGunFire, m_pOwner->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 #ifndef DEVELOP_MODE

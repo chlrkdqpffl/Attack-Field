@@ -39,6 +39,7 @@ public:
 
 	void Update_Light();
 	void Update_LightningStrikes(float fDeltaTime);
+	void GameRoundOver(float fDeltaTime);
 	void RenderBoundingBox();
 	void CalcTime();
 
@@ -94,6 +95,8 @@ private:
 	// ----- Game System ----- //
 	DWORD							m_dwTime = 0;
 	DWORD							m_dwLastLightningTime = 0;
+	DWORD							m_dwGameRoundOverTime = 0;
+	bool							m_bIsGameRoundOver = false;
 	UINT							m_nGameTime = 0;
 	int								m_OccupyTime = 0;	//점령시간. 30초 이상이 되면 체인지 씬!
 	UINT							m_nRedTeamTotalKill = 0;

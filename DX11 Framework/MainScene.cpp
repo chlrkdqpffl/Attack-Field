@@ -14,6 +14,8 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
+
+	TWBAR_MGR->g_xmf3Offset.x = 1.0f;
 //	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.9f, 0.0f, 0.2f);
 	//TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.15f, 0.035f, 0.0f);
 //	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(0.2f, 0.2f, 0.0f, 0.0f);
@@ -118,7 +120,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_vecCharacterContainer.back()->SetIsFire(false);
 				break;
 			case VK_F7:
-				SCENE_MGR->ChangeScene(SceneTag::eTitleScene);
+				m_bIsGameRoundOver = true;
 				break;
 			break;
 #ifndef USE_SERVER
@@ -1436,6 +1438,15 @@ void CMainScene::ReleaseObjects()
 	SOUND_MGR->StopSound();
 	TWBAR_MGR->g_OptionHDR.g_fWhite = TWBAR_MGR->g_cfWhite;
 	CCharacterObject::g_nCharacterCount = 0;
+
+
+	GLOBAL_MGR->g_vRenderOption = XMFLOAT4(0, 0, 0, 1.0f);
+
+	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+	STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Map(GLOBAL_MGR->g_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	XMFLOAT4 *pcbRenderOption = (XMFLOAT4 *)d3dMappedResource.pData;
+	*pcbRenderOption = GLOBAL_MGR->g_vRenderOption;
+	STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
 }
 
 void CMainScene::AddShaderObject(ShaderTag tag, CGameObject* pObject)
@@ -1520,7 +1531,7 @@ void CMainScene::ModifiedSelectObject()
 
 void CMainScene::CalcTime()
 {
-	if (GetTickCount() - m_dwTime > 1000) {
+	if (GetTickCount() - m_dwTime > 1000 / m_fFrameSpeed) {
 		if (m_nGameTime <= 0)
 			return;
 		m_nGameTime--;
@@ -1540,6 +1551,28 @@ void CMainScene::CalcTime()
 		}
 
 		m_dwTime = GetTickCount();
+	}
+}
+
+void CMainScene::GameRoundOver(float fDeltaTime)
+{
+	static bool bIsGameRoundOverTimer = false;
+
+	if (false == bIsGameRoundOverTimer) {
+		bIsGameRoundOverTimer = true;
+		m_dwGameRoundOverTime = GetTickCount();
+		m_fFrameSpeed = 0.3f;
+	}
+//	m_fFrameSpeed -= 0.001f * ;
+//	TWBAR_MGR->g_OptionHDR.g_fWhite -= 
+	if (m_fFrameSpeed < 0.1f)
+		m_fFrameSpeed = 0.1f;
+
+	cout << m_fFrameSpeed << endl;
+	if (GetTickCount() - m_dwGameRoundOverTime > 5000) {
+		m_bIsGameRoundOver = false;
+		m_fFrameSpeed = 1.0f;
+		bIsGameRoundOverTimer = false;
 	}
 }
 
@@ -1769,10 +1802,10 @@ void CMainScene::Update_LightningStrikes(float fDeltaTime)
 	static bool isThunderSound = false;
 	static UINT nSoundCount = 0;
 	static DWORD dwFirstLightningTime = 0;
-	static const DWORD dwLightningPeriod = 20000;
+	static DWORD dwLightningPeriod = 20000 / m_fFrameSpeed;
 	//static const DWORD dwLightningPeriod = 5000;
 
-	if (GetTickCount() - m_dwLastLightningTime > dwLightningPeriod - 4000) {
+	if (GetTickCount() - m_dwLastLightningTime > dwLightningPeriod - 4000 / m_fFrameSpeed) {
 		// 최초 번개 시작시 잠깐 밝아짐
 		if (false == isFirstLightning) {
 			isFirstLightning = true;
@@ -1783,7 +1816,7 @@ void CMainScene::Update_LightningStrikes(float fDeltaTime)
 			if (false == isLightning) {
 				// 0.5초 뒤 소리
 				if (false == isFirstThunderSound) {
-					if (GetTickCount() - dwFirstLightningTime > 500) {
+					if (GetTickCount() - dwFirstLightningTime > 500 / m_fFrameSpeed) {
 						if(nSoundCount % 2 == 0)
 							SOUND_MGR->Play2DSound(SoundTag::eThunderStrike2, 1.0f);
 						else
@@ -1792,7 +1825,7 @@ void CMainScene::Update_LightningStrikes(float fDeltaTime)
 					}
 				}
 				// 1초 뒤 번개
-				if (GetTickCount() - dwFirstLightningTime > 1000) {
+				if (GetTickCount() - dwFirstLightningTime > 1000 / m_fFrameSpeed) {
 					isLightning = true;
 					TWBAR_MGR->g_OptionHDR.g_fWhite = 0.15f;
 				}
@@ -1800,7 +1833,7 @@ void CMainScene::Update_LightningStrikes(float fDeltaTime)
 		}
 		// 1.5초 뒤 소리
 		if (false == isThunderSound) {
-			if (GetTickCount() - dwFirstLightningTime > 1500) {
+			if (GetTickCount() - dwFirstLightningTime > 1500 / m_fFrameSpeed) {
 				if (nSoundCount % 2 == 0)
 					SOUND_MGR->Play2DSound(SoundTag::eThunderStrike, 1.0f);
 				else
@@ -1825,12 +1858,16 @@ void CMainScene::Update_LightningStrikes(float fDeltaTime)
 			isThunderSound = false;
 			isFirstThunderSound = false;
 			nSoundCount++;
+
+			TWBAR_MGR->g_OptionHDR.g_fWhite = TWBAR_MGR->g_cfWhite;
 		}
 	}
 }
 
 void CMainScene::Update(float fDeltaTime)
 {
+	float fCalcDeltatime = m_fFrameSpeed * fDeltaTime;
+
 	COLLISION_MGR->InitCollisionInfo();	// 현재 플레이어만 적용되고있어서 주석처리함
 //	COLLISION_MGR->UpdateManager();
 
@@ -1838,19 +1875,22 @@ void CMainScene::Update(float fDeltaTime)
 	GLOBAL_MGR->UpdateManager();
 
 	UpdateConstantBuffers();
-	Update_LightningStrikes(fDeltaTime);
+	Update_LightningStrikes(fCalcDeltatime);
 	Update_Light();
 
+	if (m_bIsGameRoundOver)
+		GameRoundOver(fCalcDeltatime);
+
 	// ====== Object ===== //
-	CScene::Update(fDeltaTime);
+	CScene::Update(fCalcDeltatime);
 
 	for (auto& object : m_vecCharacterContainer)
-		object->Update(fDeltaTime);
+		object->Update(fCalcDeltatime);
 
-	SPRITE_MGR->UpdateManager(fDeltaTime);
+	SPRITE_MGR->UpdateManager(fCalcDeltatime);
 
 	// ====== Particle ===== //
-	PARTICLE_MGR->UpdateManager(fDeltaTime);
+	PARTICLE_MGR->UpdateManager(fCalcDeltatime);
 
 	// ====== Timer ===== //
 	CalcTime();
@@ -1863,7 +1903,7 @@ void CMainScene::Update(float fDeltaTime)
 		s_bFirstTime = false;
 	}
 	else {
-		fAdaptationNorm = min(TWBAR_MGR->g_OptionHDR.g_fAdaptation < 0.0001f ? 1.0f : fDeltaTime / TWBAR_MGR->g_OptionHDR.g_fAdaptation, 0.9999f);
+		fAdaptationNorm = min(TWBAR_MGR->g_OptionHDR.g_fAdaptation < 0.0001f ? 1.0f : fCalcDeltatime / TWBAR_MGR->g_OptionHDR.g_fAdaptation, 0.9999f);
 		//	fAdaptationNorm = fDeltaTime / 3;			// 1부터 10까지가 샘플 프로그램임
 	}
 	m_PostFX->SetParameters(TWBAR_MGR->g_OptionHDR.g_fMiddleGrey, TWBAR_MGR->g_OptionHDR.g_fWhite, fAdaptationNorm,
