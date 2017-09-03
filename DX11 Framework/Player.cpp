@@ -95,16 +95,14 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	}
 
 	// Mouse
-	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse))
-	{
+	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)) {
 		m_pCharacter->SetIsFire(true);
 #ifdef USE_SERVER
-		CS_Fire packet;
-		packet.size = sizeof(packet);
-		packet.type = 10;
-		//packet.fire = true;
-		packet.FireDirection = m_pCharacter->GetFireDirection();
-		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+//		CS_Fire packet;
+//		packet.size = sizeof(packet);
+//		packet.type = 10;
+//		packet.FireDirection = m_pCharacter->GetFireDirection();
+//		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 #endif
 	}
 	else
