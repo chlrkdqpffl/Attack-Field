@@ -26,8 +26,7 @@ void CWeapon::Firing(XMVECTOR direction)
 
 		XMVECTOR firePosOffset = GetvPosition() + (-1 * GetvRight() * (GetBoundingBox().Extents.z - 0.6f)) + (-1 * GetvLook() * 0.225) + (GetvUp() * 0.1f);
 #ifdef USE_SERVER
-		if (SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetIsFire())
-		{
+		if (SCENE_MGR->g_pPlayerCharacter->GetIsFire())	{
 			cs_weapon* packet = reinterpret_cast<cs_weapon *>(SERVER_MGR->GetSendbuffer());
 			packet->size = sizeof(cs_weapon);
 			packet->type = CS_WEAPONE;
@@ -36,15 +35,9 @@ void CWeapon::Firing(XMVECTOR direction)
 
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(packet));
 		}
-		else
-		{
-			int i = 0;
+		else {
 			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
-			{
-				SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(false);
-				//cout << "남이쏨!" << endl;
-				i++;
-			}
+				character->SetIsFire(false);
 		}
 		// Particle용 충돌체크 - 임시방편
 		CollisionInfo info;
