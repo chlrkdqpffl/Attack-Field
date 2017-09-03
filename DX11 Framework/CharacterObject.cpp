@@ -79,6 +79,23 @@ void CCharacterObject::Reloading()
 void CCharacterObject::Revival()
 {
 	m_nLife = PLAYER_HP;
+
+	XMVECTOR redTeamStartPosition = XMVectorSet(65, 2.4f, 12, 0.0f);
+	XMVECTOR blueTeamStartPosition = XMVectorSet(270, 2.4f, 230, 0.0f);
+
+	if (m_pPlayer) {
+		if (m_tagTeam == TeamType::eRedTeam)
+			SetPosition(redTeamStartPosition);
+		else
+			SetPosition(blueTeamStartPosition);
+
+	}
+	else {
+		if (m_tagTeam == TeamType::eRedTeam)
+			SetPosition(redTeamStartPosition);
+		else
+			SetPosition(blueTeamStartPosition);
+	}
 }
 
 void CCharacterObject::DamagedCharacter(UINT damage)

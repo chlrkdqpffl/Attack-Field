@@ -165,6 +165,7 @@ public:
 	void SetDeath() {
 		m_dwDeathStartTime = GetTickCount();
 		m_nLife = 0;
+		m_bIsOccupy = false;
 	}
 	bool GetAlive() const { return m_nLife; }
 

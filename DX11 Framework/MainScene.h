@@ -61,8 +61,8 @@ public:
 	void SetOccupyTime(float time) { m_OccupyTime = time; }
 	void SetRedTeamKill(UINT kill) { m_nRedTeamTotalKill = kill; }
 	void SetBlueTeamKill(UINT kill) { m_nBlueTeamTotalKill = kill; }
-	void SetOccupyTeam(BYTE team) { m_cOccupyteam = team; }
-	BYTE GetOcuupyTeam() { return m_cOccupyteam; }
+	void SetOccupyTeam(TeamType team) { m_typeOccupyTeam = team; }
+	BYTE GetOcuupyTeam() { return static_cast<BYTE>(m_typeOccupyTeam); }
 
 	CGBuffer* GetGBuffer() const { return m_GBuffer; }
 private:
@@ -101,7 +101,7 @@ private:
 	int								m_OccupyTime = 0;	//점령시간. 30초 이상이 되면 체인지 씬!
 	UINT							m_nRedTeamTotalKill = 0;
 	UINT							m_nBlueTeamTotalKill = 0;
-	BYTE							m_cOccupyteam = 0;			//어떤팀이 점령했는지 알아야 한다.
+	TeamType						m_typeOccupyTeam = TeamType::eNone;
 	BYTE							m_nRedwin = 2;
 	BYTE							m_nBluewin = 2;
 
