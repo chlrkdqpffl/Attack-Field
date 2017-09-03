@@ -107,27 +107,11 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 						m_pUIManager->GetUIObject(TextureTag::eAim)->SetActive(true);
 				break;
 			case VK_F4:	
-			//	m_pPlayer->SetPosition(XMVectorSet(60, 10, 30, 0));
-//				m_pPlayer->SetGravityTimeElpased(0.0f);
-
-	//			m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
-
-
-				XMVECTOR redTeamStartPosition = XMVectorSet(65, 2.4f, 12, 0.0f);
-				XMVECTOR blueTeamStartPosition = XMVectorSet(270, 2.4f, 230, 0.0f);
-
-				if (m_pPlayer->GetServerID() % 2 == 0)
-					m_pPlayer->SetPosition(redTeamStartPosition);
-				else
-					m_pPlayer->SetPosition(blueTeamStartPosition);
-
-				for (auto& character : m_vecCharacterContainer) {
-					if (character->GetServerID() % 2 == 0)
-						m_pPlayer->SetPosition(redTeamStartPosition);
-					else
-						character->SetPosition(blueTeamStartPosition);
-				}
+				m_pPlayer->SetPosition(XMVectorSet(60, 10, 30, 0));
+				m_pPlayer->SetGravityTimeElpased(0.0f);
+				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
+#ifndef USE_SERVER
 			case VK_F5:	
 				m_vecCharacterContainer.back()->SetIsFire(true);
 				break;
@@ -137,8 +121,6 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			case VK_F7:
 				m_bIsGameRoundOver = true;
 				break;
-			break;
-#ifndef USE_SERVER
 			case VK_Z:
 				// 임의로 죽어보기
 				m_pPlayerCharacter->SetDeath();
@@ -1550,42 +1532,28 @@ void CMainScene::CalcTime()
 		if (m_nGameTime <= 0)
 			return;
 		m_nGameTime--;
-		if(m_cOccupyteam != 0  && m_OccupyTime < OCCUPY_TIME / 1000)
+		if (m_cOccupyteam != 0 && m_OccupyTime < OCCUPY_TIME / 1000)
 			m_OccupyTime++;
 
-		if (m_OccupyTime >= OCCUPY_TIME / 1000)
-		{
+		if (m_OccupyTime >= OCCUPY_TIME / 1000) {
+#ifdef USE_SERVER
 			cs_temp_exit packet;
 			packet.size = sizeof(packet);
 			packet.type = 11;
 			packet.Winner = m_cOccupyteam;
 
-				SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-
-				if (m_cOccupyteam == 1)
-				{
-					m_nRedwin++;
-				}
-				else if (m_cOccupyteam == 2)
-				{
-					m_nBluewin++;
-				}
-
-				if (m_nRedwin == 3 || m_nBluewin == 3)
-				{
-					SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
-					m_nRedwin = 2;
-					m_nBluewin = 2;
-				}
-
-				m_OccupyTime = 0;
-				m_cOccupyteam = 0;
-
-			}
-
-		}
+			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 #endif
-		{
+			if (m_cOccupyteam == 1)
+				m_nRedwin++;
+			else if (m_cOccupyteam == 2)
+				m_nBluewin++;
+
+			if (m_nRedwin == 1 || m_nBluewin == 1)
+				SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
+			
+			m_OccupyTime = 0;
+			m_cOccupyteam = 0;
 		}
 		m_dwTime = GetTickCount();
 	}
@@ -1613,8 +1581,8 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 		TWBAR_MGR->g_OptionHDR.g_fWhite = 0.1f;
 
 
-	// 라운드 종료 - 5초 뒤 새 게임 시작
-	if (GetTickCount() - m_dwGameRoundOverTime > 6000) {
+	// 라운드 종료 - 6초 뒤 새 게임 시작
+	if (GetTickCount() - m_dwGameRoundOverTime > ROUNDWAIT_TIME) {
 		m_bIsGameRoundOver = false;
 		m_fFrameSpeed = 1.0f;
 		bIsGameRoundOverTimer = false;
