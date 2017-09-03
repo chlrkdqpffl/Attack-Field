@@ -191,6 +191,7 @@ public:
 	UINT GetServerID() const { return m_nServerID; }
 	UINT GetWeaponBulletCount() const { return m_pWeapon->GetBulletCount(); }
 	UINT GetWeaponMaxBulletCount() const { return m_pWeapon->GetMaxBulletCount(); }
+	void SetWeaponBulletMax() { m_pWeapon->Reloading(); }
 	DWORD GetDeathTime() const { return m_dwDeathStartTime; }
 	DWORD GetOccupyTime() const { return m_dwOccupyStartTime; }
 

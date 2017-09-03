@@ -88,9 +88,11 @@ public:
 	WORD GetKeyState() const { return m_wKeyState; }
 	void SetLook(float x, float y, float z);
 	void SetDamagedInfo(DamagedInfo info) { m_infoDamage = info; }
+	UINT GetServerID() const { return m_pCharacter->GetServerID(); }
 
 	// --- Draw UI Text --- //
 	UINT GetWeaponBulletCount() const { return m_pCharacter->GetWeaponBulletCount(); }
+	void SetWeaponBulletMax() { m_pCharacter->SetWeaponBulletMax(); }
 	UINT GetWeaponMaxBulletCount() const { return m_pCharacter->GetWeaponMaxBulletCount(); }
 	UINT GetPlayerLife() const { return m_pCharacter->GetLife(); }
 	UINT GetPlayerArmorPoint() const { return m_pCharacter->GetArmorPoint(); }

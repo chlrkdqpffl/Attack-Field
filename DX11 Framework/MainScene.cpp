@@ -107,11 +107,26 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 						m_pUIManager->GetUIObject(TextureTag::eAim)->SetActive(true);
 				break;
 			case VK_F4:	
-				m_pPlayer->SetPosition(XMVectorSet(60, 10, 30, 0));
-			//	m_pPlayer->SetPosition(XMVectorSet(60, 10, 100, 0));
-				m_pPlayer->SetGravityTimeElpased(0.0f);
+			//	m_pPlayer->SetPosition(XMVectorSet(60, 10, 30, 0));
+//				m_pPlayer->SetGravityTimeElpased(0.0f);
 
-				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
+	//			m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
+
+
+				XMVECTOR redTeamStartPosition = XMVectorSet(65, 2.4f, 12, 0.0f);
+				XMVECTOR blueTeamStartPosition = XMVectorSet(270, 2.4f, 230, 0.0f);
+
+				if (m_pPlayer->GetServerID() % 2 == 0)
+					m_pPlayer->SetPosition(redTeamStartPosition);
+				else
+					m_pPlayer->SetPosition(blueTeamStartPosition);
+
+				for (auto& character : m_vecCharacterContainer) {
+					if (character->GetServerID() % 2 == 0)
+						m_pPlayer->SetPosition(redTeamStartPosition);
+					else
+						character->SetPosition(blueTeamStartPosition);
+				}
 				break;
 			case VK_F5:	
 				m_vecCharacterContainer.back()->SetIsFire(true);
@@ -1535,10 +1550,10 @@ void CMainScene::CalcTime()
 		if (m_nGameTime <= 0)
 			return;
 		m_nGameTime--;
-		if(m_cOccupyteam != 0  && m_OccupyTime < 30)
+		if(m_cOccupyteam != 0  && m_OccupyTime < OCCUPY_TIME / 1000)
 			m_OccupyTime++;
 
-		if (m_OccupyTime >= 30)
+		if (m_OccupyTime >= OCCUPY_TIME / 1000)
 		{
 			cs_temp_exit packet;
 			packet.size = sizeof(packet);
@@ -1546,8 +1561,8 @@ void CMainScene::CalcTime()
 			packet.Winner = m_cOccupyteam;
 
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-			cout << "여기 타나?" << endl;
-
+			
+			m_bIsGameRoundOver = true;
 		}
 
 		m_dwTime = GetTickCount();
@@ -1558,21 +1573,48 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 {
 	static bool bIsGameRoundOverTimer = false;
 
+	// 게임 라운드 종료시 슬로우되며 하얗게 변한다.
 	if (false == bIsGameRoundOverTimer) {
 		bIsGameRoundOverTimer = true;
 		m_dwGameRoundOverTime = GetTickCount();
 		m_fFrameSpeed = 0.3f;
+		TWBAR_MGR->g_OptionHDR.g_fWhite = TWBAR_MGR->g_cfWhite;
 	}
-//	m_fFrameSpeed -= 0.001f * ;
-//	TWBAR_MGR->g_OptionHDR.g_fWhite -= 
+
+	m_fFrameSpeed -= 0.2f * fDeltaTime;
+	TWBAR_MGR->g_OptionHDR.g_fWhite -= 1.5f * fDeltaTime;
+
 	if (m_fFrameSpeed < 0.1f)
 		m_fFrameSpeed = 0.1f;
 
-	cout << m_fFrameSpeed << endl;
-	if (GetTickCount() - m_dwGameRoundOverTime > 5000) {
+	if (TWBAR_MGR->g_OptionHDR.g_fWhite < 0.1f)
+		TWBAR_MGR->g_OptionHDR.g_fWhite = 0.1f;
+
+
+	// 라운드 종료 - 5초 뒤 새 게임 시작
+	if (GetTickCount() - m_dwGameRoundOverTime > 6000) {
 		m_bIsGameRoundOver = false;
 		m_fFrameSpeed = 1.0f;
 		bIsGameRoundOverTimer = false;
+		m_nGameTime = 0;
+		TWBAR_MGR->g_OptionHDR.g_fWhite = TWBAR_MGR->g_cfWhite;
+
+		XMVECTOR redTeamStartPosition = XMVectorSet(65, 2.4f, 12, 0.0f);
+		XMVECTOR blueTeamStartPosition = XMVectorSet(270, 2.4f, 230, 0.0f);
+
+		if (m_pPlayer->GetServerID() % 2 == 0)
+			m_pPlayer->SetPosition(redTeamStartPosition);
+		else
+			m_pPlayer->SetPosition(blueTeamStartPosition);
+
+		for (auto& character : m_vecCharacterContainer) {
+			if (character->GetServerID() % 2 == 0)
+				m_pPlayer->SetPosition(redTeamStartPosition);
+			else
+				character->SetPosition(blueTeamStartPosition);
+		}
+
+		m_pPlayer->SetWeaponBulletMax();
 	}
 }
 
@@ -1683,7 +1725,7 @@ void CMainScene::ShowOccupyUI()
 		pWhiteGageUI->SetActive(false);
 	}
 	const UINT gageLength = 600;	// UI x축 길이 600 
-	float percentage = (float)(GetTickCount() - m_pPlayerCharacter->GetOccupyTime()) / OCCUPY_TIME;
+	float percentage = (float)(GetTickCount() - m_pPlayerCharacter->GetOccupyTime()) / OCCUPY_TRYTIME;
 
 	pWhiteGageUI->SetEndPos(POINT{ FRAME_BUFFER_WIDTH / 2 - 300 + (LONG)(percentage * gageLength), FRAME_BUFFER_HEIGHT / 2 + 62 });
 
@@ -1873,14 +1915,14 @@ void CMainScene::Update(float fDeltaTime)
 
 	// ====== Update ===== //
 	GLOBAL_MGR->UpdateManager();
-
 	UpdateConstantBuffers();
-	Update_LightningStrikes(fCalcDeltatime);
 	Update_Light();
 
 	if (m_bIsGameRoundOver)
 		GameRoundOver(fCalcDeltatime);
-
+	else {
+		Update_LightningStrikes(fCalcDeltatime);
+	}
 	// ====== Object ===== //
 	CScene::Update(fCalcDeltatime);
 
