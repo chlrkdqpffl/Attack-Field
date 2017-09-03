@@ -1553,17 +1553,7 @@ void CMainScene::CalcOccupyTime()
 			m_nBlueScore++;
 
 		if (m_nRedScore == TOTAL_OCCUPYSCORE || m_nBlueScore == TOTAL_OCCUPYSCORE) {
-			cout << "니 여기오냐" << endl;
-			//	SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
-
-#ifdef USE_SERVER
-			cs_temp_exit packet;
-			packet.size = sizeof(packet);
-			packet.type = 11;
-			packet.Winner = static_cast<int>(m_typeOccupyTeam);
-
-			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-#endif
+			SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
 		}
 
 		m_OccupyTime = 0;
@@ -1606,12 +1596,13 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 		XMVECTOR redTeamStartPosition = XMVectorSet(65, 2.4f, 12, 0.0f);
 		XMVECTOR blueTeamStartPosition = XMVectorSet(270, 2.4f, 230, 0.0f);
 
-		if(m_pPlayerCharacter->GetTagTeam == TeamType::eRedTeam)
+		if(m_pPlayerCharacter->GetTagTeam() == TeamType::eRedTeam)
 			m_pPlayer->SetPosition(redTeamStartPosition);
 		else
 			m_pPlayer->SetPosition(blueTeamStartPosition);
 
 		m_pPlayer->SetWeaponBulletMax();
+		m_pPlayer->SetPlayerlife(PLAYER_HP);
 	}
 }
 
