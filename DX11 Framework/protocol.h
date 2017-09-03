@@ -23,7 +23,6 @@ enum PacketType
 
 
 	ePacket_SuccessMyCharacter,
-//	ePacket_SceneChange,
 	ePacket_LoginFail,
 	ePacket_Disconnect
 };
@@ -241,16 +240,6 @@ struct cs_Gamemode
 	BYTE mode;
 
 };
-
-struct cs_temp_exit
-{
-	BYTE size;
-	BYTE type;
-	BYTE Winner;
-};
-
-
-
 
 struct cs_login
 {
