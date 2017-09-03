@@ -42,6 +42,7 @@ public:
 	void GameRoundOver(float fDeltaTime);
 	void RenderBoundingBox();
 	void CalcTime();
+	void CalcOccupyTime();
 
 	// UI
 	void PrepareRenderUI();
@@ -98,11 +99,11 @@ private:
 	DWORD							m_dwGameRoundOverTime = 0;
 	bool							m_bIsGameRoundOver = false;
 	UINT							m_nGameTime = 0;
-	int								m_OccupyTime = 0;	//점령시간. 30초 이상이 되면 체인지 씬!
+	int								m_OccupyTime = 0;
 	UINT							m_nRedTeamTotalKill = 0;
 	UINT							m_nBlueTeamTotalKill = 0;
 	TeamType						m_typeOccupyTeam = TeamType::eNone;
-	BYTE							m_nRedwin = 2;
-	BYTE							m_nBluewin = 2;
 
+	BYTE							m_nRedScore = 0;
+	BYTE							m_nBlueScore = 0;
 };

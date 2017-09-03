@@ -444,6 +444,7 @@ void CMainScene::Initialize()
 	CreateSpriteImageObject();
 //	CreateSound();		 불소리가 안남. 채널 문제인듯
 
+	m_nGameTime = DEATHMATCH_TIME;
 	SOUND_MGR->PlayBgm(SoundTag::eBGM_Rain, 1.0f);
 	m_dwLastLightningTime = GetTickCount();
 	cout << "================================== Scene Loading Complete ===================================" << endl;
@@ -1533,32 +1534,40 @@ void CMainScene::CalcTime()
 	if (GetTickCount() - m_dwTime > 1000 / m_fFrameSpeed) {
 		if (m_nGameTime <= 0)
 			return;
+
 		m_nGameTime--;
-
-		if (m_typeOccupyTeam != TeamType::eNone && m_OccupyTime < OCCUPY_TIME / 1000)
-			m_OccupyTime++;
-
-		if (m_OccupyTime >= OCCUPY_TIME / 1000) {
-#ifdef USE_SERVER
-			cs_temp_exit packet;
-			packet.size = sizeof(packet);
-			packet.type = 11;
-			packet.Winner = static_cast<int>(m_typeOccupyTeam);
-
-			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-#endif
-			if (m_typeOccupyTeam == TeamType::eRedTeam)
-				m_nRedwin++;
-			else if (m_typeOccupyTeam == TeamType::eBlueTeam)
-				m_nBluewin++;
-
-			if (m_nRedwin == 2 || m_nBluewin == 2)
-				SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
-			
-			m_OccupyTime = 0;
-			m_typeOccupyTeam = TeamType::eNone;
-		}
+		CalcOccupyTime();
 		m_dwTime = GetTickCount();
+	}
+}
+
+void CMainScene::CalcOccupyTime()
+{
+	if (TeamType::eNone != m_typeOccupyTeam)
+		m_OccupyTime++;
+
+	if (m_OccupyTime >= OCCUPY_TIME / 1000) {
+		if (m_typeOccupyTeam == TeamType::eRedTeam)
+			m_nRedScore++;
+		else if (m_typeOccupyTeam == TeamType::eBlueTeam)
+			m_nBlueScore++;
+
+		if (m_nRedScore == TOTAL_OCCUPYSCORE || m_nBlueScore == TOTAL_OCCUPYSCORE)
+			SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
+
+		m_OccupyTime = 0;
+		m_bIsGameRoundOver = true;
+		m_typeOccupyTeam = TeamType::eNone;
+		m_nGameTime = DEATHMATCH_TIME;
+
+#ifdef USE_SERVER
+		cs_temp_exit packet;
+		packet.size = sizeof(packet);
+		packet.type = 11;
+		packet.Winner = static_cast<int>(m_typeOccupyTeam);
+
+		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+#endif
 	}
 }
 
@@ -1589,7 +1598,7 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 		m_bIsGameRoundOver = false;
 		m_fFrameSpeed = 1.0f;
 		bIsGameRoundOverTimer = false;
-		m_nGameTime = 0;
+		m_nGameTime = DEATHMATCH_TIME;
 		TWBAR_MGR->g_OptionHDR.g_fWhite = TWBAR_MGR->g_cfWhite;
 
 		XMVECTOR redTeamStartPosition = XMVectorSet(65, 2.4f, 12, 0.0f);
@@ -1702,41 +1711,36 @@ void CMainScene::ShowOccupyUI()
 	CUIObject* pWhiteGageUI = m_pUIManager->GetUIObject(TextureTag::eOccupyGageWhiteBar);
 
 	if (!m_pPlayerCharacter->GetIsOccupy()) {
-		if (m_pPlayerCharacter->GetTagTeam() == m_typeOccupyTeam) {
 			pWhiteGageUI->SetActive(false);
 			pGageUI->SetActive(false);
 			return;
-		}
 	}
 
-	if (m_typeOccupyTeam != m_pPlayerCharacter->GetTagTeam())
-	{
-		pGageUI->SetActive(true);
-		pWhiteGageUI->SetActive(true);
-	}
-	else
-	{
-		pGageUI->SetActive(false);
-		pWhiteGageUI->SetActive(false);
-	}
+	if (m_pPlayerCharacter->GetTagTeam() == m_typeOccupyTeam)
+		return;
+
+	pGageUI->SetActive(true);
+	pWhiteGageUI->SetActive(true);
+
 	const UINT gageLength = 600;	// UI x축 길이 600 
 	float percentage = (float)(GetTickCount() - m_pPlayerCharacter->GetOccupyTime()) / OCCUPY_TRYTIME;
 
 	pWhiteGageUI->SetEndPos(POINT{ FRAME_BUFFER_WIDTH / 2 - 300 + (LONG)(percentage * gageLength), FRAME_BUFFER_HEIGHT / 2 + 62 });
 
-	if (percentage >= 1)
-	{
+	if (percentage >= 1) {
 #ifdef	USE_SERVER
 		{
 			sc_occupy packet;
 			packet.size = sizeof(sc_occupy);
 			packet.type = 9;
-			packet.redteam = static_cast<int>(SCENE_MGR->g_pPlayerCharacter->GetTagTeam());
+			packet.redteam = static_cast<int>(m_pPlayerCharacter->GetTagTeam());
 
 			//cout << packet.redteam << endl;
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 		}
 #endif
+		m_OccupyTime = 0;
+		m_typeOccupyTeam = m_pPlayerCharacter->GetTagTeam();
 		pGageUI->SetActive(false);
 		pWhiteGageUI->SetActive(false);
 
@@ -2054,12 +2058,7 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	str = "Player Position : (" + to_string(playerPos.x) + ", " + to_string(playerPos.y) + ", " + to_string(playerPos.z) + ")\n";
 	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 50, 0xFFFFFFFF, FW1_LEFT);
 #endif
-//	str = "원점으로부터의 거리 : (" + to_string(XMVectorGetX(temp)) + ")\n";		// 3D 사운드 용
-//	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 20, 90, 0xFFFFFFFF, FW1_LEFT);
 
-//	str = "ID : (" + to_string(ID) + ")\n";
-//	TEXT_MGR->RenderText(pd3dDeviceContext, s_to_ws(str), 30, 500, 50, 0xFFFFFFFF, FW1_LEFT);
-	
 	// Draw Select Object
 	if (m_pSelectedObject) {
 		XMFLOAT3 pos = m_pSelectedObject->GetPosition();
@@ -2117,18 +2116,18 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 		str = to_string(m_nBlueTeamTotalKill);
 		TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 913, 10, 0xFFFF4500, FW1_CENTER);
 
-		str = to_string(TOTAL_KILLS);
+		str = to_string(TOTAL_KILLSCORE);
 		TEXT_MGR->RenderText(pd3dDeviceContext, str, 65, 800, 10, 0xFFFFFFFF, FW1_CENTER);
 	}
 	else    // 점령모드일때
 	{
-		str = to_string(m_nRedwin);
+		str = to_string(m_nRedScore);
 		TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 698, 10, 0xFF0020FF, FW1_CENTER);
 
-		str = to_string(m_nBluewin);
+		str = to_string(m_nBlueScore);
 		TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 913, 10, 0xFFFF4500, FW1_CENTER);
 
-		str = to_string(3);
+		str = to_string(TOTAL_OCCUPYSCORE);
 		TEXT_MGR->RenderText(pd3dDeviceContext, str, 65, 800, 10, 0xFFFFFFFF, FW1_CENTER);
 	}
 
@@ -2153,7 +2152,7 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 		str = to_string(m_OccupyTime);
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1500, 500, 0xFFFFFFFF, FW1_LEFT);
 	}
-	if (m_typeOccupyTeam == TeamType::eBlueTeam) {
+	else if (m_typeOccupyTeam == TeamType::eBlueTeam) {
 		str = "Blue팀 점령";
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1400, 430, 0xFFFFFFFF, FW1_LEFT);
 
