@@ -88,7 +88,6 @@ void CCharacterObject::Revival()
 			SetPosition(redTeamStartPosition);
 		else
 			SetPosition(blueTeamStartPosition);
-
 	}
 	else {
 		if (m_tagTeam == TeamType::eRedTeam)

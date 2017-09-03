@@ -2139,8 +2139,8 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
 	}
 
-	if (m_pPlayerCharacter->GetTagTeam() != m_typeOccupyTeam) {
-		if (m_pPlayerCharacter->GetIsOccupy()) {
+	if (m_pPlayerCharacter->GetIsOccupy()) {
+		if (m_pPlayerCharacter->GetTagTeam() != m_typeOccupyTeam) {
 			str = "점령중";
 			TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 730, 430, 0xFFFFFFFF, FW1_LEFT);
 		}
@@ -2153,7 +2153,7 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 		str = to_string(m_OccupyTime);
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1500, 500, 0xFFFFFFFF, FW1_LEFT);
 	}
-	if (m_typeOccupyTeam == TeamType::eRedTeam == 2) {
+	if (m_typeOccupyTeam == TeamType::eBlueTeam) {
 		str = "Blue팀 점령";
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1400, 430, 0xFFFFFFFF, FW1_LEFT);
 
