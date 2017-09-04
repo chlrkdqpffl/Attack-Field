@@ -142,10 +142,12 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	if ((m_wKeyState != 0) || count == 0) {
 		//WORD temp = static_cast<int>(KeyInput::eLeftMouse);
 		WORD key_button_e = static_cast<int>(KeyInput::eOccupy);
-		if ( key_button_e != m_wKeyState)
+		if (key_button_e != m_wKeyState)
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 	}
 	count++;
+
+	
 #endif
 }
 
