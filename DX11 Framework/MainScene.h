@@ -43,6 +43,7 @@ public:
 	void RenderBoundingBox();
 	void CalcTime();
 	void CalcOccupyTime();
+	void CalcOccupyPosition();
 
 	// UI
 	void PrepareRenderUI();
@@ -62,8 +63,8 @@ public:
 	void SetOccupyTime(float time) { m_OccupyTime = time; }
 	void SetRedTeamKill(UINT kill) { m_nRedTeamTotalKill = kill; }
 	void SetBlueTeamKill(UINT kill) { m_nBlueTeamTotalKill = kill; }
-	void SetOccupyTeam(TeamType team) { m_typeOccupyTeam = team; }
-	BYTE GetOcuupyTeam() { return static_cast<BYTE>(m_typeOccupyTeam); }
+	void SetOccupyTeam(TeamType team) { m_tagOccupyTeam = team; }
+	BYTE GetOcuupyTeam() { return static_cast<BYTE>(m_tagOccupyTeam); }
 
 	CGBuffer* GetGBuffer() const { return m_GBuffer; }
 private:
@@ -96,14 +97,18 @@ private:
 	// ----- Game System ----- //
 	DWORD							m_dwTime = 0;
 	DWORD							m_dwLastLightningTime = 0;
-	DWORD							m_dwGameRoundOverTime = 0;
 	bool							m_bIsGameRoundOver = false;
 	UINT							m_nGameTime = 0;
 	int								m_OccupyTime = 0;
 	UINT							m_nRedTeamTotalKill = 0;
 	UINT							m_nBlueTeamTotalKill = 0;
-	TeamType						m_typeOccupyTeam = TeamType::eNone;
 
+
+
+	// ----- Occupy Variable ----- //
+	const XMFLOAT3					m_cf3OccupyPosition = XMFLOAT3(130.0f, 25.0f, 168.0f);
+	DWORD							m_dwGameRoundOverTime = 0;
+	TeamType						m_tagOccupyTeam = TeamType::eNone;
 	UINT							m_nRedScore = 0;
 	UINT							m_nBlueScore = 0;
 };
