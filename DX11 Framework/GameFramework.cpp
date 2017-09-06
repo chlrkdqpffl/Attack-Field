@@ -213,8 +213,8 @@ bool CGameFramework::CreateDirect3DDisplay()
 #else
 		// 외장 그래픽으로 디바이스 생성시 전체화면이 안됨!
 		// 개발할 때에는 전체 화면이 필요 없으므로 실행하도록 하고 시연용으로는 파일을 외장그래픽으로 수동 실행하여야 함
-		if (SUCCEEDED(hResult = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
-	//	if (SUCCEEDED(hResult = D3D11CreateDevice(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
+	//	if (SUCCEEDED(hResult = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
+		if (SUCCEEDED(hResult = D3D11CreateDevice(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
 #endif
 			break;
 		else {
@@ -607,9 +607,9 @@ void CGameFramework::FrameAdvance()
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
 
-//#if defined(DEBUG) || defined(_DEBUG)
+#if defined(DEBUG) || defined(_DEBUG)
 	RenderDebugText();
-//#endif
+#endif
 
 	// Draw tweak bars
 	if (true == m_bMouseBindFlag) {
@@ -621,6 +621,7 @@ void CGameFramework::FrameAdvance()
 	m_pDXGISwapChain->Present(0, 0);
 
 	SetTitleName();
+	m_pd3dDeviceContext->GSSetShader(nullptr, nullptr, 0);
 	m_pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
 }
 
@@ -657,5 +658,4 @@ void CGameFramework::RenderDebugText()
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, m_wsGraphicBrandName, 30, 1330, 830, 0xFF41FF3A, FW1_RIGHT);
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, "Video Memory : " + to_string(m_ui64VideoMemory / 1048576) + "MB", 30, 1330, 860, 0xFF0000FF, FW1_RIGHT);
 	}
-	m_pd3dDeviceContext->GSSetShader(nullptr, nullptr, 0);
 }

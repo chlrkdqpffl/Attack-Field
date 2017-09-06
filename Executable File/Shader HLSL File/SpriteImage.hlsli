@@ -13,19 +13,16 @@ cbuffer cbWorldMatrix : register(b1) // VS Set
     matrix gmtxWorld : packoffset(c0);
 };
 
-cbuffer cbTextureMatrix : register(b2) // VS Set
+cbuffer cbTestVariable : register(b3) // VS Set
 {
-    matrix gmtxTexture : packoffset(c0);
-};
-
-cbuffer cbTestVariable : register(b11) // VS, GS, PS Buffer
-{
-    float4 g_f4Var : packoffset(c0); // 이 변수 x 값이 frame, yz가 사이즈임 w는 무시 일단은 하나의 변수에 만들어놓았음 나중에 수정할거
+    float gfFrame : packoffset(c0.x);
+    float gfSizeX : packoffset(c0.y);
+    float gfSizeY : packoffset(c0.z);
+    float pad : packoffset(c0.w);
 };
 
 Texture2D gtxDiffuse : register(t0);
 SamplerState gssDefault : register(s0);
-
 
 struct VS_INPUT
 {
@@ -49,14 +46,14 @@ VS_OUTPUT VSSpriteImage(VS_INPUT input)
     output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
     output.texCoord = input.texCoord;
 
-    int iX = (int) g_f4Var.x % (int) g_f4Var.y;
-    int iY = (int) g_f4Var.x / (int) g_f4Var.y;
+    int iX = (int) gfFrame % gfSizeX;
+    int iY = (int) gfFrame / gfSizeX;
 
-    float fX = output.texCoord.x / (float) g_f4Var.y;
-    float fY = output.texCoord.y / (float) g_f4Var.z;
+    float fX = output.texCoord.x / gfSizeX;
+    float fY = output.texCoord.y / gfSizeY;
 
-    output.texCoord.x = fX + (1.f / (float) g_f4Var.y * iX);
-    output.texCoord.y = fY + (1.f / (float) g_f4Var.z * iY);
+    output.texCoord.x = fX + (1.f / gfSizeX * iX);
+    output.texCoord.y = fY + (1.f / gfSizeY * iY);
     
     return (output);
 }
