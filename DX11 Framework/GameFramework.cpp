@@ -607,9 +607,9 @@ void CGameFramework::FrameAdvance()
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
 
-//#if defined(DEBUG) || defined(_DEBUG)
+#if defined(DEBUG) || defined(_DEBUG)
 	RenderDebugText();
-//#endif
+#endif
 
 	// Draw tweak bars
 	if (true == m_bMouseBindFlag) {
@@ -621,6 +621,7 @@ void CGameFramework::FrameAdvance()
 	m_pDXGISwapChain->Present(0, 0);
 
 	SetTitleName();
+	m_pd3dDeviceContext->GSSetShader(nullptr, nullptr, 0);
 	m_pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
 }
 
@@ -657,5 +658,4 @@ void CGameFramework::RenderDebugText()
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, m_wsGraphicBrandName, 30, 1330, 830, 0xFF41FF3A, FW1_RIGHT);
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, "Video Memory : " + to_string(m_ui64VideoMemory / 1048576) + "MB", 30, 1330, 860, 0xFF0000FF, FW1_RIGHT);
 	}
-	m_pd3dDeviceContext->GSSetShader(nullptr, nullptr, 0);
 }
