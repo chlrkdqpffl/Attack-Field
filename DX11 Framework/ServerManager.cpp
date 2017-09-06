@@ -16,7 +16,7 @@ void CServerManager::processpacket(char *ptr)
 				id = my_Pos_packet->id;
 				if (id == m_myid)
 				{
-					SCENE_MGR->g_pPlayerCharacter->SetLife(my_Pos_packet->hp);
+					return;
 				}
 				else
 				{
@@ -29,9 +29,7 @@ void CServerManager::processpacket(char *ptr)
 					}
 		
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
-					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRelativeVelocity(my_Pos_packet->Animation);
-					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(my_Pos_packet->hp);
-					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_Pos_packet->FireDirection);
+
 		
 					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eReload))
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(true);
@@ -124,7 +122,8 @@ void CServerManager::processpacket(char *ptr)
 						i++;
 					}
 		
-					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRotate(my_put_rotate->x, my_put_rotate->y, 0);
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_rotate->FireDirection);
 				}
 			}
 			break;

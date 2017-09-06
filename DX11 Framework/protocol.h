@@ -105,7 +105,7 @@ struct sc_packet_put_player {   //서버에서 처음 접속했을때 위치값과 ID를 부여한�
 struct sc_packet_pos   //서버에서 처리된 값을 클라에게 보낸다. 
 {
 	BYTE size;
-	volatile BYTE type;
+	BYTE type;
 
 	WORD	id;
 	WORD	key_button;
@@ -114,9 +114,6 @@ struct sc_packet_pos   //서버에서 처리된 값을 클라에게 보낸다.
 	float   y;
 	float   z;
 
-	XMFLOAT3   Animation;
-	XMFLOAT3 FireDirection;
-	BYTE   hp;
 };
 
 struct sc_rotate_vector
@@ -128,8 +125,8 @@ struct sc_rotate_vector
 
 	float x;
 	float y;
-	float z;
 
+	XMFLOAT3 FireDirection;
 };
 
 struct sc_bullet_fire

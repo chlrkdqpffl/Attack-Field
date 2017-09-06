@@ -130,13 +130,8 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	packet.type = CS_KEYTYPE;
 	packet.size = sizeof(packet);
 	packet.key_button = m_wKeyState;
-	XMStoreFloat3(&packet.Animation, relativeVelocity);
+	packet.playerPosition = GetPosition();
 
-
-	packet.x = GetPosition().x;
-	packet.y = GetPosition().y;
-	packet.z = GetPosition().z;
-	packet.FireDirection = m_pCharacter->GetFireDirection();
 
 
 	if ((m_wKeyState != 0) || count == 0) {
@@ -219,11 +214,11 @@ void CPlayer::Rotate(float x, float y)
 	if (abs(m_pCharacter->GetminusPitch()) >= 1.0f || abs(m_pCharacter->GetminusYaw()) >= 1.0f)
 	{
 		cs_rotate *rotate = reinterpret_cast<cs_rotate *>(SERVER_MGR->GetSendbuffer());
-		rotate->cx = m_pCharacter->GetPitch();
-		rotate->cy = m_pCharacter->GetYaw();
+		rotate->mouseRotate.x = m_pCharacter->GetPitch();
+		rotate->mouseRotate.y = m_pCharacter->GetYaw();
 		rotate->size = sizeof(cs_rotate);
 		rotate->type = CS_ROTATE;
-
+		rotate->FireDirection = SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetFireDirection();
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(rotate));
 
 		m_pCharacter->Setbfpitch(abs(m_pCharacter->GetPitch()));   //이전값 저장
