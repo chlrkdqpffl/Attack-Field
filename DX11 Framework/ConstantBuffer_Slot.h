@@ -16,7 +16,8 @@ Max Resource(Texture, Buffer)	: 128
 // Vertex Shader
 #define VS_CB_SLOT_CAMERA_VIEW_PROJECTION	0x00
 #define VS_CB_SLOT_WORLD_MATRIX				0x01
-#define VS_CB_SLOT_TEXTURE_MATRIX			0x02
+#define VS_CB_SLOT_TEXTURE_OFFSET			0x02
+//#define VS_CB_SLOT_TEXTURE_MATRIX			0x02
 #define VS_CB_SLOT_SPRITEINFO				0x03
 
 #define VS_CB_SLOT_BONETRANSFORM			0x07

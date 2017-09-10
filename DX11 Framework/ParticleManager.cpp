@@ -121,7 +121,7 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 	wstrShaderName = L"Shader HLSL File/Spark.hlsli";
 	for (int i = 0; i < m_nMaxSparkParticle; ++i) {
 		pParticle = new CParticleSystem();
-		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eSpark), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 10, STATEOBJ_MGR->g_pFireBS, 1.0f);
+		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eSpark), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 10, STATEOBJ_MGR->g_pTransparentBS, 1.0f);
 		pParticle->CreateShader(pd3dDevice, wstrShaderName);
 		pParticle->SetActive(false);
 		vecParticleSystemPool.push_back(pParticle);
@@ -132,7 +132,7 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 
 	// ========================== Rain ================================= //
 	m_pRainParticle = new CParticleSystem();
-	m_pRainParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eRain), m_pRainParticle->CreateRandomTexture1DSRV(pd3dDevice), 10000, STATEOBJ_MGR->g_pFireBS);
+	m_pRainParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eRain), m_pRainParticle->CreateRandomTexture1DSRV(pd3dDevice), 10000, STATEOBJ_MGR->g_pTransparentBS);
 	m_pRainParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Rain.hlsli");
 }
 

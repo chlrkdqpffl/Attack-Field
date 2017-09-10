@@ -21,7 +21,8 @@ public:
 
 private:
 	TextureTag						m_tagTexture = TextureTag::eNone;
-	
+	XMFLOAT2						m_f2offset = XMFLOAT2(1.0f, 1.0f);
+
 	int								m_nTextures = 0;
 	ID3D11ShaderResourceView		**m_ppd3dsrvTextures = nullptr;
 	int								m_nTextureStartSlot = 0;
@@ -36,16 +37,19 @@ public:
 	void UpdateTextureShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, int nIndex = 0, int nSlot = 0);
 	void UpdateSamplerShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, int nIndex = 0, int nSlot = 0);
 
+	void SetOffset(XMFLOAT2 offset) { m_f2offset = offset; }
 	void SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture);
 	void SetTexture(int nIndex, TextureTag);
 	void SetSampler(int nIndex, ID3D11SamplerState *pd3dSamplerState);
 	TextureTag GetTextureTag() const { return m_tagTexture; }
 
-	static ID3D11Buffer				*m_pd3dcbTextureMatrix;
-
+	//static ID3D11Buffer				*m_pd3dcbTextureMatrix;
+	static ID3D11Buffer				*m_pd3dcbTextureOffset;
+	static XMFLOAT2					prevOffset;
 	static void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	static void ReleaseShaderVariables();
-	static void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxTexture);
+	//static void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxTexture);
+	static void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMFLOAT2* textureOffset);
 	static ID3D11ShaderResourceView *CreateTexture2DArraySRV(ID3D11Device *pd3dDevice, _TCHAR(*ppstrFilePaths)[128], UINT nTextures);
 };
 
@@ -64,7 +68,7 @@ private:
 public:
 	void SetTexture(CTexture *pTexture);
 	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext);
-	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxTexture);
+	//void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxTexture);
 	
 	CTexture* GetTexture() const { return m_pTexture; }
 	TextureTag GetTextureTag() const { return m_tagTexture; }

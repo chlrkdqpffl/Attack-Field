@@ -83,38 +83,19 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	else
 		m_pCharacter->SetOccupy(false);
 
-
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
-		if (m_pCharacter->GetIsTempRun()) {		// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
-			d3dxvShift += XMLoadFloat3(&m_d3dxvLook) * 2;
-
-			relativeVelocity += XMVectorSet(0, 0, 1, 0);
-		}
+		if (m_pCharacter->GetIsTempRun())	// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
+			d3dxvShift = XMLoadFloat3(&m_d3dxvLook) * 2;
 		m_pCharacter->Running();
 	}
-	else {
+	else 
 		m_pCharacter->SetIsRun(false);
-	}
 
 	// Mouse
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse))
-	{
 		m_pCharacter->SetIsFire(true);
-#ifdef USE_SERVER
-		//CS_Fire packet;
-		//packet.size = sizeof(packet);
-		//packet.type = 10;
-		////packet.fire = true;
-		//packet.FireDirection = m_pCharacter->GetFireDirection();
-		//SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-#endif
-	}
 	else
 		m_pCharacter->SetIsFire(false);
-
-	if (m_wKeyState & static_cast<int>(KeyInput::eRightMouse)) {
-
-	}
 
 	d3dxvShift *= m_fSpeed * fDeltaTime;
 	XMStoreFloat3(&m_d3dxvVelocity, XMLoadFloat3(&m_d3dxvVelocity) + d3dxvShift);
@@ -133,7 +114,6 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	packet.playerPosition = GetPosition();
 
 
-
 	if ((m_wKeyState != 0) || count == 0) {
 		//WORD temp = static_cast<int>(KeyInput::eLeftMouse);
 		WORD key_button_e = static_cast<int>(KeyInput::eOccupy);
@@ -142,7 +122,6 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	}
 	count++;
 
-	
 #endif
 }
 
@@ -223,7 +202,7 @@ void CPlayer::Rotate(float x, float y)
 
 		m_pCharacter->Setbfpitch(abs(m_pCharacter->GetPitch()));   //이전값 저장
 		m_pCharacter->Setbfyaw(abs(m_pCharacter->GetYaw()));      //이전값 저장
-}
+	}
 #endif
 }
 

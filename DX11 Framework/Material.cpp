@@ -26,7 +26,6 @@ CMaterial::CMaterial(CMaterialColors *pColors)
 CMaterial::~CMaterial()
 {
 	SafeDelete(m_pColors);
-//	if(m_pTexture) m_pTexture->ReleaseShaderVariables();			// 만약에 이걸로 오류가 나면 지워도 됨, 미확실
 	SafeDelete(m_pTexture);
 }
 
@@ -43,14 +42,17 @@ void CMaterial::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext)
 	if (m_pTexture) m_pTexture->UpdateShaderVariable(pd3dDeviceContext);
 }
 
+/*
 void CMaterial::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxTexture)
 {
 	if (m_pTexture) m_pTexture->UpdateShaderVariable(pd3dDeviceContext, pd3dxmtxTexture);
 }
+*/
 
 ///////////////////////////////////////////////////////////////////////////
 //
-ID3D11Buffer *CTexture::m_pd3dcbTextureMatrix = NULL;
+ID3D11Buffer *CTexture::m_pd3dcbTextureOffset = nullptr;
+XMFLOAT2 CTexture::prevOffset = XMFLOAT2(0.0f, 0.0f);
 
 CTexture::CTexture(int nTextures, int nSamplers, int nTextureStartSlot, int nSamplerStartSlot)
 {
@@ -107,6 +109,18 @@ void CTexture::SetSampler(int nIndex, ID3D11SamplerState *pd3dSamplerState)
 
 void CTexture::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext)
 {
+	// Update Constant Buffer
+	if ((prevOffset.x != m_f2offset.x) || (prevOffset.y != m_f2offset.y)) {
+		prevOffset = m_f2offset;
+		D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+		pd3dDeviceContext->Map(m_pd3dcbTextureOffset, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+		XMFLOAT4 *f4textureOffset = (XMFLOAT4 *)d3dMappedResource.pData;
+		*f4textureOffset = XMFLOAT4(m_f2offset.x, m_f2offset.y, 0.0f, 0.0f);
+		pd3dDeviceContext->Unmap(m_pd3dcbTextureOffset, 0);
+	
+		pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_TEXTURE_OFFSET, 1, &m_pd3dcbTextureOffset);
+	}
+	// Update Resource
 	pd3dDeviceContext->DSSetShaderResources(m_nTextureStartSlot, m_nTextures, m_ppd3dsrvTextures);
 	pd3dDeviceContext->DSSetSamplers(m_nSamplerStartSlot, m_nSamplers, m_ppd3dSamplerStates);
 
@@ -129,19 +143,31 @@ void CTexture::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
 	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	d3dBufferDesc.ByteWidth = sizeof(XMMATRIX);		// 이거 XMFLOAT4x4안해도 되는지 확인하기
+	//d3dBufferDesc.ByteWidth = sizeof(XMMATRIX);
+	d3dBufferDesc.ByteWidth = sizeof(XMFLOAT4);
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbTextureMatrix);
+	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbTextureOffset);
 
 	DXUT_SetDebugName(m_pd3dcbTextureMatrix, "TextureMatrix");
 }
 
 void CTexture::ReleaseShaderVariables()
 {
-	if (m_pd3dcbTextureMatrix) m_pd3dcbTextureMatrix->Release();
+	if (m_pd3dcbTextureOffset) m_pd3dcbTextureOffset->Release();
 }
 
+void CTexture::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMFLOAT2* textureOffset)
+{
+	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+	pd3dDeviceContext->Map(m_pd3dcbTextureOffset, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	XMFLOAT4 *f4textureOffset = (XMFLOAT4 *)d3dMappedResource.pData;
+	*f4textureOffset = XMFLOAT4(textureOffset->x, textureOffset->y, 0.0f, 0.0f);
+	pd3dDeviceContext->Unmap(m_pd3dcbTextureOffset, 0);
+
+	pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_TEXTURE_OFFSET, 1, &m_pd3dcbTextureOffset);
+}
+/*
 void CTexture::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxTexture)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
@@ -152,7 +178,7 @@ void CTexture::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMA
 
 	pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_TEXTURE_MATRIX, 1, &m_pd3dcbTextureMatrix);
 }
-
+*/
 ID3D11ShaderResourceView *CTexture::CreateTexture2DArraySRV(ID3D11Device *pd3dDevice, _TCHAR(*ppstrFilePaths)[128], UINT nTextures)
 {
 	D3DX11_IMAGE_LOAD_INFO d3dxImageLoadInfo;

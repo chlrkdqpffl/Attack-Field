@@ -46,6 +46,7 @@ void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamer
 	}
 }
 
+/*
 void CAirplanePlayer::OnApplyGravity(float fDeltaTime)
 {
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)m_pPlayerUpdatedContext;
@@ -62,3 +63,4 @@ void CAirplanePlayer::OnApplyGravity(float fDeltaTime)
 		SetPosition(XMLoadFloat3(&d3dxvPlayerPosition));
 	}
 }
+*/

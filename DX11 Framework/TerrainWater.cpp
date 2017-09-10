@@ -66,7 +66,7 @@ void CTerrainWater::Update(float fDeltaTime)
 
 void CTerrainWater::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	CTexture::UpdateShaderVariable(pd3dDeviceContext, &XMLoadFloat4x4(&m_d3dxmtxTexture));
+//	CTexture::UpdateShaderVariable(pd3dDeviceContext, &XMLoadFloat4x4(&m_d3dxmtxTexture));
 
 	CGameObject::Render(pd3dDeviceContext, pCamera);
 }

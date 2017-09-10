@@ -15,12 +15,12 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 
-//	TWBAR_MGR->g_xmf3Offset.x = 1.0f;
-	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(130.0f, 25.0f, 168.0f);
-	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(100.0f, 55.0f, 50.0f);
-	//TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.15f, 0.035f, 0.0f);
+//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(100.0f, 55.0f, 50.0f);
+//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.15f, 0.035f, 0.0f);
 //	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(0.2f, 0.2f, 0.0f, 0.0f);
-//	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(1.4f, 0.6f, 2.5f, 0.4f);
+
+
+//	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(10.0f, 100.0f, 10.0f, 0.1f);
 }
 
 CMainScene::~CMainScene()
@@ -855,7 +855,7 @@ void CMainScene::CreateMapDataInstancingObject()
 	pMesh = new CCubeMeshTexturedTangenteIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
 //	pMesh = new CCubePatchMesh(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
 	pInstancingShaders->SetMesh(pMesh);
-	pInstancingShaders->SetMaterial(2, TextureTag::eSideWalk1D, TextureTag::eSideWalk1ND);
+	pInstancingShaders->SetMaterial(XMFLOAT2(2.0f, 2.0f), 2, TextureTag::eSideWalk1D, TextureTag::eSideWalk1ND);
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
 
@@ -879,7 +879,7 @@ void CMainScene::CreateMapDataInstancingObject()
 	pMesh = new CCubeMeshTexturedTangenteIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
 
 	pInstancingShaders->SetMesh(pMesh);
-	pInstancingShaders->SetMaterial(2, TextureTag::eSideWalk2D, TextureTag::eSideWalk2N);
+	pInstancingShaders->SetMaterial(XMFLOAT2(2.0f, 2.0f), 2, TextureTag::eSideWalk2D, TextureTag::eSideWalk2N);
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
 
