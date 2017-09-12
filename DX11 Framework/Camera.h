@@ -19,10 +19,10 @@ class CCamera
 protected:
 	XMFLOAT3						m_PrevPosition = XMFLOAT3(0, 0, 0);
 
-	XMFLOAT3						m_d3dxvPosition;
-	XMFLOAT3						m_d3dxvRight;
-	XMFLOAT3						m_d3dxvUp;
-	XMFLOAT3						m_d3dxvLook;
+	XMFLOAT3						m_vPosition = XMFLOAT3(0, 0, 0);
+	XMFLOAT3						m_vRight = XMFLOAT3(0, 0, 0);
+	XMFLOAT3						m_vUp = XMFLOAT3(0, 0, 0);
+	XMFLOAT3						m_vLook = XMFLOAT3(0, 0, 0);
 
 	CameraTag						m_tagCamera = CameraTag::eNone;
 
@@ -73,16 +73,18 @@ public:
 	XMMATRIX GetProjectionMatrix() const { return(XMLoadFloat4x4(&m_d3dxmtxProjection)); }
 	ID3D11Buffer *GetCameraConstantBuffer() const { return(m_pd3dcbCamera); }
 
-	void SetPosition(XMFLOAT3 vPosition) { m_d3dxvPosition = vPosition; }
-	void SetPosition(XMVECTOR vPosition) { XMStoreFloat3(&m_d3dxvPosition, vPosition); }
-	XMVECTOR GetvPosition() const { return(XMLoadFloat3(&m_d3dxvPosition)); }
-	XMFLOAT3 GetPosition() const { return m_d3dxvPosition; }
-	XMFLOAT3 GetRight() const { return m_d3dxvRight; }
-	XMFLOAT3 GetUp() const { return m_d3dxvUp; }
-	XMFLOAT3 GetLook() const { return m_d3dxvLook; }
-	XMVECTOR GetvRight() const { return(XMLoadFloat3(&m_d3dxvRight)); }
-	XMVECTOR GetvUp() const { return(XMLoadFloat3(&m_d3dxvUp)); }
-	XMVECTOR GetvLook() const { return(XMLoadFloat3(&m_d3dxvLook)); }
+	void SetPosition(XMFLOAT3 vPosition) { m_vPosition = vPosition; }
+	void SetPosition(XMVECTOR vPosition) { XMStoreFloat3(&m_vPosition, vPosition); }
+	XMVECTOR GetvPosition() const { return(XMLoadFloat3(&m_vPosition)); }
+	XMFLOAT3 GetPosition() const { return m_vPosition; }
+
+	XMFLOAT3 GetRight() const { return m_vRight; }
+	XMFLOAT3 GetUp() const { return m_vUp; }
+	XMFLOAT3 GetLook() const { return m_vLook; }
+
+	XMVECTOR GetvRight() const { return(XMLoadFloat3(&m_vRight)); }
+	XMVECTOR GetvUp() const { return(XMLoadFloat3(&m_vUp)); }
+	XMVECTOR GetvLook() const { return(XMLoadFloat3(&m_vLook)); }
 	float GetNearPlane() const { return m_fNearPlane; }
 	float GetFarPlane() const { return m_fFarPlane; }
 
@@ -94,10 +96,10 @@ public:
 
 	virtual void Move(const XMVECTOR& d3dxvShift)
 	{ 
-		m_PrevPosition = m_d3dxvPosition;
-		XMVECTOR v = XMLoadFloat3(&m_d3dxvPosition);
+		m_PrevPosition = m_vPosition;
+		XMVECTOR v = XMLoadFloat3(&m_vPosition);
 		v += d3dxvShift;
-		XMStoreFloat3(&m_d3dxvPosition, v);
+		XMStoreFloat3(&m_vPosition, v);
 	}
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) { }
 	virtual void Update(float fDeltaTime);

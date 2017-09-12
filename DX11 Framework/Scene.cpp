@@ -124,6 +124,9 @@ void CScene::InitializePhysX()
 	m_pPxScene = m_pPxPhysicsSDK->createScene(sceneDesc);
 	m_pPxControllerManager = PxCreateControllerManager(*m_pPxScene);
 
+	//PxMaterial : 표면 특성 집합을 나타내는 재질 클래스
+	m_pPxMaterial = m_pPxPhysicsSDK->createMaterial(0.5f, 0.5f, 0.2f); //1.정지 마찰계수 운동마찰계수, 반발계수
+
 
 #if defined(DEBUG) || defined(_DEBUG)
 	// Physx Visual Debugger
@@ -157,7 +160,6 @@ void CScene::CreatePlayer()
 	m_pPlayerCharacter->CreateObjectData(m_pd3dDevice);
 	m_pPlayerCharacter->CreateAxisObject(m_pd3dDevice);
 
-	//m_pPlayer = new CTerrainPlayer(m_pPlayerCharacter);
 	m_pPlayer = new CTerrainPlayer(m_pPlayerCharacter);
 	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson);
 //	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eFirstPerson);

@@ -17,49 +17,49 @@ void CSpaceShipCamera::Rotate(float x, float y, float z)
 	if (m_pPlayer && (x != 0.0f))
 	{
 		mtxRotate = XMMatrixRotationAxis(m_pPlayer->GetvRight(), XMConvertToRadians(x));
-		XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
-		XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
-		XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
+		XMStoreFloat3(&m_vRight, XMVector3TransformNormal(XMLoadFloat3(&m_vRight), mtxRotate));
+		XMStoreFloat3(&m_vUp, XMVector3TransformNormal(XMLoadFloat3(&m_vUp), mtxRotate));
+		XMStoreFloat3(&m_vLook, XMVector3TransformNormal(XMLoadFloat3(&m_vLook), mtxRotate));
 
 		XMStoreFloat3(&xmPosition, m_pPlayer->GetvPosition());
-		m_d3dxvPosition.x -= xmPosition.x;
-		m_d3dxvPosition.y -= xmPosition.y;
-		m_d3dxvPosition.z -= xmPosition.z;
-		XMStoreFloat3(&m_d3dxvPosition, XMVector3TransformCoord(XMLoadFloat3(&m_d3dxvPosition), mtxRotate));
-		m_d3dxvPosition.x += xmPosition.x;
-		m_d3dxvPosition.y += xmPosition.y;
-		m_d3dxvPosition.z += xmPosition.z;
+		m_vPosition.x -= xmPosition.x;
+		m_vPosition.y -= xmPosition.y;
+		m_vPosition.z -= xmPosition.z;
+		XMStoreFloat3(&m_vPosition, XMVector3TransformCoord(XMLoadFloat3(&m_vPosition), mtxRotate));
+		m_vPosition.x += xmPosition.x;
+		m_vPosition.y += xmPosition.y;
+		m_vPosition.z += xmPosition.z;
 	}
 	if (m_pPlayer && (y != 0.0f))
 	{
 		mtxRotate = XMMatrixRotationAxis(m_pPlayer->GetvUp(), XMConvertToRadians(y));
-		XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
-		XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
-		XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
+		XMStoreFloat3(&m_vRight, XMVector3TransformNormal(XMLoadFloat3(&m_vRight), mtxRotate));
+		XMStoreFloat3(&m_vUp, XMVector3TransformNormal(XMLoadFloat3(&m_vUp), mtxRotate));
+		XMStoreFloat3(&m_vLook, XMVector3TransformNormal(XMLoadFloat3(&m_vLook), mtxRotate));
 
 		XMStoreFloat3(&xmPosition, m_pPlayer->GetvPosition());
-		m_d3dxvPosition.x -= xmPosition.x;
-		m_d3dxvPosition.y -= xmPosition.y;
-		m_d3dxvPosition.z -= xmPosition.z;
-		XMStoreFloat3(&m_d3dxvPosition, XMVector3TransformCoord(XMLoadFloat3(&m_d3dxvPosition), mtxRotate));
-		m_d3dxvPosition.x += xmPosition.x;
-		m_d3dxvPosition.y += xmPosition.y;
-		m_d3dxvPosition.z += xmPosition.z;
+		m_vPosition.x -= xmPosition.x;
+		m_vPosition.y -= xmPosition.y;
+		m_vPosition.z -= xmPosition.z;
+		XMStoreFloat3(&m_vPosition, XMVector3TransformCoord(XMLoadFloat3(&m_vPosition), mtxRotate));
+		m_vPosition.x += xmPosition.x;
+		m_vPosition.y += xmPosition.y;
+		m_vPosition.z += xmPosition.z;
 	}
 	if (m_pPlayer && (z != 0.0f))
 	{
 		mtxRotate = XMMatrixRotationAxis(m_pPlayer->GetvLook(), XMConvertToRadians(z));
-		XMStoreFloat3(&m_d3dxvRight, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvRight), mtxRotate));
-		XMStoreFloat3(&m_d3dxvUp, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvUp), mtxRotate));
-		XMStoreFloat3(&m_d3dxvLook, XMVector3TransformNormal(XMLoadFloat3(&m_d3dxvLook), mtxRotate));
+		XMStoreFloat3(&m_vRight, XMVector3TransformNormal(XMLoadFloat3(&m_vRight), mtxRotate));
+		XMStoreFloat3(&m_vUp, XMVector3TransformNormal(XMLoadFloat3(&m_vUp), mtxRotate));
+		XMStoreFloat3(&m_vLook, XMVector3TransformNormal(XMLoadFloat3(&m_vLook), mtxRotate));
 
 		XMStoreFloat3(&xmPosition, m_pPlayer->GetvPosition());
-		m_d3dxvPosition.x -= xmPosition.x;
-		m_d3dxvPosition.y -= xmPosition.y;
-		m_d3dxvPosition.z -= xmPosition.z;
-		XMStoreFloat3(&m_d3dxvPosition, XMVector3TransformCoord(XMLoadFloat3(&m_d3dxvPosition), mtxRotate));
-		m_d3dxvPosition.x += xmPosition.x;
-		m_d3dxvPosition.y += xmPosition.y;
-		m_d3dxvPosition.z += xmPosition.z;
+		m_vPosition.x -= xmPosition.x;
+		m_vPosition.y -= xmPosition.y;
+		m_vPosition.z -= xmPosition.z;
+		XMStoreFloat3(&m_vPosition, XMVector3TransformCoord(XMLoadFloat3(&m_vPosition), mtxRotate));
+		m_vPosition.x += xmPosition.x;
+		m_vPosition.y += xmPosition.y;
+		m_vPosition.z += xmPosition.z;
 	}
 }

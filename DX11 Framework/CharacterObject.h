@@ -24,7 +24,6 @@ protected:
 	CStateMachine<CCharacterObject>*   m_pStateUpper = nullptr;
 	CStateMachine<CCharacterObject>*   m_pStateLower = nullptr;
 
-//	CPlayer*            m_pPlayer = nullptr;
 	CWeapon*            m_pWeapon = nullptr;
 	XMFLOAT3            m_f3FiringDirection = XMFLOAT3(0, 0, 1);
 	float               m_fPitch = 0.0f;
@@ -70,7 +69,6 @@ protected:
 
 public:
 	virtual void CreateObjectData(ID3D11Device *pd3dDevice) override;
-//	virtual void OnCollisionCheck();
 
 	virtual void Update(float fDeltaTime) override;
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
@@ -99,16 +97,12 @@ public:
 		else
 			return m_pStateLower;
 	}
-	void SetVelocity(XMFLOAT3 velocity) {
-		m_f3Velocity = velocity;
-		m_f3RelativeVelocity = velocity;
-	}
+	void SetVelocity(XMFLOAT3 velocity) { m_f3Velocity = velocity; }
 	XMFLOAT3 GetVelocity()const { return m_f3Velocity; }
 	void SetRelativevVelocity(XMVECTOR velocity) { XMStoreFloat3(&m_f3RelativeVelocity, velocity); }
 	void SetRelativeVelocity(XMFLOAT3 velocity) { m_f3RelativeVelocity = velocity; }
-	XMFLOAT3 GetRelativeVelocity()const { return m_f3RelativeVelocity; }
-	XMVECTOR GetRelativevVelocity()const { return XMLoadFloat3(&m_f3RelativeVelocity); }
-
+	XMFLOAT3 GetRelativeVelocity() const { return m_f3RelativeVelocity; }
+	
 	void SetYaw(float yaw) { m_fYaw = yaw; }
 	float GetYaw() const { return m_fYaw; }
 	void SetPitch(float pitch) { m_fPitch = pitch; }
@@ -126,12 +120,7 @@ public:
 	void SetPartsWorldMtx();
 
 	// ----- State Function ----- //
-	bool IsMoving() const {
-		if (m_f3Velocity.x != 0 || m_f3Velocity.y != 0 || m_f3Velocity.z != 0)
-			return (m_f3RelativeVelocity.x != 0 || m_f3RelativeVelocity.y != 0 || m_f3RelativeVelocity.z != 0);
-		else
-			return (m_f3RelativeVelocity.x != 0 || m_f3RelativeVelocity.y != 0 || m_f3RelativeVelocity.z != 0);
-	}
+	bool IsMoving() const {	return (m_f3RelativeVelocity.x != 0 || m_f3RelativeVelocity.y != 0 || m_f3RelativeVelocity.z != 0);	}
 	void SetIsRun(bool set) { m_bIsRun = set; }
 	bool GetIsRun() const { return  m_bIsRun; }
 	void SetIsTempRun(bool set) { m_bTempIsRun = set; }

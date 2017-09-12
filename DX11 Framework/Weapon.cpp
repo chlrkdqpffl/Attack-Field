@@ -24,7 +24,7 @@ void CWeapon::Firing(XMVECTOR direction)
 		SPRITE_MGR->ActivationSprite(m_pMuzzleSpirte);
 		m_nhasBulletCount--;
 
-		XMVECTOR firePosOffset = GetvPosition() + (-1 * GetvRight() * (GetBoundingBox().Extents.z - 0.6f)) + (-1 * GetvLook() * 0.225) + (GetvUp() * 0.1f);
+		XMVECTOR firePosOffset = GetvPosition() + (GetvRight() * -0.13f) + (GetvUp() * 0.05f) + (GetvLook() * -0.225f);
 #ifdef USE_SERVER
 		if (SCENE_MGR->g_pPlayerCharacter->GetIsFire())	{
 			cs_weapon* packet = reinterpret_cast<cs_weapon *>(SERVER_MGR->GetSendbuffer());
@@ -111,7 +111,7 @@ void CWeapon::Update(float fDeltaTime)
 	XMVECTOR muzzlePosition;
 	if (m_pOwner->GetCharacterID() == 0)
 		//muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
-		muzzlePosition = GetvPosition() + (GetvRight() * -1.15f) + (GetvUp() * 0.035f);
+		muzzlePosition = GetvPosition() + (GetvRight() * -1.5f) + (GetvUp() * 0.035f) + (GetvLook() * 0.1f);
 	else
 		muzzlePosition = GetvPosition() + (GetvRight() * -1.0f) + (GetvUp() * 0.03f) + (GetvLook() * 0.02f);
 

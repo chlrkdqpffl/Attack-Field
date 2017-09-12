@@ -9,7 +9,7 @@
 
 #define USE_CONSOLE					// Open Console Windows
 #define USE_AUTOIP					// Use Config File
-#define USE_SOUND
+//#define USE_SOUND
 
 #define USE_DEFERRD_RENDER
 

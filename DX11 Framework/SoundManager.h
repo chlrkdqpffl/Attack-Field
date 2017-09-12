@@ -87,6 +87,7 @@ public:
 	void UpdateManager(float fTimeDelta) {};
 	virtual void ReleseManager() {};
 
+	void ClearContainer() {}
 	void LoadAllSound() {}
 	void LoadBGMSound() {}
 	void LoadEffectSound() {}

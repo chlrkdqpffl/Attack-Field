@@ -7,7 +7,8 @@ public:
 	CPhysXObject();
 	virtual ~CPhysXObject();
 
-	virtual void CreatePhysXDaga(string name, PxPhysics* pPxPhysics, PxScene* pPxScene, PxMaterial *pPxMaterial, PxCooking* pCooking, XMFLOAT3 vScale = XMFLOAT3(1.0f, 1.0f, 1.0f));
+	virtual void CreatePhysX_TriangleMesh(string name, PxPhysics* pPxPhysics, PxScene* pPxScene, PxMaterial *pPxMaterial, PxCooking* pCooking, XMFLOAT3 vScale = XMFLOAT3(1.0f, 1.0f, 1.0f));
+	virtual void CreatePhysX_CubeMesh(string name, PxPhysics* pPxPhysics, PxScene* pPxScene, PxMaterial *pPxMaterial, PxCooking* pCooking, XMFLOAT3 vScale = XMFLOAT3(1.0f, 1.0f, 1.0f));
 
 	virtual void SetPosition(float x, float y, float z, bool isLocal = false) override;
 	virtual void SetPosition(XMVECTOR d3dxvPosition, bool isLocal = false) override;

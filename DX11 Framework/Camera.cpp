@@ -9,10 +9,10 @@ CCamera::CCamera(CCamera *pCamera)
 {
 	if (pCamera)
 	{
-		m_d3dxvPosition = pCamera->GetPosition();
-		m_d3dxvRight = pCamera->GetRight();
-		m_d3dxvUp = pCamera->GetUp();
-		m_d3dxvLook = pCamera->GetLook();
+		m_vPosition = pCamera->GetPosition();
+		m_vRight = pCamera->GetRight();
+		m_vUp = pCamera->GetUp();
+		m_vLook = pCamera->GetLook();
 		XMStoreFloat4x4(&m_d3dxmtxView, pCamera->GetViewMatrix());
 		XMStoreFloat4x4(&m_d3dxmtxProjection, pCamera->GetProjectionMatrix());
 		m_d3dViewport = pCamera->GetViewport();
@@ -22,10 +22,10 @@ CCamera::CCamera(CCamera *pCamera)
 	}
 	else
 	{
-		XMStoreFloat3(&m_d3dxvPosition, XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-		XMStoreFloat3(&m_d3dxvRight, XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f));
-		XMStoreFloat3(&m_d3dxvUp, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-		XMStoreFloat3(&m_d3dxvLook, XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f));
+		XMStoreFloat3(&m_vPosition, XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+		XMStoreFloat3(&m_vRight, XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f));
+		XMStoreFloat3(&m_vUp, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+		XMStoreFloat3(&m_vLook, XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f));
 		m_fTimeLag = 0.0f;
 		XMStoreFloat3(&m_vOffset, XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 		m_pPlayer = NULL;
@@ -59,19 +59,19 @@ void CCamera::SetLookAt(XMVECTOR& d3dxvPosition, XMVECTOR& d3dxvLookAt, XMVECTOR
 	XMFLOAT4X4 mtxLookAt;
 	XMStoreFloat4x4(&mtxLookAt, XMMatrixLookToLH(d3dxvPosition, d3dxvLookAt, d3dxvUp));
 
-	XMStoreFloat3(&m_d3dxvRight, XMVectorSet(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31, 0.0f));
-	XMStoreFloat3(&m_d3dxvUp, XMVectorSet(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32, 0.0f));
-	XMStoreFloat3(&m_d3dxvLook, XMVectorSet(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33, 0.0f));
+	XMStoreFloat3(&m_vRight, XMVectorSet(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31, 0.0f));
+	XMStoreFloat3(&m_vUp, XMVectorSet(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32, 0.0f));
+	XMStoreFloat3(&m_vLook, XMVectorSet(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33, 0.0f));
 }
 
 void CCamera::SetLookAt(XMVECTOR& d3dxvLookAt)
 {
 	XMFLOAT4X4 mtxLookAt;
-	XMStoreFloat4x4(&mtxLookAt, XMMatrixLookAtLH(XMLoadFloat3(&m_d3dxvPosition), d3dxvLookAt, m_pPlayer->GetvUp()));
+	XMStoreFloat4x4(&mtxLookAt, XMMatrixLookAtLH(XMLoadFloat3(&m_vPosition), d3dxvLookAt, m_pPlayer->GetvUp()));
 
-	XMStoreFloat3(&m_d3dxvRight, XMVectorSet(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31, 0.0f));
-	XMStoreFloat3(&m_d3dxvUp, XMVectorSet(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32, 0.0f));
-	XMStoreFloat3(&m_d3dxvLook, XMVectorSet(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33, 0.0f));
+	XMStoreFloat3(&m_vRight, XMVectorSet(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31, 0.0f));
+	XMStoreFloat3(&m_vUp, XMVectorSet(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32, 0.0f));
+	XMStoreFloat3(&m_vLook, XMVectorSet(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33, 0.0f));
 }
 
 void CCamera::GenerateProjectionMatrix(float fNearPlaneDistance, float fFarPlaneDistance, float fAspectRatio, float fFOVAngle)
@@ -85,22 +85,22 @@ void CCamera::GenerateProjectionMatrix(float fNearPlaneDistance, float fFarPlane
 
 void CCamera::GenerateViewMatrix()
 {
-	XMStoreFloat4x4(&m_d3dxmtxView, XMMatrixLookAtLH(XMLoadFloat3(&m_d3dxvPosition), m_pPlayer->GetvPosition(), XMLoadFloat3(&m_d3dxvUp)));
+	XMStoreFloat4x4(&m_d3dxmtxView, XMMatrixLookAtLH(XMLoadFloat3(&m_vPosition), m_pPlayer->GetvPosition(), XMLoadFloat3(&m_vUp)));
 }
 
 void CCamera::RegenerateViewMatrix()
 {
-	XMStoreFloat3(&m_d3dxvLook, XMVector3Normalize(XMLoadFloat3(&m_d3dxvLook)));
-	XMStoreFloat3(&m_d3dxvRight, XMVector3Cross(XMLoadFloat3(&m_d3dxvUp), XMLoadFloat3(&m_d3dxvLook)));
-	XMStoreFloat3(&m_d3dxvRight, XMVector3Normalize(XMLoadFloat3(&m_d3dxvRight)));
-	XMStoreFloat3(&m_d3dxvUp, XMVector3Cross(XMLoadFloat3(&m_d3dxvLook), XMLoadFloat3(&m_d3dxvRight)));
-	XMStoreFloat3(&m_d3dxvUp, XMVector3Normalize(XMLoadFloat3(&m_d3dxvUp)));
-	m_d3dxmtxView._11 = m_d3dxvRight.x; m_d3dxmtxView._12 = m_d3dxvUp.x; m_d3dxmtxView._13 = m_d3dxvLook.x;
-	m_d3dxmtxView._21 = m_d3dxvRight.y; m_d3dxmtxView._22 = m_d3dxvUp.y; m_d3dxmtxView._23 = m_d3dxvLook.y;
-	m_d3dxmtxView._31 = m_d3dxvRight.z; m_d3dxmtxView._32 = m_d3dxvUp.z; m_d3dxmtxView._33 = m_d3dxvLook.z;
-	m_d3dxmtxView._41 = -XMVectorGetX(XMVector3Dot(XMLoadFloat3(&m_d3dxvPosition), XMLoadFloat3(&m_d3dxvRight)));
-	m_d3dxmtxView._42 = -XMVectorGetX(XMVector3Dot(XMLoadFloat3(&m_d3dxvPosition), XMLoadFloat3(&m_d3dxvUp)));
-	m_d3dxmtxView._43 = -XMVectorGetX(XMVector3Dot(XMLoadFloat3(&m_d3dxvPosition), XMLoadFloat3(&m_d3dxvLook)));
+	XMStoreFloat3(&m_vLook, XMVector3Normalize(XMLoadFloat3(&m_vLook)));
+	XMStoreFloat3(&m_vRight, XMVector3Cross(XMLoadFloat3(&m_vUp), XMLoadFloat3(&m_vLook)));
+	XMStoreFloat3(&m_vRight, XMVector3Normalize(XMLoadFloat3(&m_vRight)));
+	XMStoreFloat3(&m_vUp, XMVector3Cross(XMLoadFloat3(&m_vLook), XMLoadFloat3(&m_vRight)));
+	XMStoreFloat3(&m_vUp, XMVector3Normalize(XMLoadFloat3(&m_vUp)));
+	m_d3dxmtxView._11 = m_vRight.x; m_d3dxmtxView._12 = m_vUp.x; m_d3dxmtxView._13 = m_vLook.x;
+	m_d3dxmtxView._21 = m_vRight.y; m_d3dxmtxView._22 = m_vUp.y; m_d3dxmtxView._23 = m_vLook.y;
+	m_d3dxmtxView._31 = m_vRight.z; m_d3dxmtxView._32 = m_vUp.z; m_d3dxmtxView._33 = m_vLook.z;
+	m_d3dxmtxView._41 = -XMVectorGetX(XMVector3Dot(XMLoadFloat3(&m_vPosition), XMLoadFloat3(&m_vRight)));
+	m_d3dxmtxView._42 = -XMVectorGetX(XMVector3Dot(XMLoadFloat3(&m_vPosition), XMLoadFloat3(&m_vUp)));
+	m_d3dxmtxView._43 = -XMVectorGetX(XMVector3Dot(XMLoadFloat3(&m_vPosition), XMLoadFloat3(&m_vLook)));
 
 	CalculateFrustumPlanes();
 }
@@ -163,8 +163,8 @@ void CCamera::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	UpdateConstantBuffer_ViewProjection(pd3dDeviceContext, &XMLoadFloat4x4(&m_d3dxmtxView), &XMLoadFloat4x4(&m_d3dxmtxProjection));
 
-	if (!XMVector3Equal(XMLoadFloat3(&m_PrevPosition), XMLoadFloat3(&m_d3dxvPosition)))
-		UpdateConstantBuffer_CameraPos(pd3dDeviceContext, &XMLoadFloat3(&m_d3dxvPosition));
+	if (!XMVector3Equal(XMLoadFloat3(&m_PrevPosition), XMLoadFloat3(&m_vPosition)))
+		UpdateConstantBuffer_CameraPos(pd3dDeviceContext, &XMLoadFloat3(&m_vPosition));
 }
 
 void CCamera::CalculateFrustumPlanes()

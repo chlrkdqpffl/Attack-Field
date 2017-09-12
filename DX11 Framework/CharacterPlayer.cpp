@@ -38,9 +38,7 @@ void CCharacterPlayer::RotateFiringPos()
 
 void CCharacterPlayer::Update(float fDeltaTime)
 {
-	m_pPlayer->UpdateKeyInput(fDeltaTime);
 	m_pPlayer->Update(fDeltaTime);
-
 	CCharacterObject::Update(fDeltaTime);
 }
 
