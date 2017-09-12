@@ -68,3 +68,19 @@ void CFirstPersonCamera::Rotate(float x, float y, float z)
 		m_d3dxvPosition.z += xmPosition.z;
 	}
 }
+
+void CFirstPersonCamera::Update(float fDeltaTime)
+{
+	m_d3dxvUp = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	m_d3dxvLook = m_pPlayer->GetLook();
+
+	XMVECTOR pos = m_pPlayer->GetvPosition();
+
+	XMStoreFloat3(&m_d3dxvPosition, pos +
+		m_pPlayer->GetvRight() * m_vOffset.x +
+		m_pPlayer->GetvUp() * m_vOffset.y +
+		m_pPlayer->GetvLook() * m_vOffset.z);
+
+//	cout << m_pPlayer->GetPitch() << endl;
+	Rotate(m_pPlayer->GetPitch(), 0, 0);
+}

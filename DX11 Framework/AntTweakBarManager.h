@@ -37,6 +37,9 @@ public:
 	OptionHDR g_OptionHDR;
 	static const float g_cfWhite;
 
+	// Reflection
+	bool g_bIsReflection = false;
+
 public:
 	CAntTweakBarManager();
 	virtual ~CAntTweakBarManager();

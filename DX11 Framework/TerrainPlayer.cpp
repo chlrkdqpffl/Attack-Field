@@ -23,8 +23,9 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFirstPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
 		m_pCamera->SetPosition(GetPosition());
-		m_pCamera->SetOffset(m_d3dxvLook, 0.5f);	// 캐릭터 가슴보다 조금 앞
-		m_pCamera->SetOffset(m_d3dxvUp, 0.95f);
+//		m_pCamera->SetOffset(GetLook(), 0.5f);	// 캐릭터 가슴보다 조금 앞
+//		m_pCamera->SetOffset(GetUp(), 0.95f);
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.95f, 0.5f));
 		m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, 45.0f);
 		break;
 
@@ -67,6 +68,7 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 	}
 }
 
+/*
 void CTerrainPlayer::OnApplyGravity(float fDeltaTime)
 {
 	m_fGravityTimeElapsed += fDeltaTime;
@@ -89,8 +91,8 @@ void CTerrainPlayer::OnApplyGravity(float fDeltaTime)
 
 		m_bIsFloorCollision = false;
 	}
-
 }
+*/
 
 void CTerrainPlayer::OnCameraUpdated(float fDeltaTime)
 {

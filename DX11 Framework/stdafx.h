@@ -51,6 +51,11 @@
 #include <process.h>
 #include <utility>
 
+
+// PhysX
+#include <PxPhysicsAPI.h>
+using namespace physx;
+
 // AntTweakBar
 #include <AntTweakBar.h>
 

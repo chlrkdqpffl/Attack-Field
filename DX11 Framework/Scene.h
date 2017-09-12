@@ -25,8 +25,11 @@
 #include "BillboardObject.h"
 #include "SphereObject.h"
 #include "SpriteImageObject.h"
+#include "PhysXObject.h"
 
 // ----- Character -----
+#include "CharacterPlayer.h"
+#include "TerroristPlayer.h"
 #include "TerrainPlayer.h"
 #include "PoliceCharacterObject.h"
 #include "TerroristCharacterObject.h"
@@ -69,6 +72,9 @@ public:
 	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera);
 	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext) {};
 
+	void InitializePhysX();
+	void ReleasePhysX();
+
 public:
 	CGameObject *PickObjectPointedByCursor(int xClient, int yClient);
 	XMFLOAT2 ObjectPositionConvertToScreen(XMFLOAT3 d3dxvObjPos);
@@ -104,7 +110,8 @@ protected:
 	float								m_fGametime		= 0.0f;
 	float								m_fDeltaTime	= 0.0f;
 	CPlayer								*m_pPlayer		= nullptr;
-	CCharacterObject					*m_pPlayerCharacter = nullptr;
+//	CCharacterObject					*m_pPlayerCharacter = nullptr;
+	CCharacterPlayer					*m_pPlayerCharacter = nullptr;
 
 	// UI
 	CUIManager							*m_pUIManager = nullptr;
@@ -115,4 +122,15 @@ protected:
 	
 	CSphereObject*						m_pSphereObject = nullptr;
 	float								m_fFrameSpeed = 1.0f;
+
+	// PhysX
+	PxPhysics*							m_pPxPhysicsSDK;
+	PxScene*							m_pPxScene;
+	PxControllerManager*				m_pPxControllerManager;
+	PxFoundation*						m_pPxFoundation;
+	PxDefaultErrorCallback				m_PxDefaultErrorCallback;
+	PxDefaultAllocator					m_PxDefaultAllocatorCallback;
+	PxVisualDebuggerConnection*			m_pPxPVDConnection;
+	PxCooking*							m_pPxCooking;
+	PxMaterial*							m_pPxMaterial;
 };

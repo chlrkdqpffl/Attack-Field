@@ -60,6 +60,8 @@ void CAntTweakBarManager::InitializeManager()
 	CreateHDROption();
 
 	// Test Variable
+	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Reflection", TW_TYPE_BOOLCPP, &g_bIsReflection, "");
+
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Test Var X", TW_TYPE_FLOAT, &g_xmf4TestVariable.x, "step=0.2");
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Test Var Y", TW_TYPE_FLOAT, &g_xmf4TestVariable.y, "step=0.2");
 	TwAddVarRW(TWBAR_MGR->g_tweakBar, "Test Var Z", TW_TYPE_FLOAT, &g_xmf4TestVariable.z, "step=0.2");

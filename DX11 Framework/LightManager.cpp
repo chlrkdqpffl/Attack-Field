@@ -63,6 +63,7 @@ void CLightManager::InitializeManager()
 	strFileName = L"Shader HLSL File/DirLight.hlsli";
 	CShader::CreateVertexShaderFromFile(pd3dDevice, strFileName, "DirLightVS", "vs_5_0", &m_pDirLightVertexShader);
 	CShader::CreatePixelShaderFromFile(pd3dDevice, strFileName, "DirLightPS", "ps_5_0", &m_pDirLightPixelShader);
+
 	// Point Light Shader
 	strFileName = L"Shader HLSL File/PointLight.hlsli";
 	CShader::CreateVertexShaderFromFile(pd3dDevice, strFileName, "PointLightVS", "vs_5_0", &m_pPointLightVertexShader);

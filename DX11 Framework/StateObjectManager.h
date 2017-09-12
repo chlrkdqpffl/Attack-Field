@@ -19,8 +19,7 @@ public:
 
 	static ID3D11BlendState*		g_pAlphaToCoverageBS;
 	static ID3D11BlendState*		g_pTransparentBS;
-
-	// Particle BS
+	static ID3D11BlendState*		g_pAddativeBS;
 	static ID3D11BlendState*		g_pFireBS;
 	static ID3D11BlendState*		g_pBloodBS;
 
@@ -30,6 +29,8 @@ public:
 	static ID3D11SamplerState*		g_pLinearWarpSS;
 
 	static ID3D11DepthStencilState* g_pNoDepthWritesDSS;
+	static ID3D11DepthStencilState* g_pNoDepthEqualWritesDSS;
 	static ID3D11DepthStencilState* g_pDisableDepthDSS;
-
+	static ID3D11DepthStencilState* g_pDefaultDSS;
+	static ID3D11DepthStencilState* g_pGBufferDSS;
 };

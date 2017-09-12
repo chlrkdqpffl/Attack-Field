@@ -27,8 +27,6 @@ CGBuffer::~CGBuffer()
 	ReleaseCOM(m_NormalSRV);
 	ReleaseCOM(m_SpecPowerSRV);
 
-	ReleaseCOM(m_DepthStencilState);
-
 	SafeDelete(m_pDepthStencilMesh);
 	SafeDelete(m_pDiffuseMesh);
 	SafeDelete(m_pNormalMesh);
@@ -145,20 +143,6 @@ void CGBuffer::Initialize(ID3D11Device* pDevice, UINT width, UINT height)
 	HR(pDevice->CreateShaderResourceView(m_SpecPowerRT, &d3dSRVDesc, &m_SpecPowerSRV));
 	DXUT_SetDebugName(m_SpecPowerSRV, "GBuffer - Spec Power SRV");
 
-	// ================================= Create Depth Stencil State ===================================== //
-	D3D11_DEPTH_STENCIL_DESC descDepth;
-	descDepth.DepthEnable = TRUE;
-	descDepth.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	descDepth.DepthFunc = D3D11_COMPARISON_LESS;
-	descDepth.StencilEnable = TRUE;
-	descDepth.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
-	descDepth.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
-	const D3D11_DEPTH_STENCILOP_DESC stencilMarkOp = { D3D11_STENCIL_OP_REPLACE, D3D11_STENCIL_OP_REPLACE, D3D11_STENCIL_OP_REPLACE, D3D11_COMPARISON_ALWAYS };
-	descDepth.FrontFace = stencilMarkOp;
-	descDepth.BackFace = stencilMarkOp;
-	HR (pDevice->CreateDepthStencilState(&descDepth, &m_DepthStencilState));
-	DXUT_SetDebugName(m_DepthStencilState, "GBuffer - Depth Stencil Mark DS");
-
 	// ================================= Create Constant Buffers ===================================== //
 	D3D11_BUFFER_DESC cbDesc;
 	ZeroMemory(&cbDesc, sizeof(cbDesc));
@@ -203,7 +187,7 @@ void CGBuffer::OnPreRender(ID3D11DeviceContext* pd3dImmediateContext)
 
 	ID3D11RenderTargetView* rt[3] = { m_DiffuseSpecIntensityRTV, m_NormalRTV, m_SpecPowerRTV };
 	pd3dImmediateContext->OMSetRenderTargets(3, rt, m_DepthStencilDSV);
-	pd3dImmediateContext->OMSetDepthStencilState(m_DepthStencilState, 1);
+	pd3dImmediateContext->OMSetDepthStencilState(STATEOBJ_MGR->g_pGBufferDSS, 1);
 }
 
 void CGBuffer::OnPrepareForUnpack(ID3D11DeviceContext* pd3dImmediateContext)

@@ -19,6 +19,16 @@ CThirdPersonCamera::CThirdPersonCamera(CCamera *pCamera) : CCamera(pCamera)
 
 void CThirdPersonCamera::Update(float fDeltaTime)
 {
+	m_d3dxvLook = m_pPlayer->GetLook();
+
+	XMVECTOR pos = m_pPlayer->GetvPosition();
+
+	XMStoreFloat3(&m_d3dxvPosition, pos +
+		m_pPlayer->GetvRight() * m_vOffset.x +
+		m_pPlayer->GetvUp() * m_vOffset.y +
+		m_pPlayer->GetvLook() * m_vOffset.z);
+
+	/*
 	XMFLOAT4X4 mtxRotate;
 	XMStoreFloat4x4(&mtxRotate, XMMatrixIdentity());
 	XMFLOAT3 vRight = m_pPlayer->GetRight();
@@ -44,4 +54,5 @@ void CThirdPersonCamera::Update(float fDeltaTime)
 		XMStoreFloat3(&m_d3dxvPosition, XMLoadFloat3(&m_d3dxvPosition) += vDirection * fDistance);
 		SetLookAt(m_pPlayer->GetvPosition());
 	}
+	*/
 }

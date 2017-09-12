@@ -149,7 +149,7 @@ void CTexture::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbTextureOffset);
 
-	DXUT_SetDebugName(m_pd3dcbTextureMatrix, "TextureMatrix");
+	DXUT_SetDebugName(m_pd3dcbTextureOffset, "Texture Offset");
 }
 
 void CTexture::ReleaseShaderVariables()

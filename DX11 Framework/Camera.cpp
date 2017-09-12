@@ -16,7 +16,7 @@ CCamera::CCamera(CCamera *pCamera)
 		XMStoreFloat4x4(&m_d3dxmtxView, pCamera->GetViewMatrix());
 		XMStoreFloat4x4(&m_d3dxmtxProjection, pCamera->GetProjectionMatrix());
 		m_d3dViewport = pCamera->GetViewport();
-		m_d3dxvOffset = pCamera->GetOffset();
+		m_vOffset = pCamera->GetOffset();
 		m_fTimeLag = pCamera->GetTimeLag();
 		m_pPlayer = pCamera->GetPlayer();
 	}
@@ -27,7 +27,7 @@ CCamera::CCamera(CCamera *pCamera)
 		XMStoreFloat3(&m_d3dxvUp, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 		XMStoreFloat3(&m_d3dxvLook, XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f));
 		m_fTimeLag = 0.0f;
-		XMStoreFloat3(&m_d3dxvOffset, XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+		XMStoreFloat3(&m_vOffset, XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 		m_pPlayer = NULL;
 		XMStoreFloat4x4(&m_d3dxmtxView, XMMatrixIdentity());
 		XMStoreFloat4x4(&m_d3dxmtxProjection, XMMatrixIdentity());
@@ -283,4 +283,9 @@ bool CCamera::IsInFrustum(BoundingBox *boundingbox)
 bool CCamera::IsInFrustum(BoundingSphere *boundingSphere)
 {
 	return(IsInFrustum(XMLoadFloat3(&boundingSphere->Center), XMVectorSet(boundingSphere->Radius, boundingSphere->Radius, boundingSphere->Radius, 0.0f)));
+}
+
+void CCamera::Update(float fDeltaTime)
+{
+	cout << "F2만 지금 안넣었음 " << endl;
 }

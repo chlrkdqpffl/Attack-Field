@@ -52,8 +52,6 @@ private:
 	ID3D11ShaderResourceView* m_NormalSRV				= nullptr;
 	ID3D11ShaderResourceView* m_SpecPowerSRV			= nullptr;
 
-	ID3D11DepthStencilState *m_DepthStencilState		= nullptr;
-
 	CGBufferShader*	m_pDepthShader		= nullptr;
 	CGBufferShader*	m_pDiffuseShader	= nullptr;
 	CGBufferShader*	m_pNormalShader		= nullptr;

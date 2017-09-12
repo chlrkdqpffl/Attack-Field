@@ -15,18 +15,18 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 
-//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(100.0f, 55.0f, 50.0f);
-//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(-1.15f, 0.035f, 0.0f);
-//	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(0.2f, 0.2f, 0.0f, 0.0f);
+	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(0.0f, 0.95f, 0.5f);
+	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(0.0f, 2.0f, -10.0f);
+	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(0.2f, 0.45f, 0.5f, 1.0f);
 
-
-//	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(10.0f, 100.0f, 10.0f, 0.1f);
+	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
 }
 
 CMainScene::~CMainScene()
 {
-	delete(m_GBuffer);
-	delete(m_PostFX);
+	SafeDelete(m_GBuffer);
+	SafeDelete(m_PostFX);
+	SafeDelete(m_pSSReflection);
 
 	ReleaseCOM(m_pHDRTexture);
 	ReleaseCOM(m_HDRRTV);
@@ -108,7 +108,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 						m_pUIManager->GetUIObject(TextureTag::eAim)->SetActive(true);
 				break;
 			case VK_F4:	
-				m_pPlayer->SetPosition(XMVectorSet(60, 10, 30, 0));
+				m_pPlayer->SetPosition(XMFLOAT3(60.0f, 2.5f, 20.0f));
 				m_pPlayer->SetGravityTimeElpased(0.0f);
 				m_pPlayer->SetVelocity(XMFLOAT3(0, 0, 0));
 				break;
@@ -209,6 +209,7 @@ void CMainScene::OnChangedWindowsSize(HWND hWnd, UINT nMessageID, WPARAM wParam,
 
 	m_GBuffer->Initialize(m_pd3dDevice, LOWORD(lParam), HIWORD(lParam));
 	m_PostFX->Initialize(m_pd3dDevice, LOWORD(lParam), HIWORD(lParam));
+	m_pSSReflection->Initialize(m_pd3dDevice, LOWORD(lParam), HIWORD(lParam));
 }
 
 void CMainScene::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, CMaterial *pMaterial, int nIndex)
@@ -262,6 +263,10 @@ void CMainScene::Initialize()
 	cout << "==================================== Scene Main Loading =====================================" << endl;
 
 	SPRITE_MGR->InitializeManager();
+	InitializePhysX();
+	//PxMaterial : 표면 특성 집합을 나타내는 재질 클래스
+	m_pPxMaterial = m_pPxPhysicsSDK->createMaterial(0.5f, 0.5f, 0.2f); //1.정지 마찰계수 운동마찰계수, 반발계수
+
 	ShowCursor(false);
 
 	m_pWorldCenterAxis = new CAxisObjects();
@@ -275,6 +280,10 @@ void CMainScene::Initialize()
 
 	LIGHT_MGR->InitializeManager();
 	LIGHT_MGR->SetGBuffer(m_GBuffer);
+
+	m_pSSReflection = new CSSReflection();
+
+
 //	m_pSphereObject = new CSphereObject();
 //	m_pSphereObject->CreateObjectData(m_pd3dDevice);
 //	m_vecObjectsContainer.push_back(m_pSphereObject);
@@ -440,9 +449,9 @@ void CMainScene::Initialize()
 #else
 	CreateMapDataInstancingObject();
 	PARTICLE_MGR->CreateParticleSystems(m_pd3dDevice);
+	CreateLights();
 #endif
 
-	CreateLights();
 	CreateConstantBuffers();
 	CreateTweakBars();
 	CreateUIImage();
@@ -1208,6 +1217,12 @@ void CMainScene::CreateTestingObject()
 	pObject->CreateBoundingBox(m_pd3dDevice);
 
 	AddShaderObject(ShaderTag::eNormal, pObject);
+
+
+	//PhysX Plane바닥 생성
+	PxRigidStatic* groundPlane = PxCreatePlane(*m_pPxPhysicsSDK, PxPlane(0, 1, 0, 0), *m_pPxMaterial);
+	m_pPxScene->addActor(*groundPlane);
+
 #pragma endregion
 	
 #pragma region [Road]
@@ -1292,6 +1307,19 @@ void CMainScene::CreateTestingObject()
 	}
 #pragma endregion
 
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eBarricade);
+	pFbxMesh->Initialize(m_pd3dDevice);
+	
+	{
+		CPhysXObject* pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysXDaga("TestBox", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(XMFLOAT3(60, 2.5, 30));
+
+		m_vecBBoxRenderContainer.push_back(pPhysXObject);
+		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormal, pPhysXObject);
+	}
+	
 
 }
 
@@ -1433,6 +1461,9 @@ void CMainScene::ReleaseObjects()
 		SafeDelete(object);
 
 	m_vecCharacterContainer.clear();
+	m_vecReflectObjectContainer.clear();
+	
+	ReleasePhysX();
 
 	SPRITE_MGR->ReleseManager();
 	LIGHT_MGR->ReleseInstance();
@@ -1443,7 +1474,6 @@ void CMainScene::ReleaseObjects()
 	SOUND_MGR->StopSound();
 	TWBAR_MGR->g_OptionHDR.g_fWhite = TWBAR_MGR->g_cfWhite;
 	CCharacterObject::g_nCharacterCount = 0;
-
 
 	GLOBAL_MGR->g_vRenderOption = XMFLOAT4(0, 0, 0, 1.0f);
 
@@ -1610,8 +1640,8 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 		m_nGameTime = DEATHMATCH_TIME;
 		TWBAR_MGR->g_OptionHDR.g_fWhite = TWBAR_MGR->g_cfWhite;
 
-		XMVECTOR redTeamStartPosition = XMVectorSet(65, 2.4f, 12, 0.0f);
-		XMVECTOR blueTeamStartPosition = XMVectorSet(270, 2.4f, 230, 0.0f);
+		XMFLOAT3 redTeamStartPosition = XMFLOAT3(65, 2.4f, 12);
+		XMFLOAT3 blueTeamStartPosition = XMFLOAT3(270, 2.4f, 230);
 
 		if(m_pPlayerCharacter->GetTagTeam() == TeamType::eRedTeam)
 			m_pPlayer->SetPosition(redTeamStartPosition);
@@ -1928,8 +1958,15 @@ void CMainScene::Update(float fDeltaTime)
 {
 	float fCalcDeltatime = m_fFrameSpeed * fDeltaTime;
 
+	if (m_pPxScene)
+	{
+		m_pPxScene->simulate(1 / 60.f);
+		m_pPxScene->fetchResults(true);
+	}
+
 	COLLISION_MGR->InitCollisionInfo();	// 현재 플레이어만 적용되고있어서 주석처리함
 //	COLLISION_MGR->UpdateManager();
+
 
 	// ====== Update ===== //
 	GLOBAL_MGR->UpdateManager();
@@ -1974,10 +2011,15 @@ void CMainScene::Update(float fDeltaTime)
 	LIGHT_MGR->SetDirectional(m_f3DirectionalDirection, m_f3DirectionalColor);
 
 	CalcOccupyPosition();
+
+	m_pSSReflection->SetParameters(TWBAR_MGR->g_xmf3Quaternion.x, TWBAR_MGR->g_xmf3Quaternion.y, TWBAR_MGR->g_xmf3Quaternion.z, TWBAR_MGR->g_xmf3Quaternion.w);
 }
 
 void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
+	ID3D11DepthStencilState* pPrevDepthState; UINT nPrevStencil;
+	pd3dDeviceContext->OMGetDepthStencilState(&pPrevDepthState, &nPrevStencil);
+
 #ifdef USE_DEFERRD_RENDER
 	// =============== Deferred Rendering ================== //
 	if (GLOBAL_MGR->g_bEnablePostFX) {
@@ -2006,6 +2048,22 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	// ------ Final Scene Rendering ------ //
 	m_GBuffer->DeferredRender(pd3dDeviceContext);
 	LIGHT_MGR->DoLighting(pd3dDeviceContext, pCamera);
+
+	// Reflection
+	if (TWBAR_MGR->g_bIsReflection) {
+		m_pSSReflection->PreRenderReflection(pd3dDeviceContext, m_HDRSRV, m_GBuffer->GetDepthView(), m_GBuffer->GetNormalView(), m_GBuffer->GetDepthReadOnlyDSV());
+		RenderReflection(pd3dDeviceContext, pCamera);
+		m_pSSReflection->PostRenderReflection(pd3dDeviceContext);
+
+		// Restore the previous depth state
+		//pd3dDeviceContext->OMSetDepthStencilState(pPrevDepthState, nPrevStencil);
+		pd3dDeviceContext->OMSetDepthStencilState(STATEOBJ_MGR->g_pDefaultDSS, nPrevStencil);
+
+		// Add the reflections on top of the scene
+		pd3dDeviceContext->OMSetRenderTargets(1, GLOBAL_MGR->g_bEnablePostFX ? &m_HDRRTV : &SCENE_MGR->g_pd3dRenderTargetView, m_GBuffer->GetDepthReadOnlyDSV());
+
+		m_pSSReflection->DoReflectionBlend(pd3dDeviceContext);
+	}
 
 	// ----- UI ----- // 
 	PrepareRenderUI();
@@ -2064,6 +2122,12 @@ void CMainScene::RenderBoundingBox()
 	}
 
 	m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
+}
+
+void CMainScene::RenderReflection(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
+{
+	for (auto& object : m_vecReflectObjectContainer)
+		object->Render(pd3dDeviceContext, pCamera);
 }
 
 void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
