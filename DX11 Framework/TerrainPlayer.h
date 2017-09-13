@@ -11,6 +11,6 @@ public:
 
 	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag);
 
-	virtual void OnApplyGravity(float fDeltaTime) override;
+//	virtual void OnApplyGravity(float fDeltaTime) override;
 	virtual void OnCameraUpdated(float fDeltaTime) override;
 };

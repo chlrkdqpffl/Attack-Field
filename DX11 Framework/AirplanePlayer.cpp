@@ -18,24 +18,18 @@ void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamer
 	switch (nNewCameraTag)
 	{
 	case CameraTag::eFirstPerson:
-		SetFriction(200.0f);
-		m_fGravityAcceleration = 0.0f;
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFirstPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
 		m_pCamera->SetOffset(XMFLOAT3(0.0f, 20.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 50000.0f, ASPECT_RATIO, 60.0f);
 		break;
 	case CameraTag::eSpaceShip:
-		SetFriction(125.0f);
-		m_fGravityAcceleration = 0.0f;
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eSpaceShip, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
 		m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 50000.0f, ASPECT_RATIO, 60.0f);
 		break;
 	case CameraTag::eThirdPerson:
-		SetFriction(250.0f);
-		m_fGravityAcceleration = 0.0f;
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eThirdPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.25f);
 		m_pCamera->SetOffset(XMFLOAT3(0.0f, 25.0f, -35.0f));
@@ -46,6 +40,7 @@ void CAirplanePlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamer
 	}
 }
 
+/*
 void CAirplanePlayer::OnApplyGravity(float fDeltaTime)
 {
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)m_pPlayerUpdatedContext;
@@ -62,3 +57,4 @@ void CAirplanePlayer::OnApplyGravity(float fDeltaTime)
 		SetPosition(XMLoadFloat3(&d3dxvPlayerPosition));
 	}
 }
+*/

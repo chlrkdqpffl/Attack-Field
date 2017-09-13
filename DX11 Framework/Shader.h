@@ -110,6 +110,7 @@ public:
 
 	void SetMesh(CMesh *pMesh);
 	void SetMaterial(int textureCount, ...);
+	void SetMaterial(XMFLOAT2 offset, int textureCount, ...);
 	virtual void CreateShader(ID3D11Device *pd3dDevice);
 
 	virtual void BuildObjects(ID3D11Device *pd3dDevice);

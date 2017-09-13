@@ -87,21 +87,90 @@ void CScene::Initialize()
 	cout << "==================================== Scene Loading =====================================" << endl;
 }
 
+void CScene::InitializePhysX()
+{
+	m_pPxFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_PxDefaultAllocatorCallback, m_PxDefaultErrorCallback);
+	PxTolerancesScale PxScale = PxTolerancesScale();
+
+	m_pPxPhysicsSDK = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pPxFoundation, PxScale, false);
+
+	//Cooking Init
+	PxCookingParams params(PxScale);
+	params.meshWeldTolerance = 0.001f;
+	params.meshPreprocessParams = PxMeshPreprocessingFlags(PxMeshPreprocessingFlag::eWELD_VERTICES | PxMeshPreprocessingFlag::eREMOVE_UNREFERENCED_VERTICES | PxMeshPreprocessingFlag::eREMOVE_DUPLICATED_TRIANGLES);
+	m_pPxCooking = PxCreateCooking(PX_PHYSICS_VERSION, *m_pPxFoundation, params);
+
+
+	if (FAILED(m_pPxPhysicsSDK == NULL))
+	{
+		return;
+		//MSG_BOX(L"PhysicsSDK Initialize Failed");
+	}
+
+	PxInitExtensions(*m_pPxPhysicsSDK);
+	PxSceneDesc sceneDesc(m_pPxPhysicsSDK->getTolerancesScale());
+	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+
+
+	if (!sceneDesc.cpuDispatcher)
+	{
+		PxDefaultCpuDispatcher* pCpuDispatcher = PxDefaultCpuDispatcherCreate(1);
+		sceneDesc.cpuDispatcher = pCpuDispatcher;
+	}
+
+	if (!sceneDesc.filterShader)
+		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+
+	m_pPxScene = m_pPxPhysicsSDK->createScene(sceneDesc);
+	m_pPxControllerManager = PxCreateControllerManager(*m_pPxScene);
+
+	//PxMaterial : 표면 특성 집합을 나타내는 재질 클래스
+	m_pPxMaterial = m_pPxPhysicsSDK->createMaterial(0.5f, 0.5f, 0.2f); //1.정지 마찰계수 운동마찰계수, 반발계수
+
+
+#if defined(DEBUG) || defined(_DEBUG)
+	// Physx Visual Debugger
+	if (NULL == m_pPxPhysicsSDK->getPvdConnectionManager())
+	{
+		cout << "PVD Connect Failed" << endl;
+		return;
+	}
+	
+	PxVisualDebuggerConnectionFlags connectionFlags = PxVisualDebuggerExt::getAllConnectionFlags();
+	m_pPxPhysicsSDK->getVisualDebugger()->setVisualDebuggerFlag(PxVisualDebuggerFlag::eTRANSMIT_SCENEQUERIES, true);
+	m_pPxPVDConnection = PxVisualDebuggerExt::createConnection(m_pPxPhysicsSDK->getPvdConnectionManager(), "127.0.0.1", 5425, 1000, connectionFlags);
+#endif
+}
+
+void CScene::ReleasePhysX()
+{
+#if defined(DEBUG) || defined(_DEBUG)
+	if (m_pPxPVDConnection) m_pPxPVDConnection->release();
+#endif
+	if (m_pPxControllerManager) m_pPxControllerManager->release();
+	if (m_pPxScene) m_pPxScene->release();
+	if (m_pPxFoundation) m_pPxFoundation->release();
+	if (m_pPxPhysicsSDK) m_pPxPhysicsSDK->release();
+	if (m_pPxCooking) m_pPxCooking->release();
+}
+
 void CScene::CreatePlayer()
 {
-	m_pPlayerCharacter = new CTerroristCharacterObject(TeamType::eRedTeam);
+	m_pPlayerCharacter = new CTerroristPlayer(TeamType::eRedTeam);
 	m_pPlayerCharacter->CreateObjectData(m_pd3dDevice);
 	m_pPlayerCharacter->CreateAxisObject(m_pd3dDevice);
 
 	m_pPlayer = new CTerrainPlayer(m_pPlayerCharacter);
 	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson);
 //	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eFirstPerson);
+	m_pPlayer->InitializePhysXData(m_pPxPhysicsSDK, m_pPxMaterial, m_pPxControllerManager);
+
 	m_pCamera = m_pPlayer->GetCamera();
 	m_pPlayerCharacter->SetPlayer(m_pPlayer);
 
 	SCENE_MGR->g_pPlayerCharacter = m_pPlayerCharacter;
 	SCENE_MGR->g_pPlayer = m_pPlayer;
-	m_pPlayer->SetPosition(XMVectorSet(60.0f, 2.5f, 20.0f, 0.0f));
+	m_pPlayer->SetPosition(XMFLOAT3(60.0f, 5.0f, 20.0f));
 }
 
 void CScene::ReleaseObjects()

@@ -71,7 +71,7 @@ void GSParticleDraw(point VertexOut gin[1], inout LineStream<GeoOut> lineStream)
     if (gin[0].Type != PARTICLE_TYPE_EMITTER)
     {
         float3 p0 = gin[0].PosW;
-        float3 p1 = gin[0].PosW + 0.04f * gRainAccelW;
+        float3 p1 = gin[0].PosW + 0.25f * gRainAccelW;
 		
         matrix mtxViewProjection = mul(gmtxView, gmtxProjection);
         GeoOut v0;

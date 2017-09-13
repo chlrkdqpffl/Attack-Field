@@ -18,8 +18,8 @@ enum class KeyInput
 
 	// Mouse
 	eLeftMouse		= 0x100,
-	eRightMouse		= 0x200,
-	eMouseWheel		= 0x400,		// 휠 위아래는 추후 구현
+//	eRightMouse		= 0x200,		// Zoom In 기능 용도
+//	eMouseWheel		= 0x400,		// 휠 위아래는 추후 구현
 };
 
 enum class CameraTag 

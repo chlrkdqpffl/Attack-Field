@@ -602,6 +602,33 @@ void CInstancedObjectsShader::SetMaterial(int textureCount, ...)
 	m_pMaterial = pMaterial;
 }
 
+void CInstancedObjectsShader::SetMaterial(XMFLOAT2 offset, int textureCount, ...)
+{
+	SafeDelete(m_pMaterial);
+	CMaterial* pMaterial = new CMaterial();
+	vector<TextureTag> vecTextureTag;
+
+	va_list ap;
+	va_start(ap, textureCount);
+
+	for (int i = 0; i < textureCount; ++i)
+		vecTextureTag.push_back(va_arg(ap, TextureTag));
+
+	va_end(ap);
+
+	CTexture* pTexture = new CTexture(textureCount, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
+	//	pTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
+	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	pTexture->SetOffset(offset);
+
+	for (int i = 0; i < textureCount; ++i)
+		pTexture->SetTexture(i, vecTextureTag[i]);
+
+	pMaterial->SetTexture(pTexture);
+
+	m_pMaterial = pMaterial;
+}
+
 void CInstancedObjectsShader::CreateShader(ID3D11Device *pd3dDevice)
 {
 	//if (m_pMesh) CObjectsShader::CreateShader(pd3dDevice, m_pMesh->GetType());

@@ -14,6 +14,13 @@ cbuffer cbWorldMatrix : register(b1) // VS Set
     matrix gmtxWorld : packoffset(c0);
 };
 
+cbuffer cbTextureOffset : register(b2) // VS Set
+{
+    float2 g_TextureOffset: packoffset(c0);
+    float2 pad : packoffset(c2);
+};
+
+
 Texture2D gtxDiffuse : register(t0);
 SamplerState gssDefault : register(s0);
 
@@ -146,7 +153,7 @@ VS_TEXTURED_LIGHTING_OUTPUT VSTexturedLightingColor(VS_TEXTURED_LIGHTING_INPUT i
     VS_TEXTURED_LIGHTING_OUTPUT output = (VS_TEXTURED_LIGHTING_OUTPUT) 0;
     output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxWorld), gmtxView), gmtxProjection);
     output.normalW = mul(input.normal, (float3x3) gmtxWorld); 
-    output.texCoord = input.texCoord;
+    output.texCoord = input.texCoord * g_TextureOffset;
 
     return (output);
 }
@@ -176,7 +183,7 @@ VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT VSInstancedTexturedLightingColor(VS_INSTAN
     output.normalW = mul(input.normal, (float3x3) input.mtxTransform);
     output.positionW = mul(float4(input.position, 1.0f), input.mtxTransform).xyz;
     output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
-    output.texCoord = input.texCoord;
+    output.texCoord = input.texCoord * g_TextureOffset;
     return (output);
 }
 
@@ -205,7 +212,7 @@ VS_INSTANCED_TEXTURED_TANGENT_LIGHTING_OUTPUT VSInstancedTexturedTangentLighting
     output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
     output.normalW = mul(input.normal, (float3x3) input.mtxTransform);
     output.tangentW = mul(input.tangent, (float3x3) input.mtxTransform);
-    output.texCoord = input.texCoord;
+    output.texCoord = input.texCoord * g_TextureOffset;
     return (output);
 }
 

@@ -130,7 +130,8 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 	AnimationData::CharacterAnim characterAnim = pCharacter->GetAnimationEnum(AnimationData::Parts::LowerBody);
 
 	XMFLOAT3 relativeVelocity = pCharacter->GetRelativeVelocity();		// 추후 방향만 있는 것이 아닌 속력까지 갖도록 설정하기. 현재는 방향만 존재
-																		// Forward
+
+	// Forward
 	if (relativeVelocity.z > 0) {
 		if (relativeVelocity.x < 0) {		// Left
 			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardLeft);

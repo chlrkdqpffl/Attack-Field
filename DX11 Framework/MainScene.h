@@ -3,6 +3,7 @@
 #include "BoundingBoxShader.h"
 #include "GBuffer.h"
 #include "PostFX.h"
+#include "SSReflection.h"
 
 class CMainScene : public CScene 
 {
@@ -30,6 +31,9 @@ public:
 	virtual void Render(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera) override;
 	virtual void RenderAllText(ID3D11DeviceContext *pd3dDeviceContext) override;
 
+	void RenderBoundingBox();
+	void RenderReflection(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
+
 	void CreateSpriteImageObject();
 	void CreateSound();
 	void CreateMapDataInstancingObject();
@@ -40,7 +44,6 @@ public:
 	void Update_Light();
 	void Update_LightningStrikes(float fDeltaTime);
 	void GameRoundOver(float fDeltaTime);
-	void RenderBoundingBox();
 	void CalcTime();
 	void CalcOccupyTime();
 	void CalcOccupyPosition();
@@ -93,6 +96,10 @@ private:
 	ID3D11Texture2D*				m_pHDRTexture = nullptr;
 	ID3D11RenderTargetView*			m_HDRRTV = nullptr;
 	ID3D11ShaderResourceView*		m_HDRSRV = nullptr;
+
+	// SSReflection
+	CSSReflection*					m_pSSReflection = nullptr;
+	vector<CGameObject*>			m_vecReflectObjectContainer;
 
 	// ----- Game System ----- //
 	DWORD							m_dwTime = 0;

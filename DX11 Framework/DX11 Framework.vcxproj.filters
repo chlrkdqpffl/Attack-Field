@@ -85,9 +85,6 @@
     <Filter Include="UI">
       <UniqueIdentifier>{e7238440-4167-4996-8cd8-b8e833658337}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Camera">
-      <UniqueIdentifier>{7f87cd86-f7cc-4b49-94af-d21819fb1dd8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Objects\Player">
       <UniqueIdentifier>{6a423d7e-855a-42c4-b1bb-4a4f7a70010e}</UniqueIdentifier>
     </Filter>
@@ -117,6 +114,12 @@
     </Filter>
     <Filter Include="Objects\SpriteImage">
       <UniqueIdentifier>{ad1505d7-3b82-4b95-84ff-7165426ea589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\PhysXObject">
+      <UniqueIdentifier>{63e8ff7e-e6a1-412a-9be3-3b817aa34fbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Camera">
+      <UniqueIdentifier>{7f87cd86-f7cc-4b49-94af-d21819fb1dd8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -289,16 +292,16 @@
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Camera</Filter>
+      <Filter>Objects\Camera</Filter>
     </ClCompile>
     <ClCompile Include="FirstPersonCamera.cpp">
-      <Filter>Camera</Filter>
+      <Filter>Objects\Camera</Filter>
     </ClCompile>
     <ClCompile Include="SpaceShipCamera.cpp">
-      <Filter>Camera</Filter>
+      <Filter>Objects\Camera</Filter>
     </ClCompile>
     <ClCompile Include="ThirdPersonCamera.cpp">
-      <Filter>Camera</Filter>
+      <Filter>Objects\Camera</Filter>
     </ClCompile>
     <ClCompile Include="AirplanePlayer.cpp">
       <Filter>Objects\Player</Filter>
@@ -371,6 +374,18 @@
     </ClCompile>
     <ClCompile Include="SpriteImageShader.cpp">
       <Filter>Objects\SpriteImage</Filter>
+    </ClCompile>
+    <ClCompile Include="SSReflection.cpp">
+      <Filter>Deferred</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysXObject.cpp">
+      <Filter>Objects\PhysXObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterPlayer.cpp">
+      <Filter>Objects\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="TerroristPlayer.cpp">
+      <Filter>Objects\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -561,16 +576,16 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Camera</Filter>
+      <Filter>Objects\Camera</Filter>
     </ClInclude>
     <ClInclude Include="FirstPersonCamera.h">
-      <Filter>Camera</Filter>
+      <Filter>Objects\Camera</Filter>
     </ClInclude>
     <ClInclude Include="SpaceShipCamera.h">
-      <Filter>Camera</Filter>
+      <Filter>Objects\Camera</Filter>
     </ClInclude>
     <ClInclude Include="ThirdPersonCamera.h">
-      <Filter>Camera</Filter>
+      <Filter>Objects\Camera</Filter>
     </ClInclude>
     <ClInclude Include="AirplanePlayer.h">
       <Filter>Objects\Player</Filter>
@@ -652,6 +667,18 @@
     </ClInclude>
     <ClInclude Include="SpriteImageShader.h">
       <Filter>Objects\SpriteImage</Filter>
+    </ClInclude>
+    <ClInclude Include="SSReflection.h">
+      <Filter>Deferred</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysXObject.h">
+      <Filter>Objects\PhysXObject</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterPlayer.h">
+      <Filter>Objects\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="TerroristPlayer.h">
+      <Filter>Objects\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -774,6 +801,9 @@
     </None>
     <None Include="Shader HLSL File\SpriteImage.hlsli">
       <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\SSReflection.hlsli">
+      <Filter>HLSL\Deferred</Filter>
     </None>
   </ItemGroup>
 </Project>

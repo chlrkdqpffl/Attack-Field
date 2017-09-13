@@ -8,17 +8,27 @@ CThirdPersonCamera::CThirdPersonCamera(CCamera *pCamera) : CCamera(pCamera)
 	{
 		if (pCamera->GetCameraTag() == CameraTag::eSpaceShip)
 		{
-			XMStoreFloat3(&m_d3dxvUp, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-			m_d3dxvRight.y = 0.0f;
-			m_d3dxvLook.y = 0.0f;
-			XMStoreFloat3(&m_d3dxvRight, XMVector3Normalize(XMLoadFloat3(&m_d3dxvRight)));
-			XMStoreFloat3(&m_d3dxvLook, XMVector3Normalize(XMLoadFloat3(&m_d3dxvLook)));
+			XMStoreFloat3(&m_vUp, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+			m_vRight.y = 0.0f;
+			m_vLook.y = 0.0f;
+			XMStoreFloat3(&m_vRight, XMVector3Normalize(XMLoadFloat3(&m_vRight)));
+			XMStoreFloat3(&m_vLook, XMVector3Normalize(XMLoadFloat3(&m_vLook)));
 		}
 	}
 }
 
 void CThirdPersonCamera::Update(float fDeltaTime)
 {
+	m_vLook = m_pPlayer->GetLook();
+
+	XMVECTOR pos = m_pPlayer->GetvPosition();
+
+	XMStoreFloat3(&m_vPosition, pos +
+		m_pPlayer->GetvRight() * m_vOffset.x +
+		m_pPlayer->GetvUp() * m_vOffset.y +
+		m_pPlayer->GetvLook() * m_vOffset.z);
+
+	/*
 	XMFLOAT4X4 mtxRotate;
 	XMStoreFloat4x4(&mtxRotate, XMMatrixIdentity());
 	XMFLOAT3 vRight = m_pPlayer->GetRight();
@@ -29,9 +39,9 @@ void CThirdPersonCamera::Update(float fDeltaTime)
 	mtxRotate._13 = vRight.z; mtxRotate._23 = vUp.z; mtxRotate._33 = vLook.z;
 
 	XMVECTOR vOffset;
-	vOffset = XMVector3TransformCoord(XMLoadFloat3(&m_d3dxvOffset), XMLoadFloat4x4(&mtxRotate));
+	vOffset = XMVector3TransformCoord(XMLoadFloat3(&m_vOffset), XMLoadFloat4x4(&mtxRotate));
 	XMVECTOR vPosition = m_pPlayer->GetvPosition() + vOffset;
-	XMVECTOR vDirection = vPosition - XMLoadFloat3(&m_d3dxvPosition);
+	XMVECTOR vDirection = vPosition - XMLoadFloat3(&m_vPosition);
 	float fLength = XMVectorGetX(XMVector3Length(vDirection));
 	vDirection = XMVector3Normalize(vDirection);
 	float fTimeLagScale = (m_fTimeLag) ? fDeltaTime * (1.0f / m_fTimeLag) : 1.0f;
@@ -41,7 +51,8 @@ void CThirdPersonCamera::Update(float fDeltaTime)
 
 	if (fDistance > 0)
 	{
-		XMStoreFloat3(&m_d3dxvPosition, XMLoadFloat3(&m_d3dxvPosition) += vDirection * fDistance);
+		XMStoreFloat3(&m_vPosition, XMLoadFloat3(&m_vPosition) += vDirection * fDistance);
 		SetLookAt(m_pPlayer->GetvPosition());
 	}
+	*/
 }

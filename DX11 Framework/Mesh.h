@@ -73,7 +73,6 @@ protected:
 	UINT							*m_pnVertexStrides = 0;
 	UINT							*m_pnVertexOffsets  = 0 ;
 
-
 	UINT							m_nIndices = 0;
 	UINT							m_nStartIndex = 0;
 	int								m_nBaseVertex = 0;
@@ -108,6 +107,11 @@ public:
 	BoundingBox GetBoundingCube() { return(m_bcBoundingBox); }
 	
 	void SetStartIndex(UINT index) { m_nStartIndex = index; }
+
+	UINT GetVertexCount() { return m_nVertices; }
+	UINT GetIndexCount() { return m_nIndices; }
+	XMFLOAT3* GetVertexData() const { return m_pPositions; }
+	UINT* GetIndexData() const { return m_pnIndices; }
 };
 
 //------------------------------------------------------------------------------------------------

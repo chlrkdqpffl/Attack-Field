@@ -19,14 +19,14 @@ class CCamera
 protected:
 	XMFLOAT3						m_PrevPosition = XMFLOAT3(0, 0, 0);
 
-	XMFLOAT3						m_d3dxvPosition;
-	XMFLOAT3						m_d3dxvRight;
-	XMFLOAT3						m_d3dxvUp;
-	XMFLOAT3						m_d3dxvLook;
+	XMFLOAT3						m_vPosition = XMFLOAT3(0, 0, 0);
+	XMFLOAT3						m_vRight = XMFLOAT3(0, 0, 0);
+	XMFLOAT3						m_vUp = XMFLOAT3(0, 0, 0);
+	XMFLOAT3						m_vLook = XMFLOAT3(0, 0, 0);
 
 	CameraTag						m_tagCamera = CameraTag::eNone;
 
-	XMFLOAT3						m_d3dxvOffset;
+	XMFLOAT3						m_vOffset = XMFLOAT3(0, 0, 0);
 	float           				m_fTimeLag;
 
 	XMFLOAT4X4						m_d3dxmtxView;
@@ -73,53 +73,36 @@ public:
 	XMMATRIX GetProjectionMatrix() const { return(XMLoadFloat4x4(&m_d3dxmtxProjection)); }
 	ID3D11Buffer *GetCameraConstantBuffer() const { return(m_pd3dcbCamera); }
 
-	void SetPosition(XMFLOAT3 vPosition) { m_d3dxvPosition = vPosition; }
-	void SetPosition(XMVECTOR vPosition) { XMStoreFloat3(&m_d3dxvPosition, vPosition); }
-	XMVECTOR GetvPosition() const { return(XMLoadFloat3(&m_d3dxvPosition)); }
-	XMFLOAT3 GetPosition() const { return m_d3dxvPosition; }
-	XMFLOAT3 GetRight() const { return m_d3dxvRight; }
-	XMFLOAT3 GetUp() const { return m_d3dxvUp; }
-	XMFLOAT3 GetLook() const { return m_d3dxvLook; }
-	XMVECTOR GetvRight() const { return(XMLoadFloat3(&m_d3dxvRight)); }
-	XMVECTOR GetvUp() const { return(XMLoadFloat3(&m_d3dxvUp)); }
-	XMVECTOR GetvLook() const { return(XMLoadFloat3(&m_d3dxvLook)); }
+	void SetPosition(XMFLOAT3 vPosition) { m_vPosition = vPosition; }
+	void SetPosition(XMVECTOR vPosition) { XMStoreFloat3(&m_vPosition, vPosition); }
+	XMVECTOR GetvPosition() const { return(XMLoadFloat3(&m_vPosition)); }
+	XMFLOAT3 GetPosition() const { return m_vPosition; }
+
+	XMFLOAT3 GetRight() const { return m_vRight; }
+	XMFLOAT3 GetUp() const { return m_vUp; }
+	XMFLOAT3 GetLook() const { return m_vLook; }
+
+	XMVECTOR GetvRight() const { return(XMLoadFloat3(&m_vRight)); }
+	XMVECTOR GetvUp() const { return(XMLoadFloat3(&m_vUp)); }
+	XMVECTOR GetvLook() const { return(XMLoadFloat3(&m_vLook)); }
 	float GetNearPlane() const { return m_fNearPlane; }
 	float GetFarPlane() const { return m_fFarPlane; }
 
-	void SetOffset(XMFLOAT3 offset)
-	{
-		m_d3dxvOffset = offset;
-
-		m_d3dxvPosition.x += offset.x;
-		m_d3dxvPosition.y += offset.y;
-		m_d3dxvPosition.z += offset.z;
-	}
-
-	void SetOffset(XMFLOAT3 direction, float distance) 
-	{	
-		m_d3dxvOffset.x = direction.x * distance;
-		m_d3dxvOffset.y = direction.y * distance;
-		m_d3dxvOffset.z = direction.z * distance;
-
-		m_d3dxvPosition.x += m_d3dxvOffset.x;
-		m_d3dxvPosition.y += m_d3dxvOffset.y;
-		m_d3dxvPosition.z += m_d3dxvOffset.z;
-	}
-
-	XMFLOAT3 GetOffset() const { return m_d3dxvOffset; }
+	void SetOffset(XMFLOAT3 offset) { m_vOffset = offset; }
+	XMFLOAT3 GetOffset() const { return m_vOffset; }
 
 	void SetTimeLag(float fTimeLag) { m_fTimeLag = fTimeLag; }
 	float GetTimeLag() const { return(m_fTimeLag); }
 
 	virtual void Move(const XMVECTOR& d3dxvShift)
 	{ 
-		m_PrevPosition = m_d3dxvPosition;
-		XMVECTOR v = XMLoadFloat3(&m_d3dxvPosition);
+		m_PrevPosition = m_vPosition;
+		XMVECTOR v = XMLoadFloat3(&m_vPosition);
 		v += d3dxvShift;
-		XMStoreFloat3(&m_d3dxvPosition, v);
+		XMStoreFloat3(&m_vPosition, v);
 	}
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) { }
-	virtual void Update(float fDeltaTime) { }
+	virtual void Update(float fDeltaTime);
 	virtual void SetLookAt(XMVECTOR& vLookAt);
 	virtual void SetLookAt(XMVECTOR& d3dxvPosition, XMVECTOR& d3dxvLookAt, XMVECTOR& vd3dxvUp);
 

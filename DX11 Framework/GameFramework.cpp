@@ -49,7 +49,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(1013998);
+//	_CrtSetBreakAlloc(1310419);
 //	_CrtSetBreakAlloc(962843);
 //	_CrtSetBreakAlloc(289);
 //	_CrtSetBreakAlloc(205);		// 16
@@ -213,8 +213,8 @@ bool CGameFramework::CreateDirect3DDisplay()
 #else
 		// 외장 그래픽으로 디바이스 생성시 전체화면이 안됨!
 		// 개발할 때에는 전체 화면이 필요 없으므로 실행하도록 하고 시연용으로는 파일을 외장그래픽으로 수동 실행하여야 함
-	//	if (SUCCEEDED(hResult = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
-		if (SUCCEEDED(hResult = D3D11CreateDevice(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
+		if (SUCCEEDED(hResult = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
+	//	if (SUCCEEDED(hResult = D3D11CreateDevice(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
 #endif
 			break;
 		else {
@@ -311,16 +311,9 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 	SCENE_MGR->g_nowScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
-//		if (false == m_bMouseBindFlag) {
-//			GetCursorPos(&m_ptOldCursorPos);
-//			SetCapture(hWnd);
-//		}
 		break;
 	case WM_RBUTTONUP:
 	case WM_LBUTTONUP:
-//		if (false == m_bMouseBindFlag) {
-		ReleaseCapture();
-//		}
 		break;
 	case WM_MOUSEMOVE:
 		if (GetFocus())

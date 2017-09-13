@@ -95,11 +95,12 @@ public:
 
 	void SetMaterial(CMaterial *pMaterial);
 	void SetMaterial(int textureCount, ...);
+	void SetMaterial(XMFLOAT2 offset, int textureCount, ...);
 	CMaterial *GetMaterial() { return(m_pMaterial); }
 
-	void SetPosition(float x, float y, float z, bool isLocal = false);
-	void SetPosition(XMVECTOR d3dxvPosition, bool isLocal = false);
-	void SetPosition(XMFLOAT3 d3dxvPosition, bool isLocal = false);
+	virtual void SetPosition(float x, float y, float z, bool isLocal = false);
+	virtual void SetPosition(XMVECTOR d3dxvPosition, bool isLocal = false);
+	virtual void SetPosition(XMFLOAT3 d3dxvPosition, bool isLocal = false);
 	virtual void SetRotate(float fPitch, float fYaw, float fRoll, bool isLocal = false);
 	virtual void SetRotate(XMFLOAT3 fAngle, bool isLocal = false);
 	virtual void SetRotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLocal = false);

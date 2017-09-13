@@ -29,32 +29,6 @@ enum PacketType
 
 
 #pragma pack(push, 1)
-/* // ====================== 기존 패킷 정보 ==================== //
-struct cs_key_input {   //키버튼 받았을때 
-
-	BYTE   size;               //1 2 12 2
-	BYTE   type;
-
-	XMFLOAT3    Animation;
-	WORD   key_button;
-
-	float   x;
-	float   y;
-	float   z;
-
-	XMFLOAT3 FireDirection;
-
-};
-
-struct cs_rotate {   //클라에서 화면을 움직였을때 
-
-	BYTE   size;
-	BYTE   type;
-
-	float cx;
-	float cy;
-};
-*/
 
 // ====================== 수정 후 패킷 정보 ==================== //
 struct cs_key_input {
@@ -74,8 +48,6 @@ struct cs_rotate {   //클라에서 화면을 움직였을때
 	XMFLOAT2 mouseRotate;
 	XMFLOAT3 FireDirection;			// 이거 무슨 코드임??? 어디서 쓰이는지좀
 };
-
-// ============================================================== //
 
 struct sc_packet_put_player {   //서버에서 처음 접속했을때 위치값과 ID를 부여한다.
 

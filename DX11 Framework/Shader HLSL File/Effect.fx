@@ -62,12 +62,12 @@ Texture2D gtxTerrainDetail		: register(t5);
 #endif
 
 #ifdef _WITH_SKYBOX_TEXTURE_ARRAY
-    Texture2DArray gtxtSkyBox : register(t13);
+    Texture2DArray gtxtSkyBox : register(t8);
 #else
     #ifdef _WITH_SKYBOX_TEXTURE_CUBE
-        TextureCube gtxtSkyBox : register(t13);
+        TextureCube gtxtSkyBox : register(t8);
     #else
-        Texture2D gtxtSkyBox : register(t13);
+        Texture2D gtxtSkyBox : register(t8);
     #endif
 #endif
 

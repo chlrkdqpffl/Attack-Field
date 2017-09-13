@@ -90,7 +90,7 @@ void CServerManager::processpacket(char *ptr)
 				// ================================================================================================================ //
 		
 				if (id == m_myid) {
-					SCENE_MGR->g_pPlayer->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
+					SCENE_MGR->g_pPlayer->SetPosition(XMFLOAT3(my_put_packet->x, my_put_packet->y, my_put_packet->z));
 					SCENE_MGR->g_pPlayer->SetPlayerlife(static_cast<UINT>(my_put_packet->hp));//SCENE_MGR->g_pMainScene->-> SetLife(static_cast<UINT>(my_put_packet->hp));
 					SCENE_MGR->g_pPlayerCharacter->SetServerID(id);
 					SCENE_MGR->g_pPlayerCharacter->SetTagTeam(reinterpret_cast<TeamType &>(my_put_packet->Team));

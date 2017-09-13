@@ -76,8 +76,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>../Setting\DirectX\Include;../Setting\DirectX\Include;../Setting\AntTweakBar\include;../Setting\FMOD\Include;$(IncludePath);../Setting\FMOD\Include</IncludePath>
-    <LibraryPath>../Setting\DirectX\Lib\x64;../Setting\DirectX\Lib\x64;$(LibraryPath);../Setting\AntTweakBar\lib;../Setting\FMOD\Lib;../Setting\FMOD\Lib</LibraryPath>
+    <IncludePath>../Setting\DirectX\Include;../Setting\AntTweakBar\include;../Setting\FMOD\Include;../Setting\PhysX\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>../Setting\DirectX\Lib\x64;$(LibraryPath);../Setting\AntTweakBar\lib;../Setting\FMOD\Lib;../Setting\PhysX\Lib\Debug</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -86,8 +86,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>../Setting\DirectX\Include;../Setting\AntTweakBar\include;$(IncludePath);../Setting\FMOD\Include</IncludePath>
-    <LibraryPath>../Setting\DirectX\Lib\x64;./FW1FontWrapper\x64;$(LibraryPath);../Setting\AntTweakBar\lib;../Setting\FMOD\Lib</LibraryPath>
+    <IncludePath>../Setting\DirectX\Include;../Setting\AntTweakBar\include;$(IncludePath);../Setting\FMOD\Include;../Setting\PhysX\Include</IncludePath>
+    <LibraryPath>../Setting\DirectX\Lib\x64;./FW1FontWrapper\x64;$(LibraryPath);../Setting\AntTweakBar\lib;../Setting\FMOD\Lib;../Setting\PhysX\Lib\Release</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -111,11 +111,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>windowscodecs.lib;d3d11.lib;d2d1.lib;dwrite.lib;d3dcompiler.lib;d3dx9d.lib;d3dx11d.lib;dxerr.lib;dxgi.lib;dxguid.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>windowscodecs.lib;d3d11.lib;d2d1.lib;dwrite.lib;d3dcompiler.lib;d3dx9d.lib;d3dx11d.lib;dxerr.lib;dxgi.lib;dxguid.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;LowLevelClothDEBUG.lib;LowLevelDEBUG.lib;PhysX3CharacterKinematicDEBUG_x64.lib;PhysX3CommonDEBUG_x64.lib;PhysX3CookingDEBUG_x64.lib;PhysX3DEBUG_x64.lib;PhysX3ExtensionsDEBUG.lib;PhysX3VehicleDEBUG.lib;PhysXProfileSDKDEBUG.lib;PhysXVisualDebuggerSDKDEBUG.lib;PvdRuntimeDEBUG.lib;PxTaskDEBUG.lib;SceneQueryDEBUG.lib;SimulationControllerDEBUG.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -145,13 +146,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>windowscodecs.lib;d3d11.lib;d2d1.lib;dwrite.lib;d3dcompiler.lib;d3dx9d.lib;d3dx11d.lib;dxerr.lib;dxgi.lib;dxguid.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>windowscodecs.lib;d3d11.lib;d2d1.lib;dwrite.lib;d3dcompiler.lib;d3dx9d.lib;d3dx11d.lib;dxerr.lib;dxgi.lib;dxguid.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;LowLevel.lib;LowLevelCloth.lib;PhysX3_x64.lib;PhysX3CharacterKinematic_x64.lib;PhysX3Common_x64.lib;PhysX3Cooking_x64.lib;PhysX3Extensions.lib;PhysX3Vehicle.lib;PhysXProfileSDK.lib;PhysXVisualDebuggerSDK.lib;PvdRuntime.lib;PxTask.lib;SceneQuery.lib;SimulationController.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -166,6 +169,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CharacterNormalShader.cpp" />
     <ClCompile Include="CharacterObject.cpp" />
+    <ClCompile Include="CharacterPlayer.cpp" />
     <ClCompile Include="CharacterShader.cpp" />
     <ClCompile Include="CharacterState.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
@@ -183,6 +187,7 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="NormalDisplaceMapShader.cpp" />
     <ClCompile Include="ParticleManager.cpp" />
+    <ClCompile Include="PhysXObject.cpp" />
     <ClCompile Include="PoliceCharacterObject.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -206,16 +211,26 @@
     <ClCompile Include="SpriteImageShader.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="TerrainShader.cpp" />
+    <ClCompile Include="SSReflection.cpp" />
+    <ClCompile Include="TerrainShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="TerroristCharacterObject.cpp" />
+    <ClCompile Include="TerroristPlayer.cpp" />
     <ClCompile Include="TextureToScreenRectMesh.cpp" />
     <ClCompile Include="NormalMapCubeMesh.cpp" />
     <ClCompile Include="DirectX11_Project.cpp" />
     <ClCompile Include="FirstPersonCamera.cpp" />
     <ClCompile Include="GameFramework.cpp" />
-    <ClCompile Include="HeightMap.cpp" />
-    <ClCompile Include="HeightMapGridMesh.cpp" />
-    <ClCompile Include="HeightMapTerrain.cpp" />
+    <ClCompile Include="HeightMap.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="HeightMapGridMesh.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="HeightMapTerrain.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="LineMesh.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="FbxModelMesh.cpp" />
@@ -240,7 +255,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TerrainPlayer.cpp" />
-    <ClCompile Include="TerrainWater.cpp" />
+    <ClCompile Include="TerrainWater.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="TextManager.cpp" />
     <ClCompile Include="TexturedRectMesh.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -252,8 +269,12 @@
     <ClCompile Include="UIObject.cpp" />
     <ClCompile Include="UIShader.cpp" />
     <ClCompile Include="WaitScene.cpp" />
-    <ClCompile Include="WaterGridMesh.cpp" />
-    <ClCompile Include="WaterShader.cpp" />
+    <ClCompile Include="WaterGridMesh.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="WaterShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -268,6 +289,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CharacterNormalShader.h" />
     <ClInclude Include="CharacterObject.h" />
+    <ClInclude Include="CharacterPlayer.h" />
     <ClInclude Include="CharacterShader.h" />
     <ClInclude Include="CharacterState.h" />
     <ClInclude Include="CollisionManager.h" />
@@ -288,9 +310,15 @@
     <ClInclude Include="DirectX11_Project.h" />
     <ClInclude Include="FirstPersonCamera.h" />
     <ClInclude Include="GameFramework.h" />
-    <ClInclude Include="HeightMap.h" />
-    <ClInclude Include="HeightMapGridMesh.h" />
-    <ClInclude Include="HeightMapTerrain.h" />
+    <ClInclude Include="HeightMap.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="HeightMapGridMesh.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="HeightMapTerrain.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="LineMesh.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="FbxModelMesh.h" />
@@ -299,6 +327,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="ParticleManager.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="PhysXObject.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PoliceCharacterObject.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -336,14 +365,20 @@
     <ClInclude Include="SpriteImageShader.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="SSReflection.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="StateObjectManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TerrainPlayer.h" />
-    <ClInclude Include="TerrainShader.h" />
-    <ClInclude Include="TerrainWater.h" />
+    <ClInclude Include="TerrainShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="TerrainWater.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="TerroristCharacterObject.h" />
+    <ClInclude Include="TerroristPlayer.h" />
     <ClInclude Include="TextManager.h" />
     <ClInclude Include="TexturedRectMesh.h" />
     <ClInclude Include="TextureToScreenRectMesh.h" />
@@ -356,8 +391,12 @@
     <ClInclude Include="UserDefine.h" />
     <ClInclude Include="UserTag.h" />
     <ClInclude Include="WaitScene.h" />
-    <ClInclude Include="WaterGridMesh.h" />
-    <ClInclude Include="WaterShader.h" />
+    <ClInclude Include="WaterGridMesh.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="WaterShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <ItemGroup>
@@ -408,6 +447,7 @@
     <None Include="Shader HLSL File\Spark.hlsli" />
     <None Include="Shader HLSL File\SpotLight.hlsli" />
     <None Include="Shader HLSL File\SpriteImage.hlsli" />
+    <None Include="Shader HLSL File\SSReflection.hlsli" />
     <None Include="Shader HLSL File\Terrain.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </None>

@@ -79,18 +79,6 @@ void CCharacterObject::Reloading()
 void CCharacterObject::Revival()
 {
 	m_nLife = PLAYER_HP;
-	if(m_pPlayer)
-		m_pWeapon->Reloading();
-
-	XMVECTOR redTeamStartPosition = XMVectorSet(65, 2.4f, 12, 0.0f);
-	XMVECTOR blueTeamStartPosition = XMVectorSet(270, 2.4f, 230, 0.0f);
-
-	if (m_pPlayer) {
-		if (m_tagTeam == TeamType::eRedTeam)
-			m_pPlayer->SetPosition(redTeamStartPosition);
-		else
-			m_pPlayer->SetPosition(blueTeamStartPosition);
-	}
 }
 
 void CCharacterObject::DamagedCharacter(UINT damage)
@@ -105,6 +93,7 @@ void CCharacterObject::DamagedCharacter(UINT damage)
 	SetLife(life);
 }
 
+/*
 void CCharacterObject::OnCollisionCheck()
 {	
 	if(IsMoving()){
@@ -124,14 +113,6 @@ void CCharacterObject::OnCollisionCheck()
 
 			int collisionObjectCount = staticObject->GetMesh()->CheckRayIntersection(&rayPosition, &rayDirection, &info);
 			
-			
-			/*
-			static int test = 0;
-			if (test != collisionObjectCount) {
-				cout << "충돌체 갯수 : " << collisionObjectCount << endl;
-				test = collisionObjectCount;
-			}
-			*/
 			if (collisionObjectCount) {
 				if (info.m_fDistance < 2) {
 					XMVECTOR slidingVec = velocity - XMVector3Dot(velocity, XMLoadFloat3(&info.m_f3HitNormal)) * XMLoadFloat3(&info.m_f3HitNormal);
@@ -168,7 +149,7 @@ void CCharacterObject::OnCollisionCheck()
 	}
 
 	// Ground Collision
-	XMVECTOR centerPos = m_pPlayer->GetvPrevPosition();			// 혹시 몰라서 이전 프레임의 위치로 설정
+	XMVECTOR centerPos = m_pPlayer->GetvPosition();			// 혹시 몰라서 이전 프레임의 위치로 설정
 	BoundingOrientedBox bcObox = GetBoundingOBox();
 
 	if (COLLISION_MGR->RayCastCollision(m_infoCollision, centerPos, -1 * GetvUp())) {
@@ -177,16 +158,16 @@ void CCharacterObject::OnCollisionCheck()
 		}
 	}
 	
-	/*
+	
 	// ----- Rendering Ray Cast ----- // 
-	XMVECTOR endPos = centerPos + (-1 * GetUp() * m_infoCollision.m_fDistance);
-	CLineObject* pRayObject = new CLineObject(centerPos, endPos, 100);
-	pRayObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
+//	XMVECTOR endPos = centerPos + (-1 * GetUp() * m_infoCollision.m_fDistance);
+//	CLineObject* pRayObject = new CLineObject(centerPos, endPos, 100);
+//	pRayObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
 
-	GLOBAL_MGR->g_vecLineContainer.push_back(pRayObject);
+//	GLOBAL_MGR->g_vecLineContainer.push_back(pRayObject);
 	// ------------------------------ //
-	*/
 } 
+*/
 
 void CCharacterObject::SetRotate(float fPitch, float fYaw, float fRoll, bool isLocal)
 {
@@ -210,12 +191,6 @@ void CCharacterObject::SetRotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLoca
 
 void CCharacterObject::RotateFiringPos()
 {
-	if (m_pPlayer) {
-		XMVECTOR firingDirection = XMLoadFloat3(&m_f3FiringDirection);
-		XMMATRIX mtxRotate = XMMatrixRotationAxis(m_pPlayer->GetvRight(), XMConvertToRadians(m_fPitch));
-		firingDirection = XMVector3TransformNormal(m_pPlayer->GetvLook(), mtxRotate);
-		XMStoreFloat3(&m_f3FiringDirection, firingDirection);
-	}
 	m_fPitch = clamp(m_fPitch, -40.0f, 50.0f);		// 이 각도는 캐릭터가 최대로 허리를 숙이는 각도로 캐릭터마다 다르지만 현재는 여기에서 clamp하도록 만듦
 	GetSkinnedMesh()->SetPitch(m_fPitch);
 }
@@ -243,17 +218,10 @@ void CCharacterObject::SetPartsWorldMtx()
 void CCharacterObject::Update(float fDeltaTime)
 { 
 	RotateFiringPos();
-	if (m_pPlayer) {
-		m_pPlayer->UpdateKeyInput(fDeltaTime);
-		OnCollisionCheck();
-	}
-
+	
 	m_pStateUpper->Update();
 	m_pStateLower->Update();
 	
-	if (m_pPlayer) {
-		m_pPlayer->Update(fDeltaTime);
-	}
 	CGameObject::Update(fDeltaTime);
 	CSkinnedObject::Update(fDeltaTime);
 	m_pWeapon->Update(fDeltaTime);
@@ -262,9 +230,6 @@ void CCharacterObject::Update(float fDeltaTime)
 
 void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
-	if(m_pPlayer)
-		m_pPlayer->UpdateShaderVariables(pd3dDeviceContext);
-
 	m_pUpperController->UpdateConstantBuffer(pd3dDeviceContext);
 	m_pLowerController->UpdateConstantBuffer(pd3dDeviceContext);
 
@@ -273,16 +238,7 @@ void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *p
 
 	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &m_mtxWorld);
 
-	if (m_pd3dBlendState) pd3dDeviceContext->OMSetBlendState(m_pd3dBlendState, NULL, 0xffffffff);
-
-	if (m_pPlayer) {
-		if (m_pPlayer->GetCamera()->GetCameraTag() == CameraTag::eFirstPerson)
-			m_vecMeshContainer[1]->Render(pd3dDeviceContext);
-		else
-			m_vecMeshContainer[0]->Render(pd3dDeviceContext);
-	}
-	else
-		m_vecMeshContainer[0]->Render(pd3dDeviceContext);
+	m_vecMeshContainer[0]->Render(pd3dDeviceContext);
 
 	if (m_pAxisObject) {
 		if (GLOBAL_MGR->g_bShowWorldAxis)
@@ -290,7 +246,6 @@ void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *p
 	}
 
 	if (m_pShader) m_pShader->OnPostRender(pd3dDeviceContext);
-	if (m_pd3dBlendState) pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
 
 	m_pWeapon->Render(pd3dDeviceContext, pCamera);
 }
