@@ -299,7 +299,13 @@ struct sc_change_scene
 	BYTE Winner;
 };
 
-
+struct cs_round_over
+{
+	BYTE size;
+	BYTE type;
+	BYTE Red;
+	BYTE Blue;
+};
 
 
 #pragma pack(pop)

@@ -248,8 +248,8 @@ void CPlayer::Rotate(float x, float y)
 		rotate->FireDirection = SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetFireDirection();
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(rotate));
 
-		m_pCharacter->Setbfpitch(abs(m_pCharacter->GetPitch()));   //이전값 저장
-		m_pCharacter->Setbfyaw(abs(m_pCharacter->GetYaw()));      //이전값 저장
+		m_pCharacter->SetPrevPitch(abs(m_pCharacter->GetPitch()));   //이전값 저장
+		m_pCharacter->SetPrevYaw(abs(m_pCharacter->GetYaw()));      //이전값 저장
 	}
 #endif
 }

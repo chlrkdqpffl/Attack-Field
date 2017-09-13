@@ -1574,7 +1574,8 @@ void CMainScene::CalcOccupyTime()
 	if (TeamType::eNone != m_tagOccupyTeam)
 		m_OccupyTime++;
 
-	if (m_OccupyTime >= OCCUPY_TIME / 1000) {
+	if (m_OccupyTime >= OCCUPY_TIME / 1000) 
+	{
 		if (m_tagOccupyTeam == TeamType::eRedTeam)
 			m_nRedScore++;
 		else if (m_tagOccupyTeam == TeamType::eBlueTeam)
@@ -1644,6 +1645,15 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 		m_pPlayer->SetWeaponBulletMax();
 		m_pPlayer->SetPlayerlife(PLAYER_HP);
 
+		//라운드 종료후 패킷 보낸다.
+		cs_round_over packet;
+
+		packet.size = sizeof(cs_round_over);
+		packet.type = 12;
+		packet.Red = m_nRedScore;
+		packet.Blue = m_nBlueScore;
+
+		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 	}
 }
 

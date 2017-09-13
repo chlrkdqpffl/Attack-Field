@@ -111,6 +111,9 @@ public:
 	float GetminusPitch() { return m_fPrevPitch - m_fPitch; }
 	float GetminusYaw() { return m_fPrevYaw - m_fYaw; }
 
+	void SetPrevPitch(float pitch) { m_fPrevPitch = pitch; }
+	void SetPrevYaw(float Yaw) { m_fPrevYaw = Yaw; }
+
 	XMFLOAT3 GetFireDirection() const { return m_f3FiringDirection; }
 	void SetFireDirection(XMFLOAT3 GetFireDirection) { m_f3FiringDirection = GetFireDirection; }
 
