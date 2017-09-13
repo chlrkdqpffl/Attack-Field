@@ -29,7 +29,8 @@ void CServerManager::processpacket(char *ptr)
 					}
 		
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
-
+					//XMVECTOR Animation = XMLoadFloat3(&SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->GetRelativeVelocity());
+					///XMStoreFloat3(&SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->GetRelativeVelocity(), Animation);
 		
 					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eReload))
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(true);
@@ -45,7 +46,24 @@ void CServerManager::processpacket(char *ptr)
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(true);
 					else
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(false);
+
+					XMVECTOR Animation = XMVectorZero();
+					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eLeft))
+						Animation += XMVectorSet(-1, 0, 0, 0);
 		
+					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eRight))
+						Animation += XMVectorSet(1, 0, 0, 0);
+
+					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eForward))
+						Animation += XMVectorSet(0, 0, 1, 0);
+
+					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eBackward))
+						Animation += XMVectorSet(0, 0, -1, 0);
+
+					XMFLOAT3 Temp;
+					XMStoreFloat3(&Temp, Animation);
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRelativeVelocity(Temp);
+
 					//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(false);
 				}
 			}
