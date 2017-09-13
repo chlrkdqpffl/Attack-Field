@@ -31,6 +31,12 @@ enum class CameraTag
 	eDeadCam, eFreeCam
 };
 
+enum class GameMode
+{
+	eNone,
+	eDeathMatch, eOccupy
+};
+
 enum class TeamType
 {
 	eNone,

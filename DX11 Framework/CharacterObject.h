@@ -32,7 +32,6 @@ protected:
 	float               m_fPrevPitch = 0.0f;
 	float               m_fPrevYaw = 0.0f;
 
-	XMFLOAT3            m_f3Velocity = XMFLOAT3(0, 0, 0);
 	XMFLOAT3            m_f3RelativeVelocity = XMFLOAT3(0, 0, 0);
 
 	UINT				m_nCharacterID = 0;
@@ -56,7 +55,6 @@ protected:
 	UINT				m_nServerID = 0;
 	UINT				m_nLife = 0;
 	UINT				m_nArmorPoint = 0;
-	BYTE				m_Gamemode;
 
 	// ----- Parts Collision Variable ----- // 
 	BoundingOrientedBox		m_bcPartsBoundingOBox[static_cast<int>(ChracterBoundingBoxParts::ePartsCount)];
@@ -97,8 +95,6 @@ public:
 		else
 			return m_pStateLower;
 	}
-	void SetVelocity(XMFLOAT3 velocity) { m_f3Velocity = velocity; }
-	XMFLOAT3 GetVelocity()const { return m_f3Velocity; }
 	void SetRelativevVelocity(XMVECTOR velocity) { XMStoreFloat3(&m_f3RelativeVelocity, velocity); }
 	void SetRelativeVelocity(XMFLOAT3 velocity) { m_f3RelativeVelocity = velocity; }
 	XMFLOAT3 GetRelativeVelocity() const { return m_f3RelativeVelocity; }
@@ -185,6 +181,4 @@ public:
 	DWORD GetOccupyTime() const { return m_dwOccupyStartTime; }
 
 	CWeapon* GetWeapon() const { return m_pWeapon; }
-	void Setmode(BYTE mode) { m_Gamemode = mode;}
-	BYTE Getmode() {return m_Gamemode;}
 };

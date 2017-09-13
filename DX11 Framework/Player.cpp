@@ -90,8 +90,10 @@ void CPlayer::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 void CPlayer::UpdateKeyInput(float fDeltaTime)
 {
 	// Death Check
-	if (m_pCharacter->GetIsDeath())
+	if (m_pCharacter->GetIsDeath()) {
+		m_fSpeedFactor = 0.0f;
 		return;
+	}
 
 	// Keyboard
 	if (m_wKeyState & static_cast<int>(KeyInput::eReload)) {
@@ -190,37 +192,23 @@ void CPlayer::Rotate(float x, float y)
 	CameraTag nCurrentCameraTag = m_pCamera->GetCameraTag();
 	if ((nCurrentCameraTag == CameraTag::eFirstPerson) || (nCurrentCameraTag == CameraTag::eThirdPerson)) {
 		if (x != 0.0f) {
-			m_fPitch = m_pCharacter->GetPitch();
-			m_fPitch += x;
-		
-			if (50.0f < m_fPitch) {
-				x -= (m_fPitch - 50);
-				m_fPitch = 50;
-			}
-			if (m_fPitch  < -40.0f) {
-				x -= (m_fPitch + 40);
-				m_fPitch = -40;
-			}
-			
-			m_pCharacter->SetPitch(m_fPitch);
+			float fPitch = m_pCharacter->GetPitch();
+			fPitch += x;
+			fPitch = clamp(fPitch, -40.0f, 50.0f);
+			m_pCharacter->SetPitch(fPitch);
 		}
 		if (y != 0.0f) {
 			float fYaw = m_pCharacter->GetYaw();
 			fYaw += y;
-
-			if (fYaw > 360.0f) fYaw -= 360.0f;
-			if (fYaw < 0.0f) fYaw += 360.0f;
+			fYaw = clamp(fYaw, 0.0f, 360.0f);
 			m_pCharacter->SetYaw(fYaw);
 
 			mtxRotate = XMMatrixRotationAxis(GetvUp(), XMConvertToRadians(y));
 			SetvLook(XMVector3TransformNormal(GetvLook(), mtxRotate));
 			SetvRight(XMVector3TransformNormal(GetvRight(), mtxRotate));
 		}
-//		m_pCamera->Rotate(x, y, 0);
 	}
-	else if (nCurrentCameraTag == CameraTag::eSpaceShip)
-	{
-//		m_pCamera->Rotate(x, y, 0);
+	else if (nCurrentCameraTag == CameraTag::eSpaceShip) {
 		if (x != 0.0f) {
 			mtxRotate = XMMatrixRotationAxis(GetvRight(), XMConvertToRadians(x));
 			SetvUp(XMVector3TransformNormal(GetvUp(), mtxRotate));

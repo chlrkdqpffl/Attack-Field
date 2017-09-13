@@ -9,16 +9,15 @@ public:
 	XMFLOAT4X4					m_mtxWorld;
 
 protected:
+	CCharacterObject			*m_pCharacter = nullptr;
 	CCamera						*m_pCamera	= nullptr;
 
-	float						m_fPitch = 0.0f;
 	float						m_fSpeedFactor = 1.0f;
 	float						m_fInitSpeed = 0.0f;
 	XMFLOAT3					m_f3MoveDirection = XMFLOAT3(0, 0, 0);
 	XMFLOAT3     				m_f3Gravity = XMFLOAT3(0, 0, 0);
 
 	WORD						m_wKeyState = 0;
-	CCharacterObject			*m_pCharacter = nullptr;
 	int							count;
 
 	// Damage Direction
@@ -89,7 +88,7 @@ public:
 		SetLook(look);
 	}
 
-	float GetPitch() const { return m_fPitch; }
+	float GetPitch() const { return m_pCharacter->GetPitch(); }
 	CCamera *GetCamera() { return(m_pCamera); }
 
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
