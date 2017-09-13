@@ -124,7 +124,7 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_Z:
 				// 임의로 죽어보기
-				m_pPlayerCharacter->SetDeath();
+				m_pPlayerCharacter->SetLife(0);
 				break;
 			case VK_X:
 				// 임의로 헤드샷 맞기
@@ -1643,7 +1643,6 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 
 		m_pPlayer->SetWeaponBulletMax();
 		m_pPlayer->SetPlayerlife(PLAYER_HP);
-
 	}
 }
 
@@ -1796,6 +1795,12 @@ void CMainScene::ShowDeathRespawnUI()
 
 void CMainScene::ShowDeadlyUI()
 {
+	if (m_pPlayer->GetPlayerLife() <= 0) {
+		CUIObject* pDamageUI = m_pUIManager->GetUIObject(TextureTag::eDamagedCharacterUI);
+		pDamageUI->AddOpacity(-1.0f);
+		return;
+	}
+
 	if (false == m_pPlayer->GetIsDeadly())
 		return;
 
@@ -2184,8 +2189,7 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	TEXT_MGR->RenderText(pd3dDeviceContext, str, 48, 843, 85, 0xFFFFFFFF, FW1_RIGHT);
 
 	// ----- Total Kill ----- //
-	if (SCENE_MGR->g_pPlayerCharacter->Getmode() == 1)	//데스매치일때
-	{
+	if (m_tagGameMode == GameMode::eDeathMatch) {
 		str = to_string(m_nRedTeamTotalKill);
 		TEXT_MGR->RenderText(pd3dDeviceContext, str, 60, 698, 10, 0xFF0020FF, FW1_CENTER);
 

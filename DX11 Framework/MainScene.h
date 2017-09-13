@@ -109,7 +109,7 @@ private:
 	int								m_OccupyTime = 0;
 	UINT							m_nRedTeamTotalKill = 0;
 	UINT							m_nBlueTeamTotalKill = 0;
-
+	GameMode						m_tagGameMode = GameMode::eNone;
 
 
 	// ----- Occupy Variable ----- //

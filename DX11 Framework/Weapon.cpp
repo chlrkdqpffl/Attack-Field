@@ -90,7 +90,7 @@ void CWeapon::Firing(XMVECTOR direction)
 			}
 		}
 #endif
-		COLLISION_MGR->CreateFireDirectionLine(firePosOffset, direction, m_fRange);
+//		COLLISION_MGR->CreateFireDirectionLine(firePosOffset, direction, m_fRange);		// √— πﬂªÁ ∑π¿Ã ∑ª¥ı∏µ
 	}
 }
 
