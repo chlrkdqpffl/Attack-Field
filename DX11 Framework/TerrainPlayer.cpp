@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TerrainPlayer.h"
 
-CTerrainPlayer::CTerrainPlayer(CCharacterObject* pCharacter)
+CTerrainPlayer::CTerrainPlayer(CCharacterPlayer* pCharacter)
 	: CPlayer(pCharacter)
 {
 }

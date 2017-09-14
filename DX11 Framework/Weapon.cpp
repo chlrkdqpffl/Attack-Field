@@ -142,18 +142,19 @@ void CWeapon::UpdateRecoil(float fDeltaTime)
 		if (m_nFireBulletCount == 0)
 		{		
 			float gap = m_pOwner->GetPitch() - m_fInitPitch;
-			float returnSpeed = abs(-gap * 20) / 100;					// 자연스럽게 속도 줄이기
-			if (returnSpeed < 0.1f)
-				returnSpeed = 0.1f;
+			float returnSpeedFactor = abs(-gap * 20) / 100;					// 자연스럽게 속도 줄이기
+			const float returnSpeed = 80.0f;
+
+			if (returnSpeedFactor< 0.1f)
+				returnSpeedFactor = 0.1f;
 
 			if (gap < -0.0f)
-				m_pOwner->AddPitch(returnSpeed * 100.0f * fDeltaTime);
+				m_pOwner->AddPitch(returnSpeed * returnSpeedFactor * fDeltaTime);
 			else
 				m_bIsFire = false;
 
 			if (gap > 0.0f) 
 				m_pOwner->SetPitch(m_fInitPitch);
-		
 		}
 	}
 

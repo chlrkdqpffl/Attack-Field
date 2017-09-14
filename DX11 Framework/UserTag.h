@@ -8,13 +8,15 @@ enum class KeyInput
 	eNone,
 
 	// Direction & Moving
-	eForward		= 0x01,
-	eBackward		= 0x02,
-	eLeft			= 0x04,
-	eRight			= 0x08,
-	eRun			= 0x10,
-	eReload			= 0x20,
-	eOccupy			= 0x40,
+	eForward		= 0x01,			// W
+	eBackward		= 0x02,			// S
+	eLeft			= 0x04,			// A
+	eRight			= 0x08,			// D
+
+	eRun			= 0x10,			// Shift
+	eReload			= 0x20,			// R
+	eOccupy			= 0x40,			// E
+	eJump			= 0x80,			// Space Bar
 
 	// Mouse
 	eLeftMouse		= 0x100,

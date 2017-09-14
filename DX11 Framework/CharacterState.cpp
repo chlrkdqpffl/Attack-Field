@@ -36,19 +36,11 @@ void CState_Idle::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 
 	// Check Reload
-#ifdef USE_SERVER
 	if (pCharacter->GetIsReload()) {
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());
 		return;
 	}
-#else
-	if (pCharacter->GetIsReload()) {
-		if (pCharacter->GetWeaponBulletCount() != pCharacter->GetWeaponMaxBulletCount()) {
-			pUpperFSM->ChangeState(CState_Reload::GetInstance());
-			return;
-		}
-	}
-#endif
+	// Check Fire
 	if (pCharacter->GetIsFire()) {
 		pUpperFSM->ChangeState(CState_Fire::GetInstance());
 		return;
@@ -87,20 +79,11 @@ void CState_Walk::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 	
 	// Check Reload 
-#ifdef USE_SERVER
 	if (pCharacter->GetIsReload()) {
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());
 		return;
 	}
-#else
-	if (pCharacter->GetIsReload()) {
-		if (pCharacter->GetWeaponBulletCount() != pCharacter->GetWeaponMaxBulletCount()) {
-			pUpperFSM->ChangeState(CState_Reload::GetInstance());
-			return;
-		}
-	}
-#endif
-
+	// Check Fire
 	if (pCharacter->GetIsFire()) {
 		pUpperFSM->ChangeState(CState_Fire::GetInstance());
 		return;

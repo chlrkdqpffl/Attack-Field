@@ -1,7 +1,8 @@
 #pragma once
 #include "Object.h"
 #include "Camera.h"
-#include "CharacterObject.h"
+#include "CharacterPlayer.h"
+//#include "CharacterObject.h"
 
 class CPlayer
 {
@@ -9,15 +10,17 @@ public:
 	XMFLOAT4X4					m_mtxWorld;
 
 protected:
-	CCharacterObject			*m_pCharacter = nullptr;
+	CCharacterPlayer			*m_pCharacter = nullptr;
 	CCamera						*m_pCamera	= nullptr;
 
 	float						m_fSpeedFactor = 1.0f;
 	float						m_fInitSpeed = 0.0f;
+	float						m_fJumpSpeed = 0.0f;
 	XMFLOAT3					m_f3MoveDirection = XMFLOAT3(0, 0, 0);
 	XMFLOAT3     				m_f3Gravity = XMFLOAT3(0, 0, 0);
 
 	WORD						m_wKeyState = 0;
+	bool						m_bIsJumping = false;
 	int							count;
 
 	// Damage Direction
@@ -31,7 +34,7 @@ protected:
 	PxController*				m_pPxCharacterController = nullptr;
 
 public:
-	CPlayer(CCharacterObject* pCharacter = nullptr);
+	CPlayer(CCharacterPlayer* pCharacter = nullptr);
 	virtual ~CPlayer();
 
 	virtual void OnApplyGravity(float fDeltaTime) {};
@@ -42,12 +45,12 @@ public:
 	CCamera *OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag); 
 	void Rotate(float x, float y);
 	void Update(float fDeltaTime);
-	void UpdateKeyInput(float fDeltaTime);
+	void OnKeyboardUpdate(UINT nMessageID, WPARAM wParam);
+	void UpdateKeyState(float fDeltaTime);
 	void UpdateDOF(float fDeltaTime);
 
 	// ----- PhysX Funtion ----- //
 	void InitializePhysXData(PxPhysics* pPxPhysics, PxMaterial *pPxMaterial, PxControllerManager *pPxControllerManager);
-	void PhysXMove(float fDeltaTime);
 	void PhysXUpdate(float fDeltaTime);
 
 	// ----- Get, Setter ----- //

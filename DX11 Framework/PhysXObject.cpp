@@ -18,7 +18,7 @@ void CPhysXObject::SetPosition(XMFLOAT3 pos, bool isLocal)
 
 	PxTransform _PxTransform = m_pPxActor->getGlobalPose();
 
-	if (m_tagPxMesh == PxMeshType::eCube) {
+	if (m_tagPxMesh == PxMeshType::eCube) {			// Cube에 대하여 Offset 적용
 		pos.x += m_vecMeshContainer[0]->GetBoundingCube().Center.x;
 		pos.y += m_vecMeshContainer[0]->GetBoundingCube().Center.y;
 		pos.z += m_vecMeshContainer[0]->GetBoundingCube().Center.z;
@@ -126,5 +126,54 @@ void CPhysXObject::CreatePhysX_CubeMesh(string name, PxPhysics* pPxPhysics, PxSc
 	PxBoxGeometry _PxBoxGeometry(vExtents.x, vExtents.y, vExtents.z);
 	m_pPxActor = PxCreateStatic(*pPxPhysics, _PxTransform, _PxBoxGeometry, *pPxMaterial);
 	m_pPxActor->setName(name.c_str());
+	pPxScene->addActor(*m_pPxActor);
+}
+
+void CPhysXObject::CreatePhysX_ConvexMesh(string name, PxPhysics* pPxPhysics, PxScene* pPxScene, PxMaterial *pPxMaterial, PxCooking* pCooking, XMFLOAT3 vScale)
+{
+	m_tagPxMesh = PxMeshType::eConvex;
+
+	PxConvexMeshDesc meshDesc;
+
+	UINT nIndexCount = m_vecMeshContainer[0]->GetIndexCount();
+	UINT nVertexCount = m_vecMeshContainer[0]->GetVertexCount();
+	XMFLOAT3* pVertexData = m_vecMeshContainer[0]->GetVertexData();
+	UINT* pIndexData = m_vecMeshContainer[0]->GetIndexData();
+
+	PxVec3*	pPxVertexData = new PxVec3[nVertexCount];
+	PxU32* pPxIndexData = new PxU32[nIndexCount];
+
+	for (UINT count = 0; count < nVertexCount; ++count) {
+		pPxVertexData[count].x = pVertexData[count].x;
+		pPxVertexData[count].y = pVertexData[count].y;
+		pPxVertexData[count].z = pVertexData[count].z;
+	}
+
+	for (UINT count = 0; count < nIndexCount; ++count)
+		pPxIndexData[count] = pIndexData[count];
+
+	meshDesc.points.count = nVertexCount;
+	meshDesc.points.stride = sizeof(PxVec3);
+	meshDesc.points.data = &(*pPxVertexData);
+	meshDesc.flags = PxConvexFlags(PxConvexFlag::eCOMPUTE_CONVEX);
+
+	PxDefaultMemoryOutputStream stream;
+	bool ok = pCooking->cookConvexMesh(meshDesc, stream);
+
+	if (!ok)
+		return;
+
+	PxDefaultMemoryInputData rb(stream.getData(), stream.getSize());
+	PxConvexMesh* ConvexMesh = pPxPhysics->createConvexMesh(rb);
+
+	PxMeshScale PxScale;
+	PxScale.scale = PxVec3(vScale.x, vScale.y, vScale.z);;
+
+	PxConvexMeshGeometry meshGeom(ConvexMesh, PxScale);
+
+	PxTransform _PxTransform(0, 0, 0);
+	m_pPxActor = PxCreateStatic(*pPxPhysics, _PxTransform, meshGeom, *pPxMaterial);
+	m_pPxActor->setName(name.c_str());
+
 	pPxScene->addActor(*m_pPxActor);
 }

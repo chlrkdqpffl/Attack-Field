@@ -135,6 +135,9 @@ public:
 	}
 	bool GetIsReload() const { return m_bIsReload; }
 	
+	void SetIsJump(bool set) { m_bIsJump = set; }
+	bool GetIsJump() const { return m_bIsJump; }
+
 	void SetOccupy(bool occupy) {
 		static bool bIsOccupyStart = false;
 

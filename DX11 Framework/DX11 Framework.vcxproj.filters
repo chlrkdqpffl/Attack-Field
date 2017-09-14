@@ -303,9 +303,6 @@
     <ClCompile Include="ThirdPersonCamera.cpp">
       <Filter>Objects\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="AirplanePlayer.cpp">
-      <Filter>Objects\Player</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Objects\Player</Filter>
     </ClCompile>
@@ -586,9 +583,6 @@
     </ClInclude>
     <ClInclude Include="ThirdPersonCamera.h">
       <Filter>Objects\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="AirplanePlayer.h">
-      <Filter>Objects\Player</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Objects\Player</Filter>

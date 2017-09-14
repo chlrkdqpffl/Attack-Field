@@ -5,7 +5,7 @@
 #include "ThirdPersonCamera.h"
 #include "protocol.h"
 
-CPlayer::CPlayer(CCharacterObject* pCharacter) 
+CPlayer::CPlayer(CCharacterPlayer* pCharacter) 
 	: m_pCharacter(pCharacter)
 {
 	XMStoreFloat4x4(&m_mtxWorld, XMMatrixIdentity());
@@ -50,11 +50,6 @@ void CPlayer::InitializePhysXData(PxPhysics* pPxPhysics, PxMaterial *pPxMaterial
 	m_pPxCharacterController = pPxControllerManager->createController(PxCapsuledesc);
 }
 
-void CPlayer::PhysXMove(float fDeltaTime)
-{
-	m_pPxCharacterController->move(PxVec3(m_f3MoveDirection.x, m_f3MoveDirection.y, m_f3MoveDirection.z) * m_fInitSpeed * m_fSpeedFactor * fDeltaTime, 0, fDeltaTime, PxControllerFilters());
-}
-
 void CPlayer::PhysXUpdate(float fDeltaTime)
 {
 	/*
@@ -69,16 +64,20 @@ void CPlayer::PhysXUpdate(float fDeltaTime)
 	m_fFallvelocity = 0.f;
 	*/
 
-	m_pPxCharacterController->move(PxVec3(m_f3Gravity.x, m_f3Gravity.y, m_f3Gravity.z) * fDeltaTime, 0, fDeltaTime, PxControllerFilters());
+	PxVec3 vGravityVelocity = PxVec3(m_f3Gravity.x, m_f3Gravity.y, m_f3Gravity.z);
+	PxVec3 vMoveVelocity = m_fInitSpeed * m_fSpeedFactor * PxVec3(m_f3MoveDirection.x, m_f3MoveDirection.y, m_f3MoveDirection.z);
 
-	//현재 PhysX의 값으로 객체의 월드행렬을 만들어준다.
-	XMFLOAT3 position = XMFLOAT3(m_pPxCharacterController->getFootPosition().x, m_pPxCharacterController->getFootPosition().y, m_pPxCharacterController->getFootPosition().z);
+	PxVec3 vCalcMoveVelocity = vGravityVelocity + vMoveVelocity;
+	m_pPxCharacterController->move(vCalcMoveVelocity * fDeltaTime, 0, fDeltaTime, PxControllerFilters());
+
+	m_fJumpSpeed = TWBAR_MGR->g_xmf3Offset.y;
 
 	// Character Update
 	float characterCenterOffset = 1.6f;
-	m_mtxWorld._41 = position.x;
-	m_mtxWorld._42 = position.y + characterCenterOffset;
-	m_mtxWorld._43 = position.z;
+	XMFLOAT3 footPosition = XMFLOAT3(m_pPxCharacterController->getFootPosition().x, m_pPxCharacterController->getFootPosition().y, m_pPxCharacterController->getFootPosition().z);
+	m_mtxWorld._41 = footPosition.x;
+	m_mtxWorld._42 = footPosition.y + characterCenterOffset;
+	m_mtxWorld._43 = footPosition.z;
 	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&m_mtxWorld);
 }
 
@@ -87,7 +86,69 @@ void CPlayer::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 	if (m_pCamera) m_pCamera->UpdateShaderVariables(pd3dDeviceContext);
 }
 
-void CPlayer::UpdateKeyInput(float fDeltaTime)
+void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
+{
+	switch (nMessageID) {
+	case WM_KEYDOWN:
+		switch (wParam) {
+		case VK_W:
+			SetKeyDown(KeyInput::eForward);
+			break;
+		case VK_S:
+			SetKeyDown(KeyInput::eBackward);
+			break;
+		case VK_A:
+			SetKeyDown(KeyInput::eLeft);
+			break;
+		case VK_D:
+			SetKeyDown(KeyInput::eRight);
+			break;
+		case VK_SHIFT:
+			SetKeyDown(KeyInput::eRun);
+			break;
+		case VK_R:
+			SetKeyDown(KeyInput::eReload);
+			break;
+		case VK_E:
+			SetKeyDown(KeyInput::eOccupy);
+			break;
+		case VK_SPACE:
+			SetKeyDown(KeyInput::eJump);
+			break;
+		}
+		break;
+	case WM_KEYUP:
+		switch (wParam) {
+		case VK_W:
+			SetKeyUp(KeyInput::eForward);
+			break;
+		case VK_S:
+			SetKeyUp(KeyInput::eBackward);
+			break;
+		case VK_A:
+			SetKeyUp(KeyInput::eLeft);
+			break;
+		case VK_D:
+			SetKeyUp(KeyInput::eRight);
+			break;
+		case VK_R:
+			SetKeyUp(KeyInput::eReload);
+			break;
+		case VK_SHIFT:
+			SetKeyUp(KeyInput::eRun);
+			break;
+		case VK_E:
+			SetKeyUp(KeyInput::eOccupy);
+			break;
+		case VK_SPACE:
+			SetKeyUp(KeyInput::eJump);
+			break;
+		}
+		break;
+	}
+}
+
+void CPlayer::UpdateKeyState(float fDeltaTime)
 {
 	// Death Check
 	if (m_pCharacter->GetIsDeath()) {
@@ -95,7 +156,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 		return;
 	}
 
-	// Keyboard
+	// =============================== Keyboard ============================== //
 	if (m_wKeyState & static_cast<int>(KeyInput::eReload)) {
 		// Bullet Check
 		if (m_pCharacter->GetWeaponBulletCount() == m_pCharacter->GetWeaponMaxBulletCount())
@@ -107,15 +168,16 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 		m_pCharacter->SetIsReload(false);
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy)) {
-		if (m_pCharacter->GetAlive())
+//		if (m_pCharacter->GetAlive())
 			m_pCharacter->SetOccupy(true);
 	}
 	else
 		m_pCharacter->SetOccupy(false);
 
-
+	// ------------ Moving ----------- //
 	XMVECTOR vMoveDirection = XMVectorZero();
 	XMVECTOR relativeVelocity = XMVectorZero();
+
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eForward))
 	{
@@ -139,6 +201,23 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 		relativeVelocity += XMVectorSet(1, 0, 0, 0);
 	}
 
+	if (m_wKeyState & static_cast<int>(KeyInput::eJump)) {
+		if (false == m_bIsJumping) {
+			cout << "ㅇㅇㅇ" << endl;
+			m_bIsJumping = true;
+			vMoveDirection += GetvUp() * TWBAR_MGR->g_xmf3Offset.y;
+
+			//relativeVelocity += XMVectorSet(0, 1, 0, 0);
+			m_pCharacter->SetIsJump(true);
+		}
+	}
+	else {
+		m_pCharacter->SetIsJump(false);
+		m_bIsJumping = false;
+	}
+	
+
+
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
 		if (m_pCharacter->GetIsTempRun())	// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
 			vMoveDirection = GetvLook();
@@ -150,10 +229,11 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 		m_fSpeedFactor = 1.0f;
 	}
 
+
 	XMStoreFloat3(&m_f3MoveDirection, vMoveDirection);
 	m_pCharacter->SetRelativevVelocity(relativeVelocity);
 
-	// ----- Mouse ----- //
+	// =============================== Mouse ============================== //
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse))
 		m_pCharacter->SetIsFire(true);
 	else 
@@ -161,6 +241,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 
 	if (m_pCharacter->IsMoving())
 		m_pCharacter->Walking();
+
 
 #ifdef	USE_SERVER
 	cs_key_input packet;
@@ -170,7 +251,6 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	packet.key_button = m_wKeyState;
 	packet.playerPosition = GetPosition();
 
-
 	if ((m_wKeyState != 0) || count == 0) {
 		//WORD temp = static_cast<int>(KeyInput::eLeftMouse);
 		WORD key_button_e = static_cast<int>(KeyInput::eOccupy);
@@ -178,7 +258,6 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
 	}
 	count++;
-
 #endif
 }
 
@@ -285,10 +364,9 @@ void CPlayer::UpdateDOF(float fDeltaTime)
 void CPlayer::Update(float fDeltaTime)
 {
 	UpdateDOF(fDeltaTime);
+	UpdateKeyState(fDeltaTime);
 	PhysXUpdate(fDeltaTime);
-	UpdateKeyInput(fDeltaTime);
-	PhysXMove(fDeltaTime);
-
+	
 	// Camera Update
 	m_pCamera->Update(fDeltaTime);
 	m_pCamera->RegenerateViewMatrix();
@@ -298,15 +376,15 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 {
 	CCamera *pNewCamera = NULL;
 	switch (nNewCameraTag) {
-	case CameraTag::eFirstPerson:
-		pNewCamera = new CFirstPersonCamera(m_pCamera);
-		break;
-	case CameraTag::eSpaceShip:
-		pNewCamera = new CSpaceShipCamera(m_pCamera);
-		break;
-	case CameraTag::eThirdPerson:
-		pNewCamera = new CThirdPersonCamera(m_pCamera);
-		break;
+		case CameraTag::eFirstPerson:
+			pNewCamera = new CFirstPersonCamera(m_pCamera);
+			break;
+		case CameraTag::eSpaceShip:
+			pNewCamera = new CSpaceShipCamera(m_pCamera);
+			break;
+		case CameraTag::eThirdPerson:
+			pNewCamera = new CThirdPersonCamera(m_pCamera);
+			break;
 	}
 
 	if (nCurrentCameraTag == CameraTag::eSpaceShip)

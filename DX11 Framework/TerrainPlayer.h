@@ -6,7 +6,7 @@
 class CTerrainPlayer : public CPlayer
 {
 public:
-	CTerrainPlayer(CCharacterObject* pCharacter = nullptr);
+	CTerrainPlayer(CCharacterPlayer* pCharacter = nullptr);
 	virtual ~CTerrainPlayer();
 
 	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag);

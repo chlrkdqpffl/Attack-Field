@@ -158,7 +158,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AirplanePlayer.cpp" />
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="AntTweakBarManager.cpp" />
     <ClCompile Include="BillboardObject.cpp" />
@@ -278,7 +277,6 @@
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AirplanePlayer.h" />
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="AntTweakBarManager.h" />
     <ClInclude Include="BillboardObject.h" />
