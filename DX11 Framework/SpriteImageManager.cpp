@@ -9,7 +9,8 @@ void CSpriteImageManager::InitializeManager()
 
 //	AddSpriteInfo(TextureTag::eExplosionSprite, SpriteInfo(POINT{ 10, 5 }, 0.4f, 0.2f, 0.1f));
 	AddSpriteInfo(TextureTag::eGunExplosionOtherPlayer, SpriteInfo(POINT{ 5, 1 }, 0.3f, 0.2f, 0.1f));
-	AddSpriteInfo(TextureTag::eGunExplosionPlayer,		SpriteInfo(POINT{ 5, 1 }, 0.05f, 0.05f, 0.1f));
+//	AddSpriteInfo(TextureTag::eGunExplosionPlayer,		SpriteInfo(POINT{ 5, 1 }, 0.15f, 0.15f, 0.1f));
+	AddSpriteInfo(TextureTag::eGunExplosionPlayer,		SpriteInfo(POINT{ 5, 1 }, 0.2f, 0.2f, 0.1f));
 
 	CSpriteImageObject::CreateConstantBuffers();
 }
@@ -95,7 +96,7 @@ void CSpriteImageManager::RenderAll(ID3D11DeviceContext	*pd3dDeviceContext, CCam
 	pd3dDeviceContext->OMGetDepthStencilState(&prevDSS, &prevStencil);
 
 	pd3dDeviceContext->OMSetBlendState(STATEOBJ_MGR->g_pFireBS, nullptr, 0xffffffff);
-	pd3dDeviceContext->OMSetDepthStencilState(STATEOBJ_MGR->g_pNoDepthWritesDSS, 0);
+	pd3dDeviceContext->OMSetDepthStencilState(STATEOBJ_MGR->g_pDefaultDSS, 0);
 
 	for (auto& spriteObject : m_vecSpriteObjectContainer)
 		if (spriteObject->GetActive())

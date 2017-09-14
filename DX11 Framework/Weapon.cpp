@@ -17,13 +17,15 @@ CWeapon::~CWeapon()
 void CWeapon::Firing(XMVECTOR direction)
 {
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed / SCENE_MGR->g_nowScene->GetFrameSpeed()) {
+//		COLLISION_MGR->CreateFireDirectionLine(firePosOffset, direction, m_fRange);		// 총 발사 레이 렌더링
 		m_dwLastAttackTime = GetTickCount();
-		SOUND_MGR->Play3DSound(SoundTag::eGunFire, m_pOwner->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
-		SOUND_MGR->Play3DSound(SoundTag::eShellsFall, m_pOwner->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
-		LIGHT_MGR->AddPointLight(m_f3MuzzlePosition, 8.0f, XMFLOAT3(0.9f, 0.9f, 0.6f));
-		SPRITE_MGR->ActivationSprite(m_pMuzzleSpirte);
+		m_bIsFire = true;
 		m_nhasBulletCount--;
+		FireEffect();
 
+		if(m_pOwner->GetCharacterID() == 0)		// 본인 캐릭터만 적용
+			FireRecoil();
+		
 		XMVECTOR firePosOffset = GetvPosition() + (GetvRight() * -0.13f) + (GetvUp() * 0.05f) + (GetvLook() * -0.225f);
 #ifdef USE_SERVER
 		if (SCENE_MGR->g_pPlayerCharacter->GetIsFire())	{
@@ -90,7 +92,6 @@ void CWeapon::Firing(XMVECTOR direction)
 			}
 		}
 #endif
-//		COLLISION_MGR->CreateFireDirectionLine(firePosOffset, direction, m_fRange);		// 총 발사 레이 렌더링
 	}
 }
 
@@ -99,9 +100,72 @@ void CWeapon::Reloading()
 	m_nhasBulletCount = m_nMaxhasBulletCount;
 }
 
+void CWeapon::FireEffect()
+{
+	SOUND_MGR->Play3DSound(SoundTag::eGunFire, m_pOwner->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
+	SOUND_MGR->Play3DSound(SoundTag::eShellsFall, m_pOwner->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
+	LIGHT_MGR->AddPointLight(m_f3MuzzlePosition, 8.0f, XMFLOAT3(0.9f, 0.9f, 0.6f));
+	SPRITE_MGR->ActivationSprite(m_pMuzzleSpirte);
+}
+
+void CWeapon::FireRecoil()
+{
+	// ----- 총기 반동 ----- //
+	m_nFireBulletCount++;
+
+	if (0 < m_nFireBulletCount && m_nFireBulletCount < 4)
+	{
+		m_pOwner->AddPitch(RAND_FLOAT(-0.2f, 0.0f));
+	}
+	else if (4 <= m_nFireBulletCount && m_nFireBulletCount < 8) 
+	{
+		m_pOwner->AddPitch(RAND_FLOAT(-0.5f, -0.3f));
+		SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-0.5f, 0.5f));
+	}
+	else if (8 <= m_nFireBulletCount) 
+	{
+		if (m_fInitPitch - m_pOwner->GetPitch() < m_fMaxPitchGap) {		// 반동 최대치 전
+			m_pOwner->AddPitch(RAND_FLOAT(-0.6f, -0.4f));
+			SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-1.0f, 1.0f));
+		}
+		else {															// 반동 최대치 도달
+			m_pOwner->AddPitch(RAND_FLOAT(-0.3f, 0.3f));
+			SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-1.0f, 1.0f));
+		}
+	}
+}
+
+void CWeapon::UpdateRecoil(float fDeltaTime)
+{
+	if (m_bIsFire) 
+	{	// 발사 중지 시점
+		if (m_nFireBulletCount == 0)
+		{		
+			float gap = m_pOwner->GetPitch() - m_fInitPitch;
+			float returnSpeed = abs(-gap * 20) / 100;					// 자연스럽게 속도 줄이기
+			if (returnSpeed < 0.1f)
+				returnSpeed = 0.1f;
+
+			if (gap < -0.0f)
+				m_pOwner->AddPitch(returnSpeed * 100.0f * fDeltaTime);
+			else
+				m_bIsFire = false;
+
+			if (gap > 0.0f) 
+				m_pOwner->SetPitch(m_fInitPitch);
+		
+		}
+	}
+
+	if (m_nFireBulletCount == 1)	// 최초 발사 시점
+		m_fInitPitch = m_pOwner->GetPitch();
+}
+
 void CWeapon::Update(float fDeltaTime)
 {
 	CGameObject::Update(fDeltaTime);
+	if (m_pOwner->GetCharacterID() == 0)		// 본인 캐릭터만 적용
+		UpdateRecoil(fDeltaTime);
 
 	m_mtxParent = m_pOwner->GetSkinnedMesh()->GetFinalBoneMtx(m_nBoneIndex);
 	m_mtxWorld = m_mtxLocal * m_mtxParent * m_pOwner->m_mtxWorld;
@@ -110,8 +174,8 @@ void CWeapon::Update(float fDeltaTime)
 	
 	XMVECTOR muzzlePosition;
 	if (m_pOwner->GetCharacterID() == 0)
-		//muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
-		muzzlePosition = GetvPosition() + (GetvRight() * -1.5f) + (GetvUp() * 0.035f) + (GetvLook() * 0.1f);
+//		muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
+		muzzlePosition = GetvPosition() + (GetvRight() * -1.85f) + (GetvUp() * 0.03f) + (GetvLook() * 0.2f);
 	else
 		muzzlePosition = GetvPosition() + (GetvRight() * -1.0f) + (GetvUp() * 0.03f) + (GetvLook() * 0.02f);
 

@@ -12,33 +12,17 @@ CPhysXObject::~CPhysXObject()
 		m_pPxActor->release();
 }
 
-void CPhysXObject::SetPosition(float x, float y, float z, bool isLocal)
-{
-	CGameObject::SetPosition(x, y, z, isLocal);
-
-	PxTransform _PxTransform = m_pPxActor->getGlobalPose();
-	_PxTransform.p = PxVec3(x, y, z);
-	
-	m_pPxActor->setGlobalPose(_PxTransform);
-}
-
-void CPhysXObject::SetPosition(XMVECTOR vPosition, bool isLocal)
-{
-	CGameObject::SetPosition(vPosition, isLocal);
-
-	XMFLOAT3 pos; XMStoreFloat3(&pos, vPosition);
-
-	PxTransform _PxTransform = m_pPxActor->getGlobalPose();
-	_PxTransform.p = PxVec3(pos.x, pos.y, pos.z);
-
-	m_pPxActor->setGlobalPose(_PxTransform);
-}
-
 void CPhysXObject::SetPosition(XMFLOAT3 pos, bool isLocal)
 {
 	CGameObject::SetPosition(pos, isLocal);
 
 	PxTransform _PxTransform = m_pPxActor->getGlobalPose();
+
+	if (m_tagPxMesh == PxMeshType::eCube) {
+		pos.x += m_vecMeshContainer[0]->GetBoundingCube().Center.x;
+		pos.y += m_vecMeshContainer[0]->GetBoundingCube().Center.y;
+		pos.z += m_vecMeshContainer[0]->GetBoundingCube().Center.z;
+	}
 	_PxTransform.p = PxVec3(pos.x, pos.y, pos.z);
 
 	m_pPxActor->setGlobalPose(_PxTransform);
@@ -70,22 +54,9 @@ void CPhysXObject::SetRotate(XMFLOAT3 fAngle, bool isLocal)
 	m_pPxActor->setGlobalPose(_PxTransform);
 }
 
-void CPhysXObject::SetRotate(XMVECTOR *vAxis, float fAngle, bool isLocal)
-{
-	CGameObject::SetRotate(vAxis, isLocal);
-
-	XMFLOAT3 rotate; XMStoreFloat3(&rotate, *vAxis);
-	PxTransform _PxTransform = m_pPxActor->getGlobalPose();
-
-	_PxTransform.q *= PxQuat(XMConvertToRadians(rotate.x), PxVec3(1, 0, 0));
-	_PxTransform.q *= PxQuat(XMConvertToRadians(rotate.y), PxVec3(0, 1, 0));
-	_PxTransform.q *= PxQuat(XMConvertToRadians(rotate.z), PxVec3(0, 0, 1));
-
-	m_pPxActor->setGlobalPose(_PxTransform);
-}
-
 void CPhysXObject::CreatePhysX_TriangleMesh(string name, PxPhysics* pPxPhysics, PxScene* pPxScene, PxMaterial *pPxMaterial, PxCooking* pCooking, XMFLOAT3 vScale)
 {
+	m_tagPxMesh = PxMeshType::eTriangle;
 	PxTriangleMeshDesc meshDesc;
 
 	UINT nIndexCount = m_vecMeshContainer[0]->GetIndexCount();
@@ -136,7 +107,6 @@ void CPhysXObject::CreatePhysX_TriangleMesh(string name, PxPhysics* pPxPhysics, 
 
 void CPhysXObject::CreatePhysX_CubeMesh(string name, PxPhysics* pPxPhysics, PxScene* pPxScene, PxMaterial *pPxMaterial, PxCooking* pCooking, XMFLOAT3 vScale)
 {
-
 	/*
 	XMFLOAT3 vMin = 
 	vMin.x *= vScale.x;	 vMin.y *= vScale.y;  vMin.z *= vScale.z;
@@ -148,10 +118,11 @@ void CPhysXObject::CreatePhysX_CubeMesh(string name, PxPhysics* pPxPhysics, PxSc
 	XMFLOAT3 vExtents =
 		XMFLOAT3((abs(vMin.x) + abs(vMax.x)) / 2, (abs(vMin.y) + abs(vMax.y)) / 2, (abs(vMin.z) + abs(vMax.z)) / 2);
 		*/
-
+	m_tagPxMesh = PxMeshType::eCube;
 	XMFLOAT3 vExtents = m_vecMeshContainer[0]->GetBoundingCube().Extents;
 
-	PxTransform _PxTransform(0, 0, 0);
+	PxTransform _PxTransform(-m_vecMeshContainer[0]->GetBoundingCube().Center.x, -m_vecMeshContainer[0]->GetBoundingCube().Center.y, -m_vecMeshContainer[0]->GetBoundingCube().Center.z);
+
 	PxBoxGeometry _PxBoxGeometry(vExtents.x, vExtents.y, vExtents.z);
 	m_pPxActor = PxCreateStatic(*pPxPhysics, _PxTransform, _PxBoxGeometry, *pPxMaterial);
 	m_pPxActor->setName(name.c_str());

@@ -23,6 +23,9 @@ CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner) : CWeapon(pOwner)
 	m_nMaxhasBulletCount = 30;
 	m_nhasBulletCount = 30;
 
+//	m_nMaxhasBulletCount = 100;
+//	m_nhasBulletCount = 100;
+
 }
 
 CRifleGunWeapon::~CRifleGunWeapon()

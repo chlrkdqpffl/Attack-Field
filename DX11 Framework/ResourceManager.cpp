@@ -140,7 +140,7 @@ void CResourceManager::LoadSpriteData()
 	
 	AddResourece(TextureTag::eExplosionSprite,			"../Assets/Image/Sprite/Explosion.png");
 	AddResourece(TextureTag::eGunExplosionOtherPlayer,	"../Assets/Image/Sprite/Explosion3.png");
-	AddResourece(TextureTag::eGunExplosionPlayer,		"../Assets/Image/Sprite/Explosion3.png");
+	AddResourece(TextureTag::eGunExplosionPlayer,		"../Assets/Image/Sprite/Explosion4.png");
 }
 
 void CResourceManager::LoadMapData()

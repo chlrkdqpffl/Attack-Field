@@ -20,7 +20,13 @@ protected:
 	XMMATRIX				m_mtxParent;
 	XMFLOAT3				m_f3MuzzlePosition = XMFLOAT3(0, 0, 0);
 
-	// 명중률, 총기 반동은 추후 구현
+	// ----- 총기 반동 ----- //
+	UINT					m_nFireBulletCount = 0;				// 총기 반동 확인
+	float					m_fInitPitch = 0.0f;				// 최초 반동 위치
+	bool					m_bIsFire = false;
+	const float				m_fMaxPitchGap = 5.0f;				// 최대 반동 각도
+
+	// ------------- 무기 세부 정보 ------------ //
 	WeaponData::Type		m_Type = WeaponData::Type::eNone;	// 총기 타입
 	float					m_fDamage = 0.f;					// 데미지
 	float					m_fRange = 0.f;						// 유효 사거리
@@ -35,8 +41,15 @@ public:
 	virtual void Update(float fDeltaTime) override;
 
 	void Reloading();
+
 	bool IsExistBullet() const { return ( 0 < m_nhasBulletCount); }
 	UINT GetBulletCount() const { return m_nhasBulletCount; }
 	UINT GetMaxBulletCount() const { return m_nMaxhasBulletCount; }
+	void SetFireBulletCount(UINT set) { m_nFireBulletCount = set; }
 	CSpriteImageObject*	GetMuzzleSprite() const { return m_pMuzzleSpirte; }
+
+protected:
+	void FireEffect();
+	void FireRecoil();
+	void UpdateRecoil(float fDeltaTime);
 };

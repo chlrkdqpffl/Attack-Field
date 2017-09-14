@@ -177,6 +177,7 @@ void CState_Walk::ExitState(CCharacterObject* pCharacter, AnimationData::Parts t
 void CState_Reload::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.6f);
+	pCharacter->GetWeapon()->SetFireBulletCount(0);
 	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 }
 

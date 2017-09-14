@@ -14,8 +14,7 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-
-//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(0.6f, 0.05f, 0.225f);
+	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(100.f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(803, 450 - 23, 0);
 //	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(0.2f, 0.45f, 0.5f, 1.0f);
 
@@ -109,19 +108,8 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_F4:	
 				m_pPlayer->SetPosition(XMFLOAT3(60.0f, 40.0f, 20.0f));
-
 				break;
 #ifndef USE_SERVER
-			case VK_F5:	
-				m_vecCharacterContainer.back()->SetIsFire(true);
-				break;
-			case VK_F6:
-				m_vecCharacterContainer.back()->SetIsFire(false);
-				break;
-			case VK_F7:
-				m_tagOccupyTeam = TeamType::eRedTeam;
-				m_bIsGameRoundOver = true;
-				break;
 			case VK_Z:
 				// 임의로 죽어보기
 				m_pPlayerCharacter->SetLife(0);
@@ -133,6 +121,16 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			case VK_C:
 				// 임의로 위급 상황
 				m_pPlayerCharacter->SetLife(20);
+				break;
+			case VK_V:	
+				m_vecCharacterContainer.back()->SetIsFire(true);
+				break;
+			case VK_B:
+				m_vecCharacterContainer.back()->SetIsFire(false);
+				break;
+			case VK_N:
+				m_tagOccupyTeam = TeamType::eRedTeam;
+				m_bIsGameRoundOver = true;
 				break;
 #endif
 			}
@@ -420,7 +418,7 @@ void CMainScene::Initialize()
 	pCharacter->CreateAxisObject(m_pd3dDevice);
 
 #ifdef DEVELOP_MODE
-	pCharacter->SetLife(100000);	// 파티클 테스트용
+	pCharacter->SetLife(10000);	// 파티클 테스트용
 #else
 	pCharacter->SetLife(100);
 #endif
@@ -460,6 +458,7 @@ void CMainScene::CreateMapDataInstancingObject()
 
 	// Object
 	CGameObject* pObject = nullptr;
+	CPhysXObject* pPhysXObject = nullptr;
 	vector<MapData> vecMapData;
 
 	// Shader
@@ -494,17 +493,17 @@ void CMainScene::CreateMapDataInstancingObject()
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eRoad1);
 	for (int count = 0; count < vecMapData.size(); ++count) {
-		pObject = new CGameObject();
-		pObject->SetMesh(pFbxMesh);
-		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation);
-		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_CubeMesh("Road1", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);
-		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
-	
+
 	// Road2
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eRoad2).size());
 
@@ -517,47 +516,48 @@ void CMainScene::CreateMapDataInstancingObject()
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eRoad2);
 	for (int count = 0; count < vecMapData.size(); ++count) {
-		pObject = new CGameObject();
-		pObject->SetMesh(pFbxMesh);
-		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation);
-		pObject->CreateBoundingBox(m_pd3dDevice, pFbxMesh);
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_CubeMesh("Road2", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pObject);
-		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 
+
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCrossRoad);
 	for (int count = 0; count < vecMapData.size(); ++count) {
-		pObject = new CGameObject();
 		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eCrossRoad, vecMapData[count].m_Scale);
 		pFbxMesh->Initialize(m_pd3dDevice);
 
-		pObject->SetMaterial(1, TextureTag::eCrossRoadD);
-		pObject->SetMesh(pFbxMesh);
-		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation);
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->CreateBoundingBox(m_pd3dDevice);
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->SetMaterial(1, TextureTag::eCrossRoadD);
+		pPhysXObject->CreatePhysX_CubeMesh("eCrossRoad", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		pObject->CreateBoundingBox(m_pd3dDevice);
-
-		AddShaderObject(ShaderTag::eNormalTexture, pObject);
+		AddShaderObject(ShaderTag::eNormalTexture, pPhysXObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCenterRoad);
 	for (int count = 0; count < vecMapData.size(); ++count) {
-		pObject = new CGameObject();
 		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eCenterRoad, vecMapData[count].m_Scale);
 		pFbxMesh->Initialize(m_pd3dDevice);
 
-		pObject->SetMaterial(1, TextureTag::eCenterRoadD);
-		pObject->SetMesh(pFbxMesh);
-		pObject->SetPosition(vecMapData[count].m_Position);
-		pObject->Rotate(vecMapData[count].m_Rotation);
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->CreateBoundingBox(m_pd3dDevice);
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->SetMaterial(1, TextureTag::eCenterRoadD);
+		pPhysXObject->CreatePhysX_CubeMesh("eCenterRoad", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		pObject->CreateBoundingBox(m_pd3dDevice);
-
-		AddShaderObject(ShaderTag::eNormalTexture, pObject);
+		AddShaderObject(ShaderTag::eNormalTexture, pPhysXObject);
 	}
 #pragma endregion
 
@@ -1237,8 +1237,8 @@ void CMainScene::CreateTestingObject()
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		//m_vecBBoxRenderContainer.push_back(pPhysXObject);
 		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 
@@ -1261,7 +1261,7 @@ void CMainScene::CreateTestingObject()
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
 		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
-		//COLLISION_MGR->m_vecStaticMeshContainer.push_back(pObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 
@@ -1272,47 +1272,391 @@ void CMainScene::CreateTestingObject()
 		pFbxMesh->Initialize(m_pd3dDevice);
 
 		pPhysXObject = new CPhysXObject();
+		pPhysXObject->CreateBoundingBox(m_pd3dDevice);
 		pPhysXObject->SetMesh(pFbxMesh);
 		pPhysXObject->SetMaterial(1, TextureTag::eCrossRoadD);
 		pPhysXObject->CreatePhysX_CubeMesh("eCrossRoad", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pPhysXObject);
-	//	AddShaderObject(ShaderTag::eNormalTexture, pObject);
+		AddShaderObject(ShaderTag::eNormalTexture, pPhysXObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCenterRoad);
 	for (int count = 0; count < vecMapData.size(); ++count) {
-//		pObject = new CGameObject();
 		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eCenterRoad, vecMapData[count].m_Scale);
 		pFbxMesh->Initialize(m_pd3dDevice);
 
 		pPhysXObject = new CPhysXObject();
+		pPhysXObject->CreateBoundingBox(m_pd3dDevice);
 		pPhysXObject->SetMesh(pFbxMesh);
 		pPhysXObject->SetMaterial(1, TextureTag::eCenterRoadD);
 		pPhysXObject->CreatePhysX_CubeMesh("eCenterRoad", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormalTexture, pPhysXObject);
+		AddShaderObject(ShaderTag::eNormalTexture, pPhysXObject);
 	}
 #pragma endregion
 
-	/*
+#pragma region [SideWalk1]
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eSideWalk1);
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eSideWalk1).size());
+	pMesh = new CCubeMeshTexturedTangenteIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
+	//	pMesh = new CCubePatchMesh(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
+	pInstancingShaders->SetMesh(pMesh);
+	pInstancingShaders->SetMaterial(XMFLOAT2(2.0f, 2.0f), 2, TextureTag::eSideWalk1D, TextureTag::eSideWalk1ND);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pMesh);
+		pPhysXObject->CreatePhysX_CubeMesh("SideWalk1", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+	
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+#pragma endregion
+
+#pragma region [SideWalk2]
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eSideWalk2);
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eSideWalk2).size());
+	pMesh = new CCubeMeshTexturedTangenteIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
+
+	pInstancingShaders->SetMesh(pMesh);
+	pInstancingShaders->SetMaterial(XMFLOAT2(2.0f, 2.0f), 2, TextureTag::eSideWalk2D, TextureTag::eSideWalk2N);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pMesh);
+		pPhysXObject->CreatePhysX_CubeMesh("SideWalk2", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+	
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+#pragma endregion
+
+	
+#pragma region [StoneWall]
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall);
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall).size());
+	pMesh = new CCubeMeshTexturedTangenteIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
+
+	pInstancingShaders->SetMesh(pMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eStoneWallD, TextureTag::eStoneWallN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pMesh);
+		pPhysXObject->CreatePhysX_CubeMesh("StoneWall", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation.x - 90, vecMapData[count].m_Rotation.y - 180, vecMapData[count].m_Rotation.z);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+#pragma endregion
+
+#pragma region [Barricade]
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eBarricade).size());
+
 	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eBarricade);
 	pFbxMesh->Initialize(m_pd3dDevice);
-	
-	{
-		CPhysXObject* pPhysXObject = new CPhysXObject();
-		pPhysXObject->SetMesh(pFbxMesh);
-		pPhysXObject->CreatePhysXData("TestBox", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
-		pPhysXObject->SetPosition(XMFLOAT3(60, 1.2f, 30));
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(1, TextureTag::eBarricadeD);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
 
-		m_vecBBoxRenderContainer.push_back(pPhysXObject);
-		m_vecShaderObjectContainer.AddObject(ShaderTag::eNormal, pPhysXObject);
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBarricade);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		//pPhysXObject->CreatePhysX_TriangleMesh("Barricade", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->CreatePhysX_CubeMesh("Barricade", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
 	}
-	*/
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+#pragma endregion
+
+#pragma region [Barrel]
+	// Fire Barrel 1
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eFireBarrel);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eFireBarrelD, TextureTag::eFireBarrelN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_CubeMesh("Fire Barrel 1", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	// Barrel
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eBarrel).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eBarrel);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eBarrelD, TextureTag::eBarrelN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBarrel);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_CubeMesh("Barrel", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	// Occupy Barrel
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eOccupyBarrel).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eOccupyBarrel);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eOccupyBarrelD, TextureTag::eOccupyBarrelN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eOccupyBarrel);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_CubeMesh("Occupy Barrel", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+#pragma endregion
+
+#pragma region [Container]
+	// Container 1
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer1Red).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer1);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerRedD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer1Red);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_TriangleMesh("Container 1 Red", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer1Blue).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer1);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerBlueD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer1Blue);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_TriangleMesh("Container 1 Blue", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer1Yellow).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer1);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerYellowD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer1Yellow);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_TriangleMesh("Container 1 Yellow", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+
+	// Container 2
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer2Red).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer2);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerRedD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer2Red);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_TriangleMesh("Container 2 Red", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer2Blue).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer2);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerBlueD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer2Blue);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_TriangleMesh("Container 2 Blue", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer2Yellow).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer2);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerYellowD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer2Yellow);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_TriangleMesh("Container 2 Yellow", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	// Container 3
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer3Red).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer3);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerRedD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer3Red);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_TriangleMesh("Container 3 Red", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer3Blue).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer3);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerBlueD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer3Blue);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_TriangleMesh("Container 3 Blue", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer3Yellow).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eContainer3);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eContainerYellowD, TextureTag::eContainerN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eContainer3Yellow);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_TriangleMesh("Container 3 Yellow", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+#pragma endregion
+
 }
 
 void CMainScene::CreateTweakBars()

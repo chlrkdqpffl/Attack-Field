@@ -79,11 +79,11 @@ public:
 	virtual void RotateFiringPos();
 
 	// ----- Game System Function ----- //
+	virtual void Revival();
 	void Firing();
 	void Walking();
 	void Running();
 	void Reloading();
-	virtual void Revival();
 
 	void DamagedCharacter(UINT damage);
 
@@ -102,6 +102,7 @@ public:
 	void SetYaw(float yaw) { m_fYaw = yaw; }
 	float GetYaw() const { return m_fYaw; }
 	void SetPitch(float pitch) { m_fPitch = pitch; }
+	void AddPitch(float pitch) { m_fPitch += pitch; }
 	float GetPitch() const { return m_fPitch; }
 
 	float GetminusPitch() { return m_fPrevPitch - m_fPitch; }
@@ -121,9 +122,17 @@ public:
 	bool GetIsRun() const { return  m_bIsRun; }
 	void SetIsTempRun(bool set) { m_bTempIsRun = set; }
 	bool GetIsTempRun() const { return m_bTempIsRun; }
-	void SetIsFire(bool set) { m_bIsFire = set; }
+	void SetIsFire(bool bIsFire) { 
+		m_bIsFire = bIsFire;
+		if (false == bIsFire)
+			m_pWeapon->SetFireBulletCount(0);
+	}
 	bool GetIsFire() const { return  m_bIsFire; }
-	void SetIsReload(bool set) { m_bIsReload = set; }
+	void SetIsReload(bool bIsReload) { 
+		m_bIsReload = bIsReload;
+		if (bIsReload)
+			SetIsFire(false);
+	}
 	bool GetIsReload() const { return m_bIsReload; }
 	
 	void SetOccupy(bool occupy) {

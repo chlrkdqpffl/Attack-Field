@@ -29,11 +29,11 @@ void CPlayer::InitializePhysXData(PxPhysics* pPxPhysics, PxMaterial *pPxMaterial
 {
 	PxCapsuleControllerDesc	PxCapsuledesc;
 	PxCapsuledesc.position = PxExtendedVec3(0, 0, 0);
-	PxCapsuledesc.radius = 0.5f;
+	PxCapsuledesc.radius = 1.2f;
 	PxCapsuledesc.height = 2.0f;
 
 	//캐릭터가 올라갈 수있는 장애물의 최대 높이를 정의합니다. 
-	PxCapsuledesc.stepOffset = 1.f;
+	PxCapsuledesc.stepOffset = 0.8f;
 
 	//캐시 된 볼륨 증가.
 	//성능을 향상시키기 위해 캐싱하는 컨트롤러 주변의 공간입니다.  이것은 1.0f보다 커야하지만 너무 크지 않아야하며, 2.0f보다 낮아야합니다.
@@ -75,7 +75,7 @@ void CPlayer::PhysXUpdate(float fDeltaTime)
 	XMFLOAT3 position = XMFLOAT3(m_pPxCharacterController->getFootPosition().x, m_pPxCharacterController->getFootPosition().y, m_pPxCharacterController->getFootPosition().z);
 
 	// Character Update
-	float characterCenterOffset = 2.1f;
+	float characterCenterOffset = 1.6f;
 	m_mtxWorld._41 = position.x;
 	m_mtxWorld._42 = position.y + characterCenterOffset;
 	m_mtxWorld._43 = position.z;
@@ -156,7 +156,7 @@ void CPlayer::UpdateKeyInput(float fDeltaTime)
 	// ----- Mouse ----- //
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse))
 		m_pCharacter->SetIsFire(true);
-	else
+	else 
 		m_pCharacter->SetIsFire(false);
 
 	if (m_pCharacter->IsMoving())
@@ -224,6 +224,9 @@ void CPlayer::Rotate(float x, float y)
 	SetvLook(XMVector3Normalize(GetvLook()));
 	SetvRight(XMVector3Normalize(XMVector3Cross(GetvUp(), GetvLook())));
 	SetvUp(XMVector3Normalize(XMVector3Cross(GetvLook(), GetvRight())));
+
+	if (nCurrentCameraTag == CameraTag::eThirdPerson)
+		m_pCharacter->SetPitch(-10.0f);
 
 #ifdef	USE_SERVER
 	if (abs(m_pCharacter->GetminusPitch()) >= 1.0f || abs(m_pCharacter->GetminusYaw()) >= 1.0f)
