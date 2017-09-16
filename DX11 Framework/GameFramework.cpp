@@ -67,11 +67,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	SERVER_MGR->InitializeManager();
 	STATEOBJ_MGR->InitializeManager();
 	GLOBAL_MGR->InitializeManager();
-
-//	AddFontResource()
-
-	TEXT_MGR->InitializeManager(m_pd3dDevice, L"Koverwatch");
-//	TEXT_MGR->InitializeManager(m_pd3dDevice, L"a반달곰");			// 폰트 여러개 만들 수 있음
+	TEXT_MGR->InitializeManager(m_pd3dDevice);
 	SCENE_MGR->InitializeManager();
 	TWBAR_MGR->InitializeManager();
 	COLLISION_MGR->InitializeManager();

@@ -254,10 +254,6 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 			m_pCharacter->SetIsJump(true);
 		}
 	}
-	else {
-//		m_pCharacter->SetIsJump(false);
-	//	m_bIsJumping = false;
-	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eCrouch)) {
 		m_pCharacter->SetIsCrouch(true);

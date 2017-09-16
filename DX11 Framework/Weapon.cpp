@@ -4,7 +4,7 @@
 #include "protocol.h"
 
 CWeapon::CWeapon(CCharacterObject* pOwner)
-	: m_pOwner(pOwner), m_fMaxPitchGap(3.0f)
+	: m_pOwner(pOwner), m_fMaxPitchGap(5.0f)
 {
 //	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.0f, 1.4f, -0.05f);
 //	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(-30.f, 125.f, 85.f);	
@@ -127,13 +127,12 @@ void CWeapon::FireRecoil()
 	else if (8 <= m_nFireBulletCount)								
 	{	//	8~ 발 최대 반동력
 		m_fNowRecoil += 3.0f * m_fCalcRecoil;
+		SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-1.0f, 1.0f));
 		if (m_fInitPitch - m_pOwner->GetPitch() < m_fMaxPitchGap) {		// 반동 최대치 전
 			m_pOwner->AddPitch(RAND_FLOAT(-m_fCalcRecoil * 2.5f, -m_fCalcRecoil * 1.5f));
-			SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-1.0f, 1.0f));
 		}
 		else {															// 반동 최대치 도달
 			m_pOwner->AddPitch(RAND_FLOAT(-m_fCalcRecoil * 1.5f, m_fCalcRecoil * 1.5f));
-			SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-1.0f, 1.0f));
 		}
 	}
 }
@@ -157,7 +156,7 @@ void CWeapon::UpdateRecoil(float fDeltaTime)
 				m_bIsFire = false;
 
 			if (gap > 0.0f) 
-				m_pOwner->SetPitch(m_fInitPitch);
+				m_pOwner->SetPitch(m_pOwner->GetPitch());
 		}
 	}
 
