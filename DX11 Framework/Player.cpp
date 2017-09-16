@@ -11,10 +11,10 @@ CPlayer::CPlayer(CCharacterPlayer* pCharacter)
 	XMStoreFloat4x4(&m_mtxWorld, XMMatrixIdentity());
 
 #ifdef DEVELOP_MODE
-	//m_fMoveSpeed = 25.0f;
-	m_fMoveSpeed = 8.0f;
+//	m_fMoveSpeed = 15.0f;
+	m_fMoveSpeed = 7.0f;
 #else
-	m_fMoveSpeed = 8.0f;	// 자연스러운 속도
+	m_fMoveSpeed = 7.0f;	// 자연스러운 속도
 #endif
 	count = 0;
 }
@@ -60,7 +60,7 @@ void CPlayer::PhysXUpdate(float fDeltaTime)
 	m_pPxCharacterController->move(vMoveVelocity * fDeltaTime, 0, fDeltaTime, PxControllerFilters());
 
 	// ----- Apply Gravity ----- //
-	m_f3GravityAccel = XMFLOAT3(0.0f, -1.0f * TWBAR_MGR->g_xmf3Offset.y, 0.0f);
+	m_f3GravityAccel = XMFLOAT3(0.0f, -1.0f, 0.0f);
 	m_f3GravityVelocity.x += m_f3GravityAccel.x;
 	m_f3GravityVelocity.y += m_f3GravityAccel.y;
 	m_f3GravityVelocity.z += m_f3GravityAccel.z;
@@ -78,13 +78,6 @@ void CPlayer::PhysXUpdate(float fDeltaTime)
 		m_f3GravityVelocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		m_f3Accelerate = XMFLOAT3(m_f3Accelerate.x, 0, m_f3Accelerate.z);
 	}
-
-	/*
-	if (pxState.collisionFlags == PxControllerCollisionFlag::eCOLLISION_SIDES) {
-	//if (pxState.collisionFlags == PxControllerCollisionFlag::eCOLLISION_DOWN || pxState.collisionFlags == PxControllerCollisionFlag::eCOLLISION_SIDES) {
-		m_f3Accelerate = XMFLOAT3(m_f3Accelerate.x, 0, m_f3Accelerate.z);
-	}
-	*/
 
 	// ----- Character Update ----- //
 	float characterCenterOffset = 0.65f;
@@ -221,7 +214,7 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
 		if (m_pCharacter->GetIsTempRun())	// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
 			vMoveDirection = GetvLook();
-		m_fSpeedFactor = 2.0f;
+		m_fSpeedFactor = 2.5f;
 		m_pCharacter->Running();
 	}
 	else {
@@ -249,7 +242,8 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 		if (false == m_bIsJumping) {
 			m_bIsJumping = true;
 		
-			AddAccel(XMFLOAT3(0.0f, TWBAR_MGR->g_xmf3Quaternion.y, 0.0f));
+			//AddAccel(XMFLOAT3(0.0f, TWBAR_MGR->g_xmf3Quaternion.y, 0.0f));
+			AddAccel(XMFLOAT3(0.0f, 15.0f, 0.0f));
 			relativeVelocity += XMVectorSet(0, 1, 0, 0);
 			m_pCharacter->SetIsJump(true);
 		}

@@ -92,17 +92,14 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayerCharacter->SetLife(20);
 				break;
 			case VK_V:	
-	//			m_vecCharacterContainer.back()->SetIsFire(true);
-				m_vecCharacterContainer.back()->SetIsCrouch(true);
+				m_vecCharacterContainer.back()->SetIsFire(true);
 				break;
 			case VK_B:
-				m_vecCharacterContainer.back()->SetIsCrouch(false);
+				m_vecCharacterContainer.back()->SetIsFire(false);
 				break;
 			case VK_N:
-				m_vecCharacterContainer.back()->SetPosition(60.0f, 2.5f, 15.0f);
-
-//				m_tagOccupyTeam = TeamType::eRedTeam;
-//				m_bIsGameRoundOver = true;
+				m_tagOccupyTeam = TeamType::eRedTeam;
+				m_bIsGameRoundOver = true;
 				break;
 #endif
 			}

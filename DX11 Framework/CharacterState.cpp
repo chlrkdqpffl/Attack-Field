@@ -279,7 +279,7 @@ void CState_Run::EnterState(CCharacterObject* pCharacter, AnimationData::Parts t
 		return;
 
 	SOUND_MGR->Play3DSound(SoundTag::eRun, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
-	pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun, 1.5f);
+	pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun, 1.4f);
 	pCharacter->SetIsTempRun(true);
 }
 
