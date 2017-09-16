@@ -36,7 +36,7 @@ void CLineObject::CreateShader(ID3D11Device *pd3dDevice)
 {
 	CShader* pShader = new CShader();
 	pShader->CreateShader(pd3dDevice, ShaderTag::eColor);
-
+	
 	SetShader(pShader);
 }
 

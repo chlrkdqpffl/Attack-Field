@@ -113,7 +113,6 @@ void CResourceManager::LoadUIData()
 {
 	cout << endl << " ----- UI Data -----" << endl;
 
-	AddResourece(TextureTag::eAim,				"../Assets/Image/UI/AimUI.png");
 	AddResourece(TextureTag::eCaptureArea,		"../Assets/Image/UI/CaptureArea.png");
 	AddResourece(TextureTag::eScoreUI,			"../Assets/Image/UI/ScoreUI.png");
 	AddResourece(TextureTag::eMagazineUI,		"../Assets/Image/UI/MagazineUI.png");

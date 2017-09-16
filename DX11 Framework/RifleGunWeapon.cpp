@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "RifleGunWeapon.h"
 
-CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner) : CWeapon(pOwner)
+CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner)
+	: CWeapon(pOwner)
 {
 	XMFLOAT3 offsetPos, offsetRotate;
 

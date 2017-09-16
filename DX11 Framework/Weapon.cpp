@@ -3,8 +3,8 @@
 #include "CharacterObject.h"
 #include "protocol.h"
 
-CWeapon::CWeapon(CCharacterObject* pOwner) 
-	: m_pOwner(pOwner)
+CWeapon::CWeapon(CCharacterObject* pOwner)
+	: m_pOwner(pOwner), m_fMaxPitchGap(3.0f)
 {
 //	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.0f, 1.4f, -0.05f);
 //	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(-30.f, 125.f, 85.f);	
@@ -26,7 +26,7 @@ void CWeapon::Firing(XMVECTOR direction)
 			FireRecoil();
 		
 		XMVECTOR firePosOffset = GetvPosition() + (GetvRight() * -0.13f) + (GetvUp() * 0.05f) + (GetvLook() * -0.225f);
-		COLLISION_MGR->CreateFireDirectionLine(firePosOffset, direction, m_fRange);		// 총 발사 레이 렌더링
+//		COLLISION_MGR->CreateFireDirectionLine(firePosOffset, direction, m_fRange);		// 총 발사 레이 렌더링
 
 #ifdef USE_SERVER
 		if (SCENE_MGR->g_pPlayerCharacter->GetIsFire())	{
@@ -111,26 +111,28 @@ void CWeapon::FireEffect()
 
 void CWeapon::FireRecoil()
 {
-	// ----- 총기 반동 ----- //
 	m_nFireBulletCount++;
 
 	if (0 < m_nFireBulletCount && m_nFireBulletCount < 4)
-	{
-		m_pOwner->AddPitch(RAND_FLOAT(-0.2f, 0.0f));
+	{	// 0~3발까지 최소 반동
+		m_fNowRecoil += m_fCalcRecoil;
+		m_pOwner->AddPitch(RAND_FLOAT(-m_fCalcRecoil, 0.0f));
 	}
-	else if (4 <= m_nFireBulletCount && m_nFireBulletCount < 8) 
-	{
-		m_pOwner->AddPitch(RAND_FLOAT(-0.5f, -0.3f));
+	else if (4 <= m_nFireBulletCount && m_nFireBulletCount < 8)
+	{	// 4~7발 추가 반동
+		m_fNowRecoil += 2.0f * m_fCalcRecoil;
+		m_pOwner->AddPitch(RAND_FLOAT(-m_fCalcRecoil * 1.5f, -m_fCalcRecoil));
 		SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-0.5f, 0.5f));
 	}
-	else if (8 <= m_nFireBulletCount) 
-	{
+	else if (8 <= m_nFireBulletCount)								
+	{	//	8~ 발 최대 반동력
+		m_fNowRecoil += 3.0f * m_fCalcRecoil;
 		if (m_fInitPitch - m_pOwner->GetPitch() < m_fMaxPitchGap) {		// 반동 최대치 전
-			m_pOwner->AddPitch(RAND_FLOAT(-0.6f, -0.4f));
+			m_pOwner->AddPitch(RAND_FLOAT(-m_fCalcRecoil * 2.5f, -m_fCalcRecoil * 1.5f));
 			SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-1.0f, 1.0f));
 		}
 		else {															// 반동 최대치 도달
-			m_pOwner->AddPitch(RAND_FLOAT(-0.3f, 0.3f));
+			m_pOwner->AddPitch(RAND_FLOAT(-m_fCalcRecoil * 1.5f, m_fCalcRecoil * 1.5f));
 			SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-1.0f, 1.0f));
 		}
 	}
@@ -161,6 +163,20 @@ void CWeapon::UpdateRecoil(float fDeltaTime)
 
 	if (m_nFireBulletCount == 1)	// 최초 발사 시점
 		m_fInitPitch = m_pOwner->GetPitch();
+
+	// ----- 반동력 계산 ----- //
+	float recoilFactor = 1.0f;
+	if (m_pOwner->GetIsCrouch())
+		recoilFactor = 0.5f;
+	else if (m_pOwner->IsMoving())
+		recoilFactor = 1.5f;
+	if (m_pOwner->GetIsReload())
+		recoilFactor = 3.0f;
+
+	m_fCalcRecoil = recoilFactor * m_fReCoil;
+
+	m_fNowRecoil -= 2.0f * fDeltaTime;
+	m_fNowRecoil = clamp(m_fNowRecoil, recoilFactor, 3.f);
 }
 
 void CWeapon::Update(float fDeltaTime)
@@ -183,4 +199,4 @@ void CWeapon::Update(float fDeltaTime)
 
 	XMStoreFloat3(&m_f3MuzzlePosition, muzzlePosition);
 	SPRITE_MGR->SetPosition(m_pMuzzleSpirte, m_f3MuzzlePosition);
-}
+} 

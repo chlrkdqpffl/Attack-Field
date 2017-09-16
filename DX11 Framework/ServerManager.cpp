@@ -34,8 +34,8 @@ void CServerManager::processpacket(char *ptr)
 		
 					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eReload))
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(true);
-					else
-						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(false);
+//					else
+//						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(false);
 		
 					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eRun))
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(true);

@@ -50,6 +50,7 @@ public:
 	// UI
 	void PrepareRenderUI();
 	void RenderUI();
+	void ShowAimUI();
 	void ShowDamageDirection();
 	void ShowDeathRespawnUI();
 	void ShowOccupyUI();
@@ -79,6 +80,7 @@ private:
 	ID3D11Buffer					*m_pd3dcbLights		= nullptr;
 	ID3D11Buffer					*m_pd3dcbTestVariable = nullptr;
 
+	CAimObject*						m_pAimObject = nullptr;
 
 	// Bounding Box Render
 	bool							m_bIsPreCollisionCheck = false;

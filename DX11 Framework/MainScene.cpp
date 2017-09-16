@@ -14,10 +14,12 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(8.f, 2.0f, 0.0f);
+	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(0.f, 2.0f, 0.0f);
 //	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(2.5f, 25.0f, 0.0f, 0.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
+
+	TWBAR_MGR->g_nSelect = 10;
 }
 
 CMainScene::~CMainScene()
@@ -68,14 +70,9 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			case VK_F1:
 			case VK_F2:
 			case VK_F3:
-					m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag(wParam - VK_F1 + 1));
-					m_pCamera = m_pPlayer->GetCamera();
-					SCENE_MGR->g_pCamera = m_pCamera;
-
-					if (wParam - VK_F1 == 2)
-						m_pUIManager->GetUIObject(TextureTag::eAim)->SetActive(false);
-					else 
-						m_pUIManager->GetUIObject(TextureTag::eAim)->SetActive(true);
+				m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag(wParam - VK_F1 + 1));
+				m_pCamera = m_pPlayer->GetCamera();
+				SCENE_MGR->g_pCamera = m_pCamera;
 				break;
 			case VK_F4:	
 				m_pPlayer->SetPosition(XMFLOAT3(60.0f, 30.0f, 20.0f));
@@ -1343,14 +1340,9 @@ void CMainScene::CreateUIImage()
 	m_pUIManager->Initialize(m_pd3dDevice);
 	CUIObject* pUIObject;
 
-	// Aim
-	pUIObject = new CUIObject(TextureTag::eAim);
-	POINT aimingPos = POINT{ 803, 447 };		// +가 오른쪽, +가 아래쪽
-	pUIObject->Initialize(m_pd3dDevice, POINT{ aimingPos.x - 20, aimingPos.y - 20 }, POINT{ aimingPos.x + 20, aimingPos.y + 20 }, 0.0f);
-	if(m_pCamera->GetCameraTag() != CameraTag::eFirstPerson)
-		pUIObject->SetActive(false);
-	m_pUIManager->AddUIObject(pUIObject);
-	
+	m_pAimObject = new CAimObject(15, XMFLOAT4(1.0f, 0.0f, 0.0f, 0.5f));
+	m_pAimObject->Initialize(m_pd3dDevice, POINT{ 803, 447 }, 1);
+
 	// Score
 	pUIObject = new CUIObject(TextureTag::eScoreUI);
 	pUIObject->Initialize(m_pd3dDevice, POINT{ 600, 0 }, POINT{ 1000, 90 }, 0.5f);
@@ -1427,6 +1419,30 @@ void CMainScene::CreateUIImage()
 	m_pUIManager->AddUIObject(pUIObject);
 }
 
+void CMainScene::CreateLights()
+{
+	vector<MapData> vecMapData;
+	XMFLOAT3 pos;
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
+
+	// Street Lamp
+	for (auto light : vecMapData) {
+		pos = light.m_Position;
+		pos.y += 10.0f;
+		LIGHT_MGR->AddSpotLight(pos, XMFLOAT3(0, -1, 0), 45.0f, 50.0f, 30.0f, XMFLOAT3(1, 1, 1), true);
+	}
+}
+
+void CMainScene::CreateSound()
+{
+	vector<MapData> vecMapData;
+
+	// ========================== Fire ================================= //
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel);
+	for (auto& object : vecMapData)
+		SOUND_MGR->Play3DSound_Environment(SoundTag::eFire, object.m_Position, 30.0f);
+}
+
 void CMainScene::ReleaseObjects()
 {
 	CScene::ReleaseObjects();
@@ -1440,6 +1456,7 @@ void CMainScene::ReleaseObjects()
 	m_vecCharacterContainer.clear();
 	m_vecReflectObjectContainer.clear();
 	
+	SafeDelete(m_pAimObject);
 	ReleasePhysX();
 
 	SPRITE_MGR->ReleseManager();
@@ -1501,30 +1518,6 @@ void CMainScene::ReleaseConstantBuffers()
 {
 	ReleaseCOM(m_pd3dcbLights);
 	ReleaseCOM(m_pd3dcbTestVariable);
-}
-
-void CMainScene::CreateLights()
-{
-	vector<MapData> vecMapData;
-	XMFLOAT3 pos;
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStreetLamp);
-	
-	// Street Lamp
-	for (auto light : vecMapData) {
-		pos = light.m_Position;
-		pos.y += 10.0f;
-		LIGHT_MGR->AddSpotLight(pos, XMFLOAT3(0, -1, 0), 45.0f, 50.0f, 30.0f, XMFLOAT3(1, 1, 1), true);
-	}
-}
-
-void CMainScene::CreateSound()
-{
-	vector<MapData> vecMapData;
-
-	// ========================== Fire ================================= //
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel);
-	for (auto& object : vecMapData)
-		SOUND_MGR->Play3DSound_Environment(SoundTag::eFire, object.m_Position, 30.0f);
 }
 
 void CMainScene::ModifiedSelectObject()
@@ -1642,6 +1635,7 @@ void CMainScene::PrepareRenderUI()
 
 void CMainScene::RenderUI()
 {
+	ShowAimUI();
 	ShowOccupyUI();
 	ShowDeadlyAttackUI();
 	ShowDeadlyUI();
@@ -1650,6 +1644,20 @@ void CMainScene::RenderUI()
 
 	// ------ UI ----- //
 	m_pUIManager->RenderAll(m_pd3dDeviceContext);
+}
+
+void CMainScene::ShowAimUI()
+{
+	// 1인칭 시점에만 UI Render
+	if (m_pCamera->GetCameraTag() != CameraTag::eFirstPerson)
+		return;
+
+	// 평시 Aim 10
+	// 앉기 Aim 5
+	// 이동 Aim 15
+	// 최대 Aim 30
+	m_pAimObject->SetAimSize(10 * m_pPlayerCharacter->GetWeaponCalcRecoil());
+	m_pAimObject->Render(m_pd3dDeviceContext);
 }
 
 void CMainScene::ShowDamageDirection()

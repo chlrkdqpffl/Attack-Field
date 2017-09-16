@@ -179,7 +179,7 @@ enum class TextureTag
 
 	// UI
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
-	eCaptureArea, eAim, eMagazineUI, eLifeUI, eScoreUI, eDamagedCharacterUI, eRespawnGageBar, eRespawnGageWhiteBar, eOccupyGageBar, eOccupyGageWhiteBar,
+	eCaptureArea, eMagazineUI, eLifeUI, eScoreUI, eDamagedCharacterUI, eRespawnGageBar, eRespawnGageWhiteBar, eOccupyGageBar, eOccupyGageWhiteBar,
 	eDamageDirection_Left, eDamageDirection_LeftTop, eDamageDirection_Top, eDamageDirection_RightTop, eDamageDirection_Right, eDamageDirection_Bottom,
 
 	// Etc

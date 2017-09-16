@@ -193,52 +193,9 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 		return;
 	}
 
-	// =============================== Keyboard ============================== //
-	if (m_wKeyState & static_cast<int>(KeyInput::eReload)) {
-		// Bullet Check
-		if (m_pCharacter->GetWeaponBulletCount() == m_pCharacter->GetWeaponMaxBulletCount())
-			m_wKeyState ^= static_cast<int>(KeyInput::eReload);
-		else
-			m_pCharacter->SetIsReload(true);
-	}
-	else
-		m_pCharacter->SetIsReload(false);
-
-	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy)) {
-//		if (m_pCharacter->GetAlive())
-			m_pCharacter->SetOccupy(true);
-	}
-	else
-		m_pCharacter->SetOccupy(false);
-
-	if (m_wKeyState & static_cast<int>(KeyInput::eJump)) {	
-		if (false == m_bIsJumping) {
-			m_bIsJumping = true;
-		
-			AddAccel(XMFLOAT3(0.0f, TWBAR_MGR->g_xmf3Quaternion.y, 0.0f));
-			//relativeVelocity += XMVectorSet(0, 1, 0, 0);
-			m_pCharacter->SetIsJump(true);
-		}
-	}
-	else {
-//		m_pCharacter->SetIsJump(false);
-	//	m_bIsJumping = false;
-	}
-
-	if (m_wKeyState & static_cast<int>(KeyInput::eCrouch)) {
-		m_pCharacter->SetIsCrouch(true);
-		m_pPxCharacterController->resize(0.0f);
-	}
-	else {
-		m_pCharacter->SetIsCrouch(false);
-		m_pPxCharacterController->resize(2.0f);
-	}
-
-	// ------------ Moving ----------- //
 	XMVECTOR vMoveDirection = XMVectorZero();
 	XMVECTOR relativeVelocity = XMVectorZero();
-
-
+	// =============================== Keyboard ============================== //
 	if (m_wKeyState & static_cast<int>(KeyInput::eForward))
 	{
 		vMoveDirection += GetvLook();
@@ -260,7 +217,7 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 		vMoveDirection += GetvRight();
 		relativeVelocity += XMVectorSet(1, 0, 0, 0);
 	}
-	
+
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
 		if (m_pCharacter->GetIsTempRun())	// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
 			vMoveDirection = GetvLook();
@@ -270,6 +227,45 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 	else {
 		m_pCharacter->SetIsRun(false);
 		m_fSpeedFactor = 1.0f;
+	}
+
+	// ------------------------------------------------------------ //
+	if (m_wKeyState & static_cast<int>(KeyInput::eReload)) {
+		// Bullet Check
+		if (m_pCharacter->GetWeaponBulletCount() == m_pCharacter->GetWeaponMaxBulletCount())
+			m_wKeyState ^= static_cast<int>(KeyInput::eReload);
+		else
+			m_pCharacter->SetIsReload(true);
+	}
+
+	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy)) {
+//		if (m_pCharacter->GetAlive())
+			m_pCharacter->SetOccupy(true);
+	}
+	else
+		m_pCharacter->SetOccupy(false);
+
+	if (m_wKeyState & static_cast<int>(KeyInput::eJump)) {	
+		if (false == m_bIsJumping) {
+			m_bIsJumping = true;
+		
+			AddAccel(XMFLOAT3(0.0f, TWBAR_MGR->g_xmf3Quaternion.y, 0.0f));
+			relativeVelocity += XMVectorSet(0, 1, 0, 0);
+			m_pCharacter->SetIsJump(true);
+		}
+	}
+	else {
+//		m_pCharacter->SetIsJump(false);
+	//	m_bIsJumping = false;
+	}
+
+	if (m_wKeyState & static_cast<int>(KeyInput::eCrouch)) {
+		m_pCharacter->SetIsCrouch(true);
+		m_pPxCharacterController->resize(0.0f);
+	}
+	else {
+		m_pCharacter->SetIsCrouch(false);
+		m_pPxCharacterController->resize(2.0f);
 	}
 
 	// 앉기시 이동 금지

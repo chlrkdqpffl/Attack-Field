@@ -21,15 +21,18 @@ protected:
 	XMFLOAT3				m_f3MuzzlePosition = XMFLOAT3(0, 0, 0);
 
 	// ----- 총기 반동 ----- //
+	bool					m_bIsFire = false;
 	UINT					m_nFireBulletCount = 0;				// 총기 반동 확인
 	float					m_fInitPitch = 0.0f;				// 최초 반동 위치
-	bool					m_bIsFire = false;
-	const float				m_fMaxPitchGap = 5.0f;				// 최대 반동 각도
+	const float				m_fMaxPitchGap = 0.0f;				// 최대 반동 각도
+	float					m_fCalcRecoil = 0.0f;				// 계산된 반동력
+	float					m_fNowRecoil = 0.0f;				// 현재 반동력	- UI에 사용
 
 	// ------------- 무기 세부 정보 ------------ //
 	WeaponData::Type		m_Type = WeaponData::Type::eNone;	// 총기 타입
-	float					m_fDamage = 0.f;					// 데미지
+	float					m_fDamage;					// 데미지
 	float					m_fRange = 0.f;						// 유효 사거리
+	float					m_fReCoil = 0.2f;					// 총기 반동력
 	UINT					m_uiFireSpeed = 0;					// 연사 속도 (1000 - 1초)
 	DWORD					m_dwLastAttackTime = 0;				// 마지막 발사 시간
 
@@ -47,6 +50,7 @@ public:
 	UINT GetMaxBulletCount() const { return m_nMaxhasBulletCount; }
 	void SetFireBulletCount(UINT set) { m_nFireBulletCount = set; }
 	CSpriteImageObject*	GetMuzzleSprite() const { return m_pMuzzleSpirte; }
+	float GetCalcRecoil() const { return m_fNowRecoil; }
 
 protected:
 	void FireEffect();

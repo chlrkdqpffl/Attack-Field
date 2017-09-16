@@ -185,6 +185,11 @@ void CState_Crouch::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		pUpperFSM->ChangeState(CState_Fire::GetInstance());
 		return;
 	}
+
+	if (false == pCharacter->GetIsCrouch()) {
+		pUpperFSM->ChangeState(CState_Idle::GetInstance());
+		return;
+	}
 }
 
 void CState_Crouch::UpdateLowerBodyState(CCharacterObject* pCharacter)
