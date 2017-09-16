@@ -24,7 +24,6 @@ void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	}
 }
 
-// ---------------------------- Idle ---------------------------- //
 void CState_Idle::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
 	pCharacter->SetAnimation(type, AnimationData::CharacterAnim::eIdle);
@@ -40,11 +39,13 @@ void CState_Idle::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());
 		return;
 	}
+
 	// Check Fire
 	if (pCharacter->GetIsFire()) {
 		pUpperFSM->ChangeState(CState_Fire::GetInstance());
 		return;
 	}
+
 	// 상체가 Idle 상태일 경우 하체의 움직임을 따라간다.
 	AnimationData::CharacterAnim lowerAnim = pCharacter->GetAnimationEnum(AnimationData::Parts::LowerBody);
 	if (lowerAnim != AnimationData::CharacterAnim::eIdle)
@@ -58,6 +59,11 @@ void CState_Idle::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 	if (pCharacter->IsMoving()) {
 		pLowerFSM->ChangeState(CState_Walk::GetInstance());
+		return;
+	}
+
+	if (pCharacter->GetIsCrouch()) {
+		pLowerFSM->ChangeState(CState_Crouch::GetInstance());
 		return;
 	}
 }
@@ -117,33 +123,33 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 	// Forward
 	if (relativeVelocity.z > 0) {
 		if (relativeVelocity.x < 0) {		// Left
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardLeft);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardLeft, 1.3f);
 		}
 		else if (relativeVelocity.x > 0) {	// Right
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardRight);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardRight, 1.3f);
 		}
 		else {
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Forward, 1.2f);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Forward, 1.5f);
 		}
 	}
 	// Backward
 	else if (relativeVelocity.z < 0) {
 		if (relativeVelocity.x < 0) {		// Left
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardLeft);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardLeft, 1.3f);
 		}
 		else if (relativeVelocity.x > 0) {	// Right
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardRight);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardRight, 1.3f);
 		}
 		else {
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Backward, 1.2f);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Backward, 1.5f);
 		}
 	}
 	else {
 		if (relativeVelocity.x < 0) {		// Left
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Left);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Left, 1.3f);
 		}
 		else if (relativeVelocity.x > 0) {	// Right
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Right);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Right, 1.3f);
 		}
 	}
 
@@ -154,6 +160,44 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 void CState_Walk::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
 	SOUND_MGR->StopSound();
+}
+
+// ---------------------------- Crouch ---------------------------- //
+void CState_Crouch::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
+{
+	if (type == AnimationData::Parts::LowerBody)
+		pCharacter->SetAnimation(AnimationData::Parts::LowerBody, AnimationData::CharacterAnim::eCrouch);
+}
+
+void CState_Crouch::UpdateUpperBodyState(CCharacterObject* pCharacter)
+{
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
+
+	// Check Reload
+	if (pCharacter->GetIsReload()) {
+		pUpperFSM->ChangeState(CState_Reload::GetInstance());
+		return;
+	}
+
+	// Check Fire
+	if (pCharacter->GetIsFire()) {
+		pUpperFSM->ChangeState(CState_Fire::GetInstance());
+		return;
+	}
+}
+
+void CState_Crouch::UpdateLowerBodyState(CCharacterObject* pCharacter)
+{	
+	if (false == pCharacter->GetIsCrouch()) {
+		CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
+		pLowerFSM->ChangeState(CState_Idle::GetInstance());
+		return;
+	}
+}
+
+void CState_Crouch::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
+{
 }
 
 // ---------------------------- Reload ---------------------------- //

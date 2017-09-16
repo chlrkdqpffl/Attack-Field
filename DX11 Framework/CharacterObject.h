@@ -39,6 +39,8 @@ protected:
 	// ----- State Variable ----- //
 	bool				m_bIsFire = false;
 	bool				m_bIsJump = false;
+					bool				m_bIsTemp = false;
+	bool				m_bIsCrouch = false;
 	bool				m_bIsReload = false;
 	bool				m_bIsRun = false;
 	bool				m_bIsOccupy = false;
@@ -120,6 +122,9 @@ public:
 	bool IsMoving() const {	return (m_f3RelativeVelocity.x != 0 || m_f3RelativeVelocity.y != 0 || m_f3RelativeVelocity.z != 0);	}
 	void SetIsRun(bool set) { m_bIsRun = set; }
 	bool GetIsRun() const { return  m_bIsRun; }
+	void SetIsCrouch(bool set) { m_bIsCrouch = set; }
+	bool GetIsCrouch() const { return  m_bIsCrouch; }
+	
 	void SetIsTempRun(bool set) { m_bTempIsRun = set; }
 	bool GetIsTempRun() const { return m_bTempIsRun; }
 	void SetIsFire(bool bIsFire) { 
@@ -137,6 +142,9 @@ public:
 	
 	void SetIsJump(bool set) { m_bIsJump = set; }
 	bool GetIsJump() const { return m_bIsJump; }
+
+	void SetIsTemp(bool set) { m_bIsTemp = set; }
+	bool GetIsTemp() const { return m_bIsTemp; }
 
 	void SetOccupy(bool occupy) {
 		static bool bIsOccupyStart = false;

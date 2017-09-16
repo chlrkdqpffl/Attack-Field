@@ -10,12 +10,11 @@ CPlayer::CPlayer(CCharacterPlayer* pCharacter)
 {
 	XMStoreFloat4x4(&m_mtxWorld, XMMatrixIdentity());
 
-	m_f3Gravity = XMFLOAT3(0.0f, -50.0f, 0.0f);
-	
 #ifdef DEVELOP_MODE
-	m_fInitSpeed = 20.0f;
+	//m_fMoveSpeed = 25.0f;
+	m_fMoveSpeed = 8.0f;
 #else
-	m_fInitSpeed = 6.0f;	// 자연스러운 속도
+	m_fMoveSpeed = 8.0f;	// 자연스러운 속도
 #endif
 	count = 0;
 }
@@ -31,54 +30,77 @@ void CPlayer::InitializePhysXData(PxPhysics* pPxPhysics, PxMaterial *pPxMaterial
 	PxCapsuledesc.position = PxExtendedVec3(0, 0, 0);
 	PxCapsuledesc.radius = 1.2f;
 	PxCapsuledesc.height = 2.0f;
-
+//	PxCapsuledesc.climbingMode = PxCapsuleClimbingMode::Enum::eCONSTRAINED;
 	//캐릭터가 올라갈 수있는 장애물의 최대 높이를 정의합니다. 
-	PxCapsuledesc.stepOffset = 0.8f;
-
+	PxCapsuledesc.stepOffset = 0.1f;
+		
 	//캐시 된 볼륨 증가.
 	//성능을 향상시키기 위해 캐싱하는 컨트롤러 주변의 공간입니다.  이것은 1.0f보다 커야하지만 너무 크지 않아야하며, 2.0f보다 낮아야합니다.
 	PxCapsuledesc.volumeGrowth = 1.9f;
 	//캐릭터가 걸어 갈 수있는 최대 경사. 
 	PxCapsuledesc.slopeLimit = cosf(XMConvertToRadians(15.f));
-	//PxCapsuledesc.nonWalkableMode = PxControllerNonWalkableMode::eFORCE_SLIDING;
+	
+	
+//	PxCapsuledesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
+
 	PxCapsuledesc.upDirection = PxVec3(0, 1, 0);
 	PxCapsuledesc.contactOffset = 0.0001f; //접촉 오프셋-> 요게 타 객체와 부딪혔을때 영향을 주는 변수인듯(높을수록 덜덜떨림)
 	PxCapsuledesc.material = pPxMaterial;
-	//PxCapsuledesc.behaviorCallback = this;
-	//PxCapsuledesc.reportCallback = this;
 
 	m_pPxCharacterController = pPxControllerManager->createController(PxCapsuledesc);
 }
 
 void CPlayer::PhysXUpdate(float fDeltaTime)
 {
+	// ----- Move Player ----- //
+	PxVec3 vMoveVelocity = m_fMoveSpeed * m_fSpeedFactor * PxVec3(m_f3MoveDirection.x, m_f3MoveDirection.y, m_f3MoveDirection.z);
+	PxVec3 vAccel = PxVec3(m_f3Accelerate.x, m_f3Accelerate.y, m_f3Accelerate.z);
+	vMoveVelocity += vAccel;
+
+	m_pPxCharacterController->move(vMoveVelocity * fDeltaTime, 0, fDeltaTime, PxControllerFilters());
+
+	// ----- Apply Gravity ----- //
+	m_f3GravityAccel = XMFLOAT3(0.0f, -1.0f * TWBAR_MGR->g_xmf3Offset.y, 0.0f);
+	m_f3GravityVelocity.x += m_f3GravityAccel.x;
+	m_f3GravityVelocity.y += m_f3GravityAccel.y;
+	m_f3GravityVelocity.z += m_f3GravityAccel.z;
+
+	PxVec3 vGravityVelocity = PxVec3(m_f3GravityVelocity.x, m_f3GravityVelocity.y, m_f3GravityVelocity.z);
+	m_pPxCharacterController->move(vGravityVelocity * fDeltaTime, 0, fDeltaTime, PxControllerFilters());
+
+	// ----- Check Jumping ----- //
+	PxControllerState pxState;
+	m_pPxCharacterController->getState(pxState);
+	if (pxState.collisionFlags == PxControllerCollisionFlag::eCOLLISION_DOWN)
+	{	// 바닥과 충돌중
+		m_bIsJumping = false;
+		m_pCharacter->SetIsJump(false);
+		m_f3GravityVelocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		m_f3Accelerate = XMFLOAT3(m_f3Accelerate.x, 0, m_f3Accelerate.z);
+	}
+
 	/*
-	PxControllerState   m_pPxState;
-
-	//피직스 객체의 상태값을 m_pPxState에 넣어준다.
-	m_pPxCharacterController->getState(m_pPxState);
-
-	//윗쪽 충돌하거나 아랫쪽 충돌하면 m_fFallvelocity = 0.0f
-	if (m_pPxState.collisionFlags == PxControllerCollisionFlag::eCOLLISION_DOWN ||
-	m_pPxState.collisionFlags == PxControllerCollisionFlag::eCOLLISION_UP)
-	m_fFallvelocity = 0.f;
+	if (pxState.collisionFlags == PxControllerCollisionFlag::eCOLLISION_SIDES) {
+	//if (pxState.collisionFlags == PxControllerCollisionFlag::eCOLLISION_DOWN || pxState.collisionFlags == PxControllerCollisionFlag::eCOLLISION_SIDES) {
+		m_f3Accelerate = XMFLOAT3(m_f3Accelerate.x, 0, m_f3Accelerate.z);
+	}
 	*/
 
-	PxVec3 vGravityVelocity = PxVec3(m_f3Gravity.x, m_f3Gravity.y, m_f3Gravity.z);
-	PxVec3 vMoveVelocity = m_fInitSpeed * m_fSpeedFactor * PxVec3(m_f3MoveDirection.x, m_f3MoveDirection.y, m_f3MoveDirection.z);
+	// ----- Character Update ----- //
+	float characterCenterOffset = 0.65f;
+	XMFLOAT3 position = XMFLOAT3(m_pPxCharacterController->getPosition().x, m_pPxCharacterController->getPosition().y, m_pPxCharacterController->getPosition().z);
 
-	PxVec3 vCalcMoveVelocity = vGravityVelocity + vMoveVelocity;
-	m_pPxCharacterController->move(vCalcMoveVelocity * fDeltaTime, 0, fDeltaTime, PxControllerFilters());
-
-	m_fJumpSpeed = TWBAR_MGR->g_xmf3Offset.y;
-
-	// Character Update
-	float characterCenterOffset = 1.6f;
-	XMFLOAT3 footPosition = XMFLOAT3(m_pPxCharacterController->getFootPosition().x, m_pPxCharacterController->getFootPosition().y, m_pPxCharacterController->getFootPosition().z);
-	m_mtxWorld._41 = footPosition.x;
-	m_mtxWorld._42 = footPosition.y + characterCenterOffset;
-	m_mtxWorld._43 = footPosition.z;
+	m_mtxWorld._41 = position.x;
+	m_mtxWorld._42 = position.y - characterCenterOffset;
+	m_mtxWorld._43 = position.z;
 	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&m_mtxWorld);
+}
+
+void CPlayer::AddAccel(XMFLOAT3 force)
+{
+	m_f3Accelerate.x += force.x;
+	m_f3Accelerate.y += force.y;
+	m_f3Accelerate.z += force.z;
 }
 
 void CPlayer::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
@@ -89,6 +111,15 @@ void CPlayer::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 {
 	switch (nMessageID) {
+	// ----------- Mouse --------- //
+	case WM_LBUTTONDOWN:
+		SetKeyDown(KeyInput::eLeftMouse);
+		break;
+	case WM_LBUTTONUP:
+		SetKeyUp(KeyInput::eLeftMouse);
+		break;
+
+	// ----------- Keyboard --------- //
 	case WM_KEYDOWN:
 		switch (wParam) {
 		case VK_W:
@@ -114,6 +145,9 @@ void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 			break;
 		case VK_SPACE:
 			SetKeyDown(KeyInput::eJump);
+			break;
+		case VK_CONTROL:
+			SetKeyDown(KeyInput::eCrouch);
 			break;
 		}
 		break;
@@ -142,6 +176,9 @@ void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 			break;
 		case VK_SPACE:
 			SetKeyUp(KeyInput::eJump);
+			break;
+		case VK_CONTROL:
+			SetKeyUp(KeyInput::eCrouch);
 			break;
 		}
 		break;
@@ -174,6 +211,29 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 	else
 		m_pCharacter->SetOccupy(false);
 
+	if (m_wKeyState & static_cast<int>(KeyInput::eJump)) {	
+		if (false == m_bIsJumping) {
+			m_bIsJumping = true;
+		
+			AddAccel(XMFLOAT3(0.0f, TWBAR_MGR->g_xmf3Quaternion.y, 0.0f));
+			//relativeVelocity += XMVectorSet(0, 1, 0, 0);
+			m_pCharacter->SetIsJump(true);
+		}
+	}
+	else {
+//		m_pCharacter->SetIsJump(false);
+	//	m_bIsJumping = false;
+	}
+
+	if (m_wKeyState & static_cast<int>(KeyInput::eCrouch)) {
+		m_pCharacter->SetIsCrouch(true);
+		m_pPxCharacterController->resize(0.0f);
+	}
+	else {
+		m_pCharacter->SetIsCrouch(false);
+		m_pPxCharacterController->resize(2.0f);
+	}
+
 	// ------------ Moving ----------- //
 	XMVECTOR vMoveDirection = XMVectorZero();
 	XMVECTOR relativeVelocity = XMVectorZero();
@@ -200,24 +260,7 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 		vMoveDirection += GetvRight();
 		relativeVelocity += XMVectorSet(1, 0, 0, 0);
 	}
-
-	if (m_wKeyState & static_cast<int>(KeyInput::eJump)) {
-		if (false == m_bIsJumping) {
-			cout << "ㅇㅇㅇ" << endl;
-			m_bIsJumping = true;
-			vMoveDirection += GetvUp() * TWBAR_MGR->g_xmf3Offset.y;
-
-			//relativeVelocity += XMVectorSet(0, 1, 0, 0);
-			m_pCharacter->SetIsJump(true);
-		}
-	}
-	else {
-		m_pCharacter->SetIsJump(false);
-		m_bIsJumping = false;
-	}
 	
-
-
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
 		if (m_pCharacter->GetIsTempRun())	// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
 			vMoveDirection = GetvLook();
@@ -229,7 +272,10 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 		m_fSpeedFactor = 1.0f;
 	}
 
-
+	// 앉기시 이동 금지
+	if (m_wKeyState & static_cast<int>(KeyInput::eCrouch))
+		vMoveDirection = XMVectorZero();
+	
 	XMStoreFloat3(&m_f3MoveDirection, vMoveDirection);
 	m_pCharacter->SetRelativevVelocity(relativeVelocity);
 
@@ -305,7 +351,7 @@ void CPlayer::Rotate(float x, float y)
 	SetvUp(XMVector3Normalize(XMVector3Cross(GetvLook(), GetvRight())));
 
 	if (nCurrentCameraTag == CameraTag::eThirdPerson)
-		m_pCharacter->SetPitch(-10.0f);
+		m_pCharacter->SetPitch(0.0f);
 
 #ifdef	USE_SERVER
 	if (abs(m_pCharacter->GetminusPitch()) >= 1.0f || abs(m_pCharacter->GetminusYaw()) >= 1.0f)

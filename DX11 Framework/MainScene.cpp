@@ -14,10 +14,9 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(100.f, 0.0f, 0.0f);
-//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(803, 450 - 23, 0);
-//	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(0.2f, 0.45f, 0.5f, 1.0f);
-
+	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(8.f, 2.0f, 0.0f);
+//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(2.5f, 25.0f, 0.0f, 0.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
 }
 
@@ -35,12 +34,11 @@ CMainScene::~CMainScene()
 bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	CScene::OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
+	m_pPlayer->OnKeyboardUpdate(nMessageID, wParam);
 
 	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
-
 		m_pSelectedObject = PickObjectPointedByCursor(LOWORD(lParam) * m_fResizeRatioX, HIWORD(lParam) * m_fResizeRatioY);
-
 		/*
 		if (m_pSelectedObject) {
 			cout << "ID : " << m_pSelectedObject->GetObjectID() << endl;
@@ -50,16 +48,8 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 			cout << "Bounding Box Extent : " << m_pSelectedObject->GetBoundingOBox().Extents.x << ", " << m_pSelectedObject->GetBoundingOBox().Extents.y << ", " << m_pSelectedObject->GetBoundingOBox().Extents.z << endl;
 		}
 		*/
-		m_pPlayer->SetKeyDown(KeyInput::eLeftMouse);
 		break;
 	case WM_LBUTTONUP:
-		m_pPlayer->SetKeyUp(KeyInput::eLeftMouse);
-		break;
-	case WM_RBUTTONDOWN:
-		break;
-	case WM_RBUTTONUP:
-		break;
-	case WM_MOUSEMOVE:
 		break;
 	default:
 		break;
@@ -88,7 +78,8 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 						m_pUIManager->GetUIObject(TextureTag::eAim)->SetActive(true);
 				break;
 			case VK_F4:	
-				m_pPlayer->SetPosition(XMFLOAT3(60.0f, 20.0f, 20.0f));
+				m_pPlayer->SetPosition(XMFLOAT3(60.0f, 30.0f, 20.0f));
+				//m_pPlayer->SetPosition(XMFLOAT3(60.0f, 30.0f, 210.0f));
 				break;
 #ifndef USE_SERVER
 			case VK_Z:
@@ -104,14 +95,17 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_pPlayerCharacter->SetLife(20);
 				break;
 			case VK_V:	
-				m_vecCharacterContainer.back()->SetIsFire(true);
+	//			m_vecCharacterContainer.back()->SetIsFire(true);
+				m_vecCharacterContainer.back()->SetIsCrouch(true);
 				break;
 			case VK_B:
-				m_vecCharacterContainer.back()->SetIsFire(false);
+				m_vecCharacterContainer.back()->SetIsCrouch(false);
 				break;
 			case VK_N:
-				m_tagOccupyTeam = TeamType::eRedTeam;
-				m_bIsGameRoundOver = true;
+				m_vecCharacterContainer.back()->SetPosition(60.0f, 2.5f, 15.0f);
+
+//				m_tagOccupyTeam = TeamType::eRedTeam;
+//				m_bIsGameRoundOver = true;
 				break;
 #endif
 			}

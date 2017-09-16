@@ -13,12 +13,16 @@ protected:
 	CCharacterPlayer			*m_pCharacter = nullptr;
 	CCamera						*m_pCamera	= nullptr;
 
-	float						m_fSpeedFactor = 1.0f;
-	float						m_fInitSpeed = 0.0f;
-	float						m_fJumpSpeed = 0.0f;
-	XMFLOAT3					m_f3MoveDirection = XMFLOAT3(0, 0, 0);
-	XMFLOAT3     				m_f3Gravity = XMFLOAT3(0, 0, 0);
+	// PhysX
+	PxController*				m_pPxCharacterController = nullptr;
 
+	float						m_fSpeedFactor = 1.0f;
+	float						m_fMoveSpeed = 0.0f;
+	XMFLOAT3					m_f3Accelerate = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3					m_f3MoveDirection = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3     				m_f3GravityVelocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3     				m_f3GravityAccel = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	
 	WORD						m_wKeyState = 0;
 	bool						m_bIsJumping = false;
 	int							count;
@@ -29,9 +33,6 @@ protected:
 	// DOF Variable
 	int							m_nPrevDOFStart = 0;
 	DWORD						m_dwDOFPreiodTime = 0;
-
-	// PhysX
-	PxController*				m_pPxCharacterController = nullptr;
 
 public:
 	CPlayer(CCharacterPlayer* pCharacter = nullptr);
@@ -52,6 +53,7 @@ public:
 	// ----- PhysX Funtion ----- //
 	void InitializePhysXData(PxPhysics* pPxPhysics, PxMaterial *pPxMaterial, PxControllerManager *pPxControllerManager);
 	void PhysXUpdate(float fDeltaTime);
+	void AddAccel(XMFLOAT3 force);
 
 	// ----- Get, Setter ----- //
 	XMFLOAT3 GetRight() const { return XMFLOAT3(m_mtxWorld._11, m_mtxWorld._12, m_mtxWorld._13); }
@@ -67,10 +69,11 @@ public:
 	void SetRight(XMFLOAT3 right) { m_mtxWorld._11 = right.x, m_mtxWorld._12 = right.y, m_mtxWorld._13 = right.z; }
 	void SetUp(XMFLOAT3 up) { m_mtxWorld._21 = up.x, m_mtxWorld._22 = up.y, m_mtxWorld._23 = up.z; }
 	void SetLook(XMFLOAT3 look) { m_mtxWorld._31 = look.x, m_mtxWorld._32 = look.y, m_mtxWorld._33 = look.z; }
+
 	void SetPosition(XMFLOAT3 pos) 
 	{ 
 		m_mtxWorld._41 = pos.x, m_mtxWorld._42 = pos.y, m_mtxWorld._43 = pos.z;
-		m_pPxCharacterController->setFootPosition(PxExtendedVec3(pos.x, pos.y, pos.z));
+		m_pPxCharacterController->setPosition(PxExtendedVec3(pos.x, pos.y, pos.z));
 	}
 	void SetvPosition(XMVECTOR vPosition)
 	{

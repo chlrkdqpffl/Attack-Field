@@ -26,7 +26,7 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 	case CameraTag::eSpaceShip:
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eSpaceShip, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.0f, 0.0f));
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 2.0f, 10.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		break;
 

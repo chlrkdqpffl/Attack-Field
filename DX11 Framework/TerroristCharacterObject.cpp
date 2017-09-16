@@ -56,6 +56,8 @@ void CTerroristCharacterObject::CreateMaterial()
 
 void CTerroristCharacterObject::CreateAnimation()
 {
+	// ----- 텍스트 파일과 애니메이션 순서가 일치해야함 ----- //
+
 	AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,				AnimationTrack("Idle"),				AnimationData::Type::eLoop));
 
 	// Walk
@@ -75,6 +77,9 @@ void CTerroristCharacterObject::CreateAnimation()
 	AddAnimation(make_tuple(AnimationData::CharacterAnim::eDeath_Head,			AnimationTrack("Death_Head"),		AnimationData::Type::eOnce));
 	AddAnimation(make_tuple(AnimationData::CharacterAnim::eDeath,				AnimationTrack("Death"),			AnimationData::Type::eOnce));
 	AddAnimation(make_tuple(AnimationData::CharacterAnim::eHeadHit,				AnimationTrack("HeadHit"),			AnimationData::Type::eOnce));
+
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eCrouch,				AnimationTrack("Crouch"),			AnimationData::Type::eLoop));
+
 }
 
 void CTerroristCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)

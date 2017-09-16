@@ -22,7 +22,6 @@ protected:
 public:
 	XMMATRIX						m_mtxLocal = XMMatrixIdentity();
 	XMMATRIX						m_mtxWorld = XMMatrixIdentity();
-	XMMATRIX						m_mtxShadow = XMMatrixIdentity();
 	virtual void CreateMaterial()							{ cout << "No have Material" << endl; };
 
 protected:
@@ -90,17 +89,14 @@ public:
 	void SetShader(ID3D11Device *pd3dDevice, ShaderTag tag);
 	CShader *GetShader() { return(m_pShader); }
 
-	void SetShadowMatrix(XMMATRIX *pd3dxmtxShadow) { m_mtxShadow = *pd3dxmtxShadow; }
-	void SetShadowMatrix(XMVECTOR d3dxvLight, XMVECTOR d3dxPlane);
-
 	void SetMaterial(CMaterial *pMaterial);
 	void SetMaterial(int textureCount, ...);
 	void SetMaterial(XMFLOAT2 offset, int textureCount, ...);
 	CMaterial *GetMaterial() { return(m_pMaterial); }
 
 	virtual void SetPosition(float x, float y, float z, bool isLocal = false);
-	virtual void SetPosition(XMVECTOR d3dxvPosition, bool isLocal = false);
-	virtual void SetPosition(XMFLOAT3 d3dxvPosition, bool isLocal = false);
+	virtual void SetPosition(XMVECTOR vPosition, bool isLocal = false);
+	virtual void SetPosition(XMFLOAT3 vPosition, bool isLocal = false);
 	virtual void SetRotate(float fPitch, float fYaw, float fRoll, bool isLocal = false);
 	virtual void SetRotate(XMFLOAT3 fAngle, bool isLocal = false);
 	virtual void SetRotate(XMVECTOR *pd3dxvAxis, float fAngle, bool isLocal = false);

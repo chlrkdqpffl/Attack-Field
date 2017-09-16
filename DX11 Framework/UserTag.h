@@ -18,10 +18,12 @@ enum class KeyInput
 	eOccupy			= 0x40,			// E
 	eJump			= 0x80,			// Space Bar
 
+	eCrouch			= 0x100,		// Ctrl
+
 	// Mouse
-	eLeftMouse		= 0x100,
-//	eRightMouse		= 0x200,		// Zoom In 기능 용도
-//	eMouseWheel		= 0x400,		// 휠 위아래는 추후 구현
+	eLeftMouse		= 0x200,
+//	eRightMouse		= 0x400,		// Zoom In 기능 용도
+//	eMouseWheel		= 0x800,		// 휠 위아래는 추후 구현
 };
 
 enum class CameraTag 
@@ -124,6 +126,7 @@ namespace AnimationData
 		LowerBodyAnim = 1000,
 	
 		eWalk_Left, eWalk_ForwardLeft, eWalk_Forward, eWalk_ForwardRight, eWalk_Right, eWalk_BackwardRight, eWalk_Backward, eWalk_BackwardLeft,
+		eCrouch
 	};
 }
 

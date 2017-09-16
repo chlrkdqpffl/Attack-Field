@@ -169,11 +169,6 @@ void CGameObject::SetMaterial(XMFLOAT2 offset, int textureCount, ...)
 	m_pMaterial = pMaterial;
 }
 
-void CGameObject::SetShadowMatrix(XMVECTOR d3dxvLight, XMVECTOR d3dxPlane)
-{
-	m_mtxShadow = XMMatrixShadow(d3dxPlane, d3dxvLight);
-}
-
 void CGameObject::GenerateRayForPicking(XMVECTOR *pd3dxvPickPosition, XMMATRIX *pd3dxmtxWorld, XMMATRIX *pd3dxmtxView, XMVECTOR *pd3dxvPickRayPosition, XMVECTOR *pd3dxvPickRayDirection)
 {
 	XMMATRIX d3dxmtxInverse;
@@ -219,24 +214,24 @@ void CGameObject::SetPosition(float x, float y, float z, bool isLocal)
 	}
 }
 
-void CGameObject::SetPosition(XMVECTOR d3dxvPosition, bool isLocal)
+void CGameObject::SetPosition(XMVECTOR vPosition, bool isLocal)
 {
-	XMFLOAT4 f4vPosition;
-	XMStoreFloat4(&f4vPosition, d3dxvPosition);
-	SetPosition(f4vPosition.x, f4vPosition.y, f4vPosition.z, isLocal);
+	XMFLOAT3 f3vPosition;
+	XMStoreFloat3(&f3vPosition, vPosition);
+	SetPosition(f3vPosition, isLocal);
 }
 
-void CGameObject::SetPosition(XMFLOAT3 pos, bool isLocal)
+void CGameObject::SetPosition(XMFLOAT3 vPosition, bool isLocal)
 {
 	XMFLOAT4X4 mtx;
 	if (isLocal) {
 		XMStoreFloat4x4(&mtx, m_mtxLocal);
-		mtx._41 = pos.x; mtx._42 = pos.y; mtx._43 = pos.z;
+		mtx._41 = vPosition.x; mtx._42 = vPosition.y; mtx._43 = vPosition.z;
 		m_mtxLocal = XMLoadFloat4x4(&mtx);
 	}
 	else {
 		XMStoreFloat4x4(&mtx, m_mtxWorld);
-		mtx._41 = pos.x; mtx._42 = pos.y; mtx._43 = pos.z;
+		mtx._41 = vPosition.x; mtx._42 = vPosition.y; mtx._43 = vPosition.z;
 		m_mtxWorld = XMLoadFloat4x4(&mtx);
 	}
 }

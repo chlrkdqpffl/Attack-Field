@@ -17,7 +17,6 @@ CWeapon::~CWeapon()
 void CWeapon::Firing(XMVECTOR direction)
 {
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed / SCENE_MGR->g_nowScene->GetFrameSpeed()) {
-//		COLLISION_MGR->CreateFireDirectionLine(firePosOffset, direction, m_fRange);		// ÃÑ ¹ß»ç ·¹ÀÌ ·»´õ¸µ
 		m_dwLastAttackTime = GetTickCount();
 		m_bIsFire = true;
 		m_nhasBulletCount--;
@@ -27,6 +26,8 @@ void CWeapon::Firing(XMVECTOR direction)
 			FireRecoil();
 		
 		XMVECTOR firePosOffset = GetvPosition() + (GetvRight() * -0.13f) + (GetvUp() * 0.05f) + (GetvLook() * -0.225f);
+		COLLISION_MGR->CreateFireDirectionLine(firePosOffset, direction, m_fRange);		// ÃÑ ¹ß»ç ·¹ÀÌ ·»´õ¸µ
+
 #ifdef USE_SERVER
 		if (SCENE_MGR->g_pPlayerCharacter->GetIsFire())	{
 			cs_weapon* packet = reinterpret_cast<cs_weapon *>(SERVER_MGR->GetSendbuffer());
