@@ -51,6 +51,7 @@ public:
 	void PrepareRenderUI();
 	void RenderUI();
 	void ShowAimUI();
+	void ShowZoomScope();
 	void ShowDamageDirection();
 	void ShowDeathRespawnUI();
 	void ShowOccupyUI();

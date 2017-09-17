@@ -18,8 +18,7 @@ CMainScene::CMainScene()
 //	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(1.0f, 1.0f, 1.0f);
 //	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(1000.0f, 55.0f, 0.0f, 0.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
-
-//	TWBAR_MGR->g_nSelect = 10;
+//	TWBAR_MGR->g_nSelect = 45;
 }
 
 CMainScene::~CMainScene()
@@ -50,8 +49,6 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 			cout << "Bounding Box Extent : " << m_pSelectedObject->GetBoundingOBox().Extents.x << ", " << m_pSelectedObject->GetBoundingOBox().Extents.y << ", " << m_pSelectedObject->GetBoundingOBox().Extents.z << endl;
 		}
 		*/
-		break;
-	case WM_LBUTTONUP:
 		break;
 	default:
 		break;
@@ -93,13 +90,14 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				break;
 			case VK_V:	
 				m_vecCharacterContainer.back()->SetIsFire(true);
+				//m_vecCharacterContainer.back()->ReplaceWeapon(WeaponTag::eRifle);
 				break;
 			case VK_B:
 				m_vecCharacterContainer.back()->SetIsFire(false);
 				break;
 			case VK_N:
-				m_tagOccupyTeam = TeamType::eRedTeam;
-				m_bIsGameRoundOver = true;
+				m_vecCharacterContainer.back()->ReplaceWeapon(WeaponTag::eSniperRifle);
+				//m_bIsGameRoundOver = true;
 				break;
 #endif
 			}
@@ -1284,46 +1282,22 @@ void CMainScene::CreateTestingObject()
 		AddShaderObject(ShaderTag::eNormalTexture, pPhysXObject);
 	}
 #pragma endregion
-
-#pragma region [Barrel]
-	// Fire Barrel 1
-	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel).size());
-	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eFireBarrel);
-	pFbxMesh->Initialize(m_pd3dDevice, true);
-	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(2, TextureTag::eFireBarrelD, TextureTag::eFireBarrelN);
+	
+#pragma region [SideWalk1]
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eSideWalk1);
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eSideWalk1).size());
+	pMesh = new CCubeMeshTexturedTangenteIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
+	//	pMesh = new CCubePatchMesh(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
+	pInstancingShaders->SetMesh(pMesh);
+	pInstancingShaders->SetMaterial(XMFLOAT2(2.0f, 2.0f), 2, TextureTag::eSideWalk1D, TextureTag::eSideWalk1ND);
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
 
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel);
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pPhysXObject = new CPhysXObject();
-		pPhysXObject->SetMesh(pFbxMesh);
-		pPhysXObject->CreatePhysX_TriangleMesh("Fire Barrel 1", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetMesh(pMesh);
+		pPhysXObject->CreatePhysX_CubeMesh("SideWalk1", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
-		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
-
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
-		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
-	}
-	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
-
-	// Occupy Barrel
-	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eOccupyBarrel).size());
-	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eOccupyBarrel);
-	pFbxMesh->Initialize(m_pd3dDevice, true);
-	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(2, TextureTag::eOccupyBarrelD, TextureTag::eOccupyBarrelN);
-	pInstancingShaders->BuildObjects(m_pd3dDevice);
-	pInstancingShaders->CreateShader(m_pd3dDevice);
-
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eOccupyBarrel);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pPhysXObject = new CPhysXObject();
-		pPhysXObject->SetMesh(pFbxMesh);
-		pPhysXObject->CreatePhysX_CubeMesh("Occupy Barrel", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
-		pPhysXObject->SetPosition(vecMapData[count].m_Position);
-		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
 		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
 		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
@@ -1331,25 +1305,23 @@ void CMainScene::CreateTestingObject()
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 #pragma endregion
 
-#pragma region [Barricade]
-	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eBarricade).size());
+#pragma region [SideWalk2]
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eSideWalk2);
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eSideWalk2).size());
+	pMesh = new CCubeMeshTexturedTangenteIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
 
-	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eBarricade);
-	pFbxMesh->Initialize(m_pd3dDevice);
-	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eBarricadeD);
+	pInstancingShaders->SetMesh(pMesh);
+	pInstancingShaders->SetMaterial(XMFLOAT2(2.0f, 2.0f), 2, TextureTag::eSideWalk2D, TextureTag::eSideWalk2N);
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
 
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eBarricade);
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pPhysXObject = new CPhysXObject();
-		pPhysXObject->SetMesh(pFbxMesh);
-		pPhysXObject->CreatePhysX_TriangleMesh("Barricade", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetMesh(pMesh);
+		pPhysXObject->CreatePhysX_CubeMesh("SideWalk2", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
-		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
 		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
@@ -1553,6 +1525,28 @@ void CMainScene::CreateTestingObject()
 #pragma endregion
 
 #pragma region [WoodBox]
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBox);
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBox).size());
+	//pMesh = new CCubeMeshTexturedTangenteIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
+	pMesh = new CCubeMeshTexturedIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
+	pInstancingShaders->SetMesh(pMesh);
+	pInstancingShaders->SetMaterial(1, TextureTag::eWoodBoxD);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pMesh);
+		pPhysXObject->CreatePhysX_CubeMesh("WoodBox", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+
+		//pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+	
+	/*
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBox).size());
 	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eWoodBox);
 	pFbxMesh->Initialize(m_pd3dDevice);
@@ -1573,74 +1567,7 @@ void CMainScene::CreateTestingObject()
 		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
-#pragma endregion
-
-#pragma region [WoodBoard]
-	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBoard).size());
-	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eWoodBoard);
-	pFbxMesh->Initialize(m_pd3dDevice);
-	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eWoodBoardD);
-	pInstancingShaders->BuildObjects(m_pd3dDevice);
-	pInstancingShaders->CreateShader(m_pd3dDevice);
-
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBoard);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pPhysXObject = new CPhysXObject();
-		pPhysXObject->SetMesh(pFbxMesh);
-		pPhysXObject->CreatePhysX_CubeMesh("WoodBoard", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
-		pPhysXObject->SetPosition(vecMapData[count].m_Position);
-		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
-
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
-		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
-	}
-	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
-#pragma endregion
-
-#pragma region [Stairs]
-	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eStair).size());
-	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eStair);
-	pFbxMesh->Initialize(m_pd3dDevice);
-	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eStairD);
-	pInstancingShaders->BuildObjects(m_pd3dDevice);
-	pInstancingShaders->CreateShader(m_pd3dDevice);
-
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStair);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pPhysXObject = new CPhysXObject();
-		pPhysXObject->SetMesh(pFbxMesh);
-		pPhysXObject->CreatePhysX_TriangleMesh("Stair", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
-		pPhysXObject->SetPosition(vecMapData[count].m_Position);
-		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
-
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
-		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
-	}
-	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
-
-	// Stair2
-	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eStair2).size());
-	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eStair2);
-	pFbxMesh->Initialize(m_pd3dDevice);
-	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eStairD);
-	pInstancingShaders->BuildObjects(m_pd3dDevice);
-	pInstancingShaders->CreateShader(m_pd3dDevice);
-
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStair2);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pPhysXObject = new CPhysXObject();
-		pPhysXObject->SetMesh(pFbxMesh);
-		pPhysXObject->CreatePhysX_TriangleMesh("Stair2", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
-		pPhysXObject->SetPosition(vecMapData[count].m_Position);
-		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
-
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
-		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
-	}
-	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+	*/
 #pragma endregion
 }
 
@@ -1671,6 +1598,12 @@ void CMainScene::CreateUIImage()
 
 	m_pAimObject = new CAimObject(15, XMFLOAT4(1.0f, 0.0f, 0.0f, 0.5f));
 	m_pAimObject->Initialize(m_pd3dDevice, POINT{ 801, 450 }, 1);
+
+	// Zoom Scope
+	pUIObject = new CUIObject(TextureTag::eZoomScopeD);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.0f);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
 
 	// Score
 	pUIObject = new CUIObject(TextureTag::eScoreUI);
@@ -1887,7 +1820,6 @@ void CMainScene::CalcOccupyTime()
 			m_nBlueScore++;
 
 		if (m_nRedScore == TOTAL_OCCUPYSCORE || m_nBlueScore == TOTAL_OCCUPYSCORE) {
-
 			// 게임 종료됨
 			SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
 		}
@@ -1927,8 +1859,8 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 	if (m_fFrameSpeed < 0.1f)
 		m_fFrameSpeed = 0.1f;
 
-	if (TWBAR_MGR->g_OptionHDR.g_fWhite < 0.1f)
-		TWBAR_MGR->g_OptionHDR.g_fWhite = 0.1f;
+	if (TWBAR_MGR->g_OptionHDR.g_fWhite < 0.01f)
+		TWBAR_MGR->g_OptionHDR.g_fWhite = 0.01f;
 
 
 	// 라운드 종료 - 6초 뒤 새 게임 시작
@@ -1965,6 +1897,7 @@ void CMainScene::PrepareRenderUI()
 void CMainScene::RenderUI()
 {
 	ShowAimUI();
+	ShowZoomScope();
 	ShowOccupyUI();
 	ShowDeadlyAttackUI();
 	ShowDeadlyUI();
@@ -1987,6 +1920,16 @@ void CMainScene::ShowAimUI()
 	// 최대 Aim 30
 	m_pAimObject->SetAimSize(10 * m_pPlayerCharacter->GetWeaponCalcRecoil());
 	m_pAimObject->Render(m_pd3dDeviceContext);
+}
+
+void CMainScene::ShowZoomScope()
+{
+	CUIObject* pScope = m_pUIManager->GetUIObject(TextureTag::eZoomScopeD);
+
+	if (m_pPlayer->GetIsZoom())
+		pScope->SetActive(true);
+	else
+		pScope->SetActive(false);
 }
 
 void CMainScene::ShowDamageDirection()
@@ -2472,9 +2415,12 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	// ================ Draw UI Text ================ //
 
 	// ----- Magazine ------ //
-	str = "M16A1";
-	TEXT_MGR->RenderText(pd3dDeviceContext, str, 46, 1430, 765, 0xFFCCCCCC, FW1_LEFT);
-
+	if(m_pPlayerCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eRifle)
+		str = "M16A1";
+	else if (m_pPlayerCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
+		str = "TRG - 21";
+	TEXT_MGR->RenderText(pd3dDeviceContext, str, 51, 1470, 765, 0xFFCCCCCC, FW1_CENTER);
+	
 	UINT nBulletCount = m_pPlayer->GetWeaponBulletCount();
 	str = to_string(nBulletCount);
 	TEXT_MGR->RenderText(pd3dDeviceContext, str, 53, 1465, 823, 0xFFFFFFFF, FW1_RIGHT);

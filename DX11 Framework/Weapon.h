@@ -30,8 +30,8 @@ protected:
 	float					m_fNowRecoil = 0.0f;				// 현재 반동력	- UI에 사용
 
 	// ------------- 무기 세부 정보 ------------ //
-	WeaponData::Type		m_Type = WeaponData::Type::eNone;	// 총기 타입
-	float					m_fDamage;					// 데미지
+	WeaponTag				m_tagWeapon = WeaponTag::eNone;		// 총기 타입
+	float					m_fDamage;							// 데미지
 	float					m_fRange = 0.f;						// 유효 사거리
 	float					m_fReCoil = 0.2f;					// 총기 반동력
 	UINT					m_uiFireSpeed = 0;					// 연사 속도 (1000 - 1초)
@@ -54,6 +54,7 @@ public:
 	CSpriteImageObject*	GetMuzzleSprite() const { return m_pMuzzleSpirte; }
 	float GetCalcRecoil() const { return m_fNowRecoil; }
 	void SetUserMovePitch(float pitch) { m_fUserMovePitch = pitch; }
+	WeaponTag GetWeaponTag() const { return m_tagWeapon; }
 
 protected:
 	void FireEffect();

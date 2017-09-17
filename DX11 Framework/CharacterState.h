@@ -96,6 +96,27 @@ public:
 	}
 };
 
+class CState_ReplacementWeapon : public CFSM_State<CCharacterObject>
+{
+	DWORD		m_dwReplacementTime = 0;
+
+public:
+	CState_ReplacementWeapon() {};
+	virtual ~CState_ReplacementWeapon() {};
+
+	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void UpdateUpperBodyState(CCharacterObject*) override;
+	virtual void UpdateLowerBodyState(CCharacterObject*) override;
+	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+
+	static CState_ReplacementWeapon * GetInstance()
+	{
+		static CState_ReplacementWeapon  instance;
+
+		return &instance;
+	}
+};
+
 class CState_Fire : public CFSM_State<CCharacterObject>
 {
 public:

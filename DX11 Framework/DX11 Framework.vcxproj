@@ -204,6 +204,7 @@
     <ClCompile Include="ServerManager.cpp" />
     <ClCompile Include="SkinnedObject.cpp" />
     <ClCompile Include="SkyBoxShader.cpp" />
+    <ClCompile Include="SniperRifle.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SphereObject.cpp" />
     <ClCompile Include="SpriteImageManager.cpp" />
@@ -359,6 +360,7 @@
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="SkyBoxMesh.h" />
     <ClInclude Include="SkyBoxShader.h" />
+    <ClInclude Include="SniperRifle.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="SpaceShipCamera.h" />
     <ClInclude Include="SphereObject.h" />

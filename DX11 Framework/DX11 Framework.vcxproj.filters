@@ -124,6 +124,9 @@
     <Filter Include="Objects\AimObject">
       <UniqueIdentifier>{2888841b-fc75-4075-90a1-ea1155603ef2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\Weopon\SniperRifle">
+      <UniqueIdentifier>{b181e8be-0beb-4dae-b460-b008a02663db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -395,6 +398,9 @@
     </ClCompile>
     <ClCompile Include="C2DLineShader.cpp">
       <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="SniperRifle.cpp">
+      <Filter>Objects\Weopon\SniperRifle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -694,6 +700,9 @@
     </ClInclude>
     <ClInclude Include="C2DLineShader.h">
       <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="SniperRifle.h">
+      <Filter>Objects\Weopon\SniperRifle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

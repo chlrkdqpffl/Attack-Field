@@ -100,11 +100,6 @@ void CPlayer::AddAccel(XMFLOAT3 force)
 	m_f3Accelerate.z += force.z;
 }
 
-void CPlayer::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
-{
-	if (m_pCamera) m_pCamera->UpdateShaderVariables(pd3dDeviceContext);
-}
-
 void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 {
 	switch (nMessageID) {
@@ -114,6 +109,24 @@ void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 		break;
 	case WM_LBUTTONUP:
 		SetKeyUp(KeyInput::eLeftMouse);
+		break;
+	case WM_RBUTTONDOWN:
+		m_bIsZoom = !m_bIsZoom;
+		if(m_bIsZoom)
+			m_nFovAngle = 15;
+		else
+			m_nFovAngle = 45;
+
+		m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_nFovAngle);
+		break;
+	case WM_MOUSEWHEEL:			
+		if ((SHORT)HIWORD(wParam) > 0)
+			m_nFovAngle--;
+		else 
+			m_nFovAngle++;
+
+		m_nFovAngle = clamp(m_nFovAngle, 5, 15);
+		m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_nFovAngle);
 		break;
 
 	// ----------- Keyboard --------- //
@@ -145,6 +158,12 @@ void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 			break;
 		case VK_CONTROL:
 			SetKeyDown(KeyInput::eCrouch);
+			break;
+		case '1':
+			m_pCharacter->ReplaceWeapon(WeaponTag::eRifle);
+			break;
+		case '2':
+			m_pCharacter->ReplaceWeapon(WeaponTag::eSniperRifle);
 			break;
 		}
 		break;
@@ -315,6 +334,11 @@ void CPlayer::Rotate(float x, float y)
 	if (m_pCharacter->GetIsDeath())
 		return;
 
+	if (m_bIsZoom) {
+		x *= (float) m_nFovAngle / 45;
+		y *= (float) m_nFovAngle / 45;
+	}
+
 	// 발사하면서 위로 올린 Offset
 	if (m_pCharacter->GetIsFire())
 		m_fUserMovePitch += x;
@@ -423,6 +447,7 @@ void CPlayer::Update(float fDeltaTime)
 	m_pCamera->Update(fDeltaTime);
 	m_pCamera->UpdateOffset();
 	m_pCamera->RegenerateViewMatrix();
+	m_pCamera->UpdateShaderVariables(STATEOBJ_MGR->g_pd3dImmediateDeviceContext);
 }
 
 CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag)

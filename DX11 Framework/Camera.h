@@ -8,8 +8,8 @@
 
 struct VS_CB_CAMERA
 {
-	XMFLOAT4X4						m_d3dxmtxView;
-	XMFLOAT4X4						m_d3dxmtxProjection;
+	XMFLOAT4X4						m_mtxView;
+	XMFLOAT4X4						m_mtxProjection;
 };
 
 class CPlayer;
@@ -17,27 +17,26 @@ class CPlayer;
 class CCamera
 {
 protected:
-	XMFLOAT3						m_PrevPosition = XMFLOAT3(0, 0, 0);
+	CameraTag						m_tagCamera = CameraTag::eNone;
+	CPlayer							*m_pPlayer;
 
+	XMFLOAT4X4						m_mtxView;
+	XMFLOAT4X4						m_mtxProjection;
+
+	XMFLOAT3						m_vPrevPosition = XMFLOAT3(0, 0, 0);
 	XMFLOAT3						m_vPosition = XMFLOAT3(0, 0, 0);
 	XMFLOAT3						m_vRight = XMFLOAT3(0, 0, 0);
 	XMFLOAT3						m_vUp = XMFLOAT3(0, 0, 0);
 	XMFLOAT3						m_vLook = XMFLOAT3(0, 0, 0);
 
-	CameraTag						m_tagCamera = CameraTag::eNone;
-
 	XMFLOAT3						m_vOffset = XMFLOAT3(0, 0, 0);
-	float           				m_fTimeLag;
+	float           				m_fTimeLag = 0.0f;
 
-	XMFLOAT4X4						m_d3dxmtxView;
-	XMFLOAT4X4						m_d3dxmtxProjection;
-
-
+	float							m_fFOVAngle = 0.0f;
 	float							m_fNearPlane = 0.0f;
 	float							m_fFarPlane = 0.0f;
 	D3D11_VIEWPORT					m_d3dViewport;
 
-	CPlayer							*m_pPlayer;
 	XMFLOAT4						m_pd3dxFrustumPlanes[6]; //World Coordinates          
 
 	static ID3D11Buffer				*m_pd3dcbCamera;
@@ -69,8 +68,8 @@ public:
 	void SetViewport(ID3D11DeviceContext *pd3dDeviceContext);
 	D3D11_VIEWPORT GetViewport() const { return(m_d3dViewport); }
 
-	XMMATRIX GetViewMatrix() const { return(XMLoadFloat4x4(&m_d3dxmtxView)); }
-	XMMATRIX GetProjectionMatrix() const { return(XMLoadFloat4x4(&m_d3dxmtxProjection)); }
+	XMMATRIX GetViewMatrix() const { return(XMLoadFloat4x4(&m_mtxView)); }
+	XMMATRIX GetProjectionMatrix() const { return(XMLoadFloat4x4(&m_mtxProjection)); }
 	ID3D11Buffer *GetCameraConstantBuffer() const { return(m_pd3dcbCamera); }
 
 	void SetPosition(XMFLOAT3 vPosition) { m_vPosition = vPosition; }
@@ -94,9 +93,11 @@ public:
 	void SetTimeLag(float fTimeLag) { m_fTimeLag = fTimeLag; }
 	float GetTimeLag() const { return(m_fTimeLag); }
 
+	void SetFovAngle(float angle) { m_fFOVAngle = angle; }
+
 	virtual void Move(const XMVECTOR& d3dxvShift)
 	{ 
-		m_PrevPosition = m_vPosition;
+		m_vPrevPosition = m_vPosition;
 		XMVECTOR v = XMLoadFloat3(&m_vPosition);
 		v += d3dxvShift;
 		XMStoreFloat3(&m_vPosition, v);

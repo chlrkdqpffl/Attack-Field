@@ -1,6 +1,7 @@
 #pragma once
 #include "SkinnedObject.h"
-#include "Weapon.h"
+#include "RifleGunWeapon.h"
+#include "SniperRifle.h"
 #include "StateMachine.h"
 
 struct DamagedInfo
@@ -24,7 +25,10 @@ protected:
 	CStateMachine<CCharacterObject>*   m_pStateUpper = nullptr;
 	CStateMachine<CCharacterObject>*   m_pStateLower = nullptr;
 
-	CWeapon*            m_pWeapon = nullptr;
+	CWeapon*            m_pWeapon[static_cast<UINT>(WeaponTag::eMaxWeaponCount)];
+	UINT				m_nSelectWeapon = 0;
+	UINT				m_nNextReplacementWeaponNumber = 0;
+
 	XMFLOAT3            m_f3FiringDirection = XMFLOAT3(0, 0, 1);
 	float               m_fPitch = 0.0f;
 	float               m_fYaw = 0.0f;
@@ -39,7 +43,6 @@ protected:
 	// ----- State Variable ----- //
 	bool				m_bIsFire = false;
 	bool				m_bIsJump = false;
-					bool				m_bIsTemp = false;
 	bool				m_bIsCrouch = false;
 	bool				m_bIsReload = false;
 	bool				m_bIsRun = false;
@@ -50,6 +53,7 @@ protected:
 	DWORD               m_dwWalkSoundWatingTime = 0;
 	bool				m_bIsDeadly = false;
 	bool				m_bIsDeadlyAttack = false;
+	bool				m_bIsReplaceWeapon = false;
 
 	// ----- Game System Variable ----- //
 	DWORD				m_dwDeathStartTime = 0;
@@ -86,7 +90,7 @@ public:
 	void Walking();
 	void Running();
 	void Reloading();
-
+	void ReplaceWeapon(WeaponTag weapon);
 	void DamagedCharacter(UINT damage);
 
 	// ----- Get, Setter ----- // 
@@ -113,7 +117,7 @@ public:
 	XMFLOAT3 GetFireDirection() const { return m_f3FiringDirection; }
 	void SetFireDirection(XMFLOAT3 GetFireDirection) { m_f3FiringDirection = GetFireDirection; }
 
-	CSpriteImageObject* GetMuzzleSprite() const { return m_pWeapon->GetMuzzleSprite(); }
+	CSpriteImageObject* GetMuzzleSprite() const { return m_pWeapon[m_nSelectWeapon]->GetMuzzleSprite(); }
 
 	// --- 파츠별 바운딩 박스 월드 매트릭스 적용 함수 --- //
 	void SetPartsWorldMtx();
@@ -130,7 +134,7 @@ public:
 	void SetIsFire(bool bIsFire) { 
 		m_bIsFire = bIsFire;
 		if (false == bIsFire)
-			m_pWeapon->SetFireBulletCount(0);
+			m_pWeapon[m_nSelectWeapon]->SetFireBulletCount(0);
 	}
 	bool GetIsFire() const { return  m_bIsFire; }
 	void SetIsReload(bool bIsReload) { 
@@ -142,9 +146,6 @@ public:
 	
 	void SetIsJump(bool set) { m_bIsJump = set; }
 	bool GetIsJump() const { return m_bIsJump; }
-
-	void SetIsTemp(bool set) { m_bIsTemp = set; }
-	bool GetIsTemp() const { return m_bIsTemp; }
 
 	void SetOccupy(bool occupy) {
 		static bool bIsOccupyStart = false;
@@ -179,11 +180,17 @@ public:
 	bool GetIsDeadly() const { return m_bIsDeadly; }
 	void SetIsDeadlyAttack(bool set) { m_bIsDeadlyAttack = set; }
 	bool GetIsDeadlyAttack() const { return m_bIsDeadlyAttack; }
+	void SetIsReplaceWeapon(bool set) { m_bIsReplaceWeapon = set; }
+	bool GetIsReplaceWeapon() const { return m_bIsReplaceWeapon; }
+	
 	void SetTagTeam(TeamType Team) { m_tagTeam = Team; }
 	TeamType GetTagTeam() { return m_tagTeam; }
 	UINT GetCharacterID() const { return m_nCharacterID; }
 
 	// ----- Game System Function ----- //
+	void SetWeaponNumber(UINT num) { m_nSelectWeapon = num; }
+	UINT GetNextWeaponNumber() const { return m_nNextReplacementWeaponNumber; }
+
 	void SetLife(UINT life) { m_nLife = life; if (m_nLife <= 0) SetDeath();	} //피가 0 이하이면 셋 데스 함수를 호출.
 	UINT GetLife() const { return m_nLife; }
 	void SetArmorPoint(UINT armorPoint) { m_nArmorPoint = armorPoint; }
@@ -191,11 +198,11 @@ public:
 
 	void SetServerID(UINT id) { m_nServerID = id; }
 	UINT GetServerID() const { return m_nServerID; }
-	UINT GetWeaponBulletCount() const { return m_pWeapon->GetBulletCount(); }
-	UINT GetWeaponMaxBulletCount() const { return m_pWeapon->GetMaxBulletCount(); }
-	void SetWeaponBulletMax() { m_pWeapon->Reloading(); }
+	UINT GetWeaponBulletCount() const { return m_pWeapon[m_nSelectWeapon]->GetBulletCount(); }
+	UINT GetWeaponMaxBulletCount() const { return m_pWeapon[m_nSelectWeapon]->GetMaxBulletCount(); }
+	void SetWeaponBulletMax() { m_pWeapon[m_nSelectWeapon]->Reloading(); }
 	DWORD GetDeathTime() const { return m_dwDeathStartTime; }
 	DWORD GetOccupyTime() const { return m_dwOccupyStartTime; }
 
-	CWeapon* GetWeapon() const { return m_pWeapon; }
+	CWeapon* GetWeapon() const { return m_pWeapon[m_nSelectWeapon]; }
 };

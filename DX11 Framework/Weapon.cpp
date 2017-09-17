@@ -7,7 +7,7 @@ CWeapon::CWeapon(CCharacterObject* pOwner)
 	: m_pOwner(pOwner), m_fMaxPitchGap(5.0f)
 {
 //	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.0f, 1.4f, -0.05f);
-//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(-30.f, 125.f, 85.f);	
+//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(-30.f, 125.f, 85.f);
 }
 
 CWeapon::~CWeapon()
@@ -186,17 +186,8 @@ void CWeapon::Update(float fDeltaTime)
 		UpdateRecoil(fDeltaTime);
 
 	m_mtxParent = m_pOwner->GetSkinnedMesh()->GetFinalBoneMtx(m_nBoneIndex);
-	m_mtxWorld = m_mtxLocal * m_mtxParent * m_pOwner->m_mtxWorld;
+	m_mtxWorld = m_mtxLocal * m_mtxParent * m_pOwner->m_mtxWorld;	
+
 //	SetRotate(TWBAR_MGR->g_xmf3Rotate, true);
 //	SetPosition(TWBAR_MGR->g_xmf3Offset, true);
-	
-	XMVECTOR muzzlePosition;
-	if (m_pOwner->GetCharacterID() == 0)
-//		muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
-		muzzlePosition = GetvPosition() + (GetvRight() * -1.85f) + (GetvUp() * 0.03f) + (GetvLook() * 0.2f);
-	else
-		muzzlePosition = GetvPosition() + (GetvRight() * -1.0f) + (GetvUp() * 0.03f) + (GetvLook() * 0.02f);
-
-	XMStoreFloat3(&m_f3MuzzlePosition, muzzlePosition);
-	SPRITE_MGR->SetPosition(m_pMuzzleSpirte, m_f3MuzzlePosition);
 } 

@@ -19,11 +19,11 @@ enum class KeyInput
 	eJump			= 0x80,			// Space Bar
 
 	eCrouch			= 0x100,		// Ctrl
-
+	
 	// Mouse
 	eLeftMouse		= 0x200,
-//	eRightMouse		= 0x400,		// Zoom In 기능 용도
-//	eMouseWheel		= 0x800,		// 휠 위아래는 추후 구현
+//	eRightMouse		= 0x400,		// Zoom In
+//	eMouseWheel		= 0x800,		// Zoom Ratio
 };
 
 enum class CameraTag 
@@ -86,14 +86,13 @@ enum class ParticleTag
 
 // ========================================================================================================================== //
 // ==================================================== Weapon Data ========================================================= //
-
-namespace WeaponData
+enum class WeaponTag
 {
-	enum class Type
-	{
-		eNone, eRifle, eSniperRifle
-	};
-}
+	eNone = -1,
+
+	eRifle, eSniperRifle,
+	eMaxWeaponCount
+};
 
 // ============================================================================================================================ //
 // ===================================================== Animation Data ======================================================= //
@@ -148,12 +147,12 @@ enum class TextureTag
 	eWaterD, eWaterDetailD, eSkyBoxD,
 	eTerrainD, eTerrainDetailD, eTerrainN, eTerrainH,
 
-	// Model
-	eDarkFighterD, eDarkFighterN,
-
+	// Character
 	eTerroristD_Red, eTerroristD_Blue, eTerroristND,
 	ePoliceD,
 	eRifleD, eRifleN,
+	eSniperRifleD,
+	eZoomScopeD,
 
 	// Building
 	eBuilding19D, eBuilding20D, eBuilding21D, eBuilding22D, eBuilding30D, eBuilding33D, eBuilding34D, eBuilding77D, eBuilding78D, eBuilding100D, eBuilding103D,
@@ -227,7 +226,7 @@ enum class MeshTag
 	ePolice,
 
 	// Character
-	eDarkFighter, eRifle,
+	eRifle, eSniperRifle,
 
 	// Environment
 

@@ -2,7 +2,6 @@
 #include "Object.h"
 #include "Camera.h"
 #include "CharacterPlayer.h"
-//#include "CharacterObject.h"
 
 class CPlayer
 {
@@ -28,6 +27,8 @@ protected:
 	WORD						m_wKeyState = 0;
 	bool						m_bIsFire = false;
 	bool						m_bIsJumping = false;
+	bool						m_bIsZoom = false;
+	int							m_nFovAngle = 0;
 	int							count;
 
 	// Damage Direction
@@ -43,7 +44,6 @@ public:
 
 	virtual void OnApplyGravity(float fDeltaTime) {};
 	virtual void OnCameraUpdated(float fDeltaTime) {};
-	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
 	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag) {};
 	
 	CCamera *OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag); 
@@ -116,6 +116,7 @@ public:
 	UINT GetPlayerArmorPoint() const { return m_pCharacter->GetArmorPoint(); }
 	void SetPlayerlife(UINT hp) { m_pCharacter->SetLife(hp); }
 
+	bool GetIsZoom() const { return m_bIsZoom; }
 	bool GetIsDamage() const { return m_infoDamage.m_bIsDamage; }
 	void SetIsDamage(bool set) { m_infoDamage.m_bIsDamage = set; }
 	DamagedInfo GetDamageInfo() const { return m_infoDamage; }

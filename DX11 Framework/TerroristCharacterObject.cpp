@@ -9,7 +9,7 @@ CTerroristCharacterObject::CTerroristCharacterObject(TeamType team)
 }
 
 CTerroristCharacterObject::~CTerroristCharacterObject()
-{
+{ 
 }
 
 void CTerroristCharacterObject::CreateMesh(ID3D11Device *pd3dDevice)
@@ -84,10 +84,13 @@ void CTerroristCharacterObject::CreateAnimation()
 
 void CTerroristCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)
 {
-	m_pWeapon = new CRifleGunWeapon(this);
+	m_pWeapon[0] = new CRifleGunWeapon(this);
+	m_pWeapon[1] = new CSniperRifle(this);
 
-	m_pWeapon->CreateObjectData(pd3dDevice);
-	m_pWeapon->CreateAxisObject(pd3dDevice);
+	for (int i = 0; i < static_cast<UINT>(WeaponTag::eMaxWeaponCount); ++i) {
+		m_pWeapon[i]->CreateObjectData(pd3dDevice);
+		m_pWeapon[i]->CreateAxisObject(pd3dDevice);
+	}
 }
 
 void CTerroristCharacterObject::CreateBoundingBox(ID3D11Device *pd3dDevice)
