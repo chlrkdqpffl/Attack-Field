@@ -59,14 +59,14 @@ void CPlayer::PhysXUpdate(float fDeltaTime)
 	// ----- Move Player ----- //
 	PxVec3 vMoveVelocity = m_fMoveSpeed * m_fSpeedFactor * PxVec3(m_f3MoveDirection.x, m_f3MoveDirection.y, m_f3MoveDirection.z);
 	PxVec3 vAccel = PxVec3(m_f3Accelerate.x, m_f3Accelerate.y, m_f3Accelerate.z);
-	vMoveVelocity += vAccel;
+	vMoveVelocity += vAccel * fDeltaTime;
 
 	m_pPxCharacterController->move(vMoveVelocity * fDeltaTime, 0, fDeltaTime, PxControllerFilters());
 
 	// ----- Apply Gravity ----- //
-	m_f3GravityVelocity.x += m_f3GravityAccel.x;
-	m_f3GravityVelocity.y += m_f3GravityAccel.y;
-	m_f3GravityVelocity.z += m_f3GravityAccel.z;
+	m_f3GravityVelocity.x += m_f3GravityAccel.x * fDeltaTime;
+	m_f3GravityVelocity.y += m_f3GravityAccel.y * fDeltaTime;
+	m_f3GravityVelocity.z += m_f3GravityAccel.z * fDeltaTime;
 
 	PxVec3 vGravityVelocity = PxVec3(m_f3GravityVelocity.x, m_f3GravityVelocity.y, m_f3GravityVelocity.z);
 	m_pPxCharacterController->move(vGravityVelocity * fDeltaTime, 0, fDeltaTime, PxControllerFilters());
@@ -248,8 +248,8 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 		if (false == m_bIsJumping) {
 			m_bIsJumping = true;
 		
-			AddAccel(XMFLOAT3(0.0f, TWBAR_MGR->g_xmf3Quaternion.x, 0.0f));
-			//AddAccel(XMFLOAT3(0.0f, 15.0f, 0.0f));
+		//	AddAccel(XMFLOAT3(0.0f, TWBAR_MGR->g_xmf3Quaternion.x, 0.0f));
+			AddAccel(XMFLOAT3(0.0f, 1000.0f, 0.0f));
 			relativeVelocity += XMVectorSet(0, 1, 0, 0);
 			m_pCharacter->SetIsJump(true);
 		}
@@ -316,9 +316,8 @@ void CPlayer::Rotate(float x, float y)
 		return;
 
 	// 발사하면서 위로 올린 Offset
-	if (m_pCharacter->GetIsFire()) {
+	if (m_pCharacter->GetIsFire())
 		m_fUserMovePitch += x;
-	}
 
 	XMMATRIX mtxRotate;
 	CameraTag nCurrentCameraTag = m_pCamera->GetCameraTag();
@@ -433,7 +432,8 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 		case CameraTag::eFirstPerson:
 			pNewCamera = new CFirstPersonCamera(m_pCamera);
 
-			m_f3GravityAccel = XMFLOAT3(0.0f, -1.0f * TWBAR_MGR->g_xmf3Quaternion.y, 0.0f);
+			//m_f3GravityAccel = XMFLOAT3(0.0f, -1.0f * TWBAR_MGR->g_xmf3Quaternion.y, 0.0f);
+			m_f3GravityAccel = XMFLOAT3(0.0f, -55.0f, 0.0f);
 			m_fMoveSpeed = InitSpeed;
 			break;
 		case CameraTag::eFreeCam:
@@ -445,7 +445,7 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 		case CameraTag::eThirdPerson:
 			pNewCamera = new CThirdPersonCamera(m_pCamera);
 
-			m_f3GravityAccel = XMFLOAT3(0.0f, -1.0f * TWBAR_MGR->g_xmf3Quaternion.y, 0.0f);
+			m_f3GravityAccel = XMFLOAT3(0.0f, -55.0f, 0.0f);
 			m_fMoveSpeed = InitSpeed;
 			break;
 	}

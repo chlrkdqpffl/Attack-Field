@@ -75,5 +75,4 @@ void CFirstPersonCamera::Update(float fDeltaTime)
 	m_vLook = m_pPlayer->GetLook();
 	XMStoreFloat3(&m_vRight, XMVector3Cross(XMLoadFloat3(&m_vUp), XMLoadFloat3(&m_vLook)));
 
-	Rotate(m_pPlayer->GetPitch(), 0, 0);
 }

@@ -14,9 +14,9 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(0.0f, 2.0f, 0.0f);
+//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(0.0f, 2.0f, 0.0f);
 //	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(15.0f, 1.0f, 0.0f, 0.0f);
+//	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(1000.0f, 55.0f, 0.0f, 0.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
 
 //	TWBAR_MGR->g_nSelect = 10;
@@ -608,7 +608,7 @@ void CMainScene::CreateMapDataInstancingObject()
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pPhysXObject = new CPhysXObject();
 		pPhysXObject->SetMesh(pFbxMesh);
-		pPhysXObject->CreatePhysX_CubeMesh("Fire Barrel 1", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->CreatePhysX_TriangleMesh("Fire Barrel 1", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
@@ -1299,7 +1299,7 @@ void CMainScene::CreateTestingObject()
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pPhysXObject = new CPhysXObject();
 		pPhysXObject->SetMesh(pFbxMesh);
-		pPhysXObject->CreatePhysX_CubeMesh("Fire Barrel 1", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->CreatePhysX_TriangleMesh("Fire Barrel 1", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
@@ -1345,8 +1345,7 @@ void CMainScene::CreateTestingObject()
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pPhysXObject = new CPhysXObject();
 		pPhysXObject->SetMesh(pFbxMesh);
-		//pPhysXObject->CreatePhysX_TriangleMesh("Barricade", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
-		pPhysXObject->CreatePhysX_CubeMesh("Barricade", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->CreatePhysX_TriangleMesh("Barricade", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
@@ -1671,7 +1670,7 @@ void CMainScene::CreateUIImage()
 	CUIObject* pUIObject;
 
 	m_pAimObject = new CAimObject(15, XMFLOAT4(1.0f, 0.0f, 0.0f, 0.5f));
-	m_pAimObject->Initialize(m_pd3dDevice, POINT{ 803, 447 }, 1);
+	m_pAimObject->Initialize(m_pd3dDevice, POINT{ 801, 450 }, 1);
 
 	// Score
 	pUIObject = new CUIObject(TextureTag::eScoreUI);

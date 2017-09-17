@@ -293,4 +293,7 @@ void CCamera::UpdateOffset()
 		m_pPlayer->GetvRight() * m_vOffset.x +
 		m_pPlayer->GetvUp() * m_vOffset.y +
 		m_pPlayer->GetvLook() * m_vOffset.z);
+
+	if(m_tagCamera == CameraTag::eFirstPerson)
+		Rotate(m_pPlayer->GetPitch(), 0, 0);
 }
