@@ -44,6 +44,13 @@ void CCharacterPlayer::Update(float fDeltaTime)
 
 void CCharacterPlayer::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
+	CameraTag playerCameraTag = m_pPlayer->GetCamera()->GetCameraTag();
+	m_pPlayer->UpdateShaderVariables(pd3dDeviceContext);
+
+	// 자유 시점시 플레이어 렌더링 X
+	if (CameraTag::eFreeCam == playerCameraTag)
+		return;
+
 	m_pUpperController->UpdateConstantBuffer(pd3dDeviceContext);
 	m_pLowerController->UpdateConstantBuffer(pd3dDeviceContext);
 
@@ -51,9 +58,9 @@ void CCharacterPlayer::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *p
 	if (m_pMaterial) m_pMaterial->UpdateShaderVariable(pd3dDeviceContext);
 
 	CGameObject::UpdateConstantBuffer_WorldMtx(pd3dDeviceContext, &XMLoadFloat4x4(&m_pPlayer->m_mtxWorld));
-	m_pPlayer->UpdateShaderVariables(pd3dDeviceContext);
+	
 
-	if (m_pPlayer->GetCamera()->GetCameraTag() == CameraTag::eFirstPerson)
+	if (CameraTag::eFirstPerson == playerCameraTag)
 		m_vecMeshContainer[1]->Render(pd3dDeviceContext);		// 팔 메쉬
 	else
 		m_vecMeshContainer[0]->Render(pd3dDeviceContext);		// 전체 메쉬

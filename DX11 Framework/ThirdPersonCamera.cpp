@@ -6,7 +6,7 @@ CThirdPersonCamera::CThirdPersonCamera(CCamera *pCamera) : CCamera(pCamera)
 	m_tagCamera = CameraTag::eThirdPerson;
 	if (pCamera)
 	{
-		if (pCamera->GetCameraTag() == CameraTag::eSpaceShip)
+		if (pCamera->GetCameraTag() == CameraTag::eFreeCam)
 		{
 			XMStoreFloat3(&m_vUp, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 			m_vRight.y = 0.0f;
@@ -20,13 +20,6 @@ CThirdPersonCamera::CThirdPersonCamera(CCamera *pCamera) : CCamera(pCamera)
 void CThirdPersonCamera::Update(float fDeltaTime)
 {
 	m_vLook = m_pPlayer->GetLook();
-
-	XMVECTOR pos = m_pPlayer->GetvPosition();
-
-	XMStoreFloat3(&m_vPosition, pos +
-		m_pPlayer->GetvRight() * m_vOffset.x +
-		m_pPlayer->GetvUp() * m_vOffset.y +
-		m_pPlayer->GetvLook() * m_vOffset.z);
 
 	/*
 	XMFLOAT4X4 mtxRotate;

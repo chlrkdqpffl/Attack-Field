@@ -24,6 +24,7 @@ protected:
 	bool					m_bIsFire = false;
 	UINT					m_nFireBulletCount = 0;				// 총기 반동 확인
 	float					m_fInitPitch = 0.0f;				// 최초 반동 위치
+	float					m_fUserMovePitch = 0.0f;			// 총 발사 시점부터 사용자가 위로 올린 각도
 	const float				m_fMaxPitchGap = 0.0f;				// 최대 반동 각도
 	float					m_fCalcRecoil = 0.0f;				// 계산된 반동력
 	float					m_fNowRecoil = 0.0f;				// 현재 반동력	- UI에 사용
@@ -49,8 +50,10 @@ public:
 	UINT GetBulletCount() const { return m_nhasBulletCount; }
 	UINT GetMaxBulletCount() const { return m_nMaxhasBulletCount; }
 	void SetFireBulletCount(UINT set) { m_nFireBulletCount = set; }
+	UINT GetFireBulletCount() const { return m_nFireBulletCount;}
 	CSpriteImageObject*	GetMuzzleSprite() const { return m_pMuzzleSpirte; }
 	float GetCalcRecoil() const { return m_fNowRecoil; }
+	void SetUserMovePitch(float pitch) { m_fUserMovePitch = pitch; }
 
 protected:
 	void FireEffect();

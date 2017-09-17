@@ -285,7 +285,12 @@ bool CCamera::IsInFrustum(BoundingSphere *boundingSphere)
 	return(IsInFrustum(XMLoadFloat3(&boundingSphere->Center), XMVectorSet(boundingSphere->Radius, boundingSphere->Radius, boundingSphere->Radius, 0.0f)));
 }
 
-void CCamera::Update(float fDeltaTime)
+void CCamera::UpdateOffset()
 {
-	cout << "F2만 지금 안넣었음 " << endl;
+	XMVECTOR pos = m_pPlayer->GetvPosition();
+
+	XMStoreFloat3(&m_vPosition, pos +
+		m_pPlayer->GetvRight() * m_vOffset.x +
+		m_pPlayer->GetvUp() * m_vOffset.y +
+		m_pPlayer->GetvLook() * m_vOffset.z);
 }

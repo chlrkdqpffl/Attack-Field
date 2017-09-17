@@ -30,9 +30,9 @@ enum class CameraTag
 {
 	eNone,
 
-	eFirstPerson, eSpaceShip, eThirdPerson,
+	eFirstPerson, eFreeCam, eThirdPerson,
 
-	eDeadCam, eFreeCam
+	eDeadCam, 
 };
 
 enum class GameMode
@@ -172,10 +172,16 @@ enum class TextureTag
 	eContainerRedD, eContainerBlueD, eContainerYellowD, eContainerN,
 
 	// Barrel
-	eFireBarrelD, eFireBarrelN, eBarrelD, eBarrelN, eOccupyBarrelD, eOccupyBarrelN,
+	eFireBarrelD, eFireBarrelN, eOccupyBarrelD, eOccupyBarrelN,
 
 	// StreetLamp
 	eStreetLampD, eStreetLampN,
+
+	// WoodBox, Board
+	eWoodBoxD, eWoodBoardD,
+
+	// Stair
+	eStairD,
 
 	// UI
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
@@ -234,8 +240,14 @@ enum class MeshTag
 	// Container
 	eContainer1, eContainer2, eContainer3,
 
+	// WoodBox, Board
+	eWoodBox, eWoodBoard,
+
+	// Stair
+	eStair, eStair2,
+
 	// Barrel
-	eFireBarrel, eBarrel, eOccupyBarrel,
+	eFireBarrel, eOccupyBarrel,
 
 	// Etc
 	eStreetLamp, eBarricade,
@@ -261,8 +273,14 @@ enum class ObjectTag
 	eContainer1Blue, eContainer2Blue, eContainer3Blue,
 	eContainer1Yellow, eContainer2Yellow, eContainer3Yellow,
 
+	// WoodBox, Board
+	eWoodBox, eWoodBoard,
+
+	// Stair
+	eStair, eStair2,
+
 	// Barrel
-	eFireBarrel, eBarrel, eOccupyBarrel,
+	eFireBarrel, eOccupyBarrel,
 
 	// Etc
 	eGrass, eStreetLamp, eBarricade

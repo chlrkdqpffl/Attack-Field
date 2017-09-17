@@ -678,9 +678,6 @@ void CGameObject::UpdateConstantBuffer_Material(ID3D11DeviceContext *pd3dDeviceC
 
 bool CGameObject::IsVisible(CCamera *pCamera)
 {
-//	OnPrepareRender();
-//	Update(NULL);
-
 	m_bIsVisible = (m_bActive) ? true : false;
 #ifdef _WITH_FRUSTUM_CULLING_BY_OBJECT
 	if (m_bActive) {
@@ -689,6 +686,12 @@ bool CGameObject::IsVisible(CCamera *pCamera)
 		if (pCamera) m_bIsVisible = pCamera->IsInFrustum(&bcBoundingCube);
 	}
 #endif
+
+	// 임시로 해놓은 상태.	 - 09. 17
+	if (m_tagMesh == MeshTag::eStair)
+		m_bIsVisible = true;
+	if (m_tagMesh == MeshTag::eStair2)
+		m_bIsVisible = true;
 
 	return(m_bIsVisible);
 }

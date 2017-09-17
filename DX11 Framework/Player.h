@@ -23,7 +23,10 @@ protected:
 	XMFLOAT3     				m_f3GravityVelocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3     				m_f3GravityAccel = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	
+
+	float						m_fUserMovePitch = 0.0f;			// 총 발사 시점부터 사용자가 위로 올린 각도
 	WORD						m_wKeyState = 0;
+	bool						m_bIsFire = false;
 	bool						m_bIsJumping = false;
 	int							count;
 

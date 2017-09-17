@@ -102,10 +102,11 @@ public:
 		XMStoreFloat3(&m_vPosition, v);
 	}
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) { }
-	virtual void Update(float fDeltaTime);
+	virtual void Update(float fDeltaTime) {};
 	virtual void SetLookAt(XMVECTOR& vLookAt);
 	virtual void SetLookAt(XMVECTOR& d3dxvPosition, XMVECTOR& d3dxvLookAt, XMVECTOR& vd3dxvUp);
 
+	void UpdateOffset();
 	void CalculateFrustumPlanes();
 	bool IsInFrustum(XMVECTOR& xCenter, XMVECTOR& xExtern);
 	bool IsInFrustum(BoundingBox *boundingbox);

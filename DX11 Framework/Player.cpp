@@ -10,11 +10,14 @@ CPlayer::CPlayer(CCharacterPlayer* pCharacter)
 {
 	XMStoreFloat4x4(&m_mtxWorld, XMMatrixIdentity());
 
+#define InitSpeed 7.0f
+
 #ifdef DEVELOP_MODE
+
 //	m_fMoveSpeed = 15.0f;
-	m_fMoveSpeed = 7.0f;
+	m_fMoveSpeed = InitSpeed;
 #else
-	m_fMoveSpeed = 7.0f;	// 자연스러운 속도
+	m_fMoveSpeed = InitSpeed;	// 자연스러운 속도
 #endif
 	count = 0;
 }
@@ -28,7 +31,7 @@ void CPlayer::InitializePhysXData(PxPhysics* pPxPhysics, PxMaterial *pPxMaterial
 {
 	PxCapsuleControllerDesc	PxCapsuledesc;
 	PxCapsuledesc.position = PxExtendedVec3(0, 0, 0);
-	PxCapsuledesc.radius = 1.2f;
+	PxCapsuledesc.radius = 0.6f;
 	PxCapsuledesc.height = 2.0f;
 //	PxCapsuledesc.climbingMode = PxCapsuleClimbingMode::Enum::eCONSTRAINED;
 	//캐릭터가 올라갈 수있는 장애물의 최대 높이를 정의합니다. 
@@ -38,13 +41,14 @@ void CPlayer::InitializePhysXData(PxPhysics* pPxPhysics, PxMaterial *pPxMaterial
 	//성능을 향상시키기 위해 캐싱하는 컨트롤러 주변의 공간입니다.  이것은 1.0f보다 커야하지만 너무 크지 않아야하며, 2.0f보다 낮아야합니다.
 	PxCapsuledesc.volumeGrowth = 1.9f;
 	//캐릭터가 걸어 갈 수있는 최대 경사. 
-	PxCapsuledesc.slopeLimit = cosf(XMConvertToRadians(15.f));
+	PxCapsuledesc.slopeLimit = cosf(XMConvertToRadians(35.f));
 	
 	
 //	PxCapsuledesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
 
 	PxCapsuledesc.upDirection = PxVec3(0, 1, 0);
-	PxCapsuledesc.contactOffset = 0.0001f; //접촉 오프셋-> 요게 타 객체와 부딪혔을때 영향을 주는 변수인듯(높을수록 덜덜떨림)
+	PxCapsuledesc.contactOffset = 0.001f; //접촉 오프셋-> 요게 타 객체와 부딪혔을때 영향을 주는 변수인듯(높을수록 덜덜떨림)
+	//PxCapsuledesc.contactOffset = 1.0f;
 	PxCapsuledesc.material = pPxMaterial;
 
 	m_pPxCharacterController = pPxControllerManager->createController(PxCapsuledesc);
@@ -60,7 +64,6 @@ void CPlayer::PhysXUpdate(float fDeltaTime)
 	m_pPxCharacterController->move(vMoveVelocity * fDeltaTime, 0, fDeltaTime, PxControllerFilters());
 
 	// ----- Apply Gravity ----- //
-	m_f3GravityAccel = XMFLOAT3(0.0f, -1.0f, 0.0f);
 	m_f3GravityVelocity.x += m_f3GravityAccel.x;
 	m_f3GravityVelocity.y += m_f3GravityAccel.y;
 	m_f3GravityVelocity.z += m_f3GravityAccel.z;
@@ -80,7 +83,8 @@ void CPlayer::PhysXUpdate(float fDeltaTime)
 	}
 
 	// ----- Character Update ----- //
-	float characterCenterOffset = 0.65f;
+	//float characterCenterOffset = TWBAR_MGR->g_xmf3Offset.x;
+	float characterCenterOffset = 0.08f;
 	XMFLOAT3 position = XMFLOAT3(m_pPxCharacterController->getPosition().x, m_pPxCharacterController->getPosition().y, m_pPxCharacterController->getPosition().z);
 
 	m_mtxWorld._41 = position.x;
@@ -212,8 +216,10 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
-		if (m_pCharacter->GetIsTempRun())	// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
-			vMoveDirection = GetvLook();
+		if (m_pCharacter->GetIsTempRun()) {	// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
+			if (m_pCamera->GetCameraTag() != CameraTag::eFreeCam)
+				vMoveDirection = GetvLook();
+		}
 		m_fSpeedFactor = 2.5f;
 		m_pCharacter->Running();
 	}
@@ -242,8 +248,8 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 		if (false == m_bIsJumping) {
 			m_bIsJumping = true;
 		
-			//AddAccel(XMFLOAT3(0.0f, TWBAR_MGR->g_xmf3Quaternion.y, 0.0f));
-			AddAccel(XMFLOAT3(0.0f, 15.0f, 0.0f));
+			AddAccel(XMFLOAT3(0.0f, TWBAR_MGR->g_xmf3Quaternion.x, 0.0f));
+			//AddAccel(XMFLOAT3(0.0f, 15.0f, 0.0f));
 			relativeVelocity += XMVectorSet(0, 1, 0, 0);
 			m_pCharacter->SetIsJump(true);
 		}
@@ -258,19 +264,29 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 		m_pPxCharacterController->resize(2.0f);
 	}
 
-	// 앉기시 이동 금지
-	if (m_wKeyState & static_cast<int>(KeyInput::eCrouch))
-		vMoveDirection = XMVectorZero();
+	// 앉기시 이동 금지 or 조금 이동
+	if (m_wKeyState & static_cast<int>(KeyInput::eCrouch)) {
+		//vMoveDirection = XMVectorZero();
+		m_fSpeedFactor = 0.2f;
+	}
 	
 	XMStoreFloat3(&m_f3MoveDirection, vMoveDirection);
 	m_pCharacter->SetRelativevVelocity(relativeVelocity);
 
 	// =============================== Mouse ============================== //
-	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse))
+	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)) {
 		m_pCharacter->SetIsFire(true);
-	else 
+		if (false == m_bIsFire) {
+			m_fUserMovePitch = 0.0f;
+			m_bIsFire = true;
+		}
+	}
+	else {
+		m_pCharacter->GetWeapon()->SetUserMovePitch(m_fUserMovePitch);
 		m_pCharacter->SetIsFire(false);
-
+		m_bIsFire = false;
+	}
+	
 	if (m_pCharacter->IsMoving())
 		m_pCharacter->Walking();
 
@@ -299,6 +315,11 @@ void CPlayer::Rotate(float x, float y)
 	if (m_pCharacter->GetIsDeath())
 		return;
 
+	// 발사하면서 위로 올린 Offset
+	if (m_pCharacter->GetIsFire()) {
+		m_fUserMovePitch += x;
+	}
+
 	XMMATRIX mtxRotate;
 	CameraTag nCurrentCameraTag = m_pCamera->GetCameraTag();
 	if ((nCurrentCameraTag == CameraTag::eFirstPerson) || (nCurrentCameraTag == CameraTag::eThirdPerson)) {
@@ -319,7 +340,7 @@ void CPlayer::Rotate(float x, float y)
 			SetvRight(XMVector3TransformNormal(GetvRight(), mtxRotate));
 		}
 	}
-	else if (nCurrentCameraTag == CameraTag::eSpaceShip) {
+	else if (nCurrentCameraTag == CameraTag::eFreeCam) {
 		if (x != 0.0f) {
 			mtxRotate = XMMatrixRotationAxis(GetvRight(), XMConvertToRadians(x));
 			SetvUp(XMVector3TransformNormal(GetvUp(), mtxRotate));
@@ -401,6 +422,7 @@ void CPlayer::Update(float fDeltaTime)
 	
 	// Camera Update
 	m_pCamera->Update(fDeltaTime);
+	m_pCamera->UpdateOffset();
 	m_pCamera->RegenerateViewMatrix();
 }
 
@@ -410,16 +432,25 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 	switch (nNewCameraTag) {
 		case CameraTag::eFirstPerson:
 			pNewCamera = new CFirstPersonCamera(m_pCamera);
+
+			m_f3GravityAccel = XMFLOAT3(0.0f, -1.0f * TWBAR_MGR->g_xmf3Quaternion.y, 0.0f);
+			m_fMoveSpeed = InitSpeed;
 			break;
-		case CameraTag::eSpaceShip:
+		case CameraTag::eFreeCam:
 			pNewCamera = new CSpaceShipCamera(m_pCamera);
+
+			m_f3GravityAccel = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			m_fMoveSpeed = 30.0f;
 			break;
 		case CameraTag::eThirdPerson:
 			pNewCamera = new CThirdPersonCamera(m_pCamera);
+
+			m_f3GravityAccel = XMFLOAT3(0.0f, -1.0f * TWBAR_MGR->g_xmf3Quaternion.y, 0.0f);
+			m_fMoveSpeed = InitSpeed;
 			break;
 	}
 
-	if (nCurrentCameraTag == CameraTag::eSpaceShip)
+	if (nCurrentCameraTag == CameraTag::eFreeCam)
 	{
 		SetUp(XMFLOAT3(0.0f, 1.0f, 0.0f));
 		m_mtxWorld._12 = 0.0f;
@@ -431,18 +462,7 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 		if (m_mtxWorld._31 < 0.0f) fYaw = -fYaw;
 		m_pCharacter->SetYaw(fYaw);
 	}
-	/*	// 일단 주석처리하고 문제생기면 다시 넣자 - 09. 12
-	else if ((nNewCameraTag == CameraTag::eSpaceShip) && m_pCamera)
-	{
-		cout << "니냐 ddddddddddddd" << endl;
-		SetRight(m_pCamera->GetRight());
-		SetUp(m_pCamera->GetUp());
-		SetLook(m_pCamera->GetLook());
-	}
-	*/
-
-	if (pNewCamera)
-	{
+	if (pNewCamera) {
 		pNewCamera->SetCameraTag(nNewCameraTag);
 		pNewCamera->SetPlayer(this);
 	}
