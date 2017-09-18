@@ -94,6 +94,7 @@ public:
 	float GetTimeLag() const { return(m_fTimeLag); }
 
 	void SetFovAngle(float angle) { m_fFOVAngle = angle; }
+	float GetFovAngle() const { return m_fFOVAngle;	}
 
 	virtual void Move(const XMVECTOR& d3dxvShift)
 	{ 

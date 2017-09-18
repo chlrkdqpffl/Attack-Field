@@ -55,6 +55,7 @@ public:
 	float GetCalcRecoil() const { return m_fNowRecoil; }
 	void SetUserMovePitch(float pitch) { m_fUserMovePitch = pitch; }
 	WeaponTag GetWeaponTag() const { return m_tagWeapon; }
+	bool GetIsFiring() const { return m_bIsFire; }
 
 protected:
 	virtual void FireEffect();

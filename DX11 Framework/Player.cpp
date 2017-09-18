@@ -168,15 +168,15 @@ void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 			break;
 		case '1':
 			m_bIsZoom = false;
-			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, 45.0f);
-
+			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_pCamera->GetFovAngle());
+			
 			m_pCharacter->ReplaceWeapon(WeaponTag::eRifle);
 			break;
 		case '2':
 			m_bIsZoom = false;
-			m_pCharacter->ReplaceWeapon(WeaponTag::eSniperRifle);
+			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_pCamera->GetFovAngle());
 
-			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, 45.0f);
+			m_pCharacter->ReplaceWeapon(WeaponTag::eSniperRifle);
 			break;
 		}
 		break;
@@ -298,7 +298,7 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 
 	// 저격총 들고 있으면 속도 감소
 	if (m_pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
-		m_fSpeedFactor *= 0.8f;
+		m_fSpeedFactor *= 0.6f;
 
 	// 앉기시 이동 금지 or 조금 이동
 	if (m_wKeyState & static_cast<int>(KeyInput::eCrouch)) {
@@ -357,7 +357,7 @@ void CPlayer::Rotate(float x, float y)
 	}
 
 	// 발사하면서 위로 올린 Offset
-	if (m_pCharacter->GetIsFire())
+	if (m_pCharacter->GetWeapon()->GetIsFiring())
 		m_fUserMovePitch += x;
 
 	XMMATRIX mtxRotate;

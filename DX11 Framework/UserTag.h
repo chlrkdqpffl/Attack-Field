@@ -41,7 +41,7 @@ enum class GameMode
 	eDeathMatch, eOccupy
 };
 
-enum class TeamType
+enum class TeamTag
 {
 	eNone,
 	eRedTeam, eBlueTeam

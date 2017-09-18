@@ -3,7 +3,7 @@
 
 UINT CCharacterObject::g_nCharacterCount = 0;
 
-CCharacterObject::CCharacterObject(TeamType team)
+CCharacterObject::CCharacterObject(TeamTag team)
 {
 	for (int i = 0; i < static_cast<int>(ChracterBoundingBoxParts::ePartsCount); ++i)
 		m_pPartsBoundingBoxMesh[i] = nullptr;

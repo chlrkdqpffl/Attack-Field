@@ -7,7 +7,7 @@ private:
 	CPlayer*	m_pPlayer = nullptr;
 
 public:
-	CCharacterPlayer(TeamType team);
+	CCharacterPlayer(TeamTag team);
 	virtual ~CCharacterPlayer();
 
 	virtual void Revival() override;

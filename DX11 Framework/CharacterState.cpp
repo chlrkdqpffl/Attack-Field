@@ -286,9 +286,11 @@ void CState_ReplacementWeapon::UpdateUpperBodyState(CCharacterObject* pCharacter
 		return;
 	}
 
-	// 0.6초 뒤 무기 교체
-	if (GetTickCount() - m_dwReplacementTime > 700)
+	// 0.7초 뒤 무기 교체
+	if (GetTickCount() - m_dwReplacementTime > 700) {
 		pCharacter->SetWeaponNumber(pCharacter->GetNextWeaponNumber());
+		pCharacter->Reloading();
+	}
 }
 
 void CState_ReplacementWeapon::UpdateLowerBodyState(CCharacterObject* pCharacter)
@@ -297,7 +299,6 @@ void CState_ReplacementWeapon::UpdateLowerBodyState(CCharacterObject* pCharacter
 
 void CState_ReplacementWeapon::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-	pCharacter->Reloading();
 	pCharacter->SetIsReplaceWeapon(false);
 }
 

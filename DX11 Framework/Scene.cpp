@@ -174,7 +174,7 @@ void CScene::ReleasePhysX()
 
 void CScene::CreatePlayer()
 {
-	m_pPlayerCharacter = new CTerroristPlayer(TeamType::eRedTeam);
+	m_pPlayerCharacter = new CTerroristPlayer(TeamTag::eRedTeam);
 	m_pPlayerCharacter->CreateObjectData(m_pd3dDevice);
 	m_pPlayerCharacter->CreateAxisObject(m_pd3dDevice);
 
