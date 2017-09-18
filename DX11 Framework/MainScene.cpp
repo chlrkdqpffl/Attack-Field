@@ -1203,9 +1203,9 @@ void CMainScene::CreateTestingObject()
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eRoad1).size());
 
 	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eRoad);
-	pFbxMesh->Initialize(m_pd3dDevice);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
 	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eRoad1D);
+	pInstancingShaders->SetMaterial(2, TextureTag::eRoad1D, TextureTag::eRoad1N);
 
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
@@ -1218,7 +1218,7 @@ void CMainScene::CreateTestingObject()
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
 		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
@@ -1227,9 +1227,9 @@ void CMainScene::CreateTestingObject()
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eRoad2).size());
 
 	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eRoad);
-	pFbxMesh->Initialize(m_pd3dDevice);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
 	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eRoad2D);
+	pInstancingShaders->SetMaterial(2, TextureTag::eRoad2D, TextureTag::eRoad2N);
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
 
@@ -1241,42 +1241,42 @@ void CMainScene::CreateTestingObject()
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
 		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 
-
+	
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCrossRoad);
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eCrossRoad, vecMapData[count].m_Scale);
-		pFbxMesh->Initialize(m_pd3dDevice);
+		pFbxMesh->Initialize(m_pd3dDevice, true);
 
 		pPhysXObject = new CPhysXObject();
 		pPhysXObject->CreateBoundingBox(m_pd3dDevice);
 		pPhysXObject->SetMesh(pFbxMesh);
-		pPhysXObject->SetMaterial(1, TextureTag::eCrossRoadD);
-		pPhysXObject->CreatePhysX_CubeMesh("eCrossRoad", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetMaterial(2, TextureTag::eCrossRoadD, TextureTag::eCrossRoadN);
+		pPhysXObject->CreatePhysX_CubeMesh("CrossRoad", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		AddShaderObject(ShaderTag::eNormalTexture, pPhysXObject);
+		AddShaderObject(ShaderTag::eNormalTangentTexture, pPhysXObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCenterRoad);
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eCenterRoad, vecMapData[count].m_Scale);
-		pFbxMesh->Initialize(m_pd3dDevice);
+		pFbxMesh->Initialize(m_pd3dDevice, true);
 
 		pPhysXObject = new CPhysXObject();
 		pPhysXObject->CreateBoundingBox(m_pd3dDevice);
 		pPhysXObject->SetMesh(pFbxMesh);
-		pPhysXObject->SetMaterial(1, TextureTag::eCenterRoadD);
-		pPhysXObject->CreatePhysX_CubeMesh("eCenterRoad", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetMaterial(2, TextureTag::eCenterRoadD, TextureTag::eCenterRoadN);
+		pPhysXObject->CreatePhysX_CubeMesh("CenterRoad", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		AddShaderObject(ShaderTag::eNormalTexture, pPhysXObject);
+		AddShaderObject(ShaderTag::eNormalTangentTexture, pPhysXObject);
 	}
 #pragma endregion
 	

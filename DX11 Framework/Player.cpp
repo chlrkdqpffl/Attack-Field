@@ -409,6 +409,8 @@ void CPlayer::Rotate(float x, float y)
 
 		m_pCharacter->SetPrevPitch(abs(m_pCharacter->GetPitch()));   //이전값 저장
 		m_pCharacter->SetPrevYaw(abs(m_pCharacter->GetYaw()));      //이전값 저장
+
+		cout << "내 피치 : " << m_pCharacter->GetPitch() << ", Yaw" << m_pCharacter->GetYaw() << endl;
 	}
 #endif
 }
