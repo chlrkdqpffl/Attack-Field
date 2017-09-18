@@ -228,6 +228,8 @@ void CServerManager::processpacket(char *ptr)
 				packet = reinterpret_cast<SC_Respawn *>(ptr);
 				id = packet->id;
 
+				ShowXMFloat3(packet->m_f3Position);
+
 				if (id == m_myid){
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->Revival();
@@ -311,6 +313,24 @@ void CServerManager::processpacket(char *ptr)
 		}
 	}
 		break;
+
+	
+	case 15:	//Weapon_Change.
+	{
+		sc_weapon_type *my_packet = reinterpret_cast<sc_weapon_type *>(ptr);
+
+		int findCharacterID = 0;;
+		if (m_myid != my_packet->id)
+		{
+			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
+				if (character->GetServerID() == id)
+					break;
+				findCharacterID++;
+			}
+			SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->ReplaceWeapon(static_cast<WeaponTag>(my_packet->Weapontype));
+		}
+		break;
+	}
 	default:
 		std::cout << "Unknown PACKET type :" << (int)ptr[1] << "\n";
 		break;

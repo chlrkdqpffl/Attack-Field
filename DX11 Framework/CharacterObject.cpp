@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CharacterObject.h"
+#include "protocol.h"
 
 UINT CCharacterObject::g_nCharacterCount = 0;
 
@@ -104,7 +105,17 @@ void CCharacterObject::ReplaceWeapon(WeaponTag weapon)
 	m_bIsReplaceWeapon = true;
 	m_nNextReplacementWeaponNumber = static_cast<UINT>(weapon);
 
+
+#ifdef USE_SERVER
 	// 무기 변경 패킷 보내기
+	cs_weapon_type packet;
+	packet.size = sizeof(packet);
+	packet.type = 13;
+	packet.Weapontype = static_cast<BYTE>(weapon);
+
+	SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+
+#endif
 }
 
 /*

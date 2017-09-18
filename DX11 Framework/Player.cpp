@@ -171,6 +171,8 @@ void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_pCamera->GetFovAngle());
 			
 			m_pCharacter->ReplaceWeapon(WeaponTag::eRifle);
+
+
 			break;
 		case '2':
 			m_bIsZoom = false;
@@ -415,8 +417,6 @@ void CPlayer::Rotate(float x, float y)
 
 		m_pCharacter->SetPrevPitch(abs(m_pCharacter->GetPitch()));   //이전값 저장
 		m_pCharacter->SetPrevYaw(abs(m_pCharacter->GetYaw()));      //이전값 저장
-
-		cout << "내 피치 : " << m_pCharacter->GetPitch() << ", Yaw" << m_pCharacter->GetYaw() << endl;
 	}
 #endif
 }
