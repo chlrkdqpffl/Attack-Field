@@ -48,7 +48,10 @@ void CState_Idle::UpdateUpperBodyState(CCharacterObject* pCharacter)
 
 	// Check Fire
 	if (pCharacter->GetIsFire()) {
-		pUpperFSM->ChangeState(CState_Fire::GetInstance());
+		if(pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eRifle)
+			pUpperFSM->ChangeState(CState_FireLoop::GetInstance());
+		else if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
+			pUpperFSM->ChangeState(CState_Fire::GetInstance());
 		return;
 	}
 
@@ -101,9 +104,13 @@ void CState_Walk::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());
 		return;
 	}
+
 	// Check Fire
 	if (pCharacter->GetIsFire()) {
-		pUpperFSM->ChangeState(CState_Fire::GetInstance());
+		if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eRifle)
+			pUpperFSM->ChangeState(CState_FireLoop::GetInstance());
+		else if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
+			pUpperFSM->ChangeState(CState_Fire::GetInstance());
 		return;
 	}
 
@@ -200,7 +207,10 @@ void CState_Crouch::UpdateUpperBodyState(CCharacterObject* pCharacter)
 
 	// Check Fire
 	if (pCharacter->GetIsFire()) {
-		pUpperFSM->ChangeState(CState_Fire::GetInstance());
+		if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eRifle)
+			pUpperFSM->ChangeState(CState_FireLoop::GetInstance());
+		else if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
+			pUpperFSM->ChangeState(CState_Fire::GetInstance());
 		return;
 	}
 
@@ -226,6 +236,9 @@ void CState_Crouch::ExitState(CCharacterObject* pCharacter, AnimationData::Parts
 // ---------------------------- Reload ---------------------------- //
 void CState_Reload::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	if (type == AnimationData::Parts::LowerBody)
+		return;
+
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.6f);
 	pCharacter->GetWeapon()->SetFireBulletCount(0);
 	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
@@ -254,6 +267,9 @@ void CState_Reload::ExitState(CCharacterObject* pCharacter, AnimationData::Parts
 // ---------------------------- Weapon Replacement ---------------------------- //
 void CState_ReplacementWeapon::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	if (type == AnimationData::Parts::LowerBody)
+		return;
+
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.6f);
 	pCharacter->GetWeapon()->SetFireBulletCount(0);
 	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
@@ -263,16 +279,16 @@ void CState_ReplacementWeapon::EnterState(CCharacterObject* pCharacter, Animatio
 
 void CState_ReplacementWeapon::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
-	// 0.4초 뒤 무기 교체
-	if (GetTickCount() - m_dwReplacementTime > 400)
-		pCharacter->SetWeaponNumber(pCharacter->GetNextWeaponNumber());
-
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
 	if (!pCharacter->GetControllerActive(AnimationData::Parts::UpperBody)) {
 		pUpperFSM->ChangeState(CState_Idle::GetInstance());
 		pCharacter->SetControllerActive(AnimationData::Parts::UpperBody, true);
 		return;
 	}
+
+	// 0.6초 뒤 무기 교체
+	if (GetTickCount() - m_dwReplacementTime > 700)
+		pCharacter->SetWeaponNumber(pCharacter->GetNextWeaponNumber());
 }
 
 void CState_ReplacementWeapon::UpdateLowerBodyState(CCharacterObject* pCharacter)
@@ -288,10 +304,49 @@ void CState_ReplacementWeapon::ExitState(CCharacterObject* pCharacter, Animation
 // ---------------------------- Fire ---------------------------- //
 void CState_Fire::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-	pCharacter->SetAnimation(AnimationData::CharacterAnim::eFire);
+	pCharacter->SetAnimation(AnimationData::CharacterAnim::eFire, TWBAR_MGR->g_xmf3Offset.x);
 }
 
 void CState_Fire::UpdateUpperBodyState(CCharacterObject* pCharacter)
+{
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+	if (!pCharacter->GetControllerActive(AnimationData::Parts::UpperBody)) {
+		pUpperFSM->ChangeState(CState_Idle::GetInstance());
+		pCharacter->SetControllerActive(AnimationData::Parts::UpperBody, true);
+		return;
+	}
+
+	// Check BulletCount
+	if (pCharacter->GetWeaponBulletCount() == 0) {
+		pUpperFSM->ChangeState(CState_Reload::GetInstance());
+		return;
+	}
+
+	// Check Reload
+	if (pCharacter->GetIsReload()) {
+		pUpperFSM->ChangeState(CState_Reload::GetInstance());
+		return;
+	}
+
+	pCharacter->Firing();
+}
+
+void CState_Fire::UpdateLowerBodyState(CCharacterObject* pCharacter)
+{
+}
+
+void CState_Fire::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
+{
+	SPRITE_MGR->DisableSprite(pCharacter->GetMuzzleSprite());
+}
+
+// ---------------------------- Fire Loop ---------------------------- //
+void CState_FireLoop::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
+{
+	pCharacter->SetAnimation(AnimationData::CharacterAnim::eFireLoop);
+}
+
+void CState_FireLoop::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
 
@@ -318,14 +373,15 @@ void CState_Fire::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		pUpperFSM->ChangeState(CState_Idle::GetInstance());
 		return;
 	}
+
 	pCharacter->Firing();
 }
 
-void CState_Fire::UpdateLowerBodyState(CCharacterObject* pCharacter)
+void CState_FireLoop::UpdateLowerBodyState(CCharacterObject* pCharacter)
 {
 }
 
-void CState_Fire::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
+void CState_FireLoop::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
 	SPRITE_MGR->DisableSprite(pCharacter->GetMuzzleSprite());
 }

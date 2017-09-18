@@ -104,29 +104,36 @@ void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 {
 	switch (nMessageID) {
 	// ----------- Mouse --------- //
-	case WM_LBUTTONDOWN:
+	case WM_LBUTTONDOWN:			// Fire
 		SetKeyDown(KeyInput::eLeftMouse);
 		break;
 	case WM_LBUTTONUP:
 		SetKeyUp(KeyInput::eLeftMouse);
 		break;
-	case WM_RBUTTONDOWN:
-		m_bIsZoom = !m_bIsZoom;
-		if(m_bIsZoom)
-			m_nFovAngle = 15;
-		else
-			m_nFovAngle = 45;
+	case WM_RBUTTONDOWN:			// Zoom InOut
+		if (m_pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle) {
+			m_bIsZoom = !m_bIsZoom;
 
-		m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_nFovAngle);
+			if (m_bIsZoom)
+				m_nFovAngle = 15;
+			else 
+				m_nFovAngle = 45;
+
+			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_nFovAngle);
+		}
 		break;
-	case WM_MOUSEWHEEL:			
-		if ((SHORT)HIWORD(wParam) > 0)
-			m_nFovAngle--;
-		else 
-			m_nFovAngle++;
+	case WM_MOUSEWHEEL:
+		if (m_bIsZoom) {
+			if (m_pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle) {
+				if ((SHORT)HIWORD(wParam) > 0)
+					m_nFovAngle--;
+				else
+					m_nFovAngle++;
 
-		m_nFovAngle = clamp(m_nFovAngle, 5, 15);
-		m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_nFovAngle);
+				m_nFovAngle = clamp(m_nFovAngle, 5, 15);
+				m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_nFovAngle);
+			}
+		}
 		break;
 
 	// ----------- Keyboard --------- //
@@ -160,9 +167,11 @@ void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 			SetKeyDown(KeyInput::eCrouch);
 			break;
 		case '1':
+			m_bIsZoom = false;
 			m_pCharacter->ReplaceWeapon(WeaponTag::eRifle);
 			break;
 		case '2':
+			m_bIsZoom = false;
 			m_pCharacter->ReplaceWeapon(WeaponTag::eSniperRifle);
 			break;
 		}
@@ -404,6 +413,12 @@ void CPlayer::Rotate(float x, float y)
 
 void CPlayer::UpdateDOF(float fDeltaTime)
 {
+	if (false == GLOBAL_MGR->g_bActivateDOF) {
+		TWBAR_MGR->g_OptionHDR.g_fDOFFarStart = 300.0f;
+		TWBAR_MGR->g_OptionHDR.g_fDOFFarRange = 0.0f;
+		return;
+	}
+
 	// DOF 거리 조절
 	CollisionInfo info;
 	float fMinDist = 0.0f;

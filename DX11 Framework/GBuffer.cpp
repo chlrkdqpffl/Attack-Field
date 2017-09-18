@@ -222,7 +222,7 @@ void CGBuffer::Render(ID3D11DeviceContext* pd3dImmediateContext)
 {
 	ID3D11ShaderResourceView* arrViews[4] = { m_DepthStencilSRV, m_DiffuseSpecIntensitySRV, m_NormalSRV, m_SpecPowerSRV };
 	pd3dImmediateContext->PSSetShaderResources(PS_TEXTRUE_SLOT_GBUFFER, 4, arrViews);
-	pd3dImmediateContext->PSSetSamplers(0, 1, &STATEOBJ_MGR->g_pPointClampSS);
+	pd3dImmediateContext->PSSetSamplers(0, 1, &STATEOBJ_MGR->g_pLinearClampSS);
 	
 	m_pDepthShader->OnPrepareRender(pd3dImmediateContext);
 	m_pDepthStencilMesh->Render(pd3dImmediateContext);

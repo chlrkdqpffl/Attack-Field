@@ -136,6 +136,25 @@ public:
 	}
 };
 
+class CState_FireLoop : public CFSM_State<CCharacterObject>
+{
+public:
+	CState_FireLoop() {};
+	virtual ~CState_FireLoop() {};
+
+	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void UpdateUpperBodyState(CCharacterObject*) override;
+	virtual void UpdateLowerBodyState(CCharacterObject*) override;
+	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+
+	static CState_FireLoop* GetInstance()
+	{
+		static CState_FireLoop instance;
+
+		return &instance;
+	}
+};
+
 class CState_Run : public CFSM_State<CCharacterObject>
 {
 public:

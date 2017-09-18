@@ -16,8 +16,10 @@ ID3D11BlendState*		CStateObjectManager::g_pFireBS				= nullptr;
 
 ID3D11SamplerState*		CStateObjectManager::g_pLinearClampSS		= nullptr;
 ID3D11SamplerState*		CStateObjectManager::g_pPointClampSS		= nullptr;
-ID3D11SamplerState*		CStateObjectManager::g_pLinearWarpSS		= nullptr;
-ID3D11SamplerState*		CStateObjectManager::g_pPointWarpSS			= nullptr;
+ID3D11SamplerState*		CStateObjectManager::g_pLinearWrapSS		= nullptr;
+ID3D11SamplerState*		CStateObjectManager::g_pPointWrapSS			= nullptr;
+ID3D11SamplerState*		CStateObjectManager::g_pAnisotropicClampSS	= nullptr;
+ID3D11SamplerState*		CStateObjectManager::g_pAnisotropicWrapSS	= nullptr;
 
 ID3D11DepthStencilState* CStateObjectManager::g_pNoDepthWritesDSS		= nullptr;
 ID3D11DepthStencilState* CStateObjectManager::g_pNoDepthEqualWritesDSS	= nullptr;
@@ -137,25 +139,34 @@ void CStateObjectManager::InitializeManager()
 	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	d3dSamplerDesc.MinLOD = 0;
-	d3dSamplerDesc.MaxLOD = 0;
+	d3dSamplerDesc.MinLOD = -FLT_MAX;
+	d3dSamplerDesc.MaxLOD = FLT_MAX;
+	d3dSamplerDesc.MaxAnisotropy = 16;
+
 	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pLinearClampSS));
-	DXUT_SetDebugName(g_pLinearClampSS, "LinearClampSS:");
+	DXUT_SetDebugName(g_pLinearClampSS, "Linear Clamp SS:");
 
 	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pPointClampSS));
-	DXUT_SetDebugName(g_pPointClampSS, "PointClampSS:");
+	DXUT_SetDebugName(g_pPointClampSS, "Point Clamp SS:");
 
+	d3dSamplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pAnisotropicClampSS));
+	DXUT_SetDebugName(g_pAnisotropicClampSS, "Anisotropic Clamp SS:");
 	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pPointWarpSS));
-	DXUT_SetDebugName(g_pPointWarpSS, "PointWarpSS:");
-
 	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pLinearWarpSS));
-	DXUT_SetDebugName(g_pLinearWarpSS, "LinearWarpSS:");
+	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pLinearWrapSS));
+	DXUT_SetDebugName(g_pLinearWrapSS, "Linear Wrap SS:");
 
+	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pPointWrapSS));
+	DXUT_SetDebugName(g_pPointWrapSS, "Point Wrap SS:")
+
+	d3dSamplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pAnisotropicWrapSS));
+	DXUT_SetDebugName(g_pAnisotropicWrapSS, "Anisotropic Wrap SS:");
 	// ---------------------------------------------------------------------------------- //
 	// ------------------------------ Depth Stencil State ------------------------------- //
 	D3D11_DEPTH_STENCIL_DESC depthDesc;
@@ -209,8 +220,10 @@ void CStateObjectManager::ReleseManager()
 
 	ReleaseCOM(g_pLinearClampSS);
 	ReleaseCOM(g_pPointClampSS);
-	ReleaseCOM(g_pLinearWarpSS);
-	ReleaseCOM(g_pPointWarpSS);
+	ReleaseCOM(g_pLinearWrapSS);
+	ReleaseCOM(g_pPointWrapSS);
+	ReleaseCOM(g_pAnisotropicClampSS);
+	ReleaseCOM(g_pAnisotropicWrapSS);
 
 	ReleaseCOM(g_pNoDepthEqualWritesDSS);
 	ReleaseCOM(g_pNoDepthWritesDSS);

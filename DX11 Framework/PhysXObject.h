@@ -23,5 +23,8 @@ public:
 protected:
 	PxRigidStatic*  m_pPxActor = nullptr;
 	PxMeshType		m_tagPxMesh = PxMeshType::eNone;
+
+	PxVec3*	m_pPxVertexData = nullptr;
+	PxU32* m_pPxIndexData = nullptr;
 };
 

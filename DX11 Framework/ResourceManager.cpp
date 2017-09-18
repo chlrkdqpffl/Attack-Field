@@ -191,7 +191,8 @@ void CResourceManager::LoadMapData()
 	AddResourece(MeshTag::eContainer3,			"../Assets/FBX Model/Container/Container3.model");
 
 	// =============== Wood Box, Board =============== //
-	AddResourece(TextureTag::eWoodBoxD,			"../Assets/FBX Model/WoodBox/WoodBoxD.png");
+	AddResourece(TextureTag::eWoodBoxD,			"../Assets/FBX Model/WoodBox/WoodBoxD.jpg");
+	AddResourece(TextureTag::eWoodBoxN,			"../Assets/FBX Model/WoodBox/WoodBoxN.jpg");
 	AddResourece(TextureTag::eWoodBoardD,		"../Assets/FBX Model/WoodBoard/WoodBoardD.png");
 
 	AddResourece(MeshTag::eWoodBox,				"../Assets/FBX Model/WoodBox/WoodBox.model");
@@ -324,27 +325,6 @@ void CResourceManager::AddResourece(const MeshTag& meshTag, const string& source
 
 	// 한 태그에 여러개 등록되었음
 	assert(m_mapFbxMeshPool.count(meshTag) <= 1);
-}
-
-void CResourceManager::AddNoneFbxMesh(const MeshTag& meshTag)
-{
-	/*
-	XMFLOAT3 scale;
-	CMesh* pMesh;
-	int nObjectCount = MAPDATA_MGR->GetDataVector(meshTag).size();
-
-	for (int index = 0; index < nObjectCount; ++index) {
-		switch (meshTag) {
-		case MeshTag::eRoad:
-			scale = MAPDATA_MGR->GetScale(ObjectTag::eRoad, index);
-			pMesh = new CCubeMeshTexturedIlluminated(STATEOBJ_MGR->g_pd3dDevice, scale.x , scale.y, scale.z);
-
-			m_mapNoneFbxMeshPool.insert(make_pair(meshTag, pMesh));
-			break;
-		}
-	}
-	*/
-
 }
 
 void CResourceManager::AddResourecePath(const TextureTag& textureTag, const string& source)

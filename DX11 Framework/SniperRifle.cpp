@@ -29,8 +29,8 @@ CSniperRifle::CSniperRifle(CCharacterObject* pOwner)
 	m_tagWeapon = WeaponTag::eSniperRifle;
 	m_fDamage = 80.f;
 	m_fRange = 300.f;
-//	m_uiFireSpeed = 1000;
-	m_uiFireSpeed = 100;
+	m_uiFireSpeed = 2000;
+//	m_uiFireSpeed = 100;
 
 //	m_nMaxhasBulletCount = 5;
 //	m_nhasBulletCount = 5;
@@ -71,7 +71,7 @@ void CSniperRifle::CreateMaterial()
 
 	CTexture *pTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
 	pTexture->SetTexture(0, TextureTag::eSniperRifleD);
-	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWrapSS);
 
 	m_pMaterial->SetTexture(pTexture);
 }

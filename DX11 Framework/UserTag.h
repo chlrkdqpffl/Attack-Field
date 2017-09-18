@@ -119,7 +119,7 @@ namespace AnimationData
 		// --------------------------------------------------------- // 
 		// Upper Body
 		UpperBodyAnim = 100,
-		eFire, eReload, eHeadHit,
+		eFire, eFireLoop, eReload, eHeadHit,
 		// --------------------------------------------------------- // 
 		// Lower Body
 		LowerBodyAnim = 1000,
@@ -177,7 +177,7 @@ enum class TextureTag
 	eStreetLampD, eStreetLampN,
 
 	// WoodBox, Board
-	eWoodBoxD, eWoodBoardD,
+	eWoodBoxD, eWoodBoxN, eWoodBoardD,
 
 	// Stair
 	eStairD,

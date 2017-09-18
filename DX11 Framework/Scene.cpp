@@ -88,6 +88,12 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				GLOBAL_MGR->g_bShowLightVolume = !GLOBAL_MGR->g_bShowLightVolume;
 				break;
 			}
+			case VK_F9:
+			{
+				cout << "On/Off DOF" << endl;
+				GLOBAL_MGR->g_bActivateDOF = !GLOBAL_MGR->g_bActivateDOF;
+				break;
+			}
 		}
 		break;
 	}
@@ -114,8 +120,7 @@ void CScene::InitializePhysX()
 	m_pPxCooking = PxCreateCooking(PX_PHYSICS_VERSION, *m_pPxFoundation, params);
 
 
-	if (FAILED(m_pPxPhysicsSDK == NULL))
-	{
+	if (FAILED(m_pPxPhysicsSDK == NULL)){
 		return;
 		//MSG_BOX(L"PhysicsSDK Initialize Failed");
 	}

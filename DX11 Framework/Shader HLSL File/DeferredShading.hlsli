@@ -20,10 +20,8 @@ cbuffer cbTextureOffset : register(b2) // VS Set
     float2 pad : packoffset(c2);
 };
 
-
-Texture2D gtxDiffuse : register(t0);
-SamplerState gssDefault : register(s0);
-
+Texture2D gtxDiffuse                : register(t0);
+SamplerState gssAnisotropicWrap     : register(s6);
 
 struct VS_DIFFUSED_INPUT
 {
@@ -164,7 +162,7 @@ PS_GBUFFER_OUTPUT PSTexturedLightingColor(VS_TEXTURED_LIGHTING_OUTPUT input)
     float SpecPowerNorm = max(0.0001, (g_SpecPower - g_SpecPowerRange.x) / g_SpecPowerRange.y);
     input.normalW = normalize(input.normalW);
 
-    float3 DiffuseColor = gtxDiffuse.Sample(gssDefault, input.texCoord);
+    float3 DiffuseColor = gtxDiffuse.Sample(gssAnisotropicWrap, input.texCoord);
     DiffuseColor *= DiffuseColor;       // 어떤 차이인지 확인해보기
    
     PS_GBUFFER_OUTPUT output = (PS_GBUFFER_OUTPUT) 0;
@@ -193,7 +191,7 @@ PS_GBUFFER_OUTPUT PSInstancedTexturedLightingColor(VS_INSTANCED_TEXTURED_LIGHTIN
     float SpecPowerNorm = max(0.0001, (g_SpecPower - g_SpecPowerRange.x) / g_SpecPowerRange.y);
     input.normalW = normalize(input.normalW);
 
-    float3 DiffuseColor = gtxDiffuse.Sample(gssDefault, input.texCoord);
+    float3 DiffuseColor = gtxDiffuse.Sample(gssAnisotropicWrap, input.texCoord);
     DiffuseColor *= DiffuseColor; // 어떤 차이인지 확인해보기
    
     PS_GBUFFER_OUTPUT output = (PS_GBUFFER_OUTPUT) 0;
@@ -224,7 +222,7 @@ PS_GBUFFER_OUTPUT PSInstancedTexturedTangentLighting(VS_INSTANCED_TEXTURED_TANGE
     float SpecPowerNorm = max(0.0001, (g_SpecPower - g_SpecPowerRange.x) / g_SpecPowerRange.y);
     input.normalW = normalize(input.normalW);
 
-    float3 DiffuseColor = gtxDiffuse.Sample(gssDefault, input.texCoord);
+    float3 DiffuseColor = gtxDiffuse.Sample(gssAnisotropicWrap, input.texCoord);
     DiffuseColor *= DiffuseColor; // 어떤 차이인지 확인해보기
    
     PS_GBUFFER_OUTPUT output = (PS_GBUFFER_OUTPUT) 0;

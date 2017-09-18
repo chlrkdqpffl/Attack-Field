@@ -450,7 +450,7 @@ void CPostFX::FinalPass(ID3D11DeviceContext* pd3dImmediateContext, ID3D11ShaderR
 	pd3dImmediateContext->IASetIndexBuffer(NULL, DXGI_FORMAT_UNKNOWN, 0);
 	pd3dImmediateContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	
-	ID3D11SamplerState* arrSamplers[2] = { STATEOBJ_MGR->g_pPointWarpSS, STATEOBJ_MGR->g_pLinearWarpSS };
+	ID3D11SamplerState* arrSamplers[2] = { STATEOBJ_MGR->g_pPointWrapSS, STATEOBJ_MGR->g_pLinearWrapSS };
 	pd3dImmediateContext->PSSetSamplers(0, 2, arrSamplers);
 
 	// Set the shaders

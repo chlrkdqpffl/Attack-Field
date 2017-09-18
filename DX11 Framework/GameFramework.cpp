@@ -49,9 +49,9 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-//	_CrtSetBreakAlloc(1310419);
-//	_CrtSetBreakAlloc(962843);
-//	_CrtSetBreakAlloc(289);
+//	_CrtSetBreakAlloc(909230);
+//	_CrtSetBreakAlloc(909363);
+	
 //	_CrtSetBreakAlloc(205);		// 16
 //	_CrtSetBreakAlloc(206);		// 16
 //	_CrtSetBreakAlloc(210);		// 64
@@ -585,7 +585,7 @@ void CGameFramework::FrameAdvance()
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
 
-#if defined(DEBUG) || defined(_DEBUG)
+#if defined(DEVELOP_MODE)
 	RenderDebugText();
 #endif
 
@@ -621,7 +621,8 @@ void CGameFramework::RenderDebugText()
 	string str;
 
 	// Draw FrameRate
-	UINT fps = m_nFrameRate;
+	//UINT fps = m_nFrameRate;
+	UINT fps = m_GameTimer.GetRealFrameRate();
 	str = to_string(fps) + " FPS";
 
 	if (60 <= fps)

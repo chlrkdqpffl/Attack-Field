@@ -32,7 +32,7 @@ void CSpriteImageObject::CreateMaterial()
 	CTexture *pTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
 
 	pTexture->SetTexture(0, m_tagTexture);
-	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWrapSS);
 	pTexture->CreateShaderVariables(STATEOBJ_MGR->g_pd3dDevice);
 	m_pMaterial->SetTexture(pTexture);
 }

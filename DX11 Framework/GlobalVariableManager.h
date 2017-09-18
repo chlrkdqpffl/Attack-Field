@@ -42,6 +42,7 @@ public:
 	static bool								g_bShowGBuffer;
 	static bool								g_bShowWorldAxis;
 	static bool								g_bShowWireFrame;
+	static bool								g_bActivateDOF;
 	bool									g_bShowLightVolume = false;
 	bool									g_bEnablePostFX = true;
 

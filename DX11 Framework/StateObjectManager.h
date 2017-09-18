@@ -23,10 +23,12 @@ public:
 	static ID3D11BlendState*		g_pFireBS;
 	static ID3D11BlendState*		g_pBloodBS;
 
-	static ID3D11SamplerState*		g_pLinearClampSS;
 	static ID3D11SamplerState*		g_pPointClampSS;
-	static ID3D11SamplerState*		g_pPointWarpSS;
-	static ID3D11SamplerState*		g_pLinearWarpSS;
+	static ID3D11SamplerState*		g_pPointWrapSS;
+	static ID3D11SamplerState*		g_pLinearClampSS;
+	static ID3D11SamplerState*		g_pLinearWrapSS;
+	static ID3D11SamplerState*		g_pAnisotropicClampSS;
+	static ID3D11SamplerState*		g_pAnisotropicWrapSS;
 
 	static ID3D11DepthStencilState* g_pNoDepthWritesDSS;
 	static ID3D11DepthStencilState* g_pNoDepthEqualWritesDSS;

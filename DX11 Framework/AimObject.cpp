@@ -76,6 +76,9 @@ void CAimObject::SetAimSize(UINT size)
 
 void CAimObject::Render(ID3D11DeviceContext* pDeviceContext)
 {
+	if (false == m_bIsActive)
+		return;
+
 	m_pShader->OnPrepareRender(pDeviceContext);
 
 	m_pLeftLine->Render(pDeviceContext);

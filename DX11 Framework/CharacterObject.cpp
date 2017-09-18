@@ -65,7 +65,6 @@ void CCharacterObject::Walking()
 void CCharacterObject::Running()
 {
 	m_bIsRun = true;
-//	m_pPlayer->GetCamera()->Move(GetLook() * 1);			// 추후 구현
 	if (GetTickCount() - m_dwWalkSoundWatingTime > 1000) {
 		SOUND_MGR->Play3DSound(SoundTag::eRun, GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 		m_dwWalkSoundWatingTime = GetTickCount();
