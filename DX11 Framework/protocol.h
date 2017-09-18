@@ -23,6 +23,7 @@ enum PacketType
 
 
 	ePacket_SuccessMyCharacter,
+	ePacket_SceneChange,
 	ePacket_LoginFail,
 	ePacket_Disconnect
 };
@@ -311,6 +312,15 @@ struct cs_weapon_type
 {
 	BYTE size;
 	BYTE type;
+	BYTE Weapontype;
+
+};
+
+struct sc_weapon_type
+{
+	BYTE size;
+	BYTE type;
+	BYTE id;
 	BYTE Weapontype;
 
 };

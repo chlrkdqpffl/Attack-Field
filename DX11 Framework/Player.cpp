@@ -41,7 +41,7 @@ void CPlayer::InitializePhysXData(PxPhysics* pPxPhysics, PxMaterial *pPxMaterial
 	//성능을 향상시키기 위해 캐싱하는 컨트롤러 주변의 공간입니다.  이것은 1.0f보다 커야하지만 너무 크지 않아야하며, 2.0f보다 낮아야합니다.
 	PxCapsuledesc.volumeGrowth = 1.9f;
 	//캐릭터가 걸어 갈 수있는 최대 경사. 
-	PxCapsuledesc.slopeLimit = cosf(XMConvertToRadians(35.f));
+	PxCapsuledesc.slopeLimit = cosf(XMConvertToRadians(45.f));
 	
 	
 //	PxCapsuledesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
@@ -409,8 +409,6 @@ void CPlayer::Rotate(float x, float y)
 
 		m_pCharacter->SetPrevPitch(abs(m_pCharacter->GetPitch()));   //이전값 저장
 		m_pCharacter->SetPrevYaw(abs(m_pCharacter->GetYaw()));      //이전값 저장
-
-		cout << "내 피치 : " << m_pCharacter->GetPitch() << ", Yaw" << m_pCharacter->GetYaw() << endl;
 	}
 #endif
 }
