@@ -129,7 +129,7 @@ void CRifleGunWeapon::UpdateRecoil(float fDeltaTime)
 	// ----- 반동력 계산 ----- //
 	float recoilFactor = 1.0f;
 	if (m_pOwner->GetIsCrouch())
-		recoilFactor = 0.5f;
+		recoilFactor = 0.6f;
 	else if (m_pOwner->IsMoving())
 		recoilFactor = 1.5f;
 	if (m_pOwner->GetIsReload())

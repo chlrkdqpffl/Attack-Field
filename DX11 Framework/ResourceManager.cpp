@@ -271,9 +271,6 @@ void CResourceManager::LoadEtcData()
 	AddResourece(TextureTag::eBricksN,		"../Assets/Image/Miscellaneous/bricks_nmap.dds");
 	AddResourece(TextureTag::eWallD,		"../Assets/Image/Miscellaneous/wall.jpg");
 	AddResourece(TextureTag::eWallND,		"../Assets/Image/Miscellaneous/wall_NM_height.dds");
-
-	AddResourece(MeshTag::eTest,			"../Assets/FBX Model/character.model");
-
 }
 
 void CResourceManager::AddResourece(const TextureTag& textureTag, const string& source)

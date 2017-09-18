@@ -129,16 +129,19 @@ void CSoundManager::LoadBGMSound()
 
 void CSoundManager::LoadEffectSound()
 {
-	g_pSystem->createSound("../Assets/Sound/Effect/GunFire.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eGunFire)]);
-	g_pSystem->createSound("../Assets/Sound/Effect/Reload.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eReload)]);
-	g_pSystem->createSound("../Assets/Sound/Effect/Walk.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eWalk)]);
-	g_pSystem->createSound("../Assets/Sound/Effect/Run.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eRun)]);
-	g_pSystem->createSound("../Assets/Sound/Effect/Death.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eDeath)]);
-	g_pSystem->createSound("../Assets/Sound/Effect/ShellsFall.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eShellsFall)]);
-
+	g_pSystem->createSound("../Assets/Sound/Effect/GunFire.mp3",		FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eGunFire)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/Reload.mp3",			FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eReload)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/Walk.mp3",			FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eWalk)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/Run.mp3",			FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eRun)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/Death.mp3",			FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eDeath)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/ShellsFall.mp3",		FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eShellsFall)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/Sniper1.mp3",		FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eSniperRifleFire)]);
+//	g_pSystem->createSound("../Assets/Sound/Effect/Sniper2.mp3",		FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eSniperRifleFire)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/SniperShellsFall.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eSniperShellsFall)]);
+	
 	// Environment
-	g_pSystem->createSound("../Assets/Sound/Effect/Fire.ogg", FMOD_LOOP_NORMAL, 0, &g_pSound[static_cast<int>(SoundTag::eFire)]);
-	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/Fire.ogg",			FMOD_LOOP_NORMAL, 0, &g_pSound[static_cast<int>(SoundTag::eFire)]);
+	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike.mp3",	FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike2.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike2)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike3.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike3)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike4.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike4)]);

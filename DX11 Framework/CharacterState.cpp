@@ -50,8 +50,10 @@ void CState_Idle::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	if (pCharacter->GetIsFire()) {
 		if(pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eRifle)
 			pUpperFSM->ChangeState(CState_FireLoop::GetInstance());
-		else if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
-			pUpperFSM->ChangeState(CState_Fire::GetInstance());
+		else if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle) {
+			if (false == pCharacter->GetWeapon()->GetIsFiring())
+				pUpperFSM->ChangeState(CState_Fire::GetInstance());
+		}
 		return;
 	}
 
@@ -109,8 +111,10 @@ void CState_Walk::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	if (pCharacter->GetIsFire()) {
 		if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eRifle)
 			pUpperFSM->ChangeState(CState_FireLoop::GetInstance());
-		else if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
-			pUpperFSM->ChangeState(CState_Fire::GetInstance());
+		else if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle) {
+			if (false == pCharacter->GetWeapon()->GetIsFiring())
+				pUpperFSM->ChangeState(CState_Fire::GetInstance());
+		}
 		return;
 	}
 
@@ -209,8 +213,10 @@ void CState_Crouch::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	if (pCharacter->GetIsFire()) {
 		if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eRifle)
 			pUpperFSM->ChangeState(CState_FireLoop::GetInstance());
-		else if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
-			pUpperFSM->ChangeState(CState_Fire::GetInstance());
+		else if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle) {
+			if (false == pCharacter->GetWeapon()->GetIsFiring())
+				pUpperFSM->ChangeState(CState_Fire::GetInstance());
+		}
 		return;
 	}
 
@@ -239,7 +245,11 @@ void CState_Reload::EnterState(CCharacterObject* pCharacter, AnimationData::Part
 	if (type == AnimationData::Parts::LowerBody)
 		return;
 
-	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.6f);
+	if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eRifle)
+		pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.6f);
+	else if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
+		pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, TWBAR_MGR->g_xmf3Offset.x);
+
 	pCharacter->GetWeapon()->SetFireBulletCount(0);
 	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 }
@@ -305,7 +315,7 @@ void CState_ReplacementWeapon::ExitState(CCharacterObject* pCharacter, Animation
 // ---------------------------- Fire ---------------------------- //
 void CState_Fire::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
-	pCharacter->SetAnimation(AnimationData::CharacterAnim::eFire, TWBAR_MGR->g_xmf3Offset.x);
+	pCharacter->SetAnimation(AnimationData::CharacterAnim::eFire);
 }
 
 void CState_Fire::UpdateUpperBodyState(CCharacterObject* pCharacter)
@@ -316,7 +326,7 @@ void CState_Fire::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		pCharacter->SetControllerActive(AnimationData::Parts::UpperBody, true);
 		return;
 	}
-
+	
 	// Check BulletCount
 	if (pCharacter->GetWeaponBulletCount() == 0) {
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());

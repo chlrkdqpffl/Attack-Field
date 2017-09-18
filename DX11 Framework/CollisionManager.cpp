@@ -48,8 +48,8 @@ void CCollisionManager::UpdateManager()
 
 void CCollisionManager::InitCollisionInfo()
 {
-	// 1초 마다 충돌 정보 초기화
-	if (GetTickCount() - m_dwInitCollisionInfoTime > 1000) {
+	// 1.5초 마다 충돌 정보 초기화
+	if (GetTickCount() - m_dwInitCollisionInfoTime > 1500) {
 		m_dwInitCollisionInfoTime = GetTickCount();
 
 		for (auto& staticObject : m_vecStaticMeshContainer)

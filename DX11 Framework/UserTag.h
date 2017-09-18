@@ -250,9 +250,6 @@ enum class MeshTag
 
 	// Etc
 	eStreetLamp, eBarricade,
-
-	// Etc 2
-	eTest,
 };
 
 enum class ObjectTag
@@ -296,24 +293,13 @@ enum class SoundTag
 
 	// Effect
 	eGunFire, eReload, eWalk, eRun, eDeath, eShellsFall,
-
+	eSniperRifleFire, eSniperShellsFall,
+	
 	// Environment
 	eFire, eThunderStrike, eThunderStrike2, eThunderStrike3, eThunderStrike4,
 
 	SoundCount
 };
-
-/*
-enum SoundChannel
-{
-	eChannel_Bgm,
-	eChannel_Player,
-	eChannel_OtherPlayer,
-
-	ChannelCount
-};
-*/
-
 
 enum class GBufferType
 {

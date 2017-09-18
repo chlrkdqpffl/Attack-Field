@@ -24,7 +24,8 @@ void CWeapon::Firing(XMVECTOR direction)
 		if(m_pOwner->GetCharacterID() == 0)		// 본인 캐릭터만 적용
 			FireRecoil();
 		
-		XMVECTOR firePosOffset = GetvPosition() + (GetvRight() * -0.13f) + (GetvUp() * 0.05f) + (GetvLook() * -0.225f);
+		XMVECTOR firePosOffset = SCENE_MGR->g_pCamera->GetvPosition();
+
 		if(GLOBAL_MGR->g_vRenderOption.y)
 			COLLISION_MGR->CreateFireDirectionLine(firePosOffset, direction, m_fRange);		// 총 발사 레이 렌더링
 
@@ -103,8 +104,15 @@ void CWeapon::Reloading()
 
 void CWeapon::FireEffect()
 {
-	SOUND_MGR->Play3DSound(SoundTag::eGunFire, m_pOwner->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
-	SOUND_MGR->Play3DSound(SoundTag::eShellsFall, m_pOwner->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
+	if (m_tagWeapon == WeaponTag::eRifle) {
+		SOUND_MGR->Play3DSound(SoundTag::eGunFire, m_pOwner->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
+		SOUND_MGR->Play3DSound(SoundTag::eShellsFall, m_pOwner->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
+	}
+	else if (m_tagWeapon == WeaponTag::eSniperRifle) {
+		SOUND_MGR->Play3DSound(SoundTag::eSniperRifleFire, m_pOwner->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
+		SOUND_MGR->Play3DSound(SoundTag::eSniperShellsFall, m_pOwner->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
+	}
+
 	LIGHT_MGR->AddPointLight(m_f3MuzzlePosition, 8.0f, XMFLOAT3(0.9f, 0.9f, 0.6f));
 
 	if (m_pOwner->GetCharacterID() == 0) {

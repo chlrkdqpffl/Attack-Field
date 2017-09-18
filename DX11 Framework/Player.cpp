@@ -131,6 +131,7 @@ void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 					m_nFovAngle++;
 
 				m_nFovAngle = clamp(m_nFovAngle, 5, 15);
+				//m_nFovAngle = clamp(m_nFovAngle, 1, 15);		// Aim 테스트로 1도까지 올림
 				m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_nFovAngle);
 			}
 		}
@@ -171,8 +172,6 @@ void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_pCamera->GetFovAngle());
 			
 			m_pCharacter->ReplaceWeapon(WeaponTag::eRifle);
-
-
 			break;
 		case '2':
 			m_bIsZoom = false;

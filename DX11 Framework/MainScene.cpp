@@ -14,11 +14,11 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.0f, -10.0f, 8.0f);
-//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(3.0f, 0.0f, 0.0f);
+	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.0f, 0.0f, 0.0f);
+//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(0.0f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(1000.0f, 55.0f, 0.0f, 0.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
-//	TWBAR_MGR->g_nSelect = 80;
+//	TWBAR_MGR->g_nSelect = 15;
 }
 
 CMainScene::~CMainScene()
