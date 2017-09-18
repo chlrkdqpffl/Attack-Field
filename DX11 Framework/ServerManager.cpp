@@ -137,6 +137,8 @@ void CServerManager::processpacket(char *ptr)
 							break;
 						i++;
 					}
+					
+					cout<< id << " : "   << my_put_rotate->x << "	"<< my_put_rotate->y << endl;
 		
 					cout << "로테이트 : " << my_put_rotate->x << ", " << my_put_rotate->y << endl << endl;
 
