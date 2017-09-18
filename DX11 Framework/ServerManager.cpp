@@ -28,10 +28,9 @@ void CServerManager::processpacket(char *ptr)
 						i++;
 					}
 		
-					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
 					//XMVECTOR Animation = XMLoadFloat3(&SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->GetRelativeVelocity());
 					///XMStoreFloat3(&SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->GetRelativeVelocity(), Animation);
-		
+					XMVECTOR Animation = XMVectorZero();
 					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eReload))
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(true);
 //					else
@@ -47,7 +46,20 @@ void CServerManager::processpacket(char *ptr)
 					else
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(false);
 
-					XMVECTOR Animation = XMVectorZero();
+					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eCrouch))
+					{
+						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsCrouch(true);
+						cout << my_Pos_packet->x<<" "<<my_Pos_packet->y<< " "<<my_Pos_packet->z << endl;
+					}
+					else
+					{
+						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsCrouch(false);
+						cout << my_Pos_packet->x << " " << my_Pos_packet->y << " " << my_Pos_packet->z << endl;
+	
+					}
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
+					
+					
 					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eLeft))
 						Animation += XMVectorSet(-1, 0, 0, 0);
 		
@@ -102,10 +114,10 @@ void CServerManager::processpacket(char *ptr)
 					CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject(static_cast<TeamTag>(my_put_packet->Team));   //객체 생성
 					pCharObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
 					pCharObject->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
-	
 					pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
 					pCharObject->SetServerID(id);
 
+				//	SCENE_MGR->g_pPlayerCharacter->SetTagTeam(reinterpret_cast<TeamType &>(my_put_packet->Team));
 					SCENE_MGR->g_pMainScene->SetGameMode(static_cast<GameMode>(my_put_packet->mode));
 					SCENE_MGR->g_pMainScene->GetCharcontainer().push_back(pCharObject);
 					SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);
@@ -231,8 +243,8 @@ void CServerManager::processpacket(char *ptr)
 				ShowXMFloat3(packet->m_f3Position);
 
 				if (id == m_myid){
-					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->Revival();
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
 				}
 				else
 				{
@@ -319,14 +331,22 @@ void CServerManager::processpacket(char *ptr)
 	{
 		sc_weapon_type *my_packet = reinterpret_cast<sc_weapon_type *>(ptr);
 
-		int findCharacterID = 0;;
-		if (m_myid != my_packet->id)
+		int other_id = my_packet->id;
+		if (other_id == m_myid)
 		{
+			//아무것도 안한다.
+		}
+		else
+		{
+			int findCharacterID = 0;
+
 			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
-				if (character->GetServerID() == id)
+				if (character->GetServerID() == my_packet->id)
 					break;
 				findCharacterID++;
 			}
+			cout << m_myid << "	" << (int)my_packet->id << "	" << findCharacterID << endl;
+
 			SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->ReplaceWeapon(static_cast<WeaponTag>(my_packet->Weapontype));
 		}
 		break;
