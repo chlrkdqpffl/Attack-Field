@@ -169,6 +169,8 @@ void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 		case '1':
 			m_bIsZoom = false;
 			m_pCharacter->ReplaceWeapon(WeaponTag::eRifle);
+
+
 			break;
 		case '2':
 			m_bIsZoom = false;

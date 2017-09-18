@@ -307,4 +307,12 @@ struct cs_round_over
 };
 
 
+struct cs_weapon_type
+{
+	BYTE size;
+	BYTE type;
+	BYTE Weapontype;
+
+};
+
 #pragma pack(pop)
