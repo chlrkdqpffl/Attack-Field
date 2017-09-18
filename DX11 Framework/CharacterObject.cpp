@@ -105,7 +105,6 @@ void CCharacterObject::ReplaceWeapon(WeaponTag weapon)
 	m_nNextReplacementWeaponNumber = static_cast<UINT>(weapon);
 
 	// 무기 변경 패킷 보내기
-
 }
 
 /*

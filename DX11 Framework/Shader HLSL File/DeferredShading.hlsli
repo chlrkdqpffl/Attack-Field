@@ -1,5 +1,5 @@
 
-//	fxc /E PSTexturedLightingColor /T ps_5_0 /Od /Zi /Fo CompiledShader.fxo DeferredShading.hlsli
+//	fxc /E VSTexturedLightingTangent /T vs_5_0 /Od /Zi /Fo CompiledShader.fxo DeferredShading.hlsli
 #include "Normal.hlsli"
 #include "GBufferStructure.hlsli"
 
@@ -59,6 +59,23 @@ struct VS_TEXTURED_LIGHTING_OUTPUT
 {
     float4 position : SV_POSITION;
     float3 normalW : NORMAL;
+    float2 texCoord : TEXCOORD0;
+};
+
+struct VS_TEXTURED_LIGHTING_TANGENT_INPUT
+{
+    float3 position : POSITION;
+    float3 normal : NORMAL;
+    float3 tangent : TANGENT;
+    float2 texCoord : TEXCOORD0;
+};
+
+struct VS_TEXTURED_LIGHTING_TANGENT_OUTPUT
+{
+    float4 position : SV_POSITION;
+    float3 positionW : POSITION;
+    float3 normalW : NORMAL;
+    float3 tangentW : TANGENT;
     float2 texCoord : TEXCOORD0;
 };
 
@@ -173,6 +190,39 @@ PS_GBUFFER_OUTPUT PSTexturedLightingColor(VS_TEXTURED_LIGHTING_OUTPUT input)
 
     return output;
 }
+
+VS_TEXTURED_LIGHTING_TANGENT_OUTPUT VSTexturedLightingTangent(VS_TEXTURED_LIGHTING_TANGENT_INPUT input)
+{
+    VS_TEXTURED_LIGHTING_TANGENT_OUTPUT output = (VS_TEXTURED_LIGHTING_TANGENT_OUTPUT) 0;
+    output.positionW = mul(float4(input.position, 1.0f), gmtxWorld).xyz;
+    output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
+    output.normalW = mul(input.normal, (float3x3) gmtxWorld);
+    output.tangentW = mul(input.tangent, (float3x3) gmtxWorld);
+    output.texCoord = input.texCoord;
+
+    return (output);
+}
+
+PS_GBUFFER_OUTPUT PSTexturedLightingTangent(VS_TEXTURED_LIGHTING_TANGENT_OUTPUT input) : SV_Target
+{
+    float3 normalW = CalcNormal(input.normalW, input.tangentW, input.texCoord);
+  
+    // Normalize
+    float SpecPowerNorm = max(0.0001, (g_SpecPower - g_SpecPowerRange.x) / g_SpecPowerRange.y);
+    input.normalW = normalize(input.normalW);
+
+    float3 DiffuseColor = gtxDiffuse.Sample(gssAnisotropicWrap, input.texCoord);
+    DiffuseColor *= DiffuseColor; // 어떤 차이인지 확인해보기
+   
+    PS_GBUFFER_OUTPUT output = (PS_GBUFFER_OUTPUT) 0;
+
+    output.DiffuseSpecInt = float4(DiffuseColor.rgb, g_SpecIntensity);
+    output.Normal = float4(normalW * 0.5 + 0.5, 0.0);
+    output.SpecPow = float4(SpecPowerNorm, 0.0, 0.0, 0.0);
+
+    return output;
+}
+
 
 //-------------------------------------------------------------------------------------------------------------------------------
 VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT VSInstancedTexturedLightingColor(VS_INSTANCED_TEXTURED_LIGHTING_INPUT input)

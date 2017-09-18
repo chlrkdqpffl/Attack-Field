@@ -126,14 +126,10 @@ void CServerManager::processpacket(char *ptr)
 				my_put_rotate = reinterpret_cast<sc_rotate_vector *>(ptr);
 				id = my_put_rotate->id;
 		
-				if (id == m_myid)
-				{
-		
-					//SCENE_MGR->g_pPlayerCharacter->SetRotate(my_put_rotate->x, my_put_rotate->y, my_put_rotate->z);
+				if (id == m_myid) {
 				}
 				else
 				{
-		
 					int i = 0;
 					for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
 					{
@@ -142,6 +138,8 @@ void CServerManager::processpacket(char *ptr)
 						i++;
 					}
 		
+					cout << "로테이트 : " << my_put_rotate->x << ", " << my_put_rotate->y << endl << endl;
+
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRotate(my_put_rotate->x, my_put_rotate->y, 0);
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_rotate->FireDirection);
 				}
