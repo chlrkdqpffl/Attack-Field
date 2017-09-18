@@ -25,15 +25,15 @@ protected:
 	UINT					m_nFireBulletCount = 0;				// 총기 반동 확인
 	float					m_fInitPitch = 0.0f;				// 최초 반동 위치
 	float					m_fUserMovePitch = 0.0f;			// 총 발사 시점부터 사용자가 위로 올린 각도
-	const float				m_fMaxPitchGap = 0.0f;				// 최대 반동 각도
+	float					m_fMaxPitchGap = 0.0f;				// 최대 반동 각도
 	float					m_fCalcRecoil = 0.0f;				// 계산된 반동력
-	float					m_fNowRecoil = 0.0f;				// 현재 반동력	- UI에 사용
+	float					m_fNowRecoil = 0.0f;				// 현재 반동력	- UI에만 사용
 
 	// ------------- 무기 세부 정보 ------------ //
 	WeaponTag				m_tagWeapon = WeaponTag::eNone;		// 총기 타입
 	float					m_fDamage;							// 데미지
 	float					m_fRange = 0.f;						// 유효 사거리
-	float					m_fReCoil = 0.2f;					// 총기 반동력
+	float					m_fReCoil = 0.0f;					// 총기 반동력
 	UINT					m_uiFireSpeed = 0;					// 연사 속도 (1000 - 1초)
 	DWORD					m_dwLastAttackTime = 0;				// 마지막 발사 시간
 
@@ -57,7 +57,7 @@ public:
 	WeaponTag GetWeaponTag() const { return m_tagWeapon; }
 
 protected:
-	void FireEffect();
-	void FireRecoil();
-	void UpdateRecoil(float fDeltaTime);
+	virtual void FireEffect();
+	virtual void FireRecoil() = 0;
+	virtual void UpdateRecoil(float fDeltaTime) = 0;
 };

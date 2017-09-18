@@ -337,6 +337,7 @@ void CState_Fire::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 void CState_Fire::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
+	pCharacter->GetWeapon()->SetFireBulletCount(0);
 	SPRITE_MGR->DisableSprite(pCharacter->GetMuzzleSprite());
 }
 

@@ -11,6 +11,8 @@ public:
 	virtual void CreateMesh(ID3D11Device *pd3dDevice) override;
 	virtual void CreateShader(ID3D11Device *pd3dDevice) override;
 	virtual void CreateMaterial() override;
-
 	virtual void Update(float fDeltaTime) override;
+
+	virtual void FireRecoil() override;
+	virtual void UpdateRecoil(float fDeltaTime) override;
 };

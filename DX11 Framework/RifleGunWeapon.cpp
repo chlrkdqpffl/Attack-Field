@@ -22,6 +22,9 @@ CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner)
 	m_fRange = 150.f;
 	m_uiFireSpeed = 100;
 
+	m_fReCoil = 0.2f;
+	m_fMaxPitchGap = 5.0f;
+
 	m_nMaxhasBulletCount = 30;
 	m_nhasBulletCount = 30;
 
@@ -66,6 +69,76 @@ void CRifleGunWeapon::CreateMaterial()
 	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWrapSS);
 	
 	m_pMaterial->SetTexture(pTexture);
+}
+
+void CRifleGunWeapon::FireRecoil()
+{
+	m_bIsFire = true;
+	m_nFireBulletCount++;
+
+	if (0 < m_nFireBulletCount && m_nFireBulletCount < 4)
+	{	// 0~3발까지 최소 반동
+		m_fNowRecoil += m_fCalcRecoil;
+		m_pOwner->AddPitch(RAND_FLOAT(-m_fCalcRecoil, 0.0f));
+	}
+	else if (4 <= m_nFireBulletCount && m_nFireBulletCount < 8)
+	{	// 4~7발 추가 반동
+		m_fNowRecoil += 10 * m_fReCoil * m_fCalcRecoil;
+		m_pOwner->AddPitch(RAND_FLOAT(-m_fCalcRecoil * 2.0f, -m_fCalcRecoil));
+		SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-m_fCalcRecoil * 2, m_fCalcRecoil * 2));
+	}
+	else if (8 <= m_nFireBulletCount)
+	{	//	8~ 발 최대 반동력
+		m_fNowRecoil += 15 * m_fReCoil * m_fCalcRecoil;
+		SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-m_fCalcRecoil * 5, m_fCalcRecoil * 5));
+		if (m_fInitPitch - m_pOwner->GetPitch() < m_fMaxPitchGap) {		// 반동 최대치 전
+			m_pOwner->AddPitch(RAND_FLOAT(-m_fCalcRecoil * 2.5f, -m_fCalcRecoil * 1.5f));
+		}
+		else {															// 반동 최대치 도달
+			m_pOwner->AddPitch(RAND_FLOAT(-m_fCalcRecoil * 1.5f, m_fCalcRecoil * 1.5f));
+		}
+	}
+}
+
+void CRifleGunWeapon::UpdateRecoil(float fDeltaTime)
+{
+	if (m_bIsFire)
+	{	// 발사 중지 시점
+		if (m_nFireBulletCount == 0)
+		{
+			float gap = m_pOwner->GetPitch() - m_fInitPitch - m_fUserMovePitch;
+			float returnSpeedFactor = abs(-gap * 20) / 100;					// 자연스럽게 속도 줄이기
+			const float returnSpeed = 80.0f;
+
+			if (returnSpeedFactor< 0.1f)
+				returnSpeedFactor = 0.1f;
+
+			if (gap < -0.0f)
+				m_pOwner->AddPitch(returnSpeed * returnSpeedFactor * fDeltaTime);
+			else
+				m_bIsFire = false;
+
+			if (gap > 0.0f)
+				m_pOwner->SetPitch(m_pOwner->GetPitch());
+		}
+	}
+
+	if (m_nFireBulletCount == 1)	// 최초 발사 시점
+		m_fInitPitch = m_pOwner->GetPitch();
+
+	// ----- 반동력 계산 ----- //
+	float recoilFactor = 1.0f;
+	if (m_pOwner->GetIsCrouch())
+		recoilFactor = 0.5f;
+	else if (m_pOwner->IsMoving())
+		recoilFactor = 1.5f;
+	if (m_pOwner->GetIsReload())
+		recoilFactor = 3.0f;
+
+	m_fCalcRecoil = recoilFactor * m_fReCoil;
+
+	m_fNowRecoil -= 10 * m_fReCoil * fDeltaTime;
+	m_fNowRecoil = clamp(m_fNowRecoil, recoilFactor, 3.f);
 }
 
 void CRifleGunWeapon::Update(float fDeltaTime)
