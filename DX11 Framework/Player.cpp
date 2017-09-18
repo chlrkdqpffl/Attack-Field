@@ -337,7 +337,7 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 	packet.key_button = m_wKeyState;
 	packet.playerPosition = GetPosition();
 
-	if ((m_wKeyState != 0) || count == 0) {
+	if ((m_wKeyState != 0) || count <= 1) {
 		//WORD temp = static_cast<int>(KeyInput::eLeftMouse);
 		WORD key_button_e = static_cast<int>(KeyInput::eOccupy);
 		if (key_button_e != m_wKeyState)

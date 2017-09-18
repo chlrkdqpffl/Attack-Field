@@ -47,6 +47,8 @@ public:
 	virtual void ChangeCamera(ID3D11Device *pd3dDevice, CameraTag cameraTag) {};
 	
 	CCamera *OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraTag, CameraTag nCurrentCameraTag); 
+	
+
 	void Rotate(float x, float y);
 	void Update(float fDeltaTime);
 	void OnKeyboardUpdate(UINT nMessageID, WPARAM wParam);

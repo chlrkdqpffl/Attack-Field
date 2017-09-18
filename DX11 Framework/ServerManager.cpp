@@ -28,10 +28,9 @@ void CServerManager::processpacket(char *ptr)
 						i++;
 					}
 		
-					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
 					//XMVECTOR Animation = XMLoadFloat3(&SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->GetRelativeVelocity());
 					///XMStoreFloat3(&SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->GetRelativeVelocity(), Animation);
-		
+					XMVECTOR Animation = XMVectorZero();
 					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eReload))
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(true);
 //					else
@@ -48,11 +47,19 @@ void CServerManager::processpacket(char *ptr)
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsFire(false);
 
 					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eCrouch))
+					{
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsCrouch(true);
+						cout << my_Pos_packet->x<<" "<<my_Pos_packet->y<< " "<<my_Pos_packet->z << endl;
+					}
 					else
+					{
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsCrouch(false);
-
-					XMVECTOR Animation = XMVectorZero();
+						cout << my_Pos_packet->x << " " << my_Pos_packet->y << " " << my_Pos_packet->z << endl;
+	
+					}
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetPosition(XMVectorSet(my_Pos_packet->x, my_Pos_packet->y, my_Pos_packet->z, 0.0f));
+					
+					
 					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eLeft))
 						Animation += XMVectorSet(-1, 0, 0, 0);
 		
@@ -110,7 +117,7 @@ void CServerManager::processpacket(char *ptr)
 					pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
 					pCharObject->SetServerID(id);
 
-					SCENE_MGR->g_pPlayerCharacter->SetTagTeam(reinterpret_cast<TeamType &>(my_put_packet->Team));
+				//	SCENE_MGR->g_pPlayerCharacter->SetTagTeam(reinterpret_cast<TeamType &>(my_put_packet->Team));
 					SCENE_MGR->g_pMainScene->SetGameMode(static_cast<GameMode>(my_put_packet->mode));
 					SCENE_MGR->g_pMainScene->GetCharcontainer().push_back(pCharObject);
 					SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);
@@ -236,8 +243,8 @@ void CServerManager::processpacket(char *ptr)
 				ShowXMFloat3(packet->m_f3Position);
 
 				if (id == m_myid){
-					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->Revival();
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
 				}
 				else
 				{

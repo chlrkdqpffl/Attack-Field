@@ -94,6 +94,7 @@ public:
 	void DamagedCharacter(UINT damage);
 
 	// ----- Get, Setter ----- // 
+
 	BoundingOrientedBox GetPartsBoundingOBox(UINT index) const;
 	CStateMachine<CCharacterObject>* GetFSM(AnimationData::Parts parts) const {
 		if (parts == AnimationData::Parts::UpperBody)
