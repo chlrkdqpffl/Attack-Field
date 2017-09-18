@@ -3,7 +3,7 @@
 
 // 이 클래스는 캐릭터(본인)에서만 적용되는 것으로 상대 캐릭터에게는 미적용
 
-CTerroristPlayer::CTerroristPlayer(TeamType team)
+CTerroristPlayer::CTerroristPlayer(TeamTag team)
 	: CCharacterPlayer(team)
 {
 	m_tagMesh = MeshTag::eTerrorist;
@@ -40,9 +40,9 @@ void CTerroristPlayer::CreateMaterial()
 
 	CMaterial* pMaterial = new CMaterial();
 
-	if (m_tagTeam == TeamType::eRedTeam)
+	if (m_tagTeam == TeamTag::eRedTeam)
 		pCharacterTexture->SetTexture(0, TextureTag::eTerroristD_Red);
-	else if (m_tagTeam == TeamType::eBlueTeam)
+	else if (m_tagTeam == TeamTag::eBlueTeam)
 		pCharacterTexture->SetTexture(0, TextureTag::eTerroristD_Blue);
 	else
 		cout << "Terrorist Team 미설정 - 텍스쳐 오류 발생!" << endl;

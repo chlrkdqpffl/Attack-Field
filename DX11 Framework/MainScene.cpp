@@ -18,7 +18,7 @@ CMainScene::CMainScene()
 //	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(3.0f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(1000.0f, 55.0f, 0.0f, 0.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
-	TWBAR_MGR->g_nSelect = 15;
+//	TWBAR_MGR->g_nSelect = 80;
 }
 
 CMainScene::~CMainScene()
@@ -350,7 +350,7 @@ void CMainScene::Initialize()
 
 #ifndef USE_SERVER
 	// ==== Test¿ë - ÃÑ ¸Þ½¬ ¿ÀÇÁ¼Â Ã£±â¿ë ==== //
-	CCharacterObject* pCharacter = new CTerroristCharacterObject(TeamType::eBlueTeam);
+	CCharacterObject* pCharacter = new CTerroristCharacterObject(TeamTag::eBlueTeam);
 	pCharacter->SetServerID(1);
 	pCharacter->CreateObjectData(m_pd3dDevice);
 	pCharacter->CreateAxisObject(m_pd3dDevice);
@@ -1806,14 +1806,14 @@ void CMainScene::CalcTime()
 
 void CMainScene::CalcOccupyTime()
 {
-	if (TeamType::eNone != m_tagOccupyTeam)
+	if (TeamTag::eNone != m_tagOccupyTeam)
 		m_OccupyTime++;
 
 	if (m_OccupyTime >= OCCUPY_TIME / 1000) 
 	{
-		if (m_tagOccupyTeam == TeamType::eRedTeam)
+		if (m_tagOccupyTeam == TeamTag::eRedTeam)
 			m_nRedScore++;
-		else if (m_tagOccupyTeam == TeamType::eBlueTeam)
+		else if (m_tagOccupyTeam == TeamTag::eBlueTeam)
 			m_nBlueScore++;
 
 		if (m_nRedScore == TOTAL_OCCUPYSCORE || m_nBlueScore == TOTAL_OCCUPYSCORE) {
@@ -1823,7 +1823,7 @@ void CMainScene::CalcOccupyTime()
 
 		m_OccupyTime = 0;
 		m_bIsGameRoundOver = true;
-		m_tagOccupyTeam = TeamType::eNone;
+		m_tagOccupyTeam = TeamTag::eNone;
 		m_nGameTime = DEATHMATCH_TIME;
 	}
 }
@@ -1871,7 +1871,7 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 		XMFLOAT3 redTeamStartPosition = XMFLOAT3(65, 2.4f, 12);
 		XMFLOAT3 blueTeamStartPosition = XMFLOAT3(270, 2.4f, 230);
 
-		if(m_pPlayerCharacter->GetTagTeam() == TeamType::eRedTeam)
+		if(m_pPlayerCharacter->GetTagTeam() == TeamTag::eRedTeam)
 			m_pPlayer->SetPosition(redTeamStartPosition);
 		else
 			m_pPlayer->SetPosition(blueTeamStartPosition);
@@ -2143,7 +2143,7 @@ void CMainScene::Update_Light()
 	}
 
 	// Capturing
-	if (m_tagOccupyTeam == TeamType::eRedTeam) {
+	if (m_tagOccupyTeam == TeamTag::eRedTeam) {
 		LIGHT_MGR->AddSpotLight(m_cf3OccupyPosition, XMFLOAT3(0, -1, 0), 100.0f, 55.0f, 50.0f, XMFLOAT3(1, 0, 0));
 
 		LIGHT_MGR->AddSpotLight(XMFLOAT3(100.0f, 25.0f, 140.0f), XMFLOAT3(0, -1, 0), 100.0f, 55.0f, 50.0f, XMFLOAT3(1, 0, 0));
@@ -2151,7 +2151,7 @@ void CMainScene::Update_Light()
 		LIGHT_MGR->AddSpotLight(XMFLOAT3(100.0f, 25.0f, 200.0f), XMFLOAT3(0, -1, 0), 100.0f, 55.0f, 50.0f, XMFLOAT3(1, 0, 0));
 		LIGHT_MGR->AddSpotLight(XMFLOAT3(150.0f, 25.0f, 200.0f), XMFLOAT3(0, -1, 0), 100.0f, 55.0f, 50.0f, XMFLOAT3(1, 0, 0));
 	}
-	else if (m_tagOccupyTeam == TeamType::eBlueTeam) {
+	else if (m_tagOccupyTeam == TeamTag::eBlueTeam) {
 		LIGHT_MGR->AddSpotLight(m_cf3OccupyPosition, XMFLOAT3(0, -1, 0), 100.0f, 55.0f, 50.0f, XMFLOAT3(0, 0, 1));
 
 		LIGHT_MGR->AddSpotLight(XMFLOAT3(100.0f, 25.0f, 140.0f), XMFLOAT3(0, -1, 0), 100.0f, 55.0f, 50.0f, XMFLOAT3(0, 0, 1));
@@ -2506,14 +2506,14 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 		}
 	}
 	
-	if (m_tagOccupyTeam == TeamType::eRedTeam) {
+	if (m_tagOccupyTeam == TeamTag::eRedTeam) {
 		str = "RedÆÀ Á¡·É";
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1430, 430, 0xFFFFFFFF, FW1_LEFT);
 
 		str = to_string(m_OccupyTime);
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1500, 500, 0xFFFFFFFF, FW1_LEFT);
 	}
-	else if (m_tagOccupyTeam == TeamType::eBlueTeam) {
+	else if (m_tagOccupyTeam == TeamTag::eBlueTeam) {
 		str = "BlueÆÀ Á¡·É";
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 50, 1400, 430, 0xFFFFFFFF, FW1_LEFT);
 

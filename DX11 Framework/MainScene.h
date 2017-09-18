@@ -67,7 +67,7 @@ public:
 	void SetOccupyTime(float time) { m_OccupyTime = time; }
 	void SetRedTeamKill(UINT kill) { m_nRedTeamTotalKill = kill; }
 	void SetBlueTeamKill(UINT kill) { m_nBlueTeamTotalKill = kill; }
-	void SetOccupyTeam(TeamType team) { m_tagOccupyTeam = team; }
+	void SetOccupyTeam(TeamTag team) { m_tagOccupyTeam = team; }
 	BYTE GetOcuupyTeam() { return static_cast<BYTE>(m_tagOccupyTeam); }
 	void SetGameMode(GameMode mode) { m_tagGameMode = mode; }
 
@@ -118,7 +118,7 @@ private:
 	// ----- Occupy Variable ----- //
 	const XMFLOAT3					m_cf3OccupyPosition = XMFLOAT3(130.0f, 25.0f, 168.0f);
 	DWORD							m_dwGameRoundOverTime = 0;
-	TeamType						m_tagOccupyTeam = TeamType::eNone;
+	TeamTag						m_tagOccupyTeam = TeamTag::eNone;
 	UINT							m_nRedScore = 0;
 	UINT							m_nBlueScore = 0;
 };

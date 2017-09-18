@@ -30,7 +30,7 @@ protected:
 	MeshTag							m_tagMesh = MeshTag::eNone;
 	TextureTag						m_tagTexture = TextureTag::eNone;
 	ShaderTag						m_tagShader = ShaderTag::eNone;
-	TeamType						m_tagTeam = TeamType::eNone;		// 팀 종류 구별하여 충돌 처리시 사용하기. 현재는 아무것도 없음
+	TeamTag							m_tagTeam = TeamTag::eNone;
 
 	bool							m_bActive = true;
 	bool							m_bIsVisible = true;

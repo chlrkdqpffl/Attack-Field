@@ -108,7 +108,7 @@ void CRifleGunWeapon::UpdateRecoil(float fDeltaTime)
 		{
 			float gap = m_pOwner->GetPitch() - m_fInitPitch - m_fUserMovePitch;
 			float returnSpeedFactor = abs(-gap * 20) / 100;					// 자연스럽게 속도 줄이기
-			const float returnSpeed = 80.0f;
+			const float returnSpeed = 50.0;
 
 			if (returnSpeedFactor< 0.1f)
 				returnSpeedFactor = 0.1f;
@@ -123,9 +123,9 @@ void CRifleGunWeapon::UpdateRecoil(float fDeltaTime)
 		}
 	}
 
-	if (m_nFireBulletCount == 1)	// 최초 발사 시점
+	if (m_nFireBulletCount == 1) 	// 최초 발사 시점
 		m_fInitPitch = m_pOwner->GetPitch();
-
+	
 	// ----- 반동력 계산 ----- //
 	float recoilFactor = 1.0f;
 	if (m_pOwner->GetIsCrouch())

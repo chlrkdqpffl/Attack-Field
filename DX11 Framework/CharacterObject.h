@@ -17,7 +17,7 @@ struct DamagedInfo
 class CCharacterObject : public CSkinnedObject
 {
 public:
-	CCharacterObject(TeamType team);
+	CCharacterObject(TeamTag team);
 	virtual ~CCharacterObject();
 
 	static UINT			g_nCharacterCount;
@@ -186,8 +186,8 @@ public:
 	void SetIsReplaceWeapon(bool set) { m_bIsReplaceWeapon = set; }
 	bool GetIsReplaceWeapon() const { return m_bIsReplaceWeapon; }
 	
-	void SetTagTeam(TeamType Team) { m_tagTeam = Team; }
-	TeamType GetTagTeam() { return m_tagTeam; }
+	void SetTeamTag(TeamTag Team) { m_tagTeam = Team; }
+	TeamTag GetTagTeam() { return m_tagTeam; }
 	UINT GetCharacterID() const { return m_nCharacterID; }
 
 	// ----- Game System Function ----- //

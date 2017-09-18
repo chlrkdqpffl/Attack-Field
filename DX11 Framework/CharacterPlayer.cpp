@@ -2,7 +2,7 @@
 #include "CharacterPlayer.h"
 
 
-CCharacterPlayer::CCharacterPlayer(TeamType team)
+CCharacterPlayer::CCharacterPlayer(TeamTag team)
 	: CCharacterObject(team)
 {
 }
@@ -20,7 +20,7 @@ void CCharacterPlayer::Revival()
 	XMFLOAT3 redTeamStartPosition = XMFLOAT3(65, 2.4f, 12);
 	XMFLOAT3 blueTeamStartPosition = XMFLOAT3(270, 2.4f, 230);
 
-	if (m_tagTeam == TeamType::eRedTeam)
+	if (m_tagTeam == TeamTag::eRedTeam)
 		m_pPlayer->SetPosition(redTeamStartPosition);
 	else
 		m_pPlayer->SetPosition(blueTeamStartPosition);

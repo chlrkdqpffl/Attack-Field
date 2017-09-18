@@ -90,7 +90,6 @@ void CSniperRifle::FireRecoil()
 	if (0 < m_nFireBulletCount) {
 		m_fNowRecoil += 10 * m_fReCoil * m_fCalcRecoil;
 		m_pOwner->AddPitch(-TWBAR_MGR->g_xmf3Offset.z);
-		SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-m_fCalcRecoil * 2, m_fCalcRecoil * 2));
 		m_bIsFire = true;
 	}
 }
@@ -101,10 +100,10 @@ void CSniperRifle::UpdateRecoil(float fDeltaTime)
 	{	// 발사 중지 시점	
 		float gap = m_pOwner->GetPitch() - m_fInitPitch - m_fUserMovePitch;
 
-		cout << "Pitch: " << m_fUserMovePitch << endl;
+//		cout << "Pitch: " << m_fUserMovePitch << endl;
 
 		float returnSpeedFactor = abs(-gap * 20) / 100;					// 자연스럽게 속도 줄이기
-		const float returnSpeed = TWBAR_MGR->g_nSelect;
+		const float returnSpeed = 15;
 
 		if (returnSpeedFactor < 0.1f)
 			returnSpeedFactor = 0.1f;
@@ -116,6 +115,7 @@ void CSniperRifle::UpdateRecoil(float fDeltaTime)
 			m_bIsFire = false;
 			//m_pOwner->SetPitch(m_pOwner->GetPitch());
 	}
+
 
 	// ----- 반동력 계산 ----- //
 	float recoilFactor = 1.0f;
