@@ -141,6 +141,8 @@ void CServerManager::processpacket(char *ptr)
 							break;
 						i++;
 					}
+					
+					cout<< id << " : "   << my_put_rotate->x << "	"<< my_put_rotate->y << endl;
 		
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRotate(my_put_rotate->x, my_put_rotate->y, 0);
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetFireDirection(my_put_rotate->FireDirection);
