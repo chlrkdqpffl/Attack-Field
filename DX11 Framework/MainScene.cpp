@@ -14,11 +14,11 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.0f, 0.0f, 0.0f);
-	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(75.0f, 850.0f, 670.0f);
+	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.0f, -10.0f, 8.0f);
+//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(3.0f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(1000.0f, 55.0f, 0.0f, 0.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
-//	TWBAR_MGR->g_nSelect = 45;
+	TWBAR_MGR->g_nSelect = 15;
 }
 
 CMainScene::~CMainScene()
@@ -1930,7 +1930,10 @@ void CMainScene::ShowAimUI()
 	// 앉기 Aim 5
 	// 이동 Aim 15
 	// 최대 Aim 30
-	m_pAimObject->SetAimSize(10 * m_pPlayerCharacter->GetWeaponCalcRecoil());
+//	if(m_pPlayerCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eRifle)
+		m_pAimObject->SetAimSize(10 * m_pPlayerCharacter->GetWeaponCalcRecoil());
+//	else if(m_pPlayerCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
+//		m_pAimObject->SetAimSize(5);
 	m_pAimObject->Render(m_pd3dDeviceContext);
 }
 

@@ -94,7 +94,6 @@ void CServerManager::processpacket(char *ptr)
 					SCENE_MGR->g_pPlayer->SetPlayerlife(static_cast<UINT>(my_put_packet->hp));//SCENE_MGR->g_pMainScene->-> SetLife(static_cast<UINT>(my_put_packet->hp));
 					SCENE_MGR->g_pPlayerCharacter->SetServerID(id);
 					SCENE_MGR->g_pPlayerCharacter->SetTagTeam(reinterpret_cast<TeamType &>(my_put_packet->Team));
-			//		MessageBox(m_handle, L"게임 모드 패킷 수정해야함", L"게임 모드", MB_OK);
 					SCENE_MGR->g_pMainScene->SetGameMode(static_cast<GameMode>(my_put_packet->mode));
 					SCENE_MGR->g_pPlayerCharacter->CreateMaterial();
 				}
@@ -106,9 +105,7 @@ void CServerManager::processpacket(char *ptr)
 	
 					pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
 					pCharObject->SetServerID(id);
-			//		MessageBox(m_handle, L"게임 모드 패킷 수정해야함", L"게임 모드", MB_OK);
-			//		pCharObject->Setmode(my_put_packet->mode);
-		
+
 					SCENE_MGR->g_pMainScene->SetGameMode(static_cast<GameMode>(my_put_packet->mode));
 					SCENE_MGR->g_pMainScene->GetCharcontainer().push_back(pCharObject);
 					SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);

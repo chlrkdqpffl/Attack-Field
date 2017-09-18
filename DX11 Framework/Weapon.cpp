@@ -4,7 +4,7 @@
 #include "protocol.h"
 
 CWeapon::CWeapon(CCharacterObject* pOwner)
-	: m_pOwner(pOwner), m_fMaxPitchGap(5.0f)
+	: m_pOwner(pOwner)
 {
 //	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.0f, 1.4f, -0.05f);
 //	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(-30.f, 125.f, 85.f);
@@ -18,7 +18,6 @@ void CWeapon::Firing(XMVECTOR direction)
 {
 	if (GetTickCount() - m_dwLastAttackTime >= m_uiFireSpeed / SCENE_MGR->g_nowScene->GetFrameSpeed()) {
 		m_dwLastAttackTime = GetTickCount();
-		m_bIsFire = true;
 		m_nhasBulletCount--;
 		FireEffect();
 
@@ -115,75 +114,6 @@ void CWeapon::FireEffect()
 	else
 		SPRITE_MGR->ActivationSprite(m_pMuzzleSpirte);
 
-}
-
-void CWeapon::FireRecoil()
-{
-	m_nFireBulletCount++;
-
-	if (0 < m_nFireBulletCount && m_nFireBulletCount < 4)
-	{	// 0~3발까지 최소 반동
-		m_fNowRecoil += m_fCalcRecoil;
-		m_pOwner->AddPitch(RAND_FLOAT(-m_fCalcRecoil, 0.0f));
-	}
-	else if (4 <= m_nFireBulletCount && m_nFireBulletCount < 8)
-	{	// 4~7발 추가 반동
-		m_fNowRecoil += 2.0f * m_fCalcRecoil;
-		m_pOwner->AddPitch(RAND_FLOAT(-m_fCalcRecoil * 2.0f, -m_fCalcRecoil));
-		SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-m_fCalcRecoil * 2, m_fCalcRecoil * 2));
-	}
-	else if (8 <= m_nFireBulletCount)								
-	{	//	8~ 발 최대 반동력
-		m_fNowRecoil += 3.0f * m_fCalcRecoil;
-		SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-m_fCalcRecoil * 5, m_fCalcRecoil * 5));
-		if (m_fInitPitch - m_pOwner->GetPitch() < m_fMaxPitchGap) {		// 반동 최대치 전
-			m_pOwner->AddPitch(RAND_FLOAT(-m_fCalcRecoil * 2.5f, -m_fCalcRecoil * 1.5f));
-		}
-		else {															// 반동 최대치 도달
-			m_pOwner->AddPitch(RAND_FLOAT(-m_fCalcRecoil * 1.5f, m_fCalcRecoil * 1.5f));
-		}
-	}
-}
-
-void CWeapon::UpdateRecoil(float fDeltaTime)
-{
-	if (m_bIsFire) 
-	{	// 발사 중지 시점
-		if (m_nFireBulletCount == 0)
-		{		
-			float gap = m_pOwner->GetPitch() - m_fInitPitch - m_fUserMovePitch;
-			float returnSpeedFactor = abs(-gap * 20) / 100;					// 자연스럽게 속도 줄이기
-			const float returnSpeed = 80.0f;
-
-			if (returnSpeedFactor< 0.1f)
-				returnSpeedFactor = 0.1f;
-
-			if (gap < -0.0f)
-				m_pOwner->AddPitch(returnSpeed * returnSpeedFactor * fDeltaTime);
-			else 
-				m_bIsFire = false;
-			
-			if (gap > 0.0f) 
-				m_pOwner->SetPitch(m_pOwner->GetPitch());
-		}
-	}
-
-	if (m_nFireBulletCount == 1)	// 최초 발사 시점
-		m_fInitPitch = m_pOwner->GetPitch();
-
-	// ----- 반동력 계산 ----- //
-	float recoilFactor = 1.0f;
-	if (m_pOwner->GetIsCrouch())
-		recoilFactor = 0.5f;
-	else if (m_pOwner->IsMoving())
-		recoilFactor = 1.5f;
-	if (m_pOwner->GetIsReload())
-		recoilFactor = 3.0f;
-
-	m_fCalcRecoil = recoilFactor * m_fReCoil;
-
-	m_fNowRecoil -= 2.0f * fDeltaTime;
-	m_fNowRecoil = clamp(m_fNowRecoil, recoilFactor, 3.f);
 }
 
 void CWeapon::Update(float fDeltaTime)

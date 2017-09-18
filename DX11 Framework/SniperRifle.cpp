@@ -29,8 +29,11 @@ CSniperRifle::CSniperRifle(CCharacterObject* pOwner)
 	m_tagWeapon = WeaponTag::eSniperRifle;
 	m_fDamage = 80.f;
 	m_fRange = 300.f;
-	m_uiFireSpeed = 2000;
-//	m_uiFireSpeed = 100;
+	m_uiFireSpeed = 1000;
+//	m_uiFireSpeed = 300;
+
+	m_fReCoil = 2.0f;
+	m_fMaxPitchGap = 10.0f;
 
 //	m_nMaxhasBulletCount = 5;
 //	m_nhasBulletCount = 5;
@@ -74,6 +77,57 @@ void CSniperRifle::CreateMaterial()
 	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWrapSS);
 
 	m_pMaterial->SetTexture(pTexture);
+}
+
+void CSniperRifle::FireRecoil()
+{
+	m_nFireBulletCount++;
+
+	if (false == m_bIsFire)
+		m_fInitPitch = m_pOwner->GetPitch();
+
+	// 1발부터 최대 반동
+	if (0 < m_nFireBulletCount) {
+		m_fNowRecoil += 10 * m_fReCoil * m_fCalcRecoil;
+		m_pOwner->AddPitch(-TWBAR_MGR->g_xmf3Offset.z);
+		SCENE_MGR->g_pPlayer->Rotate(0.0f, RAND_FLOAT(-m_fCalcRecoil * 2, m_fCalcRecoil * 2));
+		m_bIsFire = true;
+	}
+}
+
+void CSniperRifle::UpdateRecoil(float fDeltaTime)
+{
+	if (m_bIsFire)
+	{	// 발사 중지 시점	
+		float gap = m_pOwner->GetPitch() - m_fInitPitch - m_fUserMovePitch;
+
+		cout << "Pitch: " << m_fUserMovePitch << endl;
+
+		float returnSpeedFactor = abs(-gap * 20) / 100;					// 자연스럽게 속도 줄이기
+		const float returnSpeed = TWBAR_MGR->g_nSelect;
+
+		if (returnSpeedFactor < 0.1f)
+			returnSpeedFactor = 0.1f;
+
+		if (gap < -0.0f)
+			m_pOwner->AddPitch(returnSpeed * returnSpeedFactor * fDeltaTime);
+		
+		if (gap > 0.0f)
+			m_bIsFire = false;
+			//m_pOwner->SetPitch(m_pOwner->GetPitch());
+	}
+
+	// ----- 반동력 계산 ----- //
+	float recoilFactor = 1.0f;
+	if (m_pOwner->GetIsCrouch())
+		recoilFactor = 0.5f;
+	else if (m_pOwner->IsMoving())
+		recoilFactor = 1.5f;
+
+	m_fCalcRecoil = recoilFactor * m_fReCoil;
+
+	m_fNowRecoil -= 2.5f * m_fReCoil * fDeltaTime;
+	m_fNowRecoil = clamp(m_fNowRecoil, recoilFactor, 5.f);
 }
 
 void CSniperRifle::Update(float fDeltaTime)

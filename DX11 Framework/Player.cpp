@@ -168,6 +168,8 @@ void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 			break;
 		case '1':
 			m_bIsZoom = false;
+			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, 45.0f);
+
 			m_pCharacter->ReplaceWeapon(WeaponTag::eRifle);
 
 
@@ -175,6 +177,8 @@ void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 		case '2':
 			m_bIsZoom = false;
 			m_pCharacter->ReplaceWeapon(WeaponTag::eSniperRifle);
+
+			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, 45.0f);
 			break;
 		}
 		break;
@@ -294,12 +298,16 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 		m_pPxCharacterController->resize(2.0f);
 	}
 
+	// 저격총 들고 있으면 속도 감소
+	if (m_pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
+		m_fSpeedFactor *= 0.8f;
+
 	// 앉기시 이동 금지 or 조금 이동
 	if (m_wKeyState & static_cast<int>(KeyInput::eCrouch)) {
 		//vMoveDirection = XMVectorZero();
-		m_fSpeedFactor = 0.2f;
+		m_fSpeedFactor *= 0.2f;
 	}
-	
+
 	XMStoreFloat3(&m_f3MoveDirection, vMoveDirection);
 	m_pCharacter->SetRelativevVelocity(relativeVelocity);
 
@@ -366,7 +374,9 @@ void CPlayer::Rotate(float x, float y)
 		if (y != 0.0f) {
 			float fYaw = m_pCharacter->GetYaw();
 			fYaw += y;
-			fYaw = clamp(fYaw, 0.0f, 360.0f);
+
+			if (fYaw > 360.0f) fYaw -= 360.0f;
+			if (fYaw < 0.0f) fYaw += 360.0f;
 			m_pCharacter->SetYaw(fYaw);
 
 			mtxRotate = XMMatrixRotationAxis(GetvUp(), XMConvertToRadians(y));
@@ -404,8 +414,6 @@ void CPlayer::Rotate(float x, float y)
 		rotate->type = CS_ROTATE;
 		rotate->FireDirection = SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->GetFireDirection();
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(rotate));
-
-		cout <<"나다 " <<m_pCharacter->GetPitch() << "	" << m_pCharacter->GetYaw() << endl;
 
 		m_pCharacter->SetPrevPitch(abs(m_pCharacter->GetPitch()));   //이전값 저장
 		m_pCharacter->SetPrevYaw(abs(m_pCharacter->GetYaw()));      //이전값 저장
@@ -446,8 +454,8 @@ void CPlayer::UpdateDOF(float fDeltaTime)
 	if (abs(fMinDist - TWBAR_MGR->g_OptionHDR.g_fDOFFarStart) < 3)
 		return;
 
-	// 1초의 시간을 두고 변화
-	if (GetTickCount() - m_dwDOFPreiodTime >= 1000) {
+	// 0.8초의 시간을 두고 변화
+	if (GetTickCount() - m_dwDOFPreiodTime >= 800) {
 		m_nPrevDOFStart = TWBAR_MGR->g_OptionHDR.g_fDOFFarStart;
 		m_dwDOFPreiodTime = GetTickCount();
 	}
