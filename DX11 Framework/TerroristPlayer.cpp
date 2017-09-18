@@ -48,7 +48,7 @@ void CTerroristPlayer::CreateMaterial()
 		cout << "Terrorist Team 미설정 - 텍스쳐 오류 발생!" << endl;
 
 	pCharacterTexture->SetTexture(1, TextureTag::eTerroristND);
-	pCharacterTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	pCharacterTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWrapSS);
 
 	pMaterial->SetTexture(pCharacterTexture);
 
@@ -72,7 +72,8 @@ void CTerroristPlayer::CreateAnimation()
 
 	AddAnimation(make_tuple(AnimationData::CharacterAnim::eRun,					AnimationTrack("Run"),				AnimationData::Type::eLoop));
 
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eFire,				AnimationTrack("Fire"),				AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eFire,				AnimationTrack("Fire"),				AnimationData::Type::eOnce));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eFireLoop,			AnimationTrack("Fire"),				AnimationData::Type::eLoop));
 	AddAnimation(make_tuple(AnimationData::CharacterAnim::eReload,				AnimationTrack("Reload"),			AnimationData::Type::eOnce));
 	AddAnimation(make_tuple(AnimationData::CharacterAnim::eDeath_Head,			AnimationTrack("Death_Head"),		AnimationData::Type::eOnce));
 	AddAnimation(make_tuple(AnimationData::CharacterAnim::eDeath,				AnimationTrack("Death"),			AnimationData::Type::eOnce));

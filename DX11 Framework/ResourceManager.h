@@ -23,8 +23,7 @@ public:
 	void AddResourece(const TextureTag& textureTag, const string& source);
 	void AddResourece(const MeshTag& meshTag, const string& source);
 	void AddResourecePath(const TextureTag& textureTag, const string& source);
-	void AddNoneFbxMesh(const MeshTag& meshTag);
-
+	
 	wstring FindResourcePath(const TextureTag& textureTag);
 	ID3D11ShaderResourceView* CloneShaderResourceView(const TextureTag& textureTag);
 	CFbxMeshData CloneFbxMeshData(const MeshTag& meshTag);

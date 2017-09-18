@@ -9,7 +9,7 @@ CUIObject::CUIObject(TextureTag tag) : m_tagTexture(tag)
 
 	CTexture *pTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
 	pTexture->SetTexture(0, tag);
-	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWrapSS);
 
 	m_pMaterial->SetTexture(pTexture);
 }

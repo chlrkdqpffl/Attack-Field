@@ -120,22 +120,13 @@ void CTexture::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext)
 	
 		pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_TEXTURE_OFFSET, 1, &m_pd3dcbTextureOffset);
 	}
+
 	// Update Resource
 	pd3dDeviceContext->DSSetShaderResources(m_nTextureStartSlot, m_nTextures, m_ppd3dsrvTextures);
 	pd3dDeviceContext->DSSetSamplers(m_nSamplerStartSlot, m_nSamplers, m_ppd3dSamplerStates);
 
 	pd3dDeviceContext->PSSetShaderResources(m_nTextureStartSlot, m_nTextures, m_ppd3dsrvTextures);
 	pd3dDeviceContext->PSSetSamplers(m_nSamplerStartSlot, m_nSamplers, m_ppd3dSamplerStates);
-}
-
-void CTexture::UpdateTextureShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, int nIndex, int nSlot)
-{
-	pd3dDeviceContext->PSSetShaderResources(nSlot, 1, &m_ppd3dsrvTextures[nIndex]);
-}
-
-void CTexture::UpdateSamplerShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, int nIndex, int nSlot)
-{
-	pd3dDeviceContext->PSSetSamplers(nSlot, 1, &m_ppd3dSamplerStates[nIndex]);
 }
 
 void CTexture::CreateShaderVariables(ID3D11Device *pd3dDevice)

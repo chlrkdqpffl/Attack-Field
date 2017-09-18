@@ -107,7 +107,14 @@ void CWeapon::FireEffect()
 	SOUND_MGR->Play3DSound(SoundTag::eGunFire, m_pOwner->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 	SOUND_MGR->Play3DSound(SoundTag::eShellsFall, m_pOwner->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 	LIGHT_MGR->AddPointLight(m_f3MuzzlePosition, 8.0f, XMFLOAT3(0.9f, 0.9f, 0.6f));
-	SPRITE_MGR->ActivationSprite(m_pMuzzleSpirte);
+
+	if (m_pOwner->GetCharacterID() == 0) {
+		if (false == SCENE_MGR->g_pPlayer->GetIsZoom())
+			SPRITE_MGR->ActivationSprite(m_pMuzzleSpirte);
+	}
+	else
+		SPRITE_MGR->ActivationSprite(m_pMuzzleSpirte);
+
 }
 
 void CWeapon::FireRecoil()

@@ -23,7 +23,7 @@ void CNormalMapObject::CreateMaterial()
 
 	pTexture ->SetTexture(0, TextureTag::eWallD);
 	pTexture ->SetTexture(1, TextureTag::eWallND);
-	pTexture ->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	pTexture ->SetSampler(0, STATEOBJ_MGR->g_pLinearWrapSS);
 
 	m_pMaterial->SetTexture(pTexture);
 }

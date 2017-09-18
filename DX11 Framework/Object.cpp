@@ -129,8 +129,8 @@ void CGameObject::SetMaterial(int textureCount, ...)
 	m_tagTexture = vecTextureTag[0];
 
 	CTexture* pTexture = new CTexture(textureCount, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
-	//	pTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
-	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	//	pTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWrapSS);
+	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWrapSS);
 
 	for (int i = 0; i < textureCount; ++i)
 		pTexture->SetTexture(i, vecTextureTag[i]);
@@ -157,8 +157,7 @@ void CGameObject::SetMaterial(XMFLOAT2 offset, int textureCount, ...)
 	m_tagTexture = vecTextureTag[0];
 
 	CTexture* pTexture = new CTexture(textureCount, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
-//	pTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
-	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWrapSS);
 	pTexture->SetOffset(offset);
 
 	for(int i = 0; i < textureCount; ++i) 

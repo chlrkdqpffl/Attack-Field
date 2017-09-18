@@ -150,7 +150,7 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 	pd3dDeviceContext->OMGetDepthStencilState(&prevDepthStencilState, &prevStencil);
 
 	pd3dDeviceContext->OMSetDepthStencilState(STATEOBJ_MGR->g_pDisableDepthDSS, 0);
-	pd3dDeviceContext->GSSetSamplers(0, 1, &STATEOBJ_MGR->g_pLinearWarpSS);
+	pd3dDeviceContext->GSSetSamplers(0, 1, &STATEOBJ_MGR->g_pLinearWrapSS);
 	pd3dDeviceContext->GSSetShaderResources(GS_TEXTURE_SLOT_RANDOM, 1, &m_pd3dsrvRandomTexture);
 	pd3dDeviceContext->SOSetTargets(1, &m_pd3dStreamOutVertexBuffer, &offset);
 
@@ -179,7 +179,7 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 	pd3dDeviceContext->OMSetDepthStencilState(STATEOBJ_MGR->g_pNoDepthWritesDSS, 0);
 	pd3dDeviceContext->OMSetBlendState(m_pd3dBlendState, nullptr, 0xffffffff);
 
-	pd3dDeviceContext->PSSetSamplers(0, 1, &STATEOBJ_MGR->g_pLinearWarpSS);
+	pd3dDeviceContext->PSSetSamplers(0, 1, &STATEOBJ_MGR->g_pLinearWrapSS);
 	pd3dDeviceContext->PSSetShaderResources(PS_CB_SLOT_PARTICLE, 1, &m_pd3dsrvTextureArray);
 
 	pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dDrawVertexBuffer, &stride, &offset);

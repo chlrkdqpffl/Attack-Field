@@ -28,7 +28,7 @@ void CPoliceCharacterObject::CreateMaterial()
 	m_pMaterial = new CMaterial();
 //	pCharacterTexture->SetTexture(0, TextureTag::eTerroristD);
 //	pCharacterTexture->SetTexture(1, TextureTag::eTerroristND);
-	pCharacterTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	pCharacterTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWrapSS);
 
 	m_pMaterial->SetTexture(pCharacterTexture);
 }

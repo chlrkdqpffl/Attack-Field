@@ -590,9 +590,8 @@ void CInstancedObjectsShader::SetMaterial(int textureCount, ...)
 
 	va_end(ap);
 
-	CTexture* pTexture = new CTexture(textureCount, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
-	//	pTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
-	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	CTexture* pTexture = new CTexture(textureCount, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT_ANISOTROPIC_WRAP);
+	pTexture->SetSampler(0, STATEOBJ_MGR->g_pAnisotropicWrapSS);		// 제일 고품질 Sampler State 사용
 
 	for (int i = 0; i < textureCount; ++i)
 		pTexture->SetTexture(i, vecTextureTag[i]);
@@ -617,8 +616,7 @@ void CInstancedObjectsShader::SetMaterial(XMFLOAT2 offset, int textureCount, ...
 	va_end(ap);
 
 	CTexture* pTexture = new CTexture(textureCount, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
-	//	pTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
-	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWrapSS);
 	pTexture->SetOffset(offset);
 
 	for (int i = 0; i < textureCount; ++i)

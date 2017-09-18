@@ -8,8 +8,11 @@ CPhysXObject::CPhysXObject()
 
 CPhysXObject::~CPhysXObject()
 {
-	if (m_pPxActor)
-		m_pPxActor->release();
+	if (m_pPxActor)	m_pPxActor->release();
+	m_pPxActor = nullptr;
+
+	SafeDeleteArray(m_pPxVertexData);
+	SafeDeleteArray(m_pPxIndexData);
 }
 
 void CPhysXObject::SetPosition(XMFLOAT3 pos, bool isLocal)
@@ -64,24 +67,24 @@ void CPhysXObject::CreatePhysX_TriangleMesh(string name, PxPhysics* pPxPhysics, 
 	XMFLOAT3* pVertexData = m_vecMeshContainer[0]->GetVertexData();
 	UINT* pIndexData = m_vecMeshContainer[0]->GetIndexData();
 
-	PxVec3*	pPxVertexData = new PxVec3[nVertexCount];
-	PxU32* pPxIndexData = new PxU32[nIndexCount];
+	m_pPxVertexData = new PxVec3[nVertexCount];
+	m_pPxIndexData = new PxU32[nIndexCount];
 
 	for (UINT count = 0; count < nVertexCount; ++count)	{
-		pPxVertexData[count].x = pVertexData[count].x;
-		pPxVertexData[count].y = pVertexData[count].y;
-		pPxVertexData[count].z = pVertexData[count].z;
+		m_pPxVertexData[count].x = pVertexData[count].x;
+		m_pPxVertexData[count].y = pVertexData[count].y;
+		m_pPxVertexData[count].z = pVertexData[count].z;
 	}
 	
 	for (UINT count = 0; count < nIndexCount; ++count)
-		pPxIndexData[count] = pIndexData[count];
+		m_pPxIndexData[count] = pIndexData[count];
 
 	meshDesc.points.count = nVertexCount;
 	meshDesc.triangles.count = nIndexCount / 3;
 	meshDesc.points.stride = sizeof(PxVec3);
 	meshDesc.triangles.stride = sizeof(PxU32) * 3;
-	meshDesc.points.data = &(*pPxVertexData);
-	meshDesc.triangles.data = &(*pPxIndexData);
+	meshDesc.points.data = &(*m_pPxVertexData);
+	meshDesc.triangles.data = &(*m_pPxIndexData);
 	meshDesc.flags = PxMeshFlags(0);
 
 	PxDefaultMemoryOutputStream stream;
@@ -140,21 +143,21 @@ void CPhysXObject::CreatePhysX_ConvexMesh(string name, PxPhysics* pPxPhysics, Px
 	XMFLOAT3* pVertexData = m_vecMeshContainer[0]->GetVertexData();
 	UINT* pIndexData = m_vecMeshContainer[0]->GetIndexData();
 
-	PxVec3*	pPxVertexData = new PxVec3[nVertexCount];
-	PxU32* pPxIndexData = new PxU32[nIndexCount];
+	m_pPxVertexData = new PxVec3[nVertexCount];
+	m_pPxIndexData = new PxU32[nIndexCount];
 
 	for (UINT count = 0; count < nVertexCount; ++count) {
-		pPxVertexData[count].x = pVertexData[count].x;
-		pPxVertexData[count].y = pVertexData[count].y;
-		pPxVertexData[count].z = pVertexData[count].z;
+		m_pPxVertexData[count].x = pVertexData[count].x;
+		m_pPxVertexData[count].y = pVertexData[count].y;
+		m_pPxVertexData[count].z = pVertexData[count].z;
 	}
 
 	for (UINT count = 0; count < nIndexCount; ++count)
-		pPxIndexData[count] = pIndexData[count];
+		m_pPxIndexData[count] = pIndexData[count];
 
 	meshDesc.points.count = nVertexCount;
 	meshDesc.points.stride = sizeof(PxVec3);
-	meshDesc.points.data = &(*pPxVertexData);
+	meshDesc.points.data = &(*m_pPxVertexData);
 	meshDesc.flags = PxConvexFlags(PxConvexFlag::eCOMPUTE_CONVEX);
 
 	PxDefaultMemoryOutputStream stream;

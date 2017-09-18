@@ -63,7 +63,7 @@ void CRifleGunWeapon::CreateMaterial()
 
 	CTexture *pTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_DIFFUSE, PS_SAMPLER_SLOT);
 	pTexture->SetTexture(0, TextureTag::eRifleD);
-	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWrapSS);
 	
 	m_pMaterial->SetTexture(pTexture);
 }
@@ -71,11 +71,11 @@ void CRifleGunWeapon::CreateMaterial()
 void CRifleGunWeapon::Update(float fDeltaTime)
 {
 	CWeapon::Update(fDeltaTime);
-
+	
 	XMVECTOR muzzlePosition;
 	if (m_pOwner->GetCharacterID() == 0)
-		//		muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
-		muzzlePosition = GetvPosition() + (GetvRight() * -1.85f) + (GetvUp() * 0.03f) + (GetvLook() * 0.2f);
+		//muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
+		muzzlePosition = GetvPosition() + (GetvRight() * -2.0f) + (GetvUp() * 0.0f) + (GetvLook() * 0.2f);
 	else
 		muzzlePosition = GetvPosition() + (GetvRight() * -1.0f) + (GetvUp() * 0.03f) + (GetvLook() * 0.02f);
 

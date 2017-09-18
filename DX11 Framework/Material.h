@@ -34,8 +34,6 @@ private:
 public:
 
 	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext);
-	void UpdateTextureShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, int nIndex = 0, int nSlot = 0);
-	void UpdateSamplerShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, int nIndex = 0, int nSlot = 0);
 
 	void SetOffset(XMFLOAT2 offset) { m_f2offset = offset; }
 	void SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture);
@@ -44,11 +42,11 @@ public:
 	TextureTag GetTextureTag() const { return m_tagTexture; }
 
 	//static ID3D11Buffer				*m_pd3dcbTextureMatrix;
+	//static void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxTexture);
 	static ID3D11Buffer				*m_pd3dcbTextureOffset;
 	static XMFLOAT2					prevOffset;
 	static void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	static void ReleaseShaderVariables();
-	//static void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMMATRIX *pd3dxmtxTexture);
 	static void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, XMFLOAT2* textureOffset);
 	static ID3D11ShaderResourceView *CreateTexture2DArraySRV(ID3D11Device *pd3dDevice, _TCHAR(*ppstrFilePaths)[128], UINT nTextures);
 };

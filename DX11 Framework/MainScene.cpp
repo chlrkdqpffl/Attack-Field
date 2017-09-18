@@ -14,8 +14,8 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(0.0f, 2.0f, 0.0f);
-//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(75.0f, 850.0f, 670.0f);
 //	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(1000.0f, 55.0f, 0.0f, 0.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_nSelect = 45;
@@ -219,20 +219,18 @@ void CMainScene::Initialize()
 	CTexture *pSkyboxTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_SKYBOX, PS_SAMPLER_SLOT_SKYBOX);
 #else
 	#ifdef _WITH_SKYBOX_TEXTURE_CUBE
-		CTexture *pSkyboxTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_SKYBOX, PS_SAMPLER_SLOT_SKYBOX);
+		CTexture *pSkyboxTexture = new CTexture(1, 1, PS_TEXTURE_SLOT_SKYBOX, PS_SAMPLER_SLOT_LINEAR_WRAP);
 	#else
 		CTexture *pSkyboxTexture = new CTexture(6, 1, PS_TEXTURE_SLOT_SKYBOX, PS_SAMPLER_SLOT_SKYBOX);
 	#endif
 #endif
-
-	pSkyboxTexture->SetSampler(0, STATEOBJ_MGR->g_pPointClampSS);
+	pSkyboxTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWrapSS);
 	
 	CMaterial *pSkyboxMaterial = new CMaterial(NULL);
 	pSkyboxMaterial->SetTexture(pSkyboxTexture);
 	OnChangeSkyBoxTextures(m_pd3dDevice, pSkyboxMaterial, 0);
 
-	//CSkyBoxMesh *pSkyBoxMesh = new CSkyBoxMesh(m_pd3dDevice, 20.0f, 20.0f, 20.0f);
-	CSkyBoxMesh *pSkyBoxMesh = new CSkyBoxMesh(m_pd3dDevice, 3000.0f, 3000.0f, 3000.0f);
+	CSkyBoxMesh *pSkyBoxMesh = new CSkyBoxMesh(m_pd3dDevice, 1000.0f, 1000.0f, 1000.0f);
 	CSkyBox *pSkyBox = new CSkyBox(m_pd3dDevice);
 	pSkyBox->SetMesh(pSkyBoxMesh, 0);
 	pSkyBox->SetMaterial(pSkyboxMaterial);
@@ -252,7 +250,7 @@ void CMainScene::Initialize()
 	pTerrainTexture->SetSampler(0, STATEOBJ_MGR->g_pPointClampSS);
 	
 	pTerrainTexture->SetTexture(1, TextureTag::eTerrainDetailD);
-	pTerrainTexture->SetSampler(1, STATEOBJ_MGR->g_pPointWarpSS);
+	pTerrainTexture->SetSampler(1, STATEOBJ_MGR->g_pPointWrapSS);
 	
 	CMaterialColors *pTerrainColors = new CMaterialColors();
 	
@@ -286,10 +284,10 @@ void CMainScene::Initialize()
 #pragma region [Create Water]
 	CTexture *pTerrainWaterTexture = new CTexture(2, 2, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
 	pTerrainWaterTexture->SetTexture(0, TextureTag::eWaterD);
-	pTerrainWaterTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWarpSS);
+	pTerrainWaterTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWrapSS);
 
 	pTerrainWaterTexture->SetTexture(1, TextureTag::eWaterDetailD);
-	pTerrainWaterTexture->SetSampler(1, STATEOBJ_MGR->g_pPointWarpSS);
+	pTerrainWaterTexture->SetSampler(1, STATEOBJ_MGR->g_pPointWrapSS);
 
 	CMaterialColors *pWaterColors = new CMaterialColors();
 	CMaterial *pTerrainWaterMaterial = new CMaterial(pWaterColors);
@@ -329,7 +327,7 @@ void CMainScene::Initialize()
 	CMaterial* pCaptureAreaMaterial = new CMaterial();
 	CTexture *pCaptureAreaTexture = new CTexture(1, 1, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
 	pCaptureAreaTexture->SetTexture(0, TextureTag::eCaptureArea);
-	pCaptureAreaTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
+	pCaptureAreaTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWrapSS);
 	pCaptureAreaMaterial->SetTexture(pCaptureAreaTexture);
 	
 	// Mesh
@@ -1079,23 +1077,22 @@ void CMainScene::CreateMapDataInstancingObject()
 #pragma endregion
 
 #pragma region [WoodBox]
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBox);
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBox).size());
-	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eWoodBox);
-	pFbxMesh->Initialize(m_pd3dDevice);
-	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eWoodBoxD);
+	pMesh = new CCubeMeshTexturedTangenteIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
+	pInstancingShaders->SetMesh(pMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eWoodBoxD, TextureTag::eWoodBoxN);
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
 
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBox);
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pPhysXObject = new CPhysXObject();
-		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->SetMesh(pMesh);
 		pPhysXObject->CreatePhysX_CubeMesh("WoodBox", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
 		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
@@ -1327,6 +1324,29 @@ void CMainScene::CreateTestingObject()
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 #pragma endregion
 
+#pragma region [StoneWall]
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall);
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eStoneWall).size());
+	pMesh = new CCubeMeshTexturedTangenteIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
+
+	pInstancingShaders->SetMesh(pMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eStoneWallD, TextureTag::eStoneWallN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pMesh);
+		pPhysXObject->CreatePhysX_CubeMesh("StoneWall", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation.x - 90, vecMapData[count].m_Rotation.y - 180, vecMapData[count].m_Rotation.z);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+#pragma endregion
+
 #pragma region [Container]
 	// Container 1
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eContainer1Red).size());
@@ -1527,10 +1547,9 @@ void CMainScene::CreateTestingObject()
 #pragma region [WoodBox]
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBox);
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBox).size());
-	//pMesh = new CCubeMeshTexturedTangenteIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
-	pMesh = new CCubeMeshTexturedIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
+	pMesh = new CCubeMeshTexturedTangenteIlluminated(m_pd3dDevice, vecMapData[0].m_Scale.x, vecMapData[0].m_Scale.y, vecMapData[0].m_Scale.z);
 	pInstancingShaders->SetMesh(pMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eWoodBoxD);
+	pInstancingShaders->SetMaterial(2, TextureTag::eWoodBoxD, TextureTag::eWoodBoxN);
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
 
@@ -1539,35 +1558,12 @@ void CMainScene::CreateTestingObject()
 		pPhysXObject->SetMesh(pMesh);
 		pPhysXObject->CreatePhysX_CubeMesh("WoodBox", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
-
-		//pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
-		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
-	}
-	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
-	
-	/*
-	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBox).size());
-	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eWoodBox);
-	pFbxMesh->Initialize(m_pd3dDevice);
-	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eWoodBoxD);
-	pInstancingShaders->BuildObjects(m_pd3dDevice);
-	pInstancingShaders->CreateShader(m_pd3dDevice);
-
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBox);
-	for (int count = 0; count < vecMapData.size(); ++count) {
-		pPhysXObject = new CPhysXObject();
-		pPhysXObject->SetMesh(pFbxMesh);
-		pPhysXObject->CreatePhysX_CubeMesh("WoodBox", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
-		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
 		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
-	*/
 #pragma endregion
 }
 
@@ -1612,7 +1608,7 @@ void CMainScene::CreateUIImage()
 
 	// Life
 	pUIObject = new CUIObject(TextureTag::eLifeUI);
-	pUIObject->Initialize(m_pd3dDevice, POINT{ 10, FRAME_BUFFER_HEIGHT - 190 }, POINT{ 360, FRAME_BUFFER_HEIGHT - 10 }, 0.5f);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 10, 710 }, POINT{ 360, 890 }, 0.5f);
 	m_pUIManager->AddUIObject(pUIObject);
 
 	// Magazine
@@ -1913,6 +1909,11 @@ void CMainScene::ShowAimUI()
 	// 1ÀÎÄª ½ÃÁ¡¿¡¸¸ UI Render
 	if (m_pCamera->GetCameraTag() != CameraTag::eFirstPerson)
 		return;
+
+	if (m_pPlayer->GetIsZoom())
+		m_pAimObject->SetActive(false);
+	else
+		m_pAimObject->SetActive(true);
 
 	// Æò½Ã Aim 10
 	// ¾É±â Aim 5
@@ -2219,7 +2220,6 @@ void CMainScene::Update_LightningStrikes(float fDeltaTime)
 void CMainScene::Update(float fDeltaTime)
 {
 	float fCalcDeltatime = m_fFrameSpeed * fDeltaTime;
-
 	if (m_pPxScene) {
 		m_pPxScene->simulate(1 / 60.f);
 		m_pPxScene->fetchResults(true);

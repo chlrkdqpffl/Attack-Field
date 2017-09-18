@@ -23,23 +23,7 @@ cbuffer cbTextureMatrix : register(b2)                      // VS Set
 {
 	matrix		gmtxTexture : packoffset(c0);
 };
-/*
-cbuffer cbCameraPosition : register(b2)                     // PS Set
-{
-    float4      gvCameraPosition : packoffset(c0);
-};
-*/
-/*
-cbuffer cbTerrain : register(b3)                            // PS Set
-{
-	int4		gvTerrainTextureIndex : packoffset(c0);
-};
 
-cbuffer cbSkyBox : register(b4)                             // PS Set
-{
-	int4		gvSkyBoxTextureIndex : packoffset(c0);
-};
-*/
 cbuffer cbRenderOption : register(b5)                       // PS Set
 {
     float4 gbRenderOption : packoffset(c0);                 // (x : Fog Render, y : BoundingBox Render,    z : UI Opacity )
@@ -51,7 +35,6 @@ cbuffer cbSkinned : register(b7)							// VS Set
 };
 
 Texture2D gtxDiffuse			: register(t0);
-
 Texture2D gtxTerrain			: register(t4);
 Texture2D gtxTerrainDetail		: register(t5);
 
@@ -71,11 +54,13 @@ Texture2D gtxTerrainDetail		: register(t5);
     #endif
 #endif
 
-SamplerState gssDefault         : register(s0);
-SamplerState gssDefaultDetail   : register(s1);
-SamplerState gssTerrain         : register(s2);
-SamplerState gssTerrainDetail   : register(s3);
-SamplerState gssSkyBox          : register(s4);
+SamplerState gssDefault             : register(s0);
+SamplerState gssPointClamp          : register(s1);
+SamplerState gssPointWrap           : register(s2);
+SamplerState gssLinearClamp         : register(s3);
+SamplerState gssLinearWrap          : register(s4);
+SamplerState gssAnisotropicClamp    : register(s5);
+SamplerState gssAnisotropicWrap     : register(s6);
 
 #include "Light.hlsli"
 #include "Fog.hlsli"
@@ -432,7 +417,7 @@ VS_DETAIL_TEXTURED_OUTPUT VSDetailTexturedColor(VS_DETAIL_TEXTURED_INPUT input)
 float4 PSDetailTexturedColor(VS_DETAIL_TEXTURED_OUTPUT input) : SV_Target
 {
 	float4 cBaseTexColor = gtxDiffuse.Sample(gssDefault, input.texCoordBase);
-	float4 cDetailTexColor = gtxTerrainDetail.Sample(gssDefaultDetail, input.texCoordDetail);
+    float4 cDetailTexColor = gtxTerrainDetail.Sample(gssLinearClamp, input.texCoordDetail);
 	float4 cColor = saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
 	//    float4 cAlphaTexColor = gtxtTerrainAlphaTexture.Sample(gTerrainSamplerState, input.texcoord0);
 	//    float4 cColor = cIllumination * lerp(cBaseTexColor, cDetailTexColor, cAlphaTexColor.r);
@@ -469,7 +454,7 @@ float4 PSDetailTexturedLightingColor(VS_DETAIL_TEXTURED_LIGHTING_OUTPUT input) :
 	input.normalW = normalize(input.normalW);
 	float4 cIllumination = Lighting(input.positionW, input.normalW);
 		float4 cBaseTexColor = gtxDiffuse.Sample(gssDefault, input.texCoordBase);
-		float4 cDetailTexColor = gtxTerrainDetail.Sample(gssDefaultDetail, input.texCoordDetail);
+    float4 cDetailTexColor = gtxTerrainDetail.Sample(gssLinearClamp, input.texCoordDetail);
 		float4 cColor = saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
 		//    float4 cAlphaTexColor = gtxtTerrainAlphaTexture.Sample(gTerrainSamplerState, input.texcoord0);
 		//    float4 cColor = cIllumination * lerp(cBaseTexColor, cDetailTexColor, cAlphaTexColor.r);
@@ -539,8 +524,8 @@ float4 PSTerrainDetailTexturedLightingColor(VS_TERRAIN_DETAIL_TEXTURED_LIGHTING_
 {
 	input.normalW = normalize(input.normalW);
 	float4 cIllumination = Lighting(input.positionW, input.normalW);
-	float4 cBaseTexColor = gtxTerrain.Sample(gssTerrain, input.texCoordBase);
-	float4 cDetailTexColor = gtxtTerrainDetail.Sample(gssTerrainDetail, input.texCoordDetail);
+    float4 cBaseTexColor = gtxTerrain.Sample(gssLinearClamp, input.texCoordBase);
+    float4 cDetailTexColor = gtxtTerrainDetail.Sample(gssLinearClamp, input.texCoordDetail);
 	float4 cColor = saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f)) * cIllumination;
 
     if (gbRenderOption.x == 1.0f)
@@ -571,14 +556,13 @@ VS_SKYBOX_CUBEMAP_OUTPUT VSSkyBoxTexturedColor(VS_SKYBOX_CUBEMAP_INPUT input)
 
 float4 PSSkyBoxTexturedColor(VS_SKYBOX_CUBEMAP_OUTPUT input) : SV_Target
 {
-	float4 cColor = gtxtSkyBox.Sample(gssSkyBox, input.positionL);
-
+    float4 cColor = gtxtSkyBox.Sample(gssLinearWrap, input.positionL);
 	return(cColor);
 }
 #else
 float4 PSSkyBoxTexturedColor(VS_TEXTURED_OUTPUT input) : SV_Target
 {
-	float4 cColor = gtxtSkyBox.Sample(gssSkyBox, input.texCoord);
+	float4 cColor = gtxtSkyBox.Sample(gssLinearWrap, input.texCoord);
 	return(cColor);
 }
 #endif
