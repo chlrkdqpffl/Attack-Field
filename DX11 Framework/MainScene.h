@@ -68,6 +68,7 @@ public:
 	void SetBlueTeamKill(UINT kill) { m_nBlueTeamTotalKill = kill; }
 	void SetOccupyTeam(TeamType team) { m_tagOccupyTeam = team; }
 	BYTE GetOcuupyTeam() { return static_cast<BYTE>(m_tagOccupyTeam); }
+	void SetGameMode(GameMode mode) { m_tagGameMode = mode; }
 
 	CGBuffer* GetGBuffer() const { return m_GBuffer; }
 private:

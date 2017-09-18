@@ -94,8 +94,8 @@ void CServerManager::processpacket(char *ptr)
 					SCENE_MGR->g_pPlayer->SetPlayerlife(static_cast<UINT>(my_put_packet->hp));//SCENE_MGR->g_pMainScene->-> SetLife(static_cast<UINT>(my_put_packet->hp));
 					SCENE_MGR->g_pPlayerCharacter->SetServerID(id);
 					SCENE_MGR->g_pPlayerCharacter->SetTagTeam(reinterpret_cast<TeamType &>(my_put_packet->Team));
-					MessageBox(m_handle, L"게임 모드 패킷 수정해야함", L"게임 모드", MB_OK);
-			//		SCENE_MGR->g_pPlayerCharacter->Setmode(my_put_packet->mode);
+			//		MessageBox(m_handle, L"게임 모드 패킷 수정해야함", L"게임 모드", MB_OK);
+					SCENE_MGR->g_pMainScene->SetGameMode(static_cast<GameMode>(my_put_packet->mode));
 					SCENE_MGR->g_pPlayerCharacter->CreateMaterial();
 				}
 				else
@@ -103,13 +103,13 @@ void CServerManager::processpacket(char *ptr)
 					CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject(static_cast<TeamType>(my_put_packet->Team));   //객체 생성
 					pCharObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
 					pCharObject->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
-		
-					pCharObject->SetRelativeVelocity(my_put_packet->Animation);
+	
 					pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
 					pCharObject->SetServerID(id);
-					MessageBox(m_handle, L"게임 모드 패킷 수정해야함", L"게임 모드", MB_OK);
+			//		MessageBox(m_handle, L"게임 모드 패킷 수정해야함", L"게임 모드", MB_OK);
 			//		pCharObject->Setmode(my_put_packet->mode);
 		
+					SCENE_MGR->g_pMainScene->SetGameMode(static_cast<GameMode>(my_put_packet->mode));
 					SCENE_MGR->g_pMainScene->GetCharcontainer().push_back(pCharObject);
 					SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);
 		
