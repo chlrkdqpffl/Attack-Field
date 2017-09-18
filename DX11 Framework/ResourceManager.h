@@ -14,8 +14,8 @@ class CResourceManager : public CSingletonManager<CResourceManager>
 	bool												m_bIsLoading = false;
 
 public:
-	CResourceManager();
-	virtual ~CResourceManager();
+	CResourceManager() {}
+	virtual ~CResourceManager() {}
 
 	virtual void InitializeManager() override;
 	virtual void ReleseManager() override;

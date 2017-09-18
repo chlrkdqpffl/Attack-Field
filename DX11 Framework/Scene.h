@@ -26,6 +26,7 @@
 #include "SphereObject.h"
 #include "SpriteImageObject.h"
 #include "PhysXObject.h"
+#include "AimObject.h"
 
 // ----- Character -----
 #include "CharacterPlayer.h"

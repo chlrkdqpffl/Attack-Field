@@ -3,10 +3,6 @@
 
 CTextManager::CTextManager()
 {
-	m_pFW1Font = nullptr;
-	m_pFW1FontFactory = nullptr;
-	m_pFWTextRender = nullptr;
-
 	m_tChar = new TCHAR[100];
 }
 
@@ -15,13 +11,21 @@ CTextManager::~CTextManager()
 	delete[] m_tChar;
 }
 
-void CTextManager::InitializeManager(ID3D11Device* pd3dDevice, std::wstring font)
+void CTextManager::InitializeManager(ID3D11Device* pd3dDevice)
 {
+	AddFont();
+	wstring fontName = L"koverwatch";
+
 	if (FAILED(FW1CreateFactory(FW1_VERSION, &m_pFW1FontFactory)))
 		MessageBox(NULL, L"Do not Create FontFactory", L"Error", MB_OK);
 
-	if (FAILED(m_pFW1FontFactory->CreateFontWrapper(pd3dDevice, font.c_str(), &m_pFW1Font)))
+	if (FAILED(m_pFW1FontFactory->CreateFontWrapper(pd3dDevice, fontName.c_str(), &m_pFW1Font)))
 		MessageBox(NULL, L"Font is None", L"Font Error", MB_OK);
+}
+
+void CTextManager::AddFont()
+{
+	AddFontResource(L"../Assets/Font/koverwatch.ttf");
 }
 
 void CTextManager::ReleseManager()

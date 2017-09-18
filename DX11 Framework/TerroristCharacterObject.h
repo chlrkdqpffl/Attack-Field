@@ -1,6 +1,5 @@
 #pragma once
 #include "CharacterObject.h" 
-#include "RifleGunWeapon.h"
 #include "BoundingBoxMesh.h"
 
 class CTerroristCharacterObject : public CCharacterObject

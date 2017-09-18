@@ -121,6 +121,12 @@
     <Filter Include="Objects\Camera">
       <UniqueIdentifier>{7f87cd86-f7cc-4b49-94af-d21819fb1dd8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\AimObject">
+      <UniqueIdentifier>{2888841b-fc75-4075-90a1-ea1155603ef2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Weopon\SniperRifle">
+      <UniqueIdentifier>{b181e8be-0beb-4dae-b460-b008a02663db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -303,9 +309,6 @@
     <ClCompile Include="ThirdPersonCamera.cpp">
       <Filter>Objects\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="AirplanePlayer.cpp">
-      <Filter>Objects\Player</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Objects\Player</Filter>
     </ClCompile>
@@ -386,6 +389,18 @@
     </ClCompile>
     <ClCompile Include="TerroristPlayer.cpp">
       <Filter>Objects\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="AimObject.cpp">
+      <Filter>Objects\AimObject</Filter>
+    </ClCompile>
+    <ClCompile Include="AimMesh.cpp">
+      <Filter>Objects\AimObject</Filter>
+    </ClCompile>
+    <ClCompile Include="C2DLineShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="SniperRifle.cpp">
+      <Filter>Objects\Weopon\SniperRifle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -478,9 +493,6 @@
     </ClInclude>
     <ClInclude Include="NormalMapCubeMesh.h">
       <Filter>헤더 파일\Mesh\NormalMap</Filter>
-    </ClInclude>
-    <ClInclude Include="AxisObjects.h">
-      <Filter>헤더 파일\Object</Filter>
     </ClInclude>
     <ClInclude Include="TextureToScreenRectMesh.h">
       <Filter>헤더 파일\Mesh</Filter>
@@ -587,9 +599,6 @@
     <ClInclude Include="ThirdPersonCamera.h">
       <Filter>Objects\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="AirplanePlayer.h">
-      <Filter>Objects\Player</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Objects\Player</Filter>
     </ClInclude>
@@ -680,6 +689,21 @@
     <ClInclude Include="TerroristPlayer.h">
       <Filter>Objects\Character</Filter>
     </ClInclude>
+    <ClInclude Include="AxisObjects.h">
+      <Filter>헤더 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="AimObject.h">
+      <Filter>Objects\AimObject</Filter>
+    </ClInclude>
+    <ClInclude Include="AimMesh.h">
+      <Filter>Objects\AimObject</Filter>
+    </ClInclude>
+    <ClInclude Include="C2DLineShader.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="SniperRifle.h">
+      <Filter>Objects\Weopon\SniperRifle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -707,9 +731,6 @@
       <Filter>HLSL</Filter>
     </None>
     <None Include="Shader HLSL File\NormalMap.hlsli">
-      <Filter>HLSL</Filter>
-    </None>
-    <None Include="Shader HLSL File\TextureToScreen.hlsli">
       <Filter>HLSL</Filter>
     </None>
     <None Include="Shader HLSL File\Terrain.hlsli">
@@ -744,9 +765,6 @@
     </None>
     <None Include="Shader HLSL File\PostProcessing.hlsli">
       <Filter>HLSL\Deferred</Filter>
-    </None>
-    <None Include="Shader HLSL File\UI.hlsli">
-      <Filter>HLSL</Filter>
     </None>
     <None Include="Shader HLSL File\DeferredCharacterSkinnedNormal.hlsli">
       <Filter>HLSL\Deferred</Filter>
@@ -804,6 +822,9 @@
     </None>
     <None Include="Shader HLSL File\SSReflection.hlsli">
       <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="Shader HLSL File\RenderToScreen.hlsli">
+      <Filter>HLSL</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@ false
 
 [BBox_DATA]
 Center: 0 1.07199 0
-Extents: 1.83215 1.07199 0.89867
+Extents: 1.7 1.07199 0.25
 
 [VERTEX_DATA]
 1.83215 1.42228e-07 -0.89867

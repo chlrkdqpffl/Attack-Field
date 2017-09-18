@@ -10,7 +10,6 @@ CUIMesh::CUIMesh(ID3D11Device *pd3dDevice, POINT startPos, POINT endPos, float z
 	XMFLOAT2 *pd3dxvTexCoords = new XMFLOAT2[m_nVertices];
 
 	float leftX, rightX, leftY, rightY;
-
 	leftX = (2 * startPos.x / (float)FRAME_BUFFER_WIDTH) - 1;
 	rightX = (2 * endPos.x / (float)FRAME_BUFFER_WIDTH) - 1;
 

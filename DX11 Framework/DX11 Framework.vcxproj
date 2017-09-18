@@ -158,7 +158,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AirplanePlayer.cpp" />
+    <ClCompile Include="AimMesh.cpp" />
+    <ClCompile Include="AimObject.cpp" />
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="AntTweakBarManager.cpp" />
     <ClCompile Include="BillboardObject.cpp" />
@@ -166,6 +167,7 @@
     <ClCompile Include="BoundingBoxMesh.cpp" />
     <ClCompile Include="BoundingBoxShader.cpp" />
     <ClCompile Include="BulletObject.cpp" />
+    <ClCompile Include="C2DLineShader.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CharacterNormalShader.cpp" />
     <ClCompile Include="CharacterObject.cpp" />
@@ -202,6 +204,7 @@
     <ClCompile Include="ServerManager.cpp" />
     <ClCompile Include="SkinnedObject.cpp" />
     <ClCompile Include="SkyBoxShader.cpp" />
+    <ClCompile Include="SniperRifle.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SphereObject.cpp" />
     <ClCompile Include="SpriteImageManager.cpp" />
@@ -278,7 +281,8 @@
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AirplanePlayer.h" />
+    <ClInclude Include="AimMesh.h" />
+    <ClInclude Include="AimObject.h" />
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="AntTweakBarManager.h" />
     <ClInclude Include="BillboardObject.h" />
@@ -286,6 +290,7 @@
     <ClInclude Include="BoundingBoxMesh.h" />
     <ClInclude Include="BoundingBoxShader.h" />
     <ClInclude Include="BulletObject.h" />
+    <ClInclude Include="C2DLineShader.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CharacterNormalShader.h" />
     <ClInclude Include="CharacterObject.h" />
@@ -355,6 +360,7 @@
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="SkyBoxMesh.h" />
     <ClInclude Include="SkyBoxShader.h" />
+    <ClInclude Include="SniperRifle.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="SpaceShipCamera.h" />
     <ClInclude Include="SphereObject.h" />
@@ -451,8 +457,7 @@
     <None Include="Shader HLSL File\Terrain.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </None>
-    <None Include="Shader HLSL File\TextureToScreen.hlsli" />
-    <None Include="Shader HLSL File\UI.hlsli" />
+    <None Include="Shader HLSL File\RenderToScreen.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

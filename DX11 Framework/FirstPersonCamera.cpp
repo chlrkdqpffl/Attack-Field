@@ -5,7 +5,7 @@ CFirstPersonCamera::CFirstPersonCamera(CCamera *pCamera) : CCamera(pCamera)
 {
 	m_tagCamera = CameraTag::eFirstPerson;
 	if (pCamera) {
-		if (pCamera->GetCameraTag() == CameraTag::eSpaceShip) {
+		if (pCamera->GetCameraTag() == CameraTag::eFreeCam) {
 			XMStoreFloat3(&m_vUp, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 			m_vRight.y = 0.0f;
 			m_vLook.y = 0.0f;
@@ -74,12 +74,4 @@ void CFirstPersonCamera::Update(float fDeltaTime)
 	m_vUp = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	m_vLook = m_pPlayer->GetLook();
 	XMStoreFloat3(&m_vRight, XMVector3Cross(XMLoadFloat3(&m_vUp), XMLoadFloat3(&m_vLook)));
-	
-	XMVECTOR pos = m_pPlayer->GetvPosition();
-	XMStoreFloat3(&m_vPosition, pos +
-		m_pPlayer->GetvRight() * m_vOffset.x +
-		m_pPlayer->GetvUp() * m_vOffset.y +
-		m_pPlayer->GetvLook() * m_vOffset.z);
-
-	Rotate(m_pPlayer->GetPitch(), 0, 0);
 }

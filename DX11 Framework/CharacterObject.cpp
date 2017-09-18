@@ -16,9 +16,10 @@ CCharacterObject::CCharacterObject(TeamType team)
 
 CCharacterObject::~CCharacterObject()
 {
-	SafeDelete(m_pWeapon);
+	for( int i = 0; i < static_cast<UINT>(WeaponTag::eMaxWeaponCount); ++i)
+		SafeDelete(m_pWeapon[i]);
 
-	for (int i = 0; i < static_cast<int>(ChracterBoundingBoxParts::ePartsCount); ++i)
+	for (int i = 0; i < static_cast<UINT>(ChracterBoundingBoxParts::ePartsCount); ++i)
 		SafeDelete(m_pPartsBoundingBoxMesh[i]);
 
 	SafeDelete(m_pStateUpper);
@@ -47,8 +48,8 @@ BoundingOrientedBox CCharacterObject::GetPartsBoundingOBox(UINT index) const
 
 void CCharacterObject::Firing()
 {
-	if (m_pWeapon->IsExistBullet())
-		m_pWeapon->Firing(XMLoadFloat3(&m_f3FiringDirection));
+	if (m_pWeapon[m_nSelectWeapon]->IsExistBullet())
+		m_pWeapon[m_nSelectWeapon]->Firing(XMLoadFloat3(&m_f3FiringDirection));
 	else
 		m_bIsReload = true;
 }
@@ -73,7 +74,7 @@ void CCharacterObject::Running()
 
 void CCharacterObject::Reloading()
 {
-	m_pWeapon->Reloading();
+	m_pWeapon[m_nSelectWeapon]->Reloading();
 }
 
 void CCharacterObject::Revival()
@@ -91,6 +92,21 @@ void CCharacterObject::DamagedCharacter(UINT damage)
 		life = 0;
 
 	SetLife(life);
+}
+
+void CCharacterObject::ReplaceWeapon(WeaponTag weapon)
+{
+	if (m_bIsReplaceWeapon)
+		return;
+
+	if (m_nSelectWeapon == static_cast<UINT>(weapon))
+		return;
+
+	m_bIsReplaceWeapon = true;
+	m_nNextReplacementWeaponNumber = static_cast<UINT>(weapon);
+
+	// 무기 변경 패킷 보내기
+
 }
 
 /*
@@ -224,7 +240,7 @@ void CCharacterObject::Update(float fDeltaTime)
 	
 	CGameObject::Update(fDeltaTime);
 	CSkinnedObject::Update(fDeltaTime);
-	m_pWeapon->Update(fDeltaTime);
+	m_pWeapon[m_nSelectWeapon]->Update(fDeltaTime);
 	SetPartsWorldMtx();
 }
 
@@ -247,7 +263,7 @@ void CCharacterObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *p
 
 	if (m_pShader) m_pShader->OnPostRender(pd3dDeviceContext);
 
-	m_pWeapon->Render(pd3dDeviceContext, pCamera);
+	m_pWeapon[m_nSelectWeapon]->Render(pd3dDeviceContext, pCamera);
 }
 
 void CCharacterObject::BoundingBoxRender(ID3D11DeviceContext *pd3dDeviceContext)

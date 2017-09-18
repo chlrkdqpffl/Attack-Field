@@ -1,27 +1,32 @@
 #include "stdafx.h"
 #include "RifleGunWeapon.h"
 
-CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner) : CWeapon(pOwner)
+CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner)
+	: CWeapon(pOwner)
 {
 	XMFLOAT3 offsetPos, offsetRotate;
 
+	// 테러리스트 캐릭터에 맞춰진 Offset
 	if (pOwner->GetMeshTag() == MeshTag::eTerrorist) {
 		m_nBoneIndex = 22;
 		offsetPos		= XMFLOAT3(1.0f, 1.4f, -0.05f);
 		offsetRotate	= XMFLOAT3(-30.f, 125.f, 85.f);
 	}
-
+	
 	SetRotate(offsetRotate, true);
 	SetPosition(offsetPos, true);
 
 	// Data Initialize
-	m_Type = WeaponData::Type::eRifle;
+	m_tagWeapon = WeaponTag::eRifle;
 	m_fDamage = 30.f;
 	m_fRange = 150.f;
 	m_uiFireSpeed = 100;
 
 	m_nMaxhasBulletCount = 30;
 	m_nhasBulletCount = 30;
+
+//	m_nMaxhasBulletCount = 100;
+//	m_nhasBulletCount = 100;
 
 }
 
@@ -61,4 +66,19 @@ void CRifleGunWeapon::CreateMaterial()
 	pTexture->SetSampler(0, STATEOBJ_MGR->g_pLinearWarpSS);
 	
 	m_pMaterial->SetTexture(pTexture);
+}
+
+void CRifleGunWeapon::Update(float fDeltaTime)
+{
+	CWeapon::Update(fDeltaTime);
+
+	XMVECTOR muzzlePosition;
+	if (m_pOwner->GetCharacterID() == 0)
+		//		muzzlePosition = GetvPosition() + (GetvRight() * TWBAR_MGR->g_xmf3Offset.x) + (GetvUp() * TWBAR_MGR->g_xmf3Offset.y) + (GetvLook() * TWBAR_MGR->g_xmf3Offset.z);
+		muzzlePosition = GetvPosition() + (GetvRight() * -1.85f) + (GetvUp() * 0.03f) + (GetvLook() * 0.2f);
+	else
+		muzzlePosition = GetvPosition() + (GetvRight() * -1.0f) + (GetvUp() * 0.03f) + (GetvLook() * 0.02f);
+
+	XMStoreFloat3(&m_f3MuzzlePosition, muzzlePosition);
+	SPRITE_MGR->SetPosition(m_pMuzzleSpirte, m_f3MuzzlePosition);
 }

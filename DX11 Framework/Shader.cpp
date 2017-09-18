@@ -643,11 +643,10 @@ void CInstancedObjectsShader::BuildObjects(ID3D11Device *pd3dDevice)
 	m_pd3dInstanceBuffer = CreateBuffer(pd3dDevice, m_nInstanceBufferStride, m_nCapacity, NULL, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
 	m_pMesh->AssembleToVertexBuffer(1, &m_pd3dInstanceBuffer, &m_nInstanceBufferStride, &m_nInstanceBufferOffset);
 
-	
+	// Create Bounding Box
 	m_pBoundingBoxMesh = new CBoundingBoxMesh(pd3dDevice, m_pMesh->GetBoundingCube());
 	m_pBoundingBoxShader = new CBoundingBoxShader();
 	m_pBoundingBoxShader->CreateShader(pd3dDevice);
-
 }
 
 void CInstancedObjectsShader::ReleaseObjects()
@@ -684,7 +683,6 @@ void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCa
 		findShader->second->OnPostRender(pd3dDeviceContext);
 	}
 
-	
 	// Bounding Box Rendering
 	if (GLOBAL_MGR->g_vRenderOption.y) {
 		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pWireframeRS);
@@ -708,5 +706,4 @@ void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCa
 		}
 		pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
 	}
-	
 }

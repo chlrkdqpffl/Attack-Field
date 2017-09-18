@@ -13,8 +13,8 @@ CCamera::CCamera(CCamera *pCamera)
 		m_vRight = pCamera->GetRight();
 		m_vUp = pCamera->GetUp();
 		m_vLook = pCamera->GetLook();
-		XMStoreFloat4x4(&m_d3dxmtxView, pCamera->GetViewMatrix());
-		XMStoreFloat4x4(&m_d3dxmtxProjection, pCamera->GetProjectionMatrix());
+		XMStoreFloat4x4(&m_mtxView, pCamera->GetViewMatrix());
+		XMStoreFloat4x4(&m_mtxProjection, pCamera->GetProjectionMatrix());
 		m_d3dViewport = pCamera->GetViewport();
 		m_vOffset = pCamera->GetOffset();
 		m_fTimeLag = pCamera->GetTimeLag();
@@ -29,8 +29,8 @@ CCamera::CCamera(CCamera *pCamera)
 		m_fTimeLag = 0.0f;
 		XMStoreFloat3(&m_vOffset, XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 		m_pPlayer = NULL;
-		XMStoreFloat4x4(&m_d3dxmtxView, XMMatrixIdentity());
-		XMStoreFloat4x4(&m_d3dxmtxProjection, XMMatrixIdentity());
+		XMStoreFloat4x4(&m_mtxView, XMMatrixIdentity());
+		XMStoreFloat4x4(&m_mtxProjection, XMMatrixIdentity());
 	}
 }
 
@@ -78,14 +78,15 @@ void CCamera::GenerateProjectionMatrix(float fNearPlaneDistance, float fFarPlane
 {
 	m_fNearPlane = fNearPlaneDistance;
 	m_fFarPlane = fFarPlaneDistance;
+	m_fFOVAngle = fFOVAngle;
 
-	XMStoreFloat4x4(&m_d3dxmtxProjection, 
+	XMStoreFloat4x4(&m_mtxProjection, 
 		XMMatrixPerspectiveFovLH(XMConvertToRadians(fFOVAngle), fAspectRatio, fNearPlaneDistance, fFarPlaneDistance));
 }
 
 void CCamera::GenerateViewMatrix()
 {
-	XMStoreFloat4x4(&m_d3dxmtxView, XMMatrixLookAtLH(XMLoadFloat3(&m_vPosition), m_pPlayer->GetvPosition(), XMLoadFloat3(&m_vUp)));
+	XMStoreFloat4x4(&m_mtxView, XMMatrixLookAtLH(XMLoadFloat3(&m_vPosition), m_pPlayer->GetvPosition(), XMLoadFloat3(&m_vUp)));
 }
 
 void CCamera::RegenerateViewMatrix()
@@ -95,12 +96,12 @@ void CCamera::RegenerateViewMatrix()
 	XMStoreFloat3(&m_vRight, XMVector3Normalize(XMLoadFloat3(&m_vRight)));
 	XMStoreFloat3(&m_vUp, XMVector3Cross(XMLoadFloat3(&m_vLook), XMLoadFloat3(&m_vRight)));
 	XMStoreFloat3(&m_vUp, XMVector3Normalize(XMLoadFloat3(&m_vUp)));
-	m_d3dxmtxView._11 = m_vRight.x; m_d3dxmtxView._12 = m_vUp.x; m_d3dxmtxView._13 = m_vLook.x;
-	m_d3dxmtxView._21 = m_vRight.y; m_d3dxmtxView._22 = m_vUp.y; m_d3dxmtxView._23 = m_vLook.y;
-	m_d3dxmtxView._31 = m_vRight.z; m_d3dxmtxView._32 = m_vUp.z; m_d3dxmtxView._33 = m_vLook.z;
-	m_d3dxmtxView._41 = -XMVectorGetX(XMVector3Dot(XMLoadFloat3(&m_vPosition), XMLoadFloat3(&m_vRight)));
-	m_d3dxmtxView._42 = -XMVectorGetX(XMVector3Dot(XMLoadFloat3(&m_vPosition), XMLoadFloat3(&m_vUp)));
-	m_d3dxmtxView._43 = -XMVectorGetX(XMVector3Dot(XMLoadFloat3(&m_vPosition), XMLoadFloat3(&m_vLook)));
+	m_mtxView._11 = m_vRight.x; m_mtxView._12 = m_vUp.x; m_mtxView._13 = m_vLook.x;
+	m_mtxView._21 = m_vRight.y; m_mtxView._22 = m_vUp.y; m_mtxView._23 = m_vLook.y;
+	m_mtxView._31 = m_vRight.z; m_mtxView._32 = m_vUp.z; m_mtxView._33 = m_vLook.z;
+	m_mtxView._41 = -XMVectorGetX(XMVector3Dot(XMLoadFloat3(&m_vPosition), XMLoadFloat3(&m_vRight)));
+	m_mtxView._42 = -XMVectorGetX(XMVector3Dot(XMLoadFloat3(&m_vPosition), XMLoadFloat3(&m_vUp)));
+	m_mtxView._43 = -XMVectorGetX(XMVector3Dot(XMLoadFloat3(&m_vPosition), XMLoadFloat3(&m_vLook)));
 
 	CalculateFrustumPlanes();
 }
@@ -132,8 +133,8 @@ void CCamera::UpdateConstantBuffer_ViewProjection(ID3D11DeviceContext *pd3dDevic
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	pd3dDeviceContext->Map(m_pd3dcbCamera, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	VS_CB_CAMERA *pcbViewProjection = (VS_CB_CAMERA *)d3dMappedResource.pData;
-	XMStoreFloat4x4(&pcbViewProjection->m_d3dxmtxView, XMMatrixTranspose(*pd3dxmtxView));
-	XMStoreFloat4x4(&pcbViewProjection->m_d3dxmtxProjection, XMMatrixTranspose(*pd3dxmtxProjection));
+	XMStoreFloat4x4(&pcbViewProjection->m_mtxView, XMMatrixTranspose(*pd3dxmtxView));
+	XMStoreFloat4x4(&pcbViewProjection->m_mtxProjection, XMMatrixTranspose(*pd3dxmtxProjection));
 	pd3dDeviceContext->Unmap(m_pd3dcbCamera, 0);
 
 	pd3dDeviceContext->VSSetConstantBuffers(VS_CB_SLOT_CAMERA_VIEW_PROJECTION, 1, &m_pd3dcbCamera);
@@ -161,15 +162,15 @@ void CCamera::UpdateConstantBuffer_CameraPos(ID3D11DeviceContext *pd3dDeviceCont
 
 void CCamera::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 {
-	UpdateConstantBuffer_ViewProjection(pd3dDeviceContext, &XMLoadFloat4x4(&m_d3dxmtxView), &XMLoadFloat4x4(&m_d3dxmtxProjection));
+	UpdateConstantBuffer_ViewProjection(pd3dDeviceContext, &XMLoadFloat4x4(&m_mtxView), &XMLoadFloat4x4(&m_mtxProjection));
 
-	if (!XMVector3Equal(XMLoadFloat3(&m_PrevPosition), XMLoadFloat3(&m_vPosition)))
+	if (!XMVector3Equal(XMLoadFloat3(&m_vPrevPosition), XMLoadFloat3(&m_vPosition)))
 		UpdateConstantBuffer_CameraPos(pd3dDeviceContext, &XMLoadFloat3(&m_vPosition));
 }
 
 void CCamera::CalculateFrustumPlanes()
 {
-	XMMATRIX mtxViewProjection = XMLoadFloat4x4(&m_d3dxmtxView) * XMLoadFloat4x4(&m_d3dxmtxProjection);
+	XMMATRIX mtxViewProjection = XMLoadFloat4x4(&m_mtxView) * XMLoadFloat4x4(&m_mtxProjection);
 
 	XMFLOAT4X4 mtx;
 	XMStoreFloat4x4(&mtx, mtxViewProjection);
@@ -285,7 +286,15 @@ bool CCamera::IsInFrustum(BoundingSphere *boundingSphere)
 	return(IsInFrustum(XMLoadFloat3(&boundingSphere->Center), XMVectorSet(boundingSphere->Radius, boundingSphere->Radius, boundingSphere->Radius, 0.0f)));
 }
 
-void CCamera::Update(float fDeltaTime)
+void CCamera::UpdateOffset()
 {
-	cout << "F2만 지금 안넣었음 " << endl;
+	XMVECTOR pos = m_pPlayer->GetvPosition();
+
+	XMStoreFloat3(&m_vPosition, pos +
+		m_pPlayer->GetvRight() * m_vOffset.x +
+		m_pPlayer->GetvUp() * m_vOffset.y +
+		m_pPlayer->GetvLook() * m_vOffset.z);
+
+	if(m_tagCamera == CameraTag::eFirstPerson)
+		Rotate(m_pPlayer->GetPitch(), 0, 0);
 }

@@ -57,33 +57,39 @@ void CTerroristPlayer::CreateMaterial()
 
 void CTerroristPlayer::CreateAnimation()
 {
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle, AnimationTrack("Idle"), AnimationData::Type::eLoop));
+	// ----- TerroristCharacterObject 에도 추가하기 ----- //
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,				AnimationTrack("Idle"),				AnimationData::Type::eLoop));
 
 	// Walk
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Left, AnimationTrack("Walk_Left"), AnimationData::Type::eLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Right, AnimationTrack("Walk_Left"), AnimationData::Type::eInverseLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_ForwardLeft, AnimationTrack("Walk_ForwardLeft"), AnimationData::Type::eLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_BackwardRight, AnimationTrack("Walk_ForwardLeft"), AnimationData::Type::eInverseLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Forward, AnimationTrack("Walk_Forward"), AnimationData::Type::eLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Backward, AnimationTrack("Walk_Forward"), AnimationData::Type::eInverseLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_ForwardRight, AnimationTrack("Walk_ForwardRight"), AnimationData::Type::eLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_BackwardLeft, AnimationTrack("Walk_ForwardRight"), AnimationData::Type::eInverseLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Left,			AnimationTrack("Walk_Left"),		AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Right,			AnimationTrack("Walk_Left"),		AnimationData::Type::eInverseLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_ForwardLeft,	AnimationTrack("Walk_ForwardLeft"), AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_BackwardRight,	AnimationTrack("Walk_ForwardLeft"), AnimationData::Type::eInverseLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Forward,		AnimationTrack("Walk_Forward"),		AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Backward,		AnimationTrack("Walk_Forward"),		AnimationData::Type::eInverseLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_ForwardRight,	AnimationTrack("Walk_ForwardRight"), AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_BackwardLeft,	AnimationTrack("Walk_ForwardRight"), AnimationData::Type::eInverseLoop));
 
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eRun, AnimationTrack("Run"), AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eRun,					AnimationTrack("Run"),				AnimationData::Type::eLoop));
 
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eFire, AnimationTrack("Fire"), AnimationData::Type::eLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eReload, AnimationTrack("Reload"), AnimationData::Type::eOnce));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eDeath_Head, AnimationTrack("Death_Head"), AnimationData::Type::eOnce));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eDeath, AnimationTrack("Death"), AnimationData::Type::eOnce));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eHeadHit, AnimationTrack("HeadHit"), AnimationData::Type::eOnce));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eFire,				AnimationTrack("Fire"),				AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eReload,				AnimationTrack("Reload"),			AnimationData::Type::eOnce));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eDeath_Head,			AnimationTrack("Death_Head"),		AnimationData::Type::eOnce));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eDeath,				AnimationTrack("Death"),			AnimationData::Type::eOnce));
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eHeadHit,				AnimationTrack("HeadHit"),			AnimationData::Type::eOnce));
+
+	AddAnimation(make_tuple(AnimationData::CharacterAnim::eCrouch,				AnimationTrack("Crouch"),			AnimationData::Type::eLoop));
 }
 
 void CTerroristPlayer::CreateWeapon(ID3D11Device *pd3dDevice)
 {
-	m_pWeapon = new CRifleGunWeapon(this);
+	m_pWeapon[0] = new CRifleGunWeapon(this);
+	m_pWeapon[1] = new CSniperRifle(this);
 
-	m_pWeapon->CreateObjectData(pd3dDevice);
-	m_pWeapon->CreateAxisObject(pd3dDevice);
+	for (int i = 0; i < static_cast<UINT>(WeaponTag::eMaxWeaponCount); ++i) {
+		m_pWeapon[i]->CreateObjectData(pd3dDevice);
+		m_pWeapon[i]->CreateAxisObject(pd3dDevice);
+	}
 }
 
 void CTerroristPlayer::CreateBoundingBox(ID3D11Device *pd3dDevice)

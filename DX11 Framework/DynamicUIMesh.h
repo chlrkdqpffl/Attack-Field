@@ -11,8 +11,8 @@ public:
 	CDynamicUIMesh(ID3D11Device *pd3dDevice, POINT startPos, POINT endPos, float zPos);
 	virtual ~CDynamicUIMesh();
 
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+
 	void SetStartPos(POINT pos) { m_ptStartPos = pos; }
 	void SetEndPos(POINT pos) { m_ptEndPos = pos; }
-
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };

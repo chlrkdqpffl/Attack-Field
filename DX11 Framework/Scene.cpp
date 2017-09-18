@@ -47,11 +47,22 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
 				break;
 			}
-			case '3':
-				GLOBAL_MGR->g_bShowWireFrame = !GLOBAL_MGR->g_bShowWireFrame;
-				break;
 				*/
-			case '4':
+			case VK_F5:
+			{
+				cout << "Show Wire Frame" << endl;
+				GLOBAL_MGR->g_bShowWireFrame = !GLOBAL_MGR->g_bShowWireFrame;
+
+				GLOBAL_MGR->g_vRenderOption.y = false;
+
+				D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Map(GLOBAL_MGR->g_pd3dcbRenderOption, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+				XMFLOAT4 *pcbRenderOption = (XMFLOAT4 *)d3dMappedResource.pData;
+				*pcbRenderOption = GLOBAL_MGR->g_vRenderOption;
+				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
+			}
+				break;
+			case VK_F6:
 			{
 				cout << "BoundingBox Rendering Option" << endl;
 				GLOBAL_MGR->g_vRenderOption.y = !GLOBAL_MGR->g_vRenderOption.y;
@@ -61,15 +72,17 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				XMFLOAT4 *pcbRenderOption = (XMFLOAT4 *)d3dMappedResource.pData;
 				*pcbRenderOption = GLOBAL_MGR->g_vRenderOption;
 				STATEOBJ_MGR->g_pd3dImmediateDeviceContext->Unmap(GLOBAL_MGR->g_pd3dcbRenderOption, 0);
+
+				GLOBAL_MGR->g_bShowWireFrame = false;
 				break;
 			}
-			case '5':
+			case VK_F7:
 			{
 				cout << "G-Buffer Option" << endl;
 				GLOBAL_MGR->g_bShowGBuffer= !GLOBAL_MGR->g_bShowGBuffer;
 				break;
 			}
-			case '6':
+			case VK_F8:
 			{
 				cout << "Show LightVolume" << endl;
 				GLOBAL_MGR->g_bShowLightVolume = !GLOBAL_MGR->g_bShowLightVolume;

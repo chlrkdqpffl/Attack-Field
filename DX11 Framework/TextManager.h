@@ -20,10 +20,10 @@
 class CTextManager : public CSingletonManager<CTextManager>
 {
 private:
-	IFW1FontWrapper*		m_pFW1Font;
-	IFW1TextRenderer*		m_pFWTextRender;
-	IFW1Factory*			m_pFW1FontFactory;
-	IFW1GlyphProvider*		m_pFW1Glyphrovider;
+	IFW1FontWrapper*		m_pFW1Font			= nullptr;
+	IFW1TextRenderer*		m_pFWTextRender		= nullptr;
+	IFW1Factory*			m_pFW1FontFactory	= nullptr;
+	IFW1GlyphProvider*		m_pFW1Glyphrovider	= nullptr;
 	TCHAR*					m_tChar;
 	float					m_fResizeRatioX = 1.0f;
 	float					m_fResizeRatioY = 1.0f;
@@ -40,9 +40,10 @@ public:
 
 public:
 	virtual void InitializeManager() {};
-	void InitializeManager(ID3D11Device* pd3dDevice, std::wstring font = L"¸¼Àº °íµñ");
+	void InitializeManager(ID3D11Device* pd3dDevice);
 	virtual void ReleseManager() override;
 
+	void AddFont();
 	void SetResizeRatio(float x, float y) { m_fResizeRatioX = x, m_fResizeRatioY = y; }
 	XMFLOAT2 GetResizeRatio() const { return XMFLOAT2(m_fResizeRatioX, m_fResizeRatioY); }
 };

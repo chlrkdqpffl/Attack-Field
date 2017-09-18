@@ -8,27 +8,31 @@ enum class KeyInput
 	eNone,
 
 	// Direction & Moving
-	eForward		= 0x01,
-	eBackward		= 0x02,
-	eLeft			= 0x04,
-	eRight			= 0x08,
-	eRun			= 0x10,
-	eReload			= 0x20,
-	eOccupy			= 0x40,
+	eForward		= 0x01,			// W
+	eBackward		= 0x02,			// S
+	eLeft			= 0x04,			// A
+	eRight			= 0x08,			// D
 
+	eRun			= 0x10,			// Shift
+	eReload			= 0x20,			// R
+	eOccupy			= 0x40,			// E
+	eJump			= 0x80,			// Space Bar
+
+	eCrouch			= 0x100,		// Ctrl
+	
 	// Mouse
-	eLeftMouse		= 0x100,
-//	eRightMouse		= 0x200,		// Zoom In 기능 용도
-//	eMouseWheel		= 0x400,		// 휠 위아래는 추후 구현
+	eLeftMouse		= 0x200,
+//	eRightMouse		= 0x400,		// Zoom In
+//	eMouseWheel		= 0x800,		// Zoom Ratio
 };
 
 enum class CameraTag 
 {
 	eNone,
 
-	eFirstPerson, eSpaceShip, eThirdPerson,
+	eFirstPerson, eFreeCam, eThirdPerson,
 
-	eDeadCam, eFreeCam
+	eDeadCam, 
 };
 
 enum class GameMode
@@ -82,14 +86,13 @@ enum class ParticleTag
 
 // ========================================================================================================================== //
 // ==================================================== Weapon Data ========================================================= //
-
-namespace WeaponData
+enum class WeaponTag
 {
-	enum class Type
-	{
-		eNone, eRifle, eSniperRifle
-	};
-}
+	eNone = -1,
+
+	eRifle, eSniperRifle,
+	eMaxWeaponCount
+};
 
 // ============================================================================================================================ //
 // ===================================================== Animation Data ======================================================= //
@@ -122,6 +125,7 @@ namespace AnimationData
 		LowerBodyAnim = 1000,
 	
 		eWalk_Left, eWalk_ForwardLeft, eWalk_Forward, eWalk_ForwardRight, eWalk_Right, eWalk_BackwardRight, eWalk_Backward, eWalk_BackwardLeft,
+		eCrouch
 	};
 }
 
@@ -143,12 +147,12 @@ enum class TextureTag
 	eWaterD, eWaterDetailD, eSkyBoxD,
 	eTerrainD, eTerrainDetailD, eTerrainN, eTerrainH,
 
-	// Model
-	eDarkFighterD, eDarkFighterN,
-
+	// Character
 	eTerroristD_Red, eTerroristD_Blue, eTerroristND,
 	ePoliceD,
 	eRifleD, eRifleN,
+	eSniperRifleD,
+	eZoomScopeD,
 
 	// Building
 	eBuilding19D, eBuilding20D, eBuilding21D, eBuilding22D, eBuilding30D, eBuilding33D, eBuilding34D, eBuilding77D, eBuilding78D, eBuilding100D, eBuilding103D,
@@ -167,14 +171,20 @@ enum class TextureTag
 	eContainerRedD, eContainerBlueD, eContainerYellowD, eContainerN,
 
 	// Barrel
-	eFireBarrelD, eFireBarrelN, eBarrelD, eBarrelN, eOccupyBarrelD, eOccupyBarrelN,
+	eFireBarrelD, eFireBarrelN, eOccupyBarrelD, eOccupyBarrelN,
 
 	// StreetLamp
 	eStreetLampD, eStreetLampN,
 
+	// WoodBox, Board
+	eWoodBoxD, eWoodBoardD,
+
+	// Stair
+	eStairD,
+
 	// UI
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
-	eCaptureArea, eAim, eMagazineUI, eLifeUI, eScoreUI, eDamagedCharacterUI, eRespawnGageBar, eRespawnGageWhiteBar, eOccupyGageBar, eOccupyGageWhiteBar,
+	eCaptureArea, eMagazineUI, eLifeUI, eScoreUI, eDamagedCharacterUI, eRespawnGageBar, eRespawnGageWhiteBar, eOccupyGageBar, eOccupyGageWhiteBar,
 	eDamageDirection_Left, eDamageDirection_LeftTop, eDamageDirection_Top, eDamageDirection_RightTop, eDamageDirection_Right, eDamageDirection_Bottom,
 
 	// Etc
@@ -216,7 +226,7 @@ enum class MeshTag
 	ePolice,
 
 	// Character
-	eDarkFighter, eRifle,
+	eRifle, eSniperRifle,
 
 	// Environment
 
@@ -229,8 +239,14 @@ enum class MeshTag
 	// Container
 	eContainer1, eContainer2, eContainer3,
 
+	// WoodBox, Board
+	eWoodBox, eWoodBoard,
+
+	// Stair
+	eStair, eStair2,
+
 	// Barrel
-	eFireBarrel, eBarrel, eOccupyBarrel,
+	eFireBarrel, eOccupyBarrel,
 
 	// Etc
 	eStreetLamp, eBarricade,
@@ -256,8 +272,14 @@ enum class ObjectTag
 	eContainer1Blue, eContainer2Blue, eContainer3Blue,
 	eContainer1Yellow, eContainer2Yellow, eContainer3Yellow,
 
+	// WoodBox, Board
+	eWoodBox, eWoodBoard,
+
+	// Stair
+	eStair, eStair2,
+
 	// Barrel
-	eFireBarrel, eBarrel, eOccupyBarrel,
+	eFireBarrel, eOccupyBarrel,
 
 	// Etc
 	eGrass, eStreetLamp, eBarricade

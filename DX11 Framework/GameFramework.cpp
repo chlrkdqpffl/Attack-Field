@@ -67,8 +67,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	SERVER_MGR->InitializeManager();
 	STATEOBJ_MGR->InitializeManager();
 	GLOBAL_MGR->InitializeManager();
-	TEXT_MGR->InitializeManager(m_pd3dDevice, L"Koverwatch");
-//	TEXT_MGR->InitializeManager(m_pd3dDevice, L"a반달곰");			// 폰트 여러개 만들 수 있음
+	TEXT_MGR->InitializeManager(m_pd3dDevice);
 	SCENE_MGR->InitializeManager();
 	TWBAR_MGR->InitializeManager();
 	COLLISION_MGR->InitializeManager();
@@ -331,13 +330,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 	{
 	case WM_KEYDOWN:
 		switch (wParam) {
-		case VK_CONTROL:
-			if (m_bMouseBindFlag == false){
-				ShowCursor(true);
-				ReleaseCapture();
-			}
-			m_bMouseBindFlag = true;
-			break;
 		case VK_ESCAPE:
 			m_bMouseBindFlag = !m_bMouseBindFlag;
 			ShowCursor(true);
@@ -379,14 +371,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		}
 		break;
 	default:
-		break;
-	case WM_KEYUP:
-		switch (wParam)	{
-			case VK_CONTROL:
-				m_bMouseBindFlag = false;
-				ShowCursor(false);
-				break;
-			}
 		break;
 	}
 }
@@ -436,6 +420,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	case WM_LBUTTONUP:
 	case WM_RBUTTONUP:
 	case WM_MOUSEMOVE:
+	case WM_MOUSEWHEEL:
 		OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	case WM_KEYDOWN:

@@ -24,7 +24,6 @@ void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	}
 }
 
-// ---------------------------- Idle ---------------------------- //
 void CState_Idle::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
 	pCharacter->SetAnimation(type, AnimationData::CharacterAnim::eIdle);
@@ -35,24 +34,24 @@ void CState_Idle::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 
+	// Check ReplaceWeapon
+	if (pCharacter->GetIsReplaceWeapon()) {
+		pUpperFSM->ChangeState(CState_ReplacementWeapon::GetInstance());
+		return;
+	}
+
 	// Check Reload
-#ifdef USE_SERVER
 	if (pCharacter->GetIsReload()) {
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());
 		return;
 	}
-#else
-	if (pCharacter->GetIsReload()) {
-		if (pCharacter->GetWeaponBulletCount() != pCharacter->GetWeaponMaxBulletCount()) {
-			pUpperFSM->ChangeState(CState_Reload::GetInstance());
-			return;
-		}
-	}
-#endif
+
+	// Check Fire
 	if (pCharacter->GetIsFire()) {
 		pUpperFSM->ChangeState(CState_Fire::GetInstance());
 		return;
 	}
+
 	// 상체가 Idle 상태일 경우 하체의 움직임을 따라간다.
 	AnimationData::CharacterAnim lowerAnim = pCharacter->GetAnimationEnum(AnimationData::Parts::LowerBody);
 	if (lowerAnim != AnimationData::CharacterAnim::eIdle)
@@ -66,6 +65,11 @@ void CState_Idle::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 	if (pCharacter->IsMoving()) {
 		pLowerFSM->ChangeState(CState_Walk::GetInstance());
+		return;
+	}
+
+	if (pCharacter->GetIsCrouch()) {
+		pLowerFSM->ChangeState(CState_Crouch::GetInstance());
 		return;
 	}
 }
@@ -86,21 +90,18 @@ void CState_Walk::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 	
+	// Check ReplaceWeapon
+	if (pCharacter->GetIsReplaceWeapon()) {
+		pUpperFSM->ChangeState(CState_ReplacementWeapon::GetInstance());
+		return;
+	}
+
 	// Check Reload 
-#ifdef USE_SERVER
 	if (pCharacter->GetIsReload()) {
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());
 		return;
 	}
-#else
-	if (pCharacter->GetIsReload()) {
-		if (pCharacter->GetWeaponBulletCount() != pCharacter->GetWeaponMaxBulletCount()) {
-			pUpperFSM->ChangeState(CState_Reload::GetInstance());
-			return;
-		}
-	}
-#endif
-
+	// Check Fire
 	if (pCharacter->GetIsFire()) {
 		pUpperFSM->ChangeState(CState_Fire::GetInstance());
 		return;
@@ -134,33 +135,33 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 	// Forward
 	if (relativeVelocity.z > 0) {
 		if (relativeVelocity.x < 0) {		// Left
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardLeft);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardLeft, 1.3f);
 		}
 		else if (relativeVelocity.x > 0) {	// Right
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardRight);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_ForwardRight, 1.3f);
 		}
 		else {
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Forward, 1.2f);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Forward, 1.5f);
 		}
 	}
 	// Backward
 	else if (relativeVelocity.z < 0) {
 		if (relativeVelocity.x < 0) {		// Left
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardLeft);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardLeft, 1.3f);
 		}
 		else if (relativeVelocity.x > 0) {	// Right
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardRight);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_BackwardRight, 1.3f);
 		}
 		else {
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Backward, 1.2f);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Backward, 1.5f);
 		}
 	}
 	else {
 		if (relativeVelocity.x < 0) {		// Left
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Left);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Left, 1.3f);
 		}
 		else if (relativeVelocity.x > 0) {	// Right
-			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Right);
+			pCharacter->SetAnimation(AnimationData::CharacterAnim::eWalk_Right, 1.3f);
 		}
 	}
 
@@ -173,10 +174,60 @@ void CState_Walk::ExitState(CCharacterObject* pCharacter, AnimationData::Parts t
 	SOUND_MGR->StopSound();
 }
 
+// ---------------------------- Crouch ---------------------------- //
+void CState_Crouch::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
+{
+	if (type == AnimationData::Parts::LowerBody)
+		pCharacter->SetAnimation(AnimationData::Parts::LowerBody, AnimationData::CharacterAnim::eCrouch);
+}
+
+void CState_Crouch::UpdateUpperBodyState(CCharacterObject* pCharacter)
+{
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
+
+	// Check ReplaceWeapon
+	if (pCharacter->GetIsReplaceWeapon()) {
+		pUpperFSM->ChangeState(CState_ReplacementWeapon::GetInstance());
+		return;
+	}
+
+	// Check Reload
+	if (pCharacter->GetIsReload()) {
+		pUpperFSM->ChangeState(CState_Reload::GetInstance());
+		return;
+	}
+
+	// Check Fire
+	if (pCharacter->GetIsFire()) {
+		pUpperFSM->ChangeState(CState_Fire::GetInstance());
+		return;
+	}
+
+	if (false == pCharacter->GetIsCrouch()) {
+		pUpperFSM->ChangeState(CState_Idle::GetInstance());
+		return;
+	}
+}
+
+void CState_Crouch::UpdateLowerBodyState(CCharacterObject* pCharacter)
+{	
+	if (false == pCharacter->GetIsCrouch()) {
+		CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
+		pLowerFSM->ChangeState(CState_Idle::GetInstance());
+		return;
+	}
+}
+
+void CState_Crouch::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
+{
+}
+
 // ---------------------------- Reload ---------------------------- //
 void CState_Reload::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
 	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.6f);
+	pCharacter->GetWeapon()->SetFireBulletCount(0);
 	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 }
 
@@ -200,6 +251,40 @@ void CState_Reload::ExitState(CCharacterObject* pCharacter, AnimationData::Parts
 	pCharacter->SetIsReload(false);
 }
 
+// ---------------------------- Weapon Replacement ---------------------------- //
+void CState_ReplacementWeapon::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
+{
+	pCharacter->SetAnimation(AnimationData::CharacterAnim::eReload, 1.6f);
+	pCharacter->GetWeapon()->SetFireBulletCount(0);
+	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
+
+	m_dwReplacementTime = GetTickCount();
+}
+
+void CState_ReplacementWeapon::UpdateUpperBodyState(CCharacterObject* pCharacter)
+{
+	// 0.4초 뒤 무기 교체
+	if (GetTickCount() - m_dwReplacementTime > 400)
+		pCharacter->SetWeaponNumber(pCharacter->GetNextWeaponNumber());
+
+	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+	if (!pCharacter->GetControllerActive(AnimationData::Parts::UpperBody)) {
+		pUpperFSM->ChangeState(CState_Idle::GetInstance());
+		pCharacter->SetControllerActive(AnimationData::Parts::UpperBody, true);
+		return;
+	}
+}
+
+void CState_ReplacementWeapon::UpdateLowerBodyState(CCharacterObject* pCharacter)
+{
+}
+
+void CState_ReplacementWeapon::ExitState(CCharacterObject* pCharacter, AnimationData::Parts type)
+{
+	pCharacter->Reloading();
+	pCharacter->SetIsReplaceWeapon(false);
+}
+
 // ---------------------------- Fire ---------------------------- //
 void CState_Fire::EnterState(CCharacterObject* pCharacter, AnimationData::Parts type)
 {
@@ -209,6 +294,12 @@ void CState_Fire::EnterState(CCharacterObject* pCharacter, AnimationData::Parts 
 void CState_Fire::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+
+	// Check ReplaceWeapon
+	if (pCharacter->GetIsReplaceWeapon()) {
+		pUpperFSM->ChangeState(CState_ReplacementWeapon::GetInstance());
+		return;
+	}
 
 	// Check BulletCount
 	if (pCharacter->GetWeaponBulletCount() == 0) {
@@ -246,7 +337,7 @@ void CState_Run::EnterState(CCharacterObject* pCharacter, AnimationData::Parts t
 		return;
 
 	SOUND_MGR->Play3DSound(SoundTag::eRun, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
-	pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun, 1.5f);
+	pCharacter->SetAnimation(AnimationData::CharacterAnim::eRun, 1.4f);
 	pCharacter->SetIsTempRun(true);
 }
 

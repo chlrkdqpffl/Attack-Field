@@ -1,14 +1,6 @@
 #include "stdafx.h"
 #include "ResourceManager.h"
 
-CResourceManager::CResourceManager()
-{
-}
-
-CResourceManager::~CResourceManager()
-{
-}
-
 void CResourceManager::InitializeManager()
 {
 	cout << "=============================================================================================" << endl;
@@ -21,52 +13,6 @@ void CResourceManager::ReleseManager()
 {
 	for (auto& index = m_mapNoneFbxMeshPool.begin(); index != m_mapNoneFbxMeshPool.end(); ++index)
 		SafeDelete(index->second);
-}
-
-void CResourceManager::LoadResourceTitleScene()
-{
-	// BackGround Image
-	AddResourece(TextureTag::eTitleBackGroundD,		"../Assets/Image/UI/TitleScene.jpg");
-	AddResourece(TextureTag::eDeathOn,				"../Assets/Image/UI/DeathMatchOn.png");
-	AddResourece(TextureTag::eOccupyOn,				"../Assets/Image/UI/OccupyMatchOn.png");
-	AddResourece(TextureTag::eDeathSearch,			"../Assets/Image/UI/DeathMatchOn.png");
-	AddResourece(TextureTag::eOccupySearch,			"../Assets/Image/UI/OccupyMatchOn.png");
-	AddResourece(TextureTag::eDeathOff,				"../Assets/Image/UI/DeathMatchOff.png");
-	AddResourece(TextureTag::eOccupyOff,			"../Assets/Image/UI/OccupyMatchOff.png");
-//	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene.jpg");
-	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene2.jpg");
-	AddResourece(TextureTag::eLoginBack,			"../Assets/Image/UI/LoginBack.png");
-
-	// Character
-//	AddResourece(MeshTag::eTerrorist,				"../Assets/FBX Model/Character/Terrorist/Terrorist(use).model");
-
-	// UI
-	AddResourece(TextureTag::eStartButtonOn,		"../Assets/Image/UI/StartOn.png");
-	AddResourece(TextureTag::eStartButtonOff,		"../Assets/Image/UI/StartOff.png");
-	AddResourece(TextureTag::eExitButtonOn,			"../Assets/Image/UI/ExitOn.png");
-	AddResourece(TextureTag::eExitButtonOff,		"../Assets/Image/UI/ExitOff.png");
-	AddResourece(TextureTag::eID,					"../Assets/Image/UI/ID.png");
-	AddResourece(TextureTag::ePassword,				"../Assets/Image/UI/Password.png");
-	AddResourece(TextureTag::eLogin,				"../Assets/Image/UI/Login.png");
-	AddResourece(TextureTag::eLoginon,				"../Assets/Image/UI/LoginOn.png");
-	AddResourece(TextureTag::eIDClick,				"../Assets/Image/UI/IDClick.png");
-	AddResourece(TextureTag::ePasswordClick,		"../Assets/Image/UI/PasswordClick.png");
-
-	//search UI
-	AddResourece(TextureTag::eSearch1,				"../Assets/Image/loding/1.png");
-	AddResourece(TextureTag::eSearch2,				"../Assets/Image/loding/2.png");
-	AddResourece(TextureTag::eSearch3,				"../Assets/Image/loding/3.png");
-	AddResourece(TextureTag::eSearch4,				"../Assets/Image/loding/4.png");
-	AddResourece(TextureTag::eSearch5,				"../Assets/Image/loding/5.png");
-	AddResourece(TextureTag::eSearch6,				"../Assets/Image/loding/6.png");
-	AddResourece(TextureTag::eSearch7,				"../Assets/Image/loding/7.png");
-	AddResourece(TextureTag::eSearch8,				"../Assets/Image/loding/8.png");
-	AddResourece(TextureTag::eSearch9,				"../Assets/Image/loding/9.png");
-	//AddResourece(TextureTag::eSearch10,				"../Assets/Image/loding/10.jpg");
-	//AddResourece(TextureTag::eSearch11,				"../Assets/Image/loding/11.bmp");
-	//AddResourece(TextureTag::eSearch12,				"../Assets/Image/loding/12.bmp");
-	//AddResourece(TextureTag::eSearch13,				"../Assets/Image/loding/13.bmp");
-	
 }
 
 bool CResourceManager::LoadResourceAll()
@@ -88,6 +34,52 @@ bool CResourceManager::LoadResourceAll()
 
 	m_bIsLoading = true;
 	return true;
+}
+
+void CResourceManager::LoadResourceTitleScene()
+{
+	// BackGround Image
+	AddResourece(TextureTag::eTitleBackGroundD, "../Assets/Image/UI/TitleScene.jpg");
+	AddResourece(TextureTag::eDeathOn, "../Assets/Image/UI/DeathMatchOn.png");
+	AddResourece(TextureTag::eOccupyOn, "../Assets/Image/UI/OccupyMatchOn.png");
+	AddResourece(TextureTag::eDeathSearch, "../Assets/Image/UI/DeathMatchOn.png");
+	AddResourece(TextureTag::eOccupySearch, "../Assets/Image/UI/OccupyMatchOn.png");
+	AddResourece(TextureTag::eDeathOff, "../Assets/Image/UI/DeathMatchOff.png");
+	AddResourece(TextureTag::eOccupyOff, "../Assets/Image/UI/OccupyMatchOff.png");
+	//	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene.jpg");
+	AddResourece(TextureTag::eLoadingBackGroundD, "../Assets/Image/UI/LoadingScene2.jpg");
+	AddResourece(TextureTag::eLoginBack, "../Assets/Image/UI/LoginBack.png");
+
+	// Character
+	//	AddResourece(MeshTag::eTerrorist,				"../Assets/FBX Model/Character/Terrorist/Terrorist(use).model");
+
+	// UI
+	AddResourece(TextureTag::eStartButtonOn, "../Assets/Image/UI/StartOn.png");
+	AddResourece(TextureTag::eStartButtonOff, "../Assets/Image/UI/StartOff.png");
+	AddResourece(TextureTag::eExitButtonOn, "../Assets/Image/UI/ExitOn.png");
+	AddResourece(TextureTag::eExitButtonOff, "../Assets/Image/UI/ExitOff.png");
+	AddResourece(TextureTag::eID, "../Assets/Image/UI/ID.png");
+	AddResourece(TextureTag::ePassword, "../Assets/Image/UI/Password.png");
+	AddResourece(TextureTag::eLogin, "../Assets/Image/UI/Login.png");
+	AddResourece(TextureTag::eLoginon, "../Assets/Image/UI/LoginOn.png");
+	AddResourece(TextureTag::eIDClick, "../Assets/Image/UI/IDClick.png");
+	AddResourece(TextureTag::ePasswordClick, "../Assets/Image/UI/PasswordClick.png");
+
+	//search UI
+	AddResourece(TextureTag::eSearch1, "../Assets/Image/loding/1.png");
+	AddResourece(TextureTag::eSearch2, "../Assets/Image/loding/2.png");
+	AddResourece(TextureTag::eSearch3, "../Assets/Image/loding/3.png");
+	AddResourece(TextureTag::eSearch4, "../Assets/Image/loding/4.png");
+	AddResourece(TextureTag::eSearch5, "../Assets/Image/loding/5.png");
+	AddResourece(TextureTag::eSearch6, "../Assets/Image/loding/6.png");
+	AddResourece(TextureTag::eSearch7, "../Assets/Image/loding/7.png");
+	AddResourece(TextureTag::eSearch8, "../Assets/Image/loding/8.png");
+	AddResourece(TextureTag::eSearch9, "../Assets/Image/loding/9.png");
+	//AddResourece(TextureTag::eSearch10,				"../Assets/Image/loding/10.jpg");
+	//AddResourece(TextureTag::eSearch11,				"../Assets/Image/loding/11.bmp");
+	//AddResourece(TextureTag::eSearch12,				"../Assets/Image/loding/12.bmp");
+	//AddResourece(TextureTag::eSearch13,				"../Assets/Image/loding/13.bmp");
+
 }
 
 void CResourceManager::LoadEnvironmentData()
@@ -113,17 +105,18 @@ void CResourceManager::LoadUIData()
 {
 	cout << endl << " ----- UI Data -----" << endl;
 
-	AddResourece(TextureTag::eAim,				"../Assets/Image/UI/AimUI.png");
-	AddResourece(TextureTag::eCaptureArea,		"../Assets/Image/UI/CaptureArea.png");
-	AddResourece(TextureTag::eScoreUI,			"../Assets/Image/UI/ScoreUI.png");
-	AddResourece(TextureTag::eMagazineUI,		"../Assets/Image/UI/MagazineUI.png");
-	AddResourece(TextureTag::eLifeUI,			"../Assets/Image/UI/LifeUI.png");
-	AddResourece(TextureTag::eDamagedCharacterUI, "../Assets/Image/UI/DamagedCharacter.png");
-	AddResourece(TextureTag::eRespawnGageBar,	"../Assets/Image/UI/RespawnGage.png");
-	AddResourece(TextureTag::eRespawnGageWhiteBar, "../Assets/Image/UI/RespawnGage(White).png");
+	AddResourece(TextureTag::eCaptureArea,			"../Assets/Image/UI/CaptureArea.png");
+	AddResourece(TextureTag::eScoreUI,				"../Assets/Image/UI/ScoreUI.png");
+	AddResourece(TextureTag::eMagazineUI,			"../Assets/Image/UI/MagazineUI.png");
+	AddResourece(TextureTag::eLifeUI,				"../Assets/Image/UI/LifeUI.png");
+	AddResourece(TextureTag::eDamagedCharacterUI,	"../Assets/Image/UI/DamagedCharacter.png");
+	AddResourece(TextureTag::eRespawnGageBar,		"../Assets/Image/UI/RespawnGage.png");
+	AddResourece(TextureTag::eRespawnGageWhiteBar,	"../Assets/Image/UI/RespawnGage(White).png");
 
-	AddResourece(TextureTag::eOccupyGageBar,	"../Assets/Image/UI/RespawnGage.png");	// 현재는 동일한 텍스쳐 사용중
-	AddResourece(TextureTag::eOccupyGageWhiteBar, "../Assets/Image/UI/RespawnGage(White).png");
+	AddResourece(TextureTag::eZoomScopeD,			"../Assets/Image/UI//Zoom_Scope.png");
+
+	AddResourece(TextureTag::eOccupyGageBar,		"../Assets/Image/UI/RespawnGage.png");	// 현재는 동일한 텍스쳐 사용중
+	AddResourece(TextureTag::eOccupyGageWhiteBar,	"../Assets/Image/UI/RespawnGage(White).png");
 
 	// Damage Direction
 	AddResourece(TextureTag::eDamageDirection_Left,		"../Assets/Image/UI/DamageDirection/DamageDir_Left.png");
@@ -140,7 +133,7 @@ void CResourceManager::LoadSpriteData()
 	
 	AddResourece(TextureTag::eExplosionSprite,			"../Assets/Image/Sprite/Explosion.png");
 	AddResourece(TextureTag::eGunExplosionOtherPlayer,	"../Assets/Image/Sprite/Explosion3.png");
-	AddResourece(TextureTag::eGunExplosionPlayer,		"../Assets/Image/Sprite/Explosion3.png");
+	AddResourece(TextureTag::eGunExplosionPlayer,		"../Assets/Image/Sprite/Explosion4.png");
 }
 
 void CResourceManager::LoadMapData()
@@ -197,16 +190,26 @@ void CResourceManager::LoadMapData()
 	AddResourece(MeshTag::eContainer2,			"../Assets/FBX Model/Container/Container2.model");
 	AddResourece(MeshTag::eContainer3,			"../Assets/FBX Model/Container/Container3.model");
 
+	// =============== Wood Box, Board =============== //
+	AddResourece(TextureTag::eWoodBoxD,			"../Assets/FBX Model/WoodBox/WoodBoxD.png");
+	AddResourece(TextureTag::eWoodBoardD,		"../Assets/FBX Model/WoodBoard/WoodBoardD.png");
+
+	AddResourece(MeshTag::eWoodBox,				"../Assets/FBX Model/WoodBox/WoodBox.model");
+	AddResourece(MeshTag::eWoodBoard,			"../Assets/FBX Model/WoodBoard/WoodBoard.model");
+
+	// =================== Stair =================== //
+	AddResourece(TextureTag::eStairD,			"../Assets/FBX Model/Stairs/StairD.dds");
+
+	AddResourece(MeshTag::eStair,				"../Assets/FBX Model/Stairs/Stair.model");
+	AddResourece(MeshTag::eStair2,				"../Assets/FBX Model/Stairs/Stair2.model");
+
 	// =================== Barrel =================== //
 	AddResourece(MeshTag::eFireBarrel,			"../Assets/FBX Model/Barrel/FireBarrel.model");
-	AddResourece(MeshTag::eBarrel,				"../Assets/FBX Model/Barrel/Barrel.model");
 	AddResourece(MeshTag::eOccupyBarrel,		"../Assets/FBX Model/Barrel/OccupyBarrel.model");
 
 	AddResourece(TextureTag::eFireBarrelD,		"../Assets/FBX Model/Barrel/FireBarrelD.dds");
 	AddResourece(TextureTag::eFireBarrelN,		"../Assets/FBX Model/Barrel/FireBarrelN.png");
-	AddResourece(TextureTag::eBarrelD,			"../Assets/FBX Model/Barrel/BarrelD.dds");
-	AddResourece(TextureTag::eBarrelN,			"../Assets/FBX Model/Barrel/BarrelN.dds");
-
+	
 	AddResourece(TextureTag::eOccupyBarrelD,	"../Assets/FBX Model/Barrel/OccupyBarrelD.jpg");
 	AddResourece(TextureTag::eOccupyBarrelN,	"../Assets/FBX Model/Barrel/OccupyBarrelN.jpg");
 
@@ -247,6 +250,10 @@ void CResourceManager::LoadCharacterData()
 	AddResourece(TextureTag::eRifleD,			"../Assets/FBX Model/Weapon/Rifle/rifle.bmp");
 	AddResourece(TextureTag::eRifleN,			"../Assets/FBX Model/Weapon/Rifle/RifleNM.png");
 	AddResourece(MeshTag::eRifle,				"../Assets/FBX Model/Weapon/Rifle/rifle.model");
+
+	// Sniper Rifle
+	AddResourece(TextureTag::eSniperRifleD,		"../Assets/FBX Model/Weapon/SniperRifle/SniperRifleD.dds");
+	AddResourece(MeshTag::eSniperRifle,			"../Assets/FBX Model/Weapon/SniperRifle/SniperRifle.model");
 }
 
 void CResourceManager::LoadEtcData()

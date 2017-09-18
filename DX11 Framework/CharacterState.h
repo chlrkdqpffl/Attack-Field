@@ -58,6 +58,25 @@ public:
 	}
 };
 
+class CState_Crouch : public CFSM_State<CCharacterObject>
+{
+public:
+	CState_Crouch() {};
+	virtual ~CState_Crouch() {};
+
+	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void UpdateUpperBodyState(CCharacterObject*) override;
+	virtual void UpdateLowerBodyState(CCharacterObject*) override;
+	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+
+	static CState_Crouch* GetInstance()
+	{
+		static CState_Crouch instance;
+
+		return &instance;
+	}
+};
+
 class CState_Reload : public CFSM_State<CCharacterObject>
 {
 public:
@@ -72,6 +91,27 @@ public:
 	static CState_Reload* GetInstance()
 	{
 		static CState_Reload instance;
+
+		return &instance;
+	}
+};
+
+class CState_ReplacementWeapon : public CFSM_State<CCharacterObject>
+{
+	DWORD		m_dwReplacementTime = 0;
+
+public:
+	CState_ReplacementWeapon() {};
+	virtual ~CState_ReplacementWeapon() {};
+
+	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void UpdateUpperBodyState(CCharacterObject*) override;
+	virtual void UpdateLowerBodyState(CCharacterObject*) override;
+	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+
+	static CState_ReplacementWeapon * GetInstance()
+	{
+		static CState_ReplacementWeapon  instance;
 
 		return &instance;
 	}

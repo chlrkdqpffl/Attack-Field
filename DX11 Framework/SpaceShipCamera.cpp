@@ -3,7 +3,7 @@
 
 CSpaceShipCamera::CSpaceShipCamera(CCamera *pCamera) : CCamera(pCamera)
 {
-	m_tagCamera = CameraTag::eSpaceShip;
+	m_tagCamera = CameraTag::eFreeCam;
 }
 
 CSpaceShipCamera::~CSpaceShipCamera()
@@ -62,4 +62,11 @@ void CSpaceShipCamera::Rotate(float x, float y, float z)
 		m_vPosition.y += xmPosition.y;
 		m_vPosition.z += xmPosition.z;
 	}
+}
+
+void CSpaceShipCamera::Update(float fDeltaTime)
+{
+	m_vUp = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	m_vLook = m_pPlayer->GetLook();
+	XMStoreFloat3(&m_vRight, XMVector3Cross(XMLoadFloat3(&m_vUp), XMLoadFloat3(&m_vLook)));
 }

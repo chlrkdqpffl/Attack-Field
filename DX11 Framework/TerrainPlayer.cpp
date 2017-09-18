@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TerrainPlayer.h"
 
-CTerrainPlayer::CTerrainPlayer(CCharacterObject* pCharacter)
+CTerrainPlayer::CTerrainPlayer(CCharacterPlayer* pCharacter)
 	: CPlayer(pCharacter)
 {
 }
@@ -19,39 +19,24 @@ void CTerrainPlayer::ChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCamera
 	case CameraTag::eFirstPerson:
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFirstPerson, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.95f, 0.5f));
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 1.0f, 0.5f));
 		m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, 45.0f);
 		break;
 
-	case CameraTag::eSpaceShip:
-		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eSpaceShip, nCurrentCameraTag);
+	case CameraTag::eFreeCam:
+		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFreeCam, nCurrentCameraTag);
 		m_pCamera->SetTimeLag(0.0f);
 		m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.0f, 0.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		break;
 
 	case CameraTag::eThirdPerson:
-
 		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eThirdPerson, nCurrentCameraTag);
 //		m_pCamera->SetTimeLag(0.25f);
 		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(XMFLOAT3(0.0f, 2.0f, -10.0f));
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 1.5f, -8.0f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 		break;
-
-		/*
-	case CameraTag::eFreeCam:		// - 추후 구현하기, 
-		SetFriction(0);
-		SetGravity(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-
-		SetMaxVelocityY(0.0f);
-//		m_pCamera = OnChangeCamera(pd3dDevice, CameraTag::eFreeCam, nCurrentCameraTag);
-		m_pCamera->SetTimeLag(0.25f);
-		m_pCamera->SetPosition(XMFLOAT3(0, 0, 0));
-		m_pCamera->SetOffset(XMFLOAT3(0.0f, 2.0f, -10.0f));
-		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
-		break;
-		*/
 	default:
 		break; 
 	}
