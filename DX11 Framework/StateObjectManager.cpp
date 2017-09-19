@@ -162,7 +162,7 @@ void CStateObjectManager::InitializeManager()
 
 	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pPointWrapSS));
-	DXUT_SetDebugName(g_pPointWrapSS, "Point Wrap SS:")
+	DXUT_SetDebugName(g_pPointWrapSS, "Point Wrap SS:");
 
 	d3dSamplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
 	HR(g_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &g_pAnisotropicWrapSS));

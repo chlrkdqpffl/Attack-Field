@@ -194,6 +194,7 @@ void CResourceManager::LoadMapData()
 	AddResourece(TextureTag::eWoodBoxD,			"../Assets/FBX Model/WoodBox/WoodBoxD.jpg");
 	AddResourece(TextureTag::eWoodBoxN,			"../Assets/FBX Model/WoodBox/WoodBoxN.jpg");
 	AddResourece(TextureTag::eWoodBoardD,		"../Assets/FBX Model/WoodBoard/WoodBoardD.png");
+	AddResourece(TextureTag::eWoodBoardN,		"../Assets/FBX Model/WoodBoard/WoodBoardN.jpg");
 
 	AddResourece(MeshTag::eWoodBox,				"../Assets/FBX Model/WoodBox/WoodBox.model");
 	AddResourece(MeshTag::eWoodBoard,			"../Assets/FBX Model/WoodBoard/WoodBoard.model");

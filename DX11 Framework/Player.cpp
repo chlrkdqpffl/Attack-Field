@@ -32,6 +32,7 @@ void CPlayer::InitializePhysXData(PxPhysics* pPxPhysics, PxMaterial *pPxMaterial
 	PxCapsuleControllerDesc	PxCapsuledesc;
 	PxCapsuledesc.position = PxExtendedVec3(0, 0, 0);
 	PxCapsuledesc.radius = 0.6f;
+//	PxCapsuledesc.radius = 1.0f;
 	PxCapsuledesc.height = 2.0f;
 //	PxCapsuledesc.climbingMode = PxCapsuleClimbingMode::Enum::eCONSTRAINED;
 	//캐릭터가 올라갈 수있는 장애물의 최대 높이를 정의합니다. 
@@ -169,13 +170,13 @@ void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
 			break;
 		case '1':
 			m_bIsZoom = false;
-			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_pCamera->GetFovAngle());
+			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, 45.0f);
 			
 			m_pCharacter->ReplaceWeapon(WeaponTag::eRifle);
 			break;
 		case '2':
 			m_bIsZoom = false;
-			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_pCamera->GetFovAngle());
+			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, 45.0f);
 
 			m_pCharacter->ReplaceWeapon(WeaponTag::eSniperRifle);
 			break;
@@ -253,7 +254,7 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 			if (m_pCamera->GetCameraTag() != CameraTag::eFreeCam)
 				vMoveDirection = GetvLook();
 		}
-		m_fSpeedFactor = 2.5f;
+		m_fSpeedFactor = 1.8f;
 		m_pCharacter->Running();
 	}
 	else {
@@ -290,7 +291,7 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eCrouch)) {
 		m_pCharacter->SetIsCrouch(true);
-		m_pPxCharacterController->resize(0.0f);
+		m_pPxCharacterController->resize(0.5f);
 	}
 	else {
 		m_pCharacter->SetIsCrouch(false);
@@ -299,7 +300,7 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 
 	// 저격총 들고 있으면 속도 감소
 	if (m_pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
-		m_fSpeedFactor *= 0.6f;
+		m_fSpeedFactor *= 0.8f;
 
 	// 앉기시 이동 금지 or 조금 이동
 	if (m_wKeyState & static_cast<int>(KeyInput::eCrouch)) {
@@ -345,7 +346,7 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 	count++;
 #endif
 }
-	//
+
 void CPlayer::Rotate(float x, float y)
 {
 	// Death Check
@@ -470,6 +471,7 @@ void CPlayer::Update(float fDeltaTime)
 	PhysXUpdate(fDeltaTime);
 	
 	// Camera Update
+	m_pCamera->OnCollisionCheck();
 	m_pCamera->Update(fDeltaTime);
 	m_pCamera->UpdateOffset();
 	m_pCamera->RegenerateViewMatrix();

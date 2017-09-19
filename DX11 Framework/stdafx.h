@@ -90,6 +90,7 @@ using namespace std;
 #include "ParticleManager.h"
 #include "SpriteImageManager.h"
 #include "LightManager.h"
+#include "DecalManager.h"
 // ------------------------------- //
 
 template <typename T>

@@ -1,14 +1,6 @@
 #include "stdafx.h"
 #include "CollisionManager.h"
 
-CCollisionManager::CCollisionManager()
-{
-}
-
-CCollisionManager::~CCollisionManager()
-{
-}
-
 void CCollisionManager::InitializeManager()
 {
 }
@@ -19,31 +11,6 @@ void CCollisionManager::ReleseManager()
 
 void CCollisionManager::UpdateManager()
 {
-	/*
-	for (auto& dynamicObject : m_vecDynamicMeshContainer) {
-		if (dynamicObject->GetActive()) {
-			// Dynamic to Dynamic
-			for (auto& targetDynamicObject : m_vecDynamicMeshContainer) {
-				if (dynamicObject == targetDynamicObject)
-					continue; 
-
-				if (targetDynamicObject->GetActive()) {
-
-		//		dynamicObject->IsCollision(targetDynamicObject);
-				}
-			}
-
-			// Dynamic to Static
-			for (auto& staticObject : m_vecStaticMeshContainer) {
-				if (dynamicObject->IsCollision(staticObject)) {
-					dynamicObject->SetActive(false);
-					staticObject->SetCollision(true);
-				}
-
-			}
-		}
-	}
-	*/
 }
 
 void CCollisionManager::InitCollisionInfo()
@@ -75,6 +42,17 @@ bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos
 
 	// Dynamic to Static
 	for (auto& staticObject : m_vecStaticMeshContainer) {	
+		/*
+		// Ray가 바운딩 박스 안에 있는지 확인
+		if (CONTAINS == staticObject->GetBoundingOBox().Contains(originPos)) {
+
+			fNearestDistance = XMVectorGetX(XMVector3LengthEst(staticObject->GetvPosition() - originPos));
+			cout << "포함 거리 : " << fNearestDistance << endl;
+			pNearestObject = staticObject;
+			isCollision = true;
+			break;
+		}
+		*/
 		if (staticObject->GetBoundingOBox().Intersects(originPos, direction, info.m_fDistance)) {
 			if (0 < info.m_fDistance && info.m_fDistance < fNearestDistance) {
 				fNearestDistance = info.m_fDistance;

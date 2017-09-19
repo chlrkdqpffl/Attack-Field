@@ -402,6 +402,9 @@
     <ClCompile Include="SniperRifle.cpp">
       <Filter>Objects\Weopon\SniperRifle</Filter>
     </ClCompile>
+    <ClCompile Include="DecalManager.cpp">
+      <Filter>소스 파일\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -704,6 +707,9 @@
     <ClInclude Include="SniperRifle.h">
       <Filter>Objects\Weopon\SniperRifle</Filter>
     </ClInclude>
+    <ClInclude Include="DecalManager.h">
+      <Filter>헤더 파일\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -824,6 +830,9 @@
       <Filter>HLSL\Deferred</Filter>
     </None>
     <None Include="Shader HLSL File\RenderToScreen.hlsli">
+      <Filter>HLSL</Filter>
+    </None>
+    <None Include="Shader HLSL File\DecalGen.hlsli">
       <Filter>HLSL</Filter>
     </None>
   </ItemGroup>

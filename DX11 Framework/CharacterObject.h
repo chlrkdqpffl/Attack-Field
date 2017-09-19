@@ -86,10 +86,10 @@ public:
 
 	// ----- Game System Function ----- //
 	virtual void Revival();
+	void Reloading();
 	void Firing();
 	void Walking();
 	void Running();
-	void Reloading();
 	void ReplaceWeapon(WeaponTag weapon);
 	void DamagedCharacter(UINT damage);
 

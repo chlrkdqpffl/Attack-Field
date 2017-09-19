@@ -177,7 +177,7 @@ enum class TextureTag
 	eStreetLampD, eStreetLampN,
 
 	// WoodBox, Board
-	eWoodBoxD, eWoodBoxN, eWoodBoardD,
+	eWoodBoxD, eWoodBoxN, eWoodBoardD, eWoodBoardN,
 
 	// Stair
 	eStairD,

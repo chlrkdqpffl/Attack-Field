@@ -21,6 +21,7 @@ public:
 	bool							m_loginfail = false;
 	float							g_fDeltaTime	= 0.0f;
 	LPARAM							g_lParam			= 0;
+	PxScene*						g_pPxScene		= nullptr;
 
 public:
 	CSceneManager() {};

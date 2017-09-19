@@ -13,8 +13,8 @@ private:
 	DWORD								m_dwInitCollisionInfoTime = 0;
 
 public:
-	CCollisionManager();
-	virtual ~CCollisionManager();
+	CCollisionManager() {};
+	virtual ~CCollisionManager() {};
 
 	virtual void InitializeManager() override;
 	virtual void UpdateManager() override;

@@ -2,10 +2,10 @@
 
 #define PROJECT_NAME					L"Attack Field ("
 
-#define DEVELOP_MODE				// 클라이언트 개발 모드
-#define FASTLOAD_MODE				// 빠른 로딩 모드 - 테스트용
+//#define DEVELOP_MODE				// 클라이언트 개발 모드
+//#define FASTLOAD_MODE				// 빠른 로딩 모드 - 테스트용
 
-//#define USE_SERVER					// 서버 활성화 모드
+#define USE_SERVER					// 서버 활성화 모드
 
 #define USE_CONSOLE					// Open Console Windows
 #define USE_AUTOIP					// Use Config File
@@ -14,18 +14,17 @@
 #define USE_DEFERRD_RENDER
 
 // ==================== Game System Option ==================== //
-#define OCCUPY_TRYTIME					3000	// 점령 시도 시간 3초
-#define OCCUPY_TIME						30000	// 점령 시간 30초
-#define ROUNDWAIT_TIME					6000	// 라운드 종료 6초 후 새 게임
-#define RESPAWN_TIME					5000	// 리스폰 시간 5초
-#define TOTAL_KILLSCORE					50		// 게임 종료 킬
-#define TOTAL_OCCUPYSCORE				5		// 게임 종료 점령 스코어
-#define PLAYER_HP						100		// 캐릭터 기본 HP
-#define	DEATHMATCH_TIME					600		// 데스매치 게임 시간 600초
+#define OCCUPY_TRYTIME				3000	// 점령 시도 시간 3초
+#define OCCUPY_TIME					60000	// 점령 시간 60초
+#define ROUNDWAIT_TIME				6000	// 라운드 종료 6초 후 새 게임
+#define RESPAWN_TIME				5000	// 리스폰 시간 5초
+#define TOTAL_KILLSCORE				50		// 게임 종료 킬
+#define TOTAL_OCCUPYSCORE			5		// 게임 종료 점령 스코어
+#define PLAYER_HP					100		// 캐릭터 기본 HP
+#define	DEATHMATCH_TIME				600		// 데스매치 게임 시간 600초
 // ============================================================ //
 
-#define MAXBONECOUNT					60		// 캐릭터 최대 뼈대 갯수
-
+#define MAXBONECOUNT				60		// 캐릭터 최대 뼈대 갯수
 
 //#define _WITH_MSAA4_MULTISAMPLING
 #define _WITH_TERRAIN_PARTITION
@@ -50,6 +49,7 @@
 #define PARTICLE_MGR CParticleManager::GetInstance()
 #define SPRITE_MGR CSpriteImageManager::GetInstance()
 #define LIGHT_MGR CLightManager::GetInstance()
+#define DECAL_MGR CDecalManager::GetInstance()
 // -------------------------------------------------- //
 
 // Check Timer

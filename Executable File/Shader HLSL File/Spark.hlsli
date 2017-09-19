@@ -30,9 +30,8 @@ void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTIC
         }
         pointStream.Append(input[0]);
     }
-    else
-    {
-        if (input[0].age <= 1.0f)
+    else {
+        if (input[0].age <= 0.3f)
             pointStream.Append(input[0]);
     }
 }
@@ -47,7 +46,6 @@ PARTICLE_OUTPUT VSParticleDraw(PARTICLE_INPUT input)
     output.position = (0.5f * t * t * gAccelW) + (t * input.velocity) + input.position;
 
     float fOpacity = 1.0f - smoothstep(0.0f, 1.0f, t * 2.5f);
- 
     output.color = float4(1.0f, 1.0f, 1.0f, fOpacity);
     output.size = input.size;
     output.type = input.type;

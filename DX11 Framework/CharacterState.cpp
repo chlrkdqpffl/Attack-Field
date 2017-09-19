@@ -8,7 +8,8 @@ void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)
 
 	// 죽은 상태일 때에는 상태 확인 X
 	if (pUpperFSM->GetCurrentState() == CState_Death::GetInstance())
-		return;
+		if (pLowerFSM->GetCurrentState() == CState_Death::GetInstance())
+			return;
 
 	if (pCharacter->GetIsDeath()) {
 		pUpperFSM->ChangeState(CState_Death::GetInstance());
@@ -252,6 +253,14 @@ void CState_Reload::EnterState(CCharacterObject* pCharacter, AnimationData::Part
 
 	pCharacter->GetWeapon()->SetFireBulletCount(0);
 	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
+
+	if (pCharacter->GetCharacterID() == 0) {
+		SCENE_MGR->g_pPlayer->SetIsZoom(false);
+		if (SCENE_MGR->g_pCamera->GetCameraTag() == CameraTag::eFirstPerson)
+			SCENE_MGR->g_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, 45.0f);
+		else
+			SCENE_MGR->g_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, 60.0f);
+	}
 }
 
 void CState_Reload::UpdateUpperBodyState(CCharacterObject* pCharacter)
@@ -488,7 +497,7 @@ void CState_Death::UpdateUpperBodyState(CCharacterObject* pCharacter)
 			prevPos -= XMVectorSet(0, 1.5f * pCharacter->GetBoundingBox().Extents.y * SCENE_MGR->g_fDeltaTime, 0, 0);
 			pCharacter->SetPosition(prevPos);
 		}
-	}
+}
 
 #ifdef USE_SERVER
 	if (pCharacter->GetAlive()) {
@@ -500,6 +509,7 @@ void CState_Death::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		return;
 	}
 #else
+
 	if (!pCharacter->GetControllerActive(AnimationData::Parts::UpperBody)) {
 		if (m_dwDeathWaitingTime < timeElapsed) {
 			pUpperFSM->ChangeState(CState_Idle::GetInstance());
@@ -540,8 +550,14 @@ void CState_HeadHit::EnterState(CCharacterObject* pCharacter, AnimationData::Par
 void CState_HeadHit::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(AnimationData::Parts::UpperBody);
+	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(AnimationData::Parts::LowerBody);
 
-	if (!pCharacter->GetControllerActive(AnimationData::Parts::UpperBody)) {
+	if (pCharacter->GetIsDeath()) {
+		pUpperFSM->ChangeState(CState_Death::GetInstance());
+		pLowerFSM->ChangeState(CState_Death::GetInstance());
+		return;
+	}
+	else if (!pCharacter->GetControllerActive(AnimationData::Parts::UpperBody)) {
 		pUpperFSM->ChangeState(pUpperFSM->GetPreviousState());
 		pCharacter->SetControllerActive(AnimationData::Parts::UpperBody, true);
 		return;

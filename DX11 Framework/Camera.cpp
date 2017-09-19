@@ -286,6 +286,47 @@ bool CCamera::IsInFrustum(BoundingSphere *boundingSphere)
 	return(IsInFrustum(XMLoadFloat3(&boundingSphere->Center), XMVectorSet(boundingSphere->Radius, boundingSphere->Radius, boundingSphere->Radius, 0.0f)));
 }
 
+void CCamera::OnCollisionCheck()
+{
+	/*
+	XMFLOAT3 m_vDir;
+	XMStoreFloat3(&m_vDir, m_pPlayer->GetvPosition() - XMLoadFloat3(&m_vPosition));
+//	XMStoreFloat3(&m_vDir, XMLoadFloat3(&m_vPosition) - m_pPlayer->GetvPosition());
+	XMStoreFloat3(&m_vDir, XMVector3Normalize(XMLoadFloat3(&m_vDir)));
+
+//	PxVec3 OriginPos = PxVec3(m_vPosition.x, m_vPosition.y, m_vPosition.z);
+	PxVec3 OriginPos = PxVec3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z);
+	PxVec3 m_vPxDir = PxVec3(m_vDir.x, m_vDir.y, m_vDir.z);
+
+	COLLISION_MGR->CreateFireDirectionLine(XMLoadFloat3(&m_vPosition), XMLoadFloat3(&m_vDir), 100);
+
+
+	PxReal maxDistance = 9999.f;
+	PxRaycastBuffer hit;
+	PxQueryFilterData fd;
+	fd.flags |= PxQueryFlag::ePOSTFILTER;
+
+	if (SCENE_MGR->g_pPxScene == nullptr)
+		return;
+	
+	bool m_bstatus = false;
+	m_bstatus = SCENE_MGR->g_pPxScene->raycast(OriginPos, m_vPxDir, maxDistance, hit, PxHitFlags(PxHitFlag::eDEFAULT), fd);
+	if (m_bstatus) {
+		cout << hit.block.distance << endl;
+		
+		if ((hit.block.distance < m_fGap + 1.f)) {
+
+			XMFLOAT3 vPos = XMFLOAT3(hit.block.position.x + hit.block.normal.x,
+				hit.block.position.y + hit.block.normal.y,
+				hit.block.position.z + hit.block.normal.z);
+
+			XMStoreFloat3(&m_vPosition, XMLoadFloat3(&vPos));
+		}
+		
+	}
+	*/
+}
+
 void CCamera::UpdateOffset()
 {
 	XMVECTOR pos = m_pPlayer->GetvPosition();

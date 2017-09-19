@@ -20,7 +20,7 @@ enum PacketType
 	ePacket_Respawn,
 	ePacket_OccupyTeam,
 	ePacket_DamageInfo,
-
+	ePacket_WeaponReplace,
 
 	ePacket_SuccessMyCharacter,
 	ePacket_SceneChange,

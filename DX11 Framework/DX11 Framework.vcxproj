@@ -175,6 +175,7 @@
     <ClCompile Include="CharacterShader.cpp" />
     <ClCompile Include="CharacterState.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="DecalManager.cpp" />
     <ClCompile Include="DynamicUIMesh.cpp" />
     <ClCompile Include="FbxMeshData.cpp" />
     <ClCompile Include="GBuffer.cpp" />
@@ -299,6 +300,7 @@
     <ClInclude Include="CharacterState.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="ConstantBuffer_Slot.h" />
+    <ClInclude Include="DecalManager.h" />
     <ClInclude Include="DynamicUIMesh.h" />
     <ClInclude Include="FbxMeshData.h" />
     <ClInclude Include="FSM_State.h" />
@@ -430,6 +432,7 @@
     <None Include="Shader HLSL File\CharacterSkinnedNormal.hlsli" />
     <None Include="Shader HLSL File\common.hlsli" />
     <None Include="Shader HLSL File\CopiousBleeding.hlsli" />
+    <None Include="Shader HLSL File\DecalGen.hlsli" />
     <None Include="Shader HLSL File\DeferredCharacterSkinnedNormal.hlsli" />
     <None Include="Shader HLSL File\DeferredShading.hlsli" />
     <None Include="Shader HLSL File\DirLight.hlsli" />

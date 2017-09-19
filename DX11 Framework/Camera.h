@@ -94,7 +94,6 @@ public:
 	float GetTimeLag() const { return(m_fTimeLag); }
 
 	void SetFovAngle(float angle) { m_fFOVAngle = angle; }
-	float GetFovAngle() const { return m_fFOVAngle;	}
 
 	virtual void Move(const XMVECTOR& d3dxvShift)
 	{ 
@@ -108,6 +107,7 @@ public:
 	virtual void SetLookAt(XMVECTOR& vLookAt);
 	virtual void SetLookAt(XMVECTOR& d3dxvPosition, XMVECTOR& d3dxvLookAt, XMVECTOR& vd3dxvUp);
 
+	void OnCollisionCheck();
 	void UpdateOffset();
 	void CalculateFrustumPlanes();
 	bool IsInFrustum(XMVECTOR& xCenter, XMVECTOR& xExtern);

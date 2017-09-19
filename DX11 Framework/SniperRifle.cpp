@@ -31,7 +31,7 @@ CSniperRifle::CSniperRifle(CCharacterObject* pOwner)
 	m_fRange = 300.f;
 	m_uiFireSpeed = 1500;
 
-	m_fReCoil = 2.0f;
+	m_fReCoil = 10.0f;
 	m_fMaxPitchGap = 10.0f;
 
 //	m_fReCoil = 0.0f;
@@ -90,8 +90,8 @@ void CSniperRifle::FireRecoil()
 
 	// 1발부터 최대 반동
 	if (0 < m_nFireBulletCount) {
-		m_fNowRecoil += 10 * m_fReCoil * m_fCalcRecoil;
-		m_pOwner->AddPitch(-m_fMaxPitchGap);
+		m_fNowRecoil += m_fCalcRecoil;
+		m_pOwner->AddPitch(-m_fCalcRecoil);
 		m_bIsFire = true;
 	}
 }
@@ -120,11 +120,14 @@ void CSniperRifle::UpdateRecoil(float fDeltaTime)
 	if (m_pOwner->GetIsCrouch())
 		recoilFactor = 0.6f;
 	else if (m_pOwner->IsMoving())
-		recoilFactor = 1.5f;
+		recoilFactor = 1.2f;
+
+	if (SCENE_MGR->g_pPlayer->GetIsZoom())
+		recoilFactor *= 0.3f;
 
 	m_fCalcRecoil = recoilFactor * m_fReCoil;
 
-	m_fNowRecoil -= 2.5f * m_fReCoil * fDeltaTime;
+	m_fNowRecoil -= m_fReCoil * fDeltaTime;
 	m_fNowRecoil = clamp(m_fNowRecoil, recoilFactor, 5.f);
 }
 

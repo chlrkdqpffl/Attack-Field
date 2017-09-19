@@ -140,6 +140,8 @@ void CScene::InitializePhysX()
 		sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 
 	m_pPxScene = m_pPxPhysicsSDK->createScene(sceneDesc);
+	SCENE_MGR->g_pPxScene = m_pPxScene;
+
 	m_pPxControllerManager = PxCreateControllerManager(*m_pPxScene);
 
 	//PxMaterial : 표면 특성 집합을 나타내는 재질 클래스

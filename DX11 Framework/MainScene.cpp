@@ -14,7 +14,7 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.0f, 0.3f, 0.0f);
 //	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(0.0f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(1000.0f, 55.0f, 0.0f, 0.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
@@ -208,6 +208,7 @@ void CMainScene::Initialize()
 	m_PostFX = new CPostFX();
 
 	InitializePhysX();
+	DECAL_MGR->InitializeManager();
 	SPRITE_MGR->InitializeManager();
 	LIGHT_MGR->InitializeManager();
 	LIGHT_MGR->SetGBuffer(m_GBuffer);
@@ -356,7 +357,8 @@ void CMainScene::Initialize()
 	pCharacter->CreateAxisObject(m_pd3dDevice);
 
 #ifdef DEVELOP_MODE
-	pCharacter->SetLife(10000);	// 파티클 테스트용
+//	pCharacter->SetLife(10000);	// 파티클 테스트용
+	pCharacter->SetLife(100);
 #else
 	pCharacter->SetLife(100);
 #endif
@@ -474,7 +476,7 @@ void CMainScene::CreateMapDataInstancingObject()
 		pPhysXObject->CreateBoundingBox(m_pd3dDevice);
 		pPhysXObject->SetMesh(pFbxMesh);
 		pPhysXObject->SetMaterial(1, TextureTag::eCrossRoadD);
-		pPhysXObject->CreatePhysX_CubeMesh("eCrossRoad", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->CreatePhysX_CubeMesh("CrossRoad", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
@@ -1101,9 +1103,9 @@ void CMainScene::CreateMapDataInstancingObject()
 #pragma region [WoodBoard]
 	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBoard).size());
 	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eWoodBoard);
-	pFbxMesh->Initialize(m_pd3dDevice);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
 	pInstancingShaders->SetMesh(pFbxMesh);
-	pInstancingShaders->SetMaterial(1, TextureTag::eWoodBoardD);
+	pInstancingShaders->SetMaterial(2, TextureTag::eWoodBoardD, TextureTag::eWoodBoardN);
 	pInstancingShaders->BuildObjects(m_pd3dDevice);
 	pInstancingShaders->CreateShader(m_pd3dDevice);
 
@@ -1115,7 +1117,7 @@ void CMainScene::CreateMapDataInstancingObject()
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTexture, pPhysXObject);
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
 		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
@@ -1250,17 +1252,17 @@ void CMainScene::CreateTestingObject()
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCrossRoad);
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eCrossRoad, vecMapData[count].m_Scale);
-		pFbxMesh->Initialize(m_pd3dDevice, true);
+		pFbxMesh->Initialize(m_pd3dDevice);
 
 		pPhysXObject = new CPhysXObject();
 		pPhysXObject->CreateBoundingBox(m_pd3dDevice);
 		pPhysXObject->SetMesh(pFbxMesh);
-		pPhysXObject->SetMaterial(2, TextureTag::eCrossRoadD, TextureTag::eCrossRoadN);
+		pPhysXObject->SetMaterial(1, TextureTag::eCrossRoadD);
 		pPhysXObject->CreatePhysX_CubeMesh("CrossRoad", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
 		pPhysXObject->SetPosition(vecMapData[count].m_Position);
 		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
 
-		AddShaderObject(ShaderTag::eNormalTangentTexture, pPhysXObject);
+		AddShaderObject(ShaderTag::eNormalTexture, pPhysXObject);
 	}
 
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eCenterRoad);
@@ -1565,6 +1567,29 @@ void CMainScene::CreateTestingObject()
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 #pragma endregion
+
+#pragma region [WoodBoard]
+	pInstancingShaders = new CInstancedObjectsShader(MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBoard).size());
+	pFbxMesh = new CFbxModelMesh(m_pd3dDevice, MeshTag::eWoodBoard);
+	pFbxMesh->Initialize(m_pd3dDevice, true);
+	pInstancingShaders->SetMesh(pFbxMesh);
+	pInstancingShaders->SetMaterial(2, TextureTag::eWoodBoardD, TextureTag::eWoodBoardN);
+	pInstancingShaders->BuildObjects(m_pd3dDevice);
+	pInstancingShaders->CreateShader(m_pd3dDevice);
+
+	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eWoodBoard);
+	for (int count = 0; count < vecMapData.size(); ++count) {
+		pPhysXObject = new CPhysXObject();
+		pPhysXObject->SetMesh(pFbxMesh);
+		pPhysXObject->CreatePhysX_CubeMesh("WoodBoard", m_pPxPhysicsSDK, m_pPxScene, m_pPxMaterial, m_pPxCooking);
+		pPhysXObject->SetPosition(vecMapData[count].m_Position);
+		pPhysXObject->SetRotate(vecMapData[count].m_Rotation);
+
+		pInstancingShaders->AddObject(ShaderTag::eInstanceNormalTangentTexture, pPhysXObject);
+		COLLISION_MGR->m_vecStaticMeshContainer.push_back(pPhysXObject);
+	}
+	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
+#pragma endregion
 }
 
 void CMainScene::CreateTweakBars()
@@ -1717,7 +1742,8 @@ void CMainScene::ReleaseObjects()
 	SafeDelete(m_pAimObject);
 	ReleasePhysX();
 
-	SPRITE_MGR->ReleseManager();
+	DECAL_MGR->ReleseInstance();
+	SPRITE_MGR->ReleseInstance();
 	LIGHT_MGR->ReleseInstance();
 	COLLISION_MGR->ClearContainer();
 	PARTICLE_MGR->ReleseManager();
@@ -1930,10 +1956,7 @@ void CMainScene::ShowAimUI()
 	// 앉기 Aim 5
 	// 이동 Aim 15
 	// 최대 Aim 30
-//	if(m_pPlayerCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eRifle)
-		m_pAimObject->SetAimSize(10 * m_pPlayerCharacter->GetWeaponCalcRecoil());
-//	else if(m_pPlayerCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
-//		m_pAimObject->SetAimSize(5);
+	m_pAimObject->SetAimSize(10 * m_pPlayerCharacter->GetWeaponCalcRecoil());
 	m_pAimObject->Render(m_pd3dDeviceContext);
 }
 
@@ -2074,7 +2097,7 @@ void CMainScene::ShowDeathRespawnUI()
 
 void CMainScene::ShowDeadlyUI()
 {
-	if (m_pPlayer->GetPlayerLife() <= 0) {
+	if (m_pPlayer->GetPlayerLife() <= 0 || PLAYER_HP <= m_pPlayer->GetPlayerLife()) {
 		CUIObject* pDamageUI = m_pUIManager->GetUIObject(TextureTag::eDamagedCharacterUI);
 		pDamageUI->AddOpacity(-1.0f);
 		return;
@@ -2259,6 +2282,7 @@ void CMainScene::Update(float fDeltaTime)
 		object->Update(fCalcDeltatime);
 
 	SPRITE_MGR->UpdateManager(fCalcDeltatime);
+	DECAL_MGR->PreRender(m_pd3dDeviceContext);
 
 	// ====== Particle ===== //
 	PARTICLE_MGR->UpdateManager(fCalcDeltatime);
@@ -2309,6 +2333,8 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	for (auto& object : m_vecCharacterContainer)
 		if(object->IsVisible(pCamera))
 			object->Render(m_pd3dDeviceContext, m_pCamera);
+
+	DECAL_MGR->Render(pd3dDeviceContext, GLOBAL_MGR->g_bShowWireFrame);
 
 	// ------ End Scene Rendering ------ //
 	m_pd3dDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);
