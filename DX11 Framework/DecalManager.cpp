@@ -3,6 +3,7 @@
 
 const UINT CDecalManager::m_nVertStride = 8 * sizeof(float);
 const UINT CDecalManager::m_nMaxDecalVerts = 256;
+
 /*
 void CDecalManager::InitializeManager()
 {
@@ -28,32 +29,11 @@ void CDecalManager::InitializeManager()
 	strFileName = L"Shader HLSL File/DecalGen.hlsli";
 	CShader::CreateVertexShaderFromFile(pd3dDevice, strFileName, "DecalGenVS", "vs_5_0", &m_pDecalGenVS);
 	CShader::CreateGeometryShaderFromFile(pd3dDevice, strFileName, "DecalGenGS", "gs_5_0", &m_pDecalGenGS);
-
-
-	D3D11_SO_DECLARATION_ENTRY pStreamOutDecl[] =
-	{
-		// stream, name, index, start component, component count, output slot
-		{ 0, "POSITION", 0, 0, 3, 0 },
-		{ 0, "NORMAL", 0, 0, 3, 0 },
-		{ 0,"TEXCOORD", 0, 0, 2, 0 },
-	};
-	UINT arrBufferStride[1] = { m_nVertStride };
-	V_RETURN(g_pDevice->CreateGeometryShaderWithStreamOutput(pShaderBlob->GetBufferPointer(), pShaderBlob->GetBufferSize(), pStreamOutDecl, 3, arrBufferStride, 1, 0, NULL, &m_pDecalGenGS));
-	DXUT_SetDebugName(m_pDecalGenGS, "Generate Decal GS");
-	SAFE_RELEASE(pShaderBlob);
-
-	CShader::crea
+	CreateSOGeometryShaderFromFile(pd3dDevice, strFileName, "DecalGenGS", "gs_5_0", &m_pDecalGenGS);
+	
 	strFileName = L"Shader HLSL File/DeferredShading.hlsli";
 	CShader::CreateVertexShaderFromFile(pd3dDevice, strFileName, "RenderSceneVS", "vs_5_0", &m_pDecalRenderVS);
 	CShader::CreatePixelShaderFromFile(pd3dDevice, strFileName, "RenderDecalPS", "ps_5_0", &m_pDecalRenderPS);
-
-	// Decal generation depth/stencil states
-	D3D11_DEPTH_STENCIL_DESC DSDesc;
-	ZeroMemory(&DSDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	DSDesc.DepthEnable = false;
-	DSDesc.StencilEnable = false;
-	V_RETURN(g_pDevice->CreateDepthStencilState(&DSDesc, &m_pDecalGenDepthStencilState));
-	DXUT_SetDebugName(m_pDecalGenDepthStencilState, "Generate Decal DSS");
 
 	// Create the VB for the decals
 	static const UINT nDecalBufferSize = m_nMaxDecalVerts * m_nVertStride;
@@ -65,54 +45,13 @@ void CDecalManager::InitializeManager()
 		0,
 		0
 	};
-	g_pDevice->CreateBuffer(&VBDesc, NULL, &m_pDecalVB);
+	HR(pd3dDevice->CreateBuffer(&VBDesc, NULL, &m_pDecalVB));
 
 	// Create the querys in order to keep track of what got drawn so far
 	D3D11_QUERY_DESC StatsDesc;
 	StatsDesc.Query = D3D11_QUERY_SO_STATISTICS;
 	StatsDesc.MiscFlags = 0;
-	V_RETURN(g_pDevice->CreateQuery(&StatsDesc, &m_pStatsQuery));
-
-	// Load the decal texture
-	V_RETURN(DXUTFindDXSDKMediaFileCch(str, MAX_PATH, L"..\\Media\\Decal.dds"));
-	V_RETURN(D3DX11CreateShaderResourceViewFromFile(g_pDevice, str, NULL, NULL, &m_pDecalTexView, NULL));
-
-	V_RETURN(DXUTFindDXSDKMediaFileCch(str, MAX_PATH, L"..\\Media\\White.dds"));
-	V_RETURN(D3DX11CreateShaderResourceViewFromFile(g_pDevice, str, NULL, NULL, &m_pWhiteTexView, NULL));
-
-	D3D11_BLEND_DESC descBlend;
-	descBlend.AlphaToCoverageEnable = FALSE;
-	descBlend.IndependentBlendEnable = FALSE;
-	const D3D11_RENDER_TARGET_BLEND_DESC defaultRenderTargetBlendDesc =
-	{
-		TRUE,
-		D3D11_BLEND_SRC_ALPHA, D3D11_BLEND_INV_SRC_ALPHA, D3D11_BLEND_OP_ADD,
-		D3D11_BLEND_ONE, D3D11_BLEND_ZERO, D3D11_BLEND_OP_ADD,
-		D3D11_COLOR_WRITE_ENABLE_RED | D3D11_COLOR_WRITE_ENABLE_GREEN | D3D11_COLOR_WRITE_ENABLE_BLUE,
-	};
-	for (UINT i = 0; i < D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
-		descBlend.RenderTarget[i] = defaultRenderTargetBlendDesc;
-	V_RETURN(g_pDevice->CreateBlendState(&descBlend, &m_pDecalRenderBS));
-	DXUT_SetDebugName(m_pDecalRenderBS, "Decal Alpha Blending BS");
-
-	D3D11_RASTERIZER_DESC descRast = {
-		D3D11_FILL_SOLID,
-		D3D11_CULL_BACK,
-		FALSE,
-		-85,
-		D3D11_DEFAULT_DEPTH_BIAS_CLAMP,
-		-0.75f,
-		FALSE,
-		FALSE,
-		FALSE,
-		FALSE
-	};
-	V_RETURN(g_pDevice->CreateRasterizerState(&descRast, &m_pRSDecalSolid));
-	DXUT_SetDebugName(m_pDecalRenderBS, "Decal RS");
-
-	descRast.FillMode = D3D11_FILL_WIREFRAME;
-	V_RETURN(g_pDevice->CreateRasterizerState(&descRast, &m_pRSDecalWire));
-	DXUT_SetDebugName(m_pDecalRenderBS, "Decal Wire RS");
+	HR(pd3dDevice->CreateQuery(&StatsDesc, &m_pStatsQuery));
 }
 
 void CDecalManager::ReleseManager()
@@ -126,27 +65,21 @@ void CDecalManager::ReleseManager()
 	ReleaseCOM(m_pDecalRenderCB);
 	ReleaseCOM(m_pDecalRenderVS);
 	ReleaseCOM(m_pDecalRenderPS);
-	ReleaseCOM(m_pDecalTexView);
-	ReleaseCOM(m_pWhiteTexView);
-//	ReleaseCOM(m_pDecalRenderBS);
-//	ReleaseCOM(m_pRSDecalSolid);
-//	ReleaseCOM(m_pRSDecalWire);
 }
 
 void CDecalManager::CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, const wstring& pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader)
 {
 	HRESULT hResult;
 
-	// UINT Stream, LPCSTR SemanticName, BYTE SemanticIndex, BYTE StartComponent, BYTE ComponentCount, BYTE OuputSlot
-	D3D11_SO_DECLARATION_ENTRY pSODecls[] = {
-		{ 0, "POSITION", 0, 0, 3, 0 },
-		{ 0, "VELOCITY", 0, 0, 3, 0 },
-		{ 0, "SIZE", 0, 0, 2, 0 },
-		{ 0, "AGE", 0, 0, 1, 0 },
-		{ 0, "TYPE", 0, 0, 1, 0 }
-	};
-	UINT pBufferStrides[1] = { sizeof(CParticle) };
 
+	D3D11_SO_DECLARATION_ENTRY pStreamOutDecl[] =
+	{
+		// stream, name, index, start component, component count, output slot
+		{ 0, "POSITION", 0, 0, 3, 0 },
+		{ 0, "NORMAL", 0, 0, 3, 0 },
+		{ 0,"TEXCOORD", 0, 0, 2, 0 },
+	};
+	UINT arrBufferStride[1] = { m_nVertStride };
 	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 #if defined(DEBUG) || defined(_DEBUG)
 	dwShaderFlags |= D3DCOMPILE_DEBUG;
@@ -157,7 +90,7 @@ void CDecalManager::CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, con
 	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName.c_str(), NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
 	{
 		pd3dDevice->CreateGeometryShaderWithStreamOutput(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(),
-			pSODecls, 5, pBufferStrides, 1, 0, NULL, ppd3dGeometryShader);
+			pStreamOutDecl, 3, arrBufferStride, 1, 0, NULL, ppd3dGeometryShader);
 
 		pd3dShaderBlob->Release();
 
@@ -169,6 +102,185 @@ void CDecalManager::CreateSOGeometryShaderFromFile(ID3D11Device *pd3dDevice, con
 		exit(0);
 	}
 }
+
+void CDecalManager::AddDecal(const XMVECTOR& vHitPos, const XMVECTOR& vHitNorm, CMesh& mesh, UINT nMesh, UINT nSubMesh)
+{
+	// Check that this decal is not too close to a previous decal or pending decals
+	bool bTooClose = false;
+	for (std::list<TDecalEntry>::iterator itr = m_DecalList.begin(); itr != m_DecalList.end(); itr++) {
+		XMVECTOR vAToB = XMLoadFloat3(&(*itr).vHitPos) - vHitPos;
+
+		if(XMVectorGetX(XMVector3LengthSq(vAToB)) < m_fDecalSize * m_fDecalSize) {
+			bTooClose = true;
+			break;
+		}
+	}
+	if (!bTooClose) {
+		for (std::list<TDecalAddEntry>::iterator itr = m_DecalAddList.begin(); itr != m_DecalAddList.end(); itr++) {
+			XMVECTOR vAToB = XMLoadFloat3(&(*itr).vHitPos) - vHitPos;
+			if (XMVectorGetX(XMVector3LengthSq(vAToB)) < m_fDecalSize * m_fDecalSize) {
+				bTooClose = true;
+				break;
+			}
+		}
+	}
+
+	if (!bTooClose) {
+		// Not too close - add to the pending list
+		TDecalAddEntry decalAddEntry;
+		XMStoreFloat3(&decalAddEntry.vHitPos, vHitPos);
+		XMStoreFloat3(&decalAddEntry.vHitNorm, vHitNorm);
+		decalAddEntry.pMesh = &mesh;
+		decalAddEntry.nMesh = nMesh;
+		decalAddEntry.nSubMesh = nSubMesh;
+		decalAddEntry.bStarted = false;
+		m_DecalAddList.push_back(decalAddEntry);
+	}
+}
+
+void CDecalManager::RemoveDecalFromList()
+{
+	TDecalEntry& decalEntry = m_DecalList.front();
+	m_nDecalStart1 += decalEntry.nVertCount;
+	m_nTotalDecalVerts1 -= decalEntry.nVertCount;
+
+	if (m_nTotalDecalVerts1 == 0)
+	{
+		m_nTotalDecalVerts1 = m_nTotalDecalVerts2;
+		m_nDecalStart1 = 0;
+		m_nTotalDecalVerts2 = 0;
+	}
+
+	m_DecalList.pop_front();
+}
+
+void CDecalManager::PreRender(ID3D11DeviceContext* pd3dImmediateContext)
+{
+	// Check if there is a hit pending to be added to the list
+	if (!m_DecalAddList.empty())
+	{
+		TDecalAddEntry& decalAddEntry = m_DecalAddList.front();
+
+		if (!decalAddEntry.bStarted)
+		{
+			PrepareGenConstBuffer(pd3dImmediateContext, decalAddEntry.vHitPos, decalAddEntry.vHitNorm);
+			AddDecalToVB(pd3dImmediateContext, *decalAddEntry.pMesh, decalAddEntry.nMesh, decalAddEntry.nSubMesh, false);
+			decalAddEntry.bStarted = true;
+		}
+		else
+		{
+			// See if the querys are ready (don't block)
+			D3D11_QUERY_DATA_SO_STATISTICS soStates;
+			if (pd3dImmediateContext->GetData(m_pStatsQuery, &soStates, sizeof(soStates), 0) == S_OK)
+			{
+				if (soStates.NumPrimitivesWritten < soStates.PrimitivesStorageNeeded)
+				{
+					// There wasnt enoug room for all the triangles in the last decal added
+					// We get around this by adding the decal again at the beginning of the buffer
+
+					// Make sure there is room for the new decal
+					while (m_nTotalDecalVerts2 != 0 || (m_nTotalDecalVerts1 != 0 && m_nDecalStart1 < 3 * (UINT)soStates.PrimitivesStorageNeeded))
+					{
+						RemoveDecalFromList();
+					}
+
+					// Add the new decal again at the start of the buffer
+					//PrepareGenConstBuffer(pd3dImmediateContext, decalEntry.vHitPos, decalEntry.vHitNorm);
+					AddDecalToVB(pd3dImmediateContext, *decalAddEntry.pMesh, decalAddEntry.nMesh, decalAddEntry.nSubMesh, true);
+				}
+				else
+				{
+					// Add a new active decal entry only if anything was written
+					if (soStates.NumPrimitivesWritten > 0)
+					{
+						// Keep track over the amount of triangles added
+						TDecalEntry decalEntry;
+						decalEntry.nVertCount = 3 * (UINT)soStates.NumPrimitivesWritten;
+						if (m_nTotalDecalVerts2 > 0 || (m_nDecalStart1 + m_nTotalDecalVerts1 + decalEntry.nVertCount) > m_nMaxDecalVerts)
+						{
+							m_nTotalDecalVerts2 += decalEntry.nVertCount;
+						}
+						else
+						{
+							m_nTotalDecalVerts1 += decalEntry.nVertCount;
+						}
+
+						// Check if its time to remove some decals
+						while (m_nTotalDecalVerts2 > m_nDecalStart1 || (m_nTotalDecalVerts1 + m_nTotalDecalVerts2) > m_nMaxDecalVerts)
+						{
+							RemoveDecalFromList();
+						}
+
+						decalEntry.vHitPos = decalAddEntry.vHitPos;
+						m_DecalList.push_back(decalEntry);
+					}
+
+					// Remove the pending entry
+					m_DecalAddList.pop_front();
+				}
+			}
+		}
+	}
+}
+
+void CDecalManager::Render(ID3D11DeviceContext* pd3dImmediateContext, bool bWireframe)
+{
+	// Render the decals if there is anything in the buffer
+	if (m_nTotalDecalVerts1 > 0 || m_nTotalDecalVerts2 > 0) {
+		ID3D11RasterizerState* pPrevRSState;
+		pd3dImmediateContext->RSGetState(&pPrevRSState);
+		pd3dImmediateContext->RSSetState(bWireframe ? STATEOBJ_MGR->g_pWireframeRS : STATEOBJ_MGR->g_pDefaultRS);
+		pd3dImmediateContext->OMSetBlendState(STATEOBJ_MGR->g_pDecalBS, NULL, 0xffffffff);
+
+		// Get the projection & view matrix from the camera class
+		XMMATRIX mWorld; mWorld = XMMatrixIdentity();
+		XMMATRIX mView = SCENE_MGR->g_pCamera->GetViewMatrix();
+		XMMATRIX mProj = SCENE_MGR->g_pCamera->GetProjectionMatrix();
+		XMMATRIX mWorldViewProjection = mWorld * mView * mProj;
+
+		D3D11_MAPPED_SUBRESOURCE MappedResource;
+		HR(pd3dImmediateContext->Map(m_pDecalRenderCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource));
+		TDecalRenderCB* pDecalRenderCB = (TDecalRenderCB*)MappedResource.pData;
+		D3DXMatrixTranspose(&pDecalRenderCB->matWorldViewProj, &mWorldViewProjection);
+		D3DXMatrixTranspose(&pDecalRenderCB->matWorld, &mWorld);
+		pd3dImmediateContext->Unmap(m_pDecalRenderCB, 0);
+		ID3D11Buffer* arrConstBuffers[1] = { m_pDecalRenderCB };
+		pd3dImmediateContext->VSSetConstantBuffers(0, 1, arrConstBuffers);
+
+		// Set the texture
+		pd3dImmediateContext->PSSetShaderResources(0, 1, bWireframe ? &m_pWhiteTexView : &m_pDecalTexView);
+
+		// Set the Vertex Layout
+		g_SceneManager.SetSceneInputLayout(pd3dImmediateContext);
+
+		pd3dImmediateContext->VSSetShader(m_pDecalRenderVS, NULL, 0);
+		pd3dImmediateContext->PSSetShader(m_pDecalRenderPS, NULL, 0);
+
+		// Set the decal VB
+		ID3D11Buffer* pVB[1] = { m_pDecalVB };
+		UINT offset[1] = { 0 };
+		UINT stride[1] = { m_nVertStride };
+		pd3dImmediateContext->IASetVertexBuffers(0, 1, pVB, stride, offset);
+		pd3dImmediateContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		// Draw all the triangles from the start of the buffer up to the last one added
+		pd3dImmediateContext->DrawAuto();
+
+		// If there are older triangles at the end of the buffer, render them too
+		if (m_nTotalDecalVerts2 > 0)
+		{
+			pd3dImmediateContext->Draw(m_nTotalDecalVerts1, m_nDecalStart1);
+		}
+
+		pd3dImmediateContext->VSSetShader(NULL, NULL, 0);
+		pd3dImmediateContext->PSSetShader(NULL, NULL, 0);
+
+		pd3dImmediateContext->RSSetState(pPrevRSState);
+		ReleaseCOM(pPrevRSState);
+		pd3dImmediateContext->OMSetBlendState(NULL, NULL, 0xffffffff);
+	}
+}
+
 
 void CDecalManager::UpdateManager()
 {

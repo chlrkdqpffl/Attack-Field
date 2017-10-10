@@ -71,16 +71,20 @@ bool CCollisionManager::RayCastCollision(CollisionInfo& info, XMVECTOR originPos
 	return false;
 }
 
-bool CCollisionManager::RayCastCollisionToCharacter(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)	//캐릭터 충돌 함수.
+bool CCollisionManager::RayCastCollisionToCharacter(CollisionInfo& info, XMVECTOR originPos, XMVECTOR direction)
 {
-	// 1차 AABB
+	// 1차 AABB Check
 	if (!RayCastCollisionToCharacter_AABB(info, originPos, direction))
 		return false;
 
-	// 3차 Parts
+	// 2차 Parts Check
 	if (!RayCastCollisionToCharacter_Parts(info, originPos, direction))
 		return false;
 	
+	// 3차 Polygon Check
+//	if (!RayCastCollisionInPolygon(info, originPos, direction))
+//		return false;
+
 	return true;
 }
 

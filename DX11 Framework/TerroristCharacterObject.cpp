@@ -57,28 +57,28 @@ void CTerroristCharacterObject::CreateAnimation()
 {
 	// ----- 텍스트 파일과 애니메이션 순서가 일치해야함 ----- //
 
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle,				AnimationTrack("Idle"),				AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationTag::eIdle,				AnimationTrack("Idle"),				AnimationType::eLoop));
 
 	// Walk
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Left,			AnimationTrack("Walk_Left"),		AnimationData::Type::eLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Right,			AnimationTrack("Walk_Left"),		AnimationData::Type::eInverseLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_ForwardLeft,	AnimationTrack("Walk_ForwardLeft"),	AnimationData::Type::eLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_BackwardRight,	AnimationTrack("Walk_ForwardLeft"), AnimationData::Type::eInverseLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Forward,		AnimationTrack("Walk_Forward"),		AnimationData::Type::eLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_Backward,		AnimationTrack("Walk_Forward"),		AnimationData::Type::eInverseLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_ForwardRight,	AnimationTrack("Walk_ForwardRight"), AnimationData::Type::eLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eWalk_BackwardLeft,	AnimationTrack("Walk_ForwardRight"), AnimationData::Type::eInverseLoop));
+	AddAnimation(make_tuple(AnimationTag::eWalk_Left,			AnimationTrack("Walk_Left"),		AnimationType::eLoop));
+	AddAnimation(make_tuple(AnimationTag::eWalk_Right,			AnimationTrack("Walk_Left"),		AnimationType::eInverseLoop));
+	AddAnimation(make_tuple(AnimationTag::eWalk_ForwardLeft,	AnimationTrack("Walk_ForwardLeft"),	AnimationType::eLoop));
+	AddAnimation(make_tuple(AnimationTag::eWalk_BackwardRight,	AnimationTrack("Walk_ForwardLeft"), AnimationType::eInverseLoop));
+	AddAnimation(make_tuple(AnimationTag::eWalk_Forward,		AnimationTrack("Walk_Forward"),		AnimationType::eLoop));
+	AddAnimation(make_tuple(AnimationTag::eWalk_Backward,		AnimationTrack("Walk_Forward"),		AnimationType::eInverseLoop));
+	AddAnimation(make_tuple(AnimationTag::eWalk_ForwardRight,	AnimationTrack("Walk_ForwardRight"), AnimationType::eLoop));
+	AddAnimation(make_tuple(AnimationTag::eWalk_BackwardLeft,	AnimationTrack("Walk_ForwardRight"), AnimationType::eInverseLoop));
 
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eRun,					AnimationTrack("Run"),				AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationTag::eRun,					AnimationTrack("Run"),				AnimationType::eLoop));
 
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eFire,				AnimationTrack("Fire"),				AnimationData::Type::eOnce));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eFireLoop,			AnimationTrack("Fire"),				AnimationData::Type::eLoop));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eReload,				AnimationTrack("Reload"),			AnimationData::Type::eOnce));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eDeath_Head,			AnimationTrack("Death_Head"),		AnimationData::Type::eOnce));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eDeath,				AnimationTrack("Death"),			AnimationData::Type::eOnce));
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eHeadHit,				AnimationTrack("HeadHit"),			AnimationData::Type::eOnce));
+	AddAnimation(make_tuple(AnimationTag::eFire,				AnimationTrack("Fire"),				AnimationType::eOnce));
+	AddAnimation(make_tuple(AnimationTag::eFireLoop,			AnimationTrack("Fire"),				AnimationType::eLoop));
+	AddAnimation(make_tuple(AnimationTag::eReload,				AnimationTrack("Reload"),			AnimationType::eOnce));
+	AddAnimation(make_tuple(AnimationTag::eDeath_Head,			AnimationTrack("Death_Head"),		AnimationType::eOnce));
+	AddAnimation(make_tuple(AnimationTag::eDeath,				AnimationTrack("Death"),			AnimationType::eOnce));
+	AddAnimation(make_tuple(AnimationTag::eHeadHit,				AnimationTrack("HeadHit"),			AnimationType::eOnce));
 
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eCrouch,				AnimationTrack("Crouch"),			AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationTag::eCrouch,				AnimationTrack("Crouch"),			AnimationType::eLoop));
 
 }
 

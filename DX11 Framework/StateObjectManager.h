@@ -4,8 +4,8 @@
 class CStateObjectManager :	public CSingletonManager<CStateObjectManager>
 {
 public:
-	CStateObjectManager();
-	virtual ~CStateObjectManager();
+	CStateObjectManager() {};
+	virtual ~CStateObjectManager() {};
 
 	virtual void InitializeManager() override;
 	virtual void ReleseManager() override;
@@ -20,6 +20,7 @@ public:
 	static ID3D11BlendState*		g_pAlphaToCoverageBS;
 	static ID3D11BlendState*		g_pTransparentBS;
 	static ID3D11BlendState*		g_pAddativeBS;
+	static ID3D11BlendState*		g_pDecalBS;
 	static ID3D11BlendState*		g_pFireBS;
 	static ID3D11BlendState*		g_pBloodBS;
 

@@ -96,8 +96,8 @@ public:
 	// ----- Get, Setter ----- // 
 
 	BoundingOrientedBox GetPartsBoundingOBox(UINT index) const;
-	CStateMachine<CCharacterObject>* GetFSM(AnimationData::Parts parts) const {
-		if (parts == AnimationData::Parts::UpperBody)
+	CStateMachine<CCharacterObject>* GetFSM(CharacterParts parts) const {
+		if (parts == CharacterParts::UpperBody)
 			return m_pStateUpper;
 		else
 			return m_pStateLower;

@@ -120,7 +120,7 @@ void CMesh::RenderInstanced(ID3D11DeviceContext *pd3dDeviceContext, int nInstanc
 		pd3dDeviceContext->DrawInstanced(m_nVertices, nInstances, m_nStartVertex, nStartInstance);
 }
 
-int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRayDirection, CollisionInfo *pd3dxIntersectInfo)
+int CMesh::CheckRayIntersection(XMVECTOR *pvRayPosition, XMVECTOR *pvRayDirection, CollisionInfo *pIntersectInfo)
 {
 	int nIntersections = 0;
 	BYTE *pbPositions = (BYTE *)m_pPositions + m_pnVertexOffsets[0];
@@ -132,30 +132,31 @@ int CMesh::CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRay
 	XMFLOAT3 v0, v1, v2;
 	v0 = v1 = v2 = XMFLOAT3(0, 0, 0);
 	float fuHitBaryCentric = 0.0f, fvHitBaryCentric = 0.0f, fHitDistance = 0.0f, fNearHitDistance = FLT_MAX;
-	for (int i = 0; i < nPrimitives; i++)
-	{
+	for (int i = 0; i < nPrimitives; i++) {
 		v0 = *(XMFLOAT3 *)(pbPositions + ((m_pnIndices) ? (m_pnIndices[(i*nOffset) + 0]) : ((i*nOffset) + 0)) * m_pnVertexStrides[0]);
 		v1 = *(XMFLOAT3 *)(pbPositions + ((m_pnIndices) ? (m_pnIndices[(i*nOffset) + 1]) : ((i*nOffset) + 1)) * m_pnVertexStrides[0]);
 		v2 = *(XMFLOAT3 *)(pbPositions + ((m_pnIndices) ? (m_pnIndices[(i*nOffset) + 2]) : ((i*nOffset) + 2)) * m_pnVertexStrides[0]);
 
-	if (D3DXIntersectTri((D3DXVECTOR3 *)&v0, (D3DXVECTOR3 *)&v1, (D3DXVECTOR3 *)&v2, (D3DXVECTOR3 *)pd3dxvRayPosition, (D3DXVECTOR3 *)pd3dxvRayDirection, &fuHitBaryCentric, &fvHitBaryCentric, &fHitDistance))	{ 
+		if (D3DXIntersectTri((D3DXVECTOR3 *)&v0, (D3DXVECTOR3 *)&v1, (D3DXVECTOR3 *)&v2, (D3DXVECTOR3 *)pvRayPosition, (D3DXVECTOR3 *)pvRayDirection,
+			&fuHitBaryCentric, &fvHitBaryCentric, &fHitDistance)) 
+		{
 			if (fHitDistance < fNearHitDistance){
 				fNearHitDistance = fHitDistance;
-				if (pd3dxIntersectInfo)	{
-					pd3dxIntersectInfo->m_dwFaceIndex = i;
-					pd3dxIntersectInfo->m_fU = fuHitBaryCentric;
-					pd3dxIntersectInfo->m_fV = fvHitBaryCentric;
-					pd3dxIntersectInfo->m_fDistance = fHitDistance;
+				if (pIntersectInfo)	{
+					pIntersectInfo->m_dwFaceIndex = i;
+					pIntersectInfo->m_fU = fuHitBaryCentric;
+					pIntersectInfo->m_fV = fvHitBaryCentric;
+					pIntersectInfo->m_fDistance = fHitDistance;
 				
 					XMVECTOR edge1 = XMLoadFloat3(&v1) - XMLoadFloat3(&v0);
 					XMVECTOR edge2 = XMLoadFloat3(&v2) - XMLoadFloat3(&v0);
 					XMVECTOR normal = XMVector3Cross(edge1, edge2);
 					normal = XMVector3Normalize(normal);
-					XMStoreFloat3(&pd3dxIntersectInfo->m_f3HitNormal, -1 * normal);		// -1을 해줘야 정확하던데 왜그런지 미확인
+					XMStoreFloat3(&pIntersectInfo->m_f3HitNormal, -1 * normal);
 
-					pd3dxIntersectInfo->m_f3HitPosition.x = (v0.x + v1.x + v2.x) / 3;
-					pd3dxIntersectInfo->m_f3HitPosition.y = (v0.y + v1.y + v2.y) / 3;
-					pd3dxIntersectInfo->m_f3HitPosition.z = (v0.z + v1.z + v2.z) / 3;
+					pIntersectInfo->m_f3HitPosition.x = (v0.x + v1.x + v2.x) / 3;
+					pIntersectInfo->m_f3HitPosition.y = (v0.y + v1.y + v2.y) / 3;
+					pIntersectInfo->m_f3HitPosition.z = (v0.z + v1.z + v2.z) / 3;
 				}
 			}
 			nIntersections++;

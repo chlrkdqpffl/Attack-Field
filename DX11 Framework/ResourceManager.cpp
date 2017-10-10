@@ -39,47 +39,31 @@ bool CResourceManager::LoadResourceAll()
 void CResourceManager::LoadResourceTitleScene()
 {
 	// BackGround Image
-	AddResourece(TextureTag::eTitleBackGroundD, "../Assets/Image/UI/TitleScene.jpg");
-	AddResourece(TextureTag::eDeathOn, "../Assets/Image/UI/DeathMatchOn.png");
+	AddResourece(TextureTag::eTitleBackGroundD,		"../Assets/Image/UI/TitleScene.jpg");
+	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene(Final).jpg");
+	AddResourece(TextureTag::eDeathOn,	"../Assets/Image/UI/DeathMatchOn.png");
 	AddResourece(TextureTag::eOccupyOn, "../Assets/Image/UI/OccupyMatchOn.png");
 	AddResourece(TextureTag::eDeathSearch, "../Assets/Image/UI/DeathMatchOn.png");
 	AddResourece(TextureTag::eOccupySearch, "../Assets/Image/UI/OccupyMatchOn.png");
 	AddResourece(TextureTag::eDeathOff, "../Assets/Image/UI/DeathMatchOff.png");
 	AddResourece(TextureTag::eOccupyOff, "../Assets/Image/UI/OccupyMatchOff.png");
-	//	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene.jpg");
-	AddResourece(TextureTag::eLoadingBackGroundD, "../Assets/Image/UI/LoadingScene2.jpg");
-	AddResourece(TextureTag::eLoginBack, "../Assets/Image/UI/LoginBack.png");
-
-	// Character
-	//	AddResourece(MeshTag::eTerrorist,				"../Assets/FBX Model/Character/Terrorist/Terrorist(use).model");
 
 	// UI
-	AddResourece(TextureTag::eStartButtonOn, "../Assets/Image/UI/StartOn.png");
-	AddResourece(TextureTag::eStartButtonOff, "../Assets/Image/UI/StartOff.png");
-	AddResourece(TextureTag::eExitButtonOn, "../Assets/Image/UI/ExitOn.png");
-	AddResourece(TextureTag::eExitButtonOff, "../Assets/Image/UI/ExitOff.png");
-	AddResourece(TextureTag::eID, "../Assets/Image/UI/ID.png");
-	AddResourece(TextureTag::ePassword, "../Assets/Image/UI/Password.png");
-	AddResourece(TextureTag::eLogin, "../Assets/Image/UI/Login.png");
-	AddResourece(TextureTag::eLoginon, "../Assets/Image/UI/LoginOn.png");
-	AddResourece(TextureTag::eIDClick, "../Assets/Image/UI/IDClick.png");
-	AddResourece(TextureTag::ePasswordClick, "../Assets/Image/UI/PasswordClick.png");
+	AddResourece(TextureTag::eStartButtonOn,		"../Assets/Image/UI/StartOn.png");
+	AddResourece(TextureTag::eStartButtonOff,		"../Assets/Image/UI/StartOff.png");
+	AddResourece(TextureTag::eExitButtonOn,			"../Assets/Image/UI/ExitOn.png");
+	AddResourece(TextureTag::eExitButtonOff,		"../Assets/Image/UI/ExitOff.png");
 
 	//search UI
-	AddResourece(TextureTag::eSearch1, "../Assets/Image/loding/1.png");
-	AddResourece(TextureTag::eSearch2, "../Assets/Image/loding/2.png");
-	AddResourece(TextureTag::eSearch3, "../Assets/Image/loding/3.png");
-	AddResourece(TextureTag::eSearch4, "../Assets/Image/loding/4.png");
-	AddResourece(TextureTag::eSearch5, "../Assets/Image/loding/5.png");
-	AddResourece(TextureTag::eSearch6, "../Assets/Image/loding/6.png");
-	AddResourece(TextureTag::eSearch7, "../Assets/Image/loding/7.png");
-	AddResourece(TextureTag::eSearch8, "../Assets/Image/loding/8.png");
-	AddResourece(TextureTag::eSearch9, "../Assets/Image/loding/9.png");
-	//AddResourece(TextureTag::eSearch10,				"../Assets/Image/loding/10.jpg");
-	//AddResourece(TextureTag::eSearch11,				"../Assets/Image/loding/11.bmp");
-	//AddResourece(TextureTag::eSearch12,				"../Assets/Image/loding/12.bmp");
-	//AddResourece(TextureTag::eSearch13,				"../Assets/Image/loding/13.bmp");
-
+	AddResourece(TextureTag::eSearch1, "../Assets/Image/loading/1.png");
+	AddResourece(TextureTag::eSearch2, "../Assets/Image/loading/2.png");
+	AddResourece(TextureTag::eSearch3, "../Assets/Image/loading/3.png");
+	AddResourece(TextureTag::eSearch4, "../Assets/Image/loading/4.png");
+	AddResourece(TextureTag::eSearch5, "../Assets/Image/loading/5.png");
+	AddResourece(TextureTag::eSearch6, "../Assets/Image/loading/6.png");
+	AddResourece(TextureTag::eSearch7, "../Assets/Image/loading/7.png");
+	AddResourece(TextureTag::eSearch8, "../Assets/Image/loading/8.png");
+	AddResourece(TextureTag::eSearch9, "../Assets/Image/loading/9.png");
 }
 
 void CResourceManager::LoadEnvironmentData()
@@ -231,6 +215,10 @@ void CResourceManager::LoadMapData()
 	AddResourece(TextureTag::eSideWalk1ND,		"../Assets/FBX Model/SideWalk/5ND.dds");
 	AddResourece(TextureTag::eSideWalk2D,		"../Assets/FBX Model/SideWalk/2Diffuse.jpg");
 	AddResourece(TextureTag::eSideWalk2N,		"../Assets/FBX Model/SideWalk/2NorMap.png");
+
+//	AddResourece(MeshTag::eTest,				"../Assets/FBX Model/Desk4.model");
+//	AddResourece(TextureTag::eTest,				"../Assets/FBX Model/Office.png");
+
 }
 
 void CResourceManager::LoadCharacterData()
@@ -272,6 +260,9 @@ void CResourceManager::LoadEtcData()
 	AddResourece(TextureTag::eBricksN,		"../Assets/Image/Miscellaneous/bricks_nmap.dds");
 	AddResourece(TextureTag::eWallD,		"../Assets/Image/Miscellaneous/wall.jpg");
 	AddResourece(TextureTag::eWallND,		"../Assets/Image/Miscellaneous/wall_NM_height.dds");
+
+	AddResourece(TextureTag::eDecal_Concrete,	"../Assets/Image/Decal/Decal_Concrete.dds");
+	AddResourece(TextureTag::eDecal_White,		"../Assets/Image/Decal/white.dds");
 }
 
 void CResourceManager::AddResourece(const TextureTag& textureTag, const string& source)

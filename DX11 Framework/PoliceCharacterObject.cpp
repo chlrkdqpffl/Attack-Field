@@ -35,7 +35,7 @@ void CPoliceCharacterObject::CreateMaterial()
 
 void CPoliceCharacterObject::CreateAnimation()
 {
-	AddAnimation(make_tuple(AnimationData::CharacterAnim::eIdle, AnimationTrack("Take_001"), AnimationData::Type::eLoop));
+	AddAnimation(make_tuple(AnimationTag::eIdle, AnimationTrack("Take_001"), AnimationType::eLoop));
 }
 
 void CPoliceCharacterObject::CreateWeapon(ID3D11Device *pd3dDevice)

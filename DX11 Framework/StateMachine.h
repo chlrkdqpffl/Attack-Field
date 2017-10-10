@@ -6,7 +6,7 @@ template <typename ObjectType>
 class CStateMachine
 {
 public:
-	CStateMachine(ObjectType* owner, AnimationData::Parts type)
+	CStateMachine(ObjectType* owner, CharacterParts type)
 		: m_pOwner(owner), m_partsBody(type)
 	{
 		m_pCurrentState = CState_Idle::GetInstance();
@@ -30,7 +30,7 @@ public:
 
 	virtual void Update()
 	{
-		if (m_partsBody == AnimationData::Parts::UpperBody) {
+		if (m_partsBody == CharacterParts::UpperBody) {
 			m_pAnyState->UpdateUpperBodyState(m_pOwner);
 			m_pCurrentState->UpdateUpperBodyState(m_pOwner);
 		}
@@ -44,7 +44,7 @@ public:
 
 protected:
 	ObjectType*					m_pOwner = nullptr;
-	AnimationData::Parts		m_partsBody = AnimationData::Parts::Defalut;
+	CharacterParts		m_partsBody = CharacterParts::Defalut;
 
 	CFSM_State<ObjectType>*		m_pAnyState = nullptr;
 	CFSM_State<ObjectType>*		m_pPreviousState = nullptr;

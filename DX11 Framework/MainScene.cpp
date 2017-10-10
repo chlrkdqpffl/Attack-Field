@@ -69,7 +69,6 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			case VK_F3:
 				m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag(wParam - VK_F1 + 1));
 				m_pCamera = m_pPlayer->GetCamera();
-				SCENE_MGR->g_pCamera = m_pCamera;
 				break;
 			case VK_F4:	
 				m_pPlayer->SetPosition(XMFLOAT3(60.0f, 30.0f, 20.0f));
@@ -95,9 +94,11 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 			case VK_B:
 				m_vecCharacterContainer.back()->SetIsFire(false);
 				break;
+			case VK_H:
+				m_vecCharacterContainer.back()->SetPitch(65);
+				break;
 			case VK_N:
-				m_vecCharacterContainer.back()->ReplaceWeapon(WeaponTag::eSniperRifle);
-				//m_bIsGameRoundOver = true;
+				m_vecCharacterContainer.back()->SetPitch(-65);
 				break;
 #endif
 			}
@@ -362,7 +363,7 @@ void CMainScene::Initialize()
 #else
 	pCharacter->SetLife(100);
 #endif
-	pCharacter->SetPosition(60.0f, 2.5f, 15.0f);
+	pCharacter->SetPosition(78.0f, 2.8f, 20.0f);
 
 	m_vecBBoxRenderContainer.push_back(pCharacter);
 	m_vecCharacterContainer.push_back(pCharacter);
@@ -1590,6 +1591,7 @@ void CMainScene::CreateTestingObject()
 	}
 	m_vecInstancedObjectsShaderContainer.push_back(pInstancingShaders);
 #pragma endregion
+
 }
 
 void CMainScene::CreateTweakBars()
@@ -1947,6 +1949,10 @@ void CMainScene::ShowAimUI()
 	if (m_pCamera->GetCameraTag() != CameraTag::eFirstPerson)
 		return;
 
+	// 살아있는 상태에만 UI Render
+	if (!m_pPlayerCharacter->GetAlive())
+		return;
+	
 	if (m_pPlayer->GetIsZoom())
 		m_pAimObject->SetActive(false);
 	else
@@ -2322,7 +2328,6 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	// =============== Deferred Rendering ================== //
 	if (GLOBAL_MGR->g_bEnablePostFX) {
 		float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-		//float fClearColor[4] = { 0.9f, 0.9f, 0.9f, 1.0f };
 		m_pd3dDeviceContext->ClearRenderTargetView(m_HDRRTV, fClearColor);
 	}
 	m_GBuffer->OnPreRender(pd3dDeviceContext);

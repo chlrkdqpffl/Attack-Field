@@ -2,7 +2,7 @@
 #include "AnimationController.h"
 
 
-CAnimationController::CAnimationController(AnimationData::Parts type)
+CAnimationController::CAnimationController(CharacterParts type)
 	:m_typeParts(type)
 {
 }
@@ -11,7 +11,7 @@ CAnimationController::~CAnimationController()
 {
 }
 
-void CAnimationController::SetAnimation(AnimationData::CharacterAnim anim, float speed)
+void CAnimationController::SetAnimation(AnimationTag anim, float speed)
 {
 	if (get<0>(m_currAnimState) == anim)
 		return;
@@ -32,7 +32,7 @@ void CAnimationController::SetAnimation(AnimationData::CharacterAnim anim, float
 	cout << "No Animation Data!! -  " << static_cast<int>(anim) << endl;
 }
 
-void CAnimationController::AddAnimation(tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> anim)
+void CAnimationController::AddAnimation(tuple<AnimationTag, AnimationTrack, AnimationType> anim)
 {
 	m_animaitionTupleVector.push_back(anim);
 	
@@ -49,25 +49,25 @@ void CAnimationController::UpdateTime(float fDeltaTime)
 	float timeElapse = get<1>(m_currAnimState).m_fSpeed * fDeltaTime * TWBAR_MGR->g_fAnimationSpeed;
 
 	switch (GetAnimType()) {
-	case AnimationData::Type::eLoop:
+	case AnimationType::eLoop:
 		m_fTimePos += timeElapse;
 
 		if (m_fTimePos > endTime)
 			m_fTimePos = 0.0f;
 		break;
-	case AnimationData::Type::eInverseLoop:
+	case AnimationType::eInverseLoop:
 		m_fTimePos -= timeElapse;
 
 		if (m_fTimePos < 0.0f)
 			m_fTimePos = endTime;
 		break;
-	case AnimationData::Type::eOnce:
+	case AnimationType::eOnce:
 		m_fTimePos += timeElapse;
 		if (m_fTimePos > endTime)
-			//SetAnimation(AnimationData::CharacterAnim::eIdle);
+			//SetAnimation(AnimationTag::eIdle);
 			m_isActive = false;
 		break;
-	case AnimationData::Type::ePingPong:
+	case AnimationType::ePingPong:
 		static bool isReverse = false;
 
 		if (isReverse == false) {
@@ -82,7 +82,7 @@ void CAnimationController::UpdateTime(float fDeltaTime)
 
 			if (m_fTimePos < 0.0f) {
 				isReverse = false;
-				SetAnimation(AnimationData::CharacterAnim::eIdle);
+				SetAnimation(AnimationTag::eIdle);
 				m_isActive = false;
 			}
 		}

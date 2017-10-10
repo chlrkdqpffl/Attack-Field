@@ -271,10 +271,8 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 			m_pCharacter->SetIsReload(true);
 	}
 
-	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy)) {
-//		if (m_pCharacter->GetAlive())
+	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy))
 			m_pCharacter->SetOccupy(true);
-	}
 	else
 		m_pCharacter->SetOccupy(false);
 
@@ -522,6 +520,7 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 
 	if (m_pCamera) delete m_pCamera;
 
+	SCENE_MGR->g_pCamera = pNewCamera;
 	return(pNewCamera);
 }
 

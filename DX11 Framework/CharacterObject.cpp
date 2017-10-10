@@ -36,8 +36,8 @@ void CCharacterObject::CreateObjectData(ID3D11Device *pd3dDevice)
 
 void CCharacterObject::CreateStateMachine()
 {
-	m_pStateUpper = new CStateMachine<CCharacterObject>(this, AnimationData::Parts::UpperBody);
-	m_pStateLower = new CStateMachine<CCharacterObject>(this, AnimationData::Parts::LowerBody);
+	m_pStateUpper = new CStateMachine<CCharacterObject>(this, CharacterParts::UpperBody);
+	m_pStateLower = new CStateMachine<CCharacterObject>(this, CharacterParts::LowerBody);
 }	
 
 BoundingOrientedBox CCharacterObject::GetPartsBoundingOBox(UINT index) const

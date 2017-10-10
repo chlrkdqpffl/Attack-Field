@@ -25,7 +25,6 @@ void CTitleScene::CreatePlayer()
 	현재는 무조건 플레이어를 거쳐서 카메라를 만들어 준다.
 	*/
 
-
 	m_pPlayer = new CTerrainPlayer();
 	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson);
 	m_pCamera = m_pPlayer->GetCamera();
@@ -42,7 +41,6 @@ void CTitleScene::CreateUIImage()
 	CUIObject* pBackGroundUI = new CUIObject(TextureTag::eTitleBackGroundD);
 	pBackGroundUI->Initialize(m_pd3dDevice, POINT{ 0,0 }, POINT{ FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT }, 0.99f);
 	m_pUIManager->SetBackGroundUI(pBackGroundUI);
-
 
 
 	// Start   
@@ -72,7 +70,7 @@ void CTitleScene::CreateUIImage()
 	//pLoginBack->SetActive(false);
 	//m_pUIManager->AddUIObject(pLoginBack);
 
-
+	/*
 	//IDUI
 	CUIObject* pID = new CUIObject(TextureTag::eID);
 	pID->Initialize(m_pd3dDevice, POINT{ 950, 515 }, POINT{ 1320, 585 }, 0.1f);
@@ -111,7 +109,7 @@ void CTitleScene::CreateUIImage()
 	m_pUIManager->AddUIObject(pLoginOn);
 
 
-
+	*/
 
 }
 
@@ -119,16 +117,11 @@ void CTitleScene::IsOnCursorUI(POINT mousePos, HWND hWnd)
 {
 	auto findTag = m_pUIManager->FindCollisionUIObject(mousePos);
 
-
-	//InvalidateRect(hWnd, NULL, TRUE);
-
 	switch (findTag) {
 	case TextureTag::eNone:
 		m_tagCursorSelectUI = TextureTag::eNone;
 		m_pUIManager->GetUIObject(TextureTag::eStartButtonOn)->SetActive(false);
 		m_pUIManager->GetUIObject(TextureTag::eExitButtonOn)->SetActive(false);
-		m_pUIManager->GetUIObject(TextureTag::eLoginon)->SetActive(false);
-
 
 		break;
 	case TextureTag::eStartButtonOff:
@@ -140,30 +133,6 @@ void CTitleScene::IsOnCursorUI(POINT mousePos, HWND hWnd)
 		m_tagCursorSelectUI = TextureTag::eExitButtonOn;
 		m_pUIManager->GetUIObject(TextureTag::eExitButtonOn)->SetActive(true);
 		break;
-
-	case TextureTag::eLogin:
-
-		m_tagCursorSelectUI = TextureTag::eLoginon;
-		m_pUIManager->GetUIObject(TextureTag::eLoginon)->SetActive(true);
-		break;
-
-	case TextureTag::eID:
-		m_tagCursorSelectUI = TextureTag::eID;
-		break;
-
-	case TextureTag::ePassword:
-		m_tagCursorSelectUI = TextureTag::ePassword;
-		break;
-
-	case TextureTag::eIDClick:
-		m_tagCursorSelectUI = TextureTag::eIDClick;
-		break;
-
-	case TextureTag::ePasswordClick:
-		m_tagCursorSelectUI = TextureTag::ePasswordClick;
-		break;
-
-
 	}
 }
 
@@ -171,42 +140,8 @@ void CTitleScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 {
 	switch (m_tagCursorSelectUI) {
 	case TextureTag::eStartButtonOn:
-
-		//m_pUIManager->GetUIObject(TextureTag::eLoginBack)->SetActive(true);
-		m_pUIManager->GetUIObject(TextureTag::eID)->SetActive(true);
-		m_pUIManager->GetUIObject(TextureTag::ePassword)->SetActive(true);
-		m_pUIManager->GetUIObject(TextureTag::eLogin)->SetActive(true);
-
-
-		m_pUIManager->GetUIObject(TextureTag::eStartButtonOn)->SetActive(false);
-		m_pUIManager->GetUIObject(TextureTag::eExitButtonOn)->SetActive(false);
-		m_pUIManager->GetUIObject(TextureTag::eStartButtonOff)->SetActive(false);
-		m_pUIManager->GetUIObject(TextureTag::eExitButtonOff)->SetActive(false);
-
-
-		break;
-	case TextureTag::eID:
-		m_tagCursorSelectUI = TextureTag::eIDClick;
-		m_Idclick = true;
-		m_pUIManager->GetUIObject(TextureTag::eID)->SetActive(false);
-		m_pUIManager->GetUIObject(TextureTag::eIDClick)->SetActive(true);
-
-		break;
-
-	case TextureTag::ePassword:
-		m_tagCursorSelectUI = TextureTag::ePasswordClick;
-		m_Idclick = false;
-		m_pUIManager->GetUIObject(TextureTag::ePassword)->SetActive(false);
-		m_pUIManager->GetUIObject(TextureTag::ePasswordClick)->SetActive(true);
-		break;
-
-	case TextureTag::eLoginon:
-
 #ifdef USE_SERVER
 		SERVER_MGR->Server_init();
-
-
-
 
 		cs_login packet;
 		strcpy(packet.id, m_ID.c_str());
@@ -218,30 +153,9 @@ void CTitleScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 		packet.type = 6;
 
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-
 #endif
-
-		m_pUIManager->GetUIObject(TextureTag::eStartButtonOff)->SetActive(true);
-		m_pUIManager->GetUIObject(TextureTag::eExitButtonOff)->SetActive(true);
-
-
-
-		//m_pUIManager->GetUIObject(TextureTag::eID)->SetActive(false);
-		//m_pUIManager->GetUIObject(TextureTag::ePassword)->SetActive(false);
-		//m_pUIManager->GetUIObject(TextureTag::eLogin)->SetActive(false);
-
 		if (!SCENE_MGR->m_loginfail)
 			SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
-		break;
-
-	case TextureTag::eIDClick:
-		m_Idclick = true;
-		m_tagCursorSelectUI = TextureTag::eIDClick;
-		break;
-
-	case TextureTag::ePasswordClick:
-		m_Idclick = false;
-		m_tagCursorSelectUI = TextureTag::ePasswordClick;
 		break;
 
 	case TextureTag::eExitButtonOn:

@@ -22,7 +22,7 @@ CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner)
 	m_fRange = 150.f;
 	m_uiFireSpeed = 100;
 
-	m_fReCoil = 0.2f;
+	m_fReCoil = 0.3f;
 	m_fMaxPitchGap = 5.0f;
 
 	m_nMaxhasBulletCount = 30;

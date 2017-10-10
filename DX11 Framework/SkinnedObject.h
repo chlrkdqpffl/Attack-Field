@@ -24,31 +24,31 @@ public:
 	virtual void Update(float fDeltaTime) override;
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera) override;
 
-	void AddAnimation(tuple<AnimationData::CharacterAnim, AnimationTrack, AnimationData::Type> anim) { 
+	void AddAnimation(tuple<AnimationTag, AnimationTrack, AnimationType> anim) { 
 		m_pUpperController->AddAnimation(anim); 
 		m_pLowerController->AddAnimation(anim);
 	};
 	// ------ Get, Setter ------ //
 	CFbxModelSkinnedMesh* GetSkinnedMesh() const { return m_pSkinnedMesh; }
-	AnimationData::CharacterAnim GetAnimationEnum(AnimationData::Parts parts) const {
-		if (parts == AnimationData::Parts::UpperBody)
+	AnimationTag GetAnimationEnum(CharacterParts parts) const {
+		if (parts == CharacterParts::UpperBody)
 			return m_pUpperController->GetAnimEnum();
 		else
 			return m_pLowerController->GetAnimEnum();
 	}
-	bool GetControllerActive(AnimationData::Parts parts) const {
-		if (parts == AnimationData::Parts::UpperBody)
+	bool GetControllerActive(CharacterParts parts) const {
+		if (parts == CharacterParts::UpperBody)
 			return m_pUpperController->GetActive();
 		else
 			return m_pLowerController->GetActive();
 	}
-	void SetControllerActive(AnimationData::Parts parts, bool set) const {
-		if (parts == AnimationData::Parts::UpperBody)
+	void SetControllerActive(CharacterParts parts, bool set) const {
+		if (parts == CharacterParts::UpperBody)
 			m_pUpperController->SetActive(set);
 		else
 			m_pLowerController->SetActive(set);
 	}
 	void SetMesh(CFbxModelSkinnedMesh* mesh, int index = 0);
-	void SetAnimation(AnimationData::CharacterAnim anim, float speed = 1.0f);
-	void SetAnimation(AnimationData::Parts parts, AnimationData::CharacterAnim anim, float speed = 1.0f);
+	void SetAnimation(AnimationTag anim, float speed = 1.0f);
+	void SetAnimation(CharacterParts parts, AnimationTag anim, float speed = 1.0f);
 };

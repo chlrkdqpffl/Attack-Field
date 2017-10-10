@@ -99,7 +99,7 @@ public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 	virtual void RenderInstanced(ID3D11DeviceContext *pd3dDeviceContext, int nInstances = 0, int nStartInstance = 0);
 
-	int CheckRayIntersection(XMVECTOR *pd3dxvRayPosition, XMVECTOR *pd3dxvRayDirection, CollisionInfo *pd3dxIntersectInfo);
+	int CheckRayIntersection(XMVECTOR *pvRayPosition, XMVECTOR *pvRayDirection, CollisionInfo *pIntersectInfo);
 
 	// ----- Get, Setter ----- //
 	MeshTag	GetMeshTag() const { return m_tagMesh; }

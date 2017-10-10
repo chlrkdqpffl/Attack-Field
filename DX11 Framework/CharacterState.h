@@ -7,10 +7,10 @@ public:
 	CState_AnyTime() {};
 	virtual ~CState_AnyTime() {};
 
-	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override {};
+	virtual void EnterState(CCharacterObject*, CharacterParts) override {};
 	virtual void UpdateUpperBodyState(CCharacterObject*) override;
 	virtual void UpdateLowerBodyState(CCharacterObject*) override {};
-	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override {};
+	virtual void ExitState(CCharacterObject*, CharacterParts) override {};
 
 	static CState_AnyTime* GetInstance()
 	{
@@ -26,10 +26,10 @@ public:
 	CState_Idle() {};
 	virtual ~CState_Idle() {};
 
-	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void EnterState(CCharacterObject*, CharacterParts) override;
 	virtual void UpdateUpperBodyState(CCharacterObject*) override;
 	virtual void UpdateLowerBodyState(CCharacterObject*) override;
-	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void ExitState(CCharacterObject*, CharacterParts) override;
 
 	static CState_Idle* GetInstance()
 	{
@@ -45,10 +45,10 @@ public:
 	CState_Walk() {};
 	virtual ~CState_Walk() {};
 
-	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void EnterState(CCharacterObject*, CharacterParts) override;
 	virtual void UpdateUpperBodyState(CCharacterObject*) override;
 	virtual void UpdateLowerBodyState(CCharacterObject*) override;
-	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void ExitState(CCharacterObject*, CharacterParts) override;
 
 	static CState_Walk* GetInstance()
 	{
@@ -64,10 +64,10 @@ public:
 	CState_Crouch() {};
 	virtual ~CState_Crouch() {};
 
-	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void EnterState(CCharacterObject*, CharacterParts) override;
 	virtual void UpdateUpperBodyState(CCharacterObject*) override;
 	virtual void UpdateLowerBodyState(CCharacterObject*) override;
-	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void ExitState(CCharacterObject*, CharacterParts) override;
 
 	static CState_Crouch* GetInstance()
 	{
@@ -83,10 +83,10 @@ public:
 	CState_Reload() {};
 	virtual ~CState_Reload() {};
 
-	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void EnterState(CCharacterObject*, CharacterParts) override;
 	virtual void UpdateUpperBodyState(CCharacterObject*) override;
 	virtual void UpdateLowerBodyState(CCharacterObject*) override;
-	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void ExitState(CCharacterObject*, CharacterParts) override;
 
 	static CState_Reload* GetInstance()
 	{
@@ -104,10 +104,10 @@ public:
 	CState_ReplacementWeapon() {};
 	virtual ~CState_ReplacementWeapon() {};
 
-	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void EnterState(CCharacterObject*, CharacterParts) override;
 	virtual void UpdateUpperBodyState(CCharacterObject*) override;
 	virtual void UpdateLowerBodyState(CCharacterObject*) override;
-	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void ExitState(CCharacterObject*, CharacterParts) override;
 
 	static CState_ReplacementWeapon * GetInstance()
 	{
@@ -123,10 +123,10 @@ public:
 	CState_Fire() {};
 	virtual ~CState_Fire() {};
 
-	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void EnterState(CCharacterObject*, CharacterParts) override;
 	virtual void UpdateUpperBodyState(CCharacterObject*) override;
 	virtual void UpdateLowerBodyState(CCharacterObject*) override;
-	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void ExitState(CCharacterObject*, CharacterParts) override;
 
 	static CState_Fire* GetInstance()
 	{
@@ -142,10 +142,10 @@ public:
 	CState_FireLoop() {};
 	virtual ~CState_FireLoop() {};
 
-	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void EnterState(CCharacterObject*, CharacterParts) override;
 	virtual void UpdateUpperBodyState(CCharacterObject*) override;
 	virtual void UpdateLowerBodyState(CCharacterObject*) override;
-	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void ExitState(CCharacterObject*, CharacterParts) override;
 
 	static CState_FireLoop* GetInstance()
 	{
@@ -161,10 +161,10 @@ public:
 	CState_Run() {};
 	virtual ~CState_Run() {};
 
-	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void EnterState(CCharacterObject*, CharacterParts) override;
 	virtual void UpdateUpperBodyState(CCharacterObject*) override;
 	virtual void UpdateLowerBodyState(CCharacterObject*) override;
-	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void ExitState(CCharacterObject*, CharacterParts) override;
 
 	static CState_Run* GetInstance()
 	{
@@ -183,10 +183,10 @@ public:
 	CState_Death() {};
 	virtual ~CState_Death() {};
 
-	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void EnterState(CCharacterObject*, CharacterParts) override;
 	virtual void UpdateUpperBodyState(CCharacterObject*) override;
 	virtual void UpdateLowerBodyState(CCharacterObject*) override;
-	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void ExitState(CCharacterObject*, CharacterParts) override;
 
 	static CState_Death* GetInstance()
 	{
@@ -202,10 +202,10 @@ public:
 	CState_HeadHit() {};
 	virtual ~CState_HeadHit() {};
 
-	virtual void EnterState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void EnterState(CCharacterObject*, CharacterParts) override;
 	virtual void UpdateUpperBodyState(CCharacterObject*) override;
 	virtual void UpdateLowerBodyState(CCharacterObject*) override;
-	virtual void ExitState(CCharacterObject*, AnimationData::Parts) override;
+	virtual void ExitState(CCharacterObject*, CharacterParts) override;
 
 	static CState_HeadHit* GetInstance()
 	{

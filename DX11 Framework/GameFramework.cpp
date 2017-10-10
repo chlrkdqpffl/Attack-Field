@@ -590,11 +590,13 @@ void CGameFramework::FrameAdvance()
 #endif
 
 	// Draw tweak bars
-	if (true == m_bMouseBindFlag) {
-		if (0 == TwDraw()) {
-			MessageBoxA(m_hWnd, TwGetLastError(), "TwDraw Error!", MB_OK | MB_ICONERROR);
-			exit(0);
-		}	
+	if (SCENE_MGR->g_nowScene->GetSceneTag() == SceneTag::eMainScene) {
+		if (true == m_bMouseBindFlag) {
+			if (0 == TwDraw()) {
+				MessageBoxA(m_hWnd, TwGetLastError(), "TwDraw Error!", MB_OK | MB_ICONERROR);
+				exit(0);
+			}
+		}
 	}
 	m_pDXGISwapChain->Present(0, 0);
 

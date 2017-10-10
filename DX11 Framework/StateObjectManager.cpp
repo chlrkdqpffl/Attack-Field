@@ -11,6 +11,7 @@ ID3D11RasterizerState*	CStateObjectManager::g_pNoCullRS			= nullptr;
 ID3D11BlendState*		CStateObjectManager::g_pAlphaToCoverageBS	= nullptr;
 ID3D11BlendState*		CStateObjectManager::g_pTransparentBS		= nullptr;
 ID3D11BlendState*		CStateObjectManager::g_pAddativeBS			= nullptr;
+ID3D11BlendState*		CStateObjectManager::g_pDecalBS				= nullptr;
 ID3D11BlendState*		CStateObjectManager::g_pBloodBS				= nullptr;
 ID3D11BlendState*		CStateObjectManager::g_pFireBS				= nullptr;
 
@@ -27,14 +28,6 @@ ID3D11DepthStencilState* CStateObjectManager::g_pDisableDepthDSS		= nullptr;
 ID3D11DepthStencilState* CStateObjectManager::g_pGBufferDSS				= nullptr;
 ID3D11DepthStencilState* CStateObjectManager::g_pDefaultDSS				= nullptr;
 
-CStateObjectManager::CStateObjectManager()
-{
-}
-
-CStateObjectManager::~CStateObjectManager()
-{
-}
-
 void CStateObjectManager::InitializeManager()
 {
 	// ---------------------------------------------------------------------------- //
@@ -46,7 +39,7 @@ void CStateObjectManager::InitializeManager()
 	rasterizerDesc.CullMode = D3D11_CULL_BACK;
 	rasterizerDesc.FrontCounterClockwise = false;
 	rasterizerDesc.DepthClipEnable = true;
-
+	
 	HR(g_pd3dDevice->CreateRasterizerState(&rasterizerDesc, &g_pDefaultRS));
 	DXUT_SetDebugName(g_pDefaultRS, "DefaultRS:");
 
@@ -103,6 +96,22 @@ void CStateObjectManager::InitializeManager()
 	}
 	HR(g_pd3dDevice->CreateBlendState(&transparentDesc, &g_pAddativeBS));
 	DXUT_SetDebugName(g_pAddativeBS, "Addative BS:");
+
+
+	D3D11_BLEND_DESC descBlend;
+	descBlend.AlphaToCoverageEnable = FALSE;
+	descBlend.IndependentBlendEnable = FALSE;
+	const D3D11_RENDER_TARGET_BLEND_DESC defaultRenderTargetBlendDesc =
+	{
+		TRUE,
+		D3D11_BLEND_SRC_ALPHA, D3D11_BLEND_INV_SRC_ALPHA, D3D11_BLEND_OP_ADD,
+		D3D11_BLEND_ONE, D3D11_BLEND_ZERO, D3D11_BLEND_OP_ADD,
+		D3D11_COLOR_WRITE_ENABLE_RED | D3D11_COLOR_WRITE_ENABLE_GREEN | D3D11_COLOR_WRITE_ENABLE_BLUE,
+	};
+	for (UINT i = 0; i < D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
+		descBlend.RenderTarget[i] = defaultRenderTargetBlendDesc;
+	HR(g_pd3dDevice->CreateBlendState(&descBlend, &g_pDecalBS));
+	DXUT_SetDebugName(g_pDecalBS, "Decal Alpha Blending BS");
 
 
 	D3D11_BLEND_DESC d3dBlendStateDesc;
@@ -215,6 +224,7 @@ void CStateObjectManager::ReleseManager()
 	ReleaseCOM(g_pAlphaToCoverageBS);
 	ReleaseCOM(g_pTransparentBS);
 	ReleaseCOM(g_pAddativeBS);
+	ReleaseCOM(g_pDecalBS);
 	ReleaseCOM(g_pBloodBS);
 	ReleaseCOM(g_pFireBS);
 

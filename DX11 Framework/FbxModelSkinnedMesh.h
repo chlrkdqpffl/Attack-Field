@@ -13,9 +13,9 @@ struct BlendingInfo
 	AnimationTrack			m_prevAnimation;
 	AnimationTrack			m_CurrAnimation;
 	float					m_fTimePos = 0.0f;
-	AnimationData::Parts	m_typeParts = AnimationData::Parts::Defalut;
+	CharacterParts	m_typeParts = CharacterParts::Defalut;
 
-	BlendingInfo(AnimationTrack prev, AnimationTrack curr, float timePos, AnimationData::Parts type)
+	BlendingInfo(AnimationTrack prev, AnimationTrack curr, float timePos, CharacterParts type)
 		: m_prevAnimation(prev), m_CurrAnimation(curr), m_fTimePos(timePos), m_typeParts(type)
 	{
 	}
@@ -53,12 +53,12 @@ public:
 	void ReleaseConstantBuffer();
 
 	void Interpolate_Blending(const CAnimationClip& dataA, bool& enable, const CAnimationClip& dataB, float timePos, vector<XMFLOAT4X4>& boneTransforms);
-	void Interpolate_Blending(const CAnimationClip& dataA, bool& enable, const CAnimationClip& dataB, float timePos, AnimationData::Parts type, vector<XMFLOAT4X4>& boneTransforms);
+	void Interpolate_Blending(const CAnimationClip& dataA, bool& enable, const CAnimationClip& dataB, float timePos, CharacterParts type, vector<XMFLOAT4X4>& boneTransforms);
 
 	// ----- Get, Setter ----- //
 
 	void GetFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, const float& fTimePos);
-	void CalcFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, const float& fTimePos, AnimationData::Parts type);
+	void CalcFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, const float& fTimePos, CharacterParts type);
 	
 
 	float GetClipStartTime(const string& clipName) const;

@@ -96,38 +96,34 @@ enum class WeaponTag
 
 // ============================================================================================================================ //
 // ===================================================== Animation Data ======================================================= //
-
-namespace AnimationData
+enum class CharacterParts
 {
-	enum class Parts
-	{ 
-		Defalut, UpperBody, LowerBody
-	};
+	Defalut, UpperBody, LowerBody
+};
 
-	enum class Type
-	{
-		eLoop, eInverseLoop, eOnce, ePingPong
-	};
+enum class AnimationType
+{
+	eLoop, eInverseLoop, eOnce, ePingPong
+};
 
-	enum class CharacterAnim
-	{
-		eNone,
-		// --------------------------------------------------------- // 
-		// Whole Body
-		eIdle, eDeath, eDeath_Head, eRun,
+enum class AnimationTag
+{
+	eNone,
+	// --------------------------------------------------------- // 
+	// Whole Body
+	eIdle, eDeath, eDeath_Head, eRun,
 
-		// --------------------------------------------------------- // 
-		// Upper Body
-		UpperBodyAnim = 100,
-		eFire, eFireLoop, eReload, eHeadHit,
-		// --------------------------------------------------------- // 
-		// Lower Body
-		LowerBodyAnim = 1000,
-	
-		eWalk_Left, eWalk_ForwardLeft, eWalk_Forward, eWalk_ForwardRight, eWalk_Right, eWalk_BackwardRight, eWalk_Backward, eWalk_BackwardLeft,
-		eCrouch
-	};
-}
+	// --------------------------------------------------------- // 
+	// Upper Body
+	UpperBodyAnim = 100,
+	eFire, eFireLoop, eReload, eHeadHit,
+	// --------------------------------------------------------- // 
+	// Lower Body
+	LowerBodyAnim = 1000,
+
+	eWalk_Left, eWalk_ForwardLeft, eWalk_Forward, eWalk_ForwardRight, eWalk_Right, eWalk_BackwardRight, eWalk_Backward, eWalk_BackwardLeft,
+	eCrouch
+};
 
 // =========================================================================================================================== //
 // ===================================================== Texture Data ======================================================== //
@@ -195,17 +191,20 @@ enum class TextureTag
 	eWallD, eWallND,
 
 	// UI2
-	eID, ePassword, eIDClick, ePasswordClick, eLogin, eLoginon,eDeathOn, eOccupyOn, eDeathOff, eOccupyOff, eLoginBack,
+	eDeathOn, eOccupyOn, eDeathOff, eOccupyOff,
 
 	// Particle
 	eFire, eRain, eSpark,
 	eBlood1, eBlood2, eBlood3,
 
+	// Decal
+	eDecal_Concrete, eDecal_White,
+
 	// Sprite
 	eExplosionSprite, eGunExplosionOtherPlayer, eGunExplosionPlayer,
 
 	// Search
-	eSearch1, eSearch2, eSearch3, eSearch4, eSearch5, eSearch6, eSearch7, eSearch8, eSearch9, eSearch10, eSearch11, eSearch12, eSearch13,
+	eSearch1, eSearch2, eSearch3, eSearch4, eSearch5, eSearch6, eSearch7, eSearch8, eSearch9,
 	eDeathSearch, eOccupySearch
 
 };
@@ -218,7 +217,6 @@ enum class MeshTag
 
 	// Skinned
 	eTerrorist, eTerrorist_Arm,
-	eTest2,
 	// --------------------------------------------------------- // 
 	MaxSkinnedMesh = 100,
 	// --------------------------------------------------------- // 
@@ -250,6 +248,8 @@ enum class MeshTag
 
 	// Etc
 	eStreetLamp, eBarricade,
+
+	eTest
 };
 
 enum class ObjectTag

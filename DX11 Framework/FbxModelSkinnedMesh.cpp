@@ -265,7 +265,7 @@ void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData,
 	}
 }
 
-void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData, bool& enable, const CAnimationClip& targetData, float fTimePos, AnimationData::Parts type, vector<XMFLOAT4X4>& boneTransforms)
+void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData, bool& enable, const CAnimationClip& targetData, float fTimePos, CharacterParts type, vector<XMFLOAT4X4>& boneTransforms)
 {
 	// 각 애니메이션 본의 갯수가 틀림
 	assert(targetData.m_vecBoneData.size() == basicData.m_vecBoneData.size());
@@ -275,10 +275,9 @@ void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData,
 	XMVECTOR P1 = zero, P2 = zero;
 	XMVECTOR Q1 = zero, Q2 = zero;
 
-	//static float changeTime = 0.2f;		
-	static const float changeTime = 0.2f;	// 애니메이션 전환 시간 0.3초
+	static const float changeTime = 0.2f;	// 애니메이션 전환 시간 0.2초
 	float blendFactor;
-	if (type == AnimationData::Parts::UpperBody) {
+	if (type == CharacterParts::UpperBody) {
 		blendFactor = m_fUpperBlendingTimeElapsed / changeTime;
 		m_fUpperBlendingTimeElapsed += SCENE_MGR->g_fDeltaTime;
 	}
@@ -289,7 +288,7 @@ void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData,
 
 	if (blendFactor > 1) 		// 애니메이션 전환 시점
 	{
-		if (type == AnimationData::Parts::UpperBody)
+		if (type == CharacterParts::UpperBody)
 			m_fUpperBlendingTimeElapsed = 0.0f;
 		else
 			m_fLowerBlendingTimeElapsed = 0.0f;
@@ -299,7 +298,7 @@ void CFbxModelSkinnedMesh::Interpolate_Blending(const CAnimationClip& basicData,
 
 	float timeLerpPos = (fTimePos / targetData.GetClipEndTime()) * basicData.GetClipEndTime();
 	
-	if (type == AnimationData::Parts::UpperBody) {
+	if (type == CharacterParts::UpperBody) {
 		for (UINT i = 0; i < m_nBodyBoundaryIndex; ++i)
 		{
 			if (0 < basicData.m_vecBoneData[i].m_nAnimaitionKeys) {
@@ -497,7 +496,7 @@ void CFbxModelSkinnedMesh::GetFinalTransformsBlending(AnimationTrack& prevAnim, 
 	}
 }
 
-void CFbxModelSkinnedMesh::CalcFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, const float& fTimePos, AnimationData::Parts type)
+void CFbxModelSkinnedMesh::CalcFinalTransformsBlending(AnimationTrack& prevAnim, const AnimationTrack& currAnim, const float& fTimePos, CharacterParts type)
 {
 	vector<XMFLOAT4X4> toRootTransforms(m_meshData.m_nBoneCount);
 
@@ -508,7 +507,7 @@ void CFbxModelSkinnedMesh::CalcFinalTransformsBlending(AnimationTrack& prevAnim,
 		Interpolate_Blending(pervClip->second, prevAnim.m_bEnable, currClip->second, fTimePos, type, toRootTransforms);
 	}
 	else {
-		if (type == AnimationData::Parts::UpperBody)
+		if (type == CharacterParts::UpperBody)
 			currClip->second.Interpolate(fTimePos, 0, m_nBodyBoundaryIndex, toRootTransforms);
 		else
 			currClip->second.Interpolate(fTimePos, m_nBodyBoundaryIndex, m_meshData.m_nBoneCount, toRootTransforms);
@@ -517,7 +516,7 @@ void CFbxModelSkinnedMesh::CalcFinalTransformsBlending(AnimationTrack& prevAnim,
 
 
 	// 아래의 코드는 Terrorist Character에만 적용되므로 다른 캐릭터를 사용한다면 해당 본을 찾아서 범위를 조절해야함
-	if (type == AnimationData::Parts::UpperBody) {
+	if (type == CharacterParts::UpperBody) {
 		for (UINT i = 0; i < m_nBodyBoundaryIndex; ++i)
 		{
 			XMMATRIX mtxRotate = XMMatrixRotationAxis(XMVectorSet(1.0f, 0, 0, 0), XMConvertToRadians(m_fPitch));
@@ -525,6 +524,7 @@ void CFbxModelSkinnedMesh::CalcFinalTransformsBlending(AnimationTrack& prevAnim,
 			XMMATRIX mtxOffset = XMLoadFloat4x4(&m_meshData.m_vecBoneOffsets[i]);
 			XMMATRIX mtxToRoot = XMLoadFloat4x4(&toRootTransforms[i]);
 
+			// 허리 뼈대 인덱스 2
 			if (i < 2)
 				m_vecFinalBone[i] = mtxOffset * mtxToRoot * mtxRotateHalf;
 			else
