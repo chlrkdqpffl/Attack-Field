@@ -48,7 +48,6 @@ public:
 	void CalcOccupyPosition();
 
 	// UI
-	void PrepareRenderUI();
 	void RenderUI();
 	void ShowAimUI();
 	void ShowZoomScope();

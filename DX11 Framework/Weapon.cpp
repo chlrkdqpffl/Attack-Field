@@ -24,8 +24,12 @@ void CWeapon::Firing(XMVECTOR direction)
 		if(m_pOwner->GetCharacterID() == 0)		// 본인 캐릭터만 적용
 			FireRecoil();
 		
-		XMVECTOR firePosOffset = SCENE_MGR->g_pCamera->GetvPosition();
-
+		XMVECTOR firePosOffset;
+		if (m_pOwner->GetCharacterID() == 0)
+			firePosOffset = SCENE_MGR->g_pCamera->GetvPosition();
+		else
+			firePosOffset = GetvPosition() + (GetvRight() * -0.13f) + (GetvUp() * 0.05f) + (GetvLook() * -0.225f);
+		
 		if(GLOBAL_MGR->g_vRenderOption.y)
 			COLLISION_MGR->CreateFireDirectionLine(firePosOffset, direction, m_fRange);		// 총 발사 레이 렌더링
 

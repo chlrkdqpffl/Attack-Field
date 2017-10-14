@@ -19,16 +19,20 @@ void CSceneManager::ChangeScene(SceneTag tagScene)
 	switch (tagScene) {
 	case SceneTag::eTitleScene:
 		pScene = new CTitleScene();
+		g_bMouseBindFlag = true;
 		break;
 	case SceneTag::eWaitScene:
 		pScene = new CWaitScene();
+		g_bMouseBindFlag = true;
 		break;
 	case SceneTag::eLoadingScene:
 		pScene = new CLoadingScene();
+		g_bMouseBindFlag = false;
 		break;
 	case SceneTag::eMainScene:
 		g_pMainScene = new CMainScene();
 		pScene = g_pMainScene;
+		g_bMouseBindFlag = false;
 		break;
 	default:
 		cout << "CSceneManager::ChangeScene - Scene 정보가 없음" << endl;

@@ -101,8 +101,16 @@ void CPlayer::AddAccel(XMFLOAT3 force)
 	m_f3Accelerate.z += force.z;
 }
 
-void CPlayer::OnKeyboardUpdate(UINT nMessageID, WPARAM wParam)
+void CPlayer::OnKeyInputUpdate(UINT nMessageID, WPARAM wParam)
 {
+	// Death Check
+	if (m_pCharacter->GetIsDeath()) {
+		m_bIsZoom = false;
+		m_nFovAngle = 45;
+		m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_nFovAngle);
+		return;
+	}
+
 	switch (nMessageID) {
 	// ----------- Mouse --------- //
 	case WM_LBUTTONDOWN:			// Fire

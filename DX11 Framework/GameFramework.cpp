@@ -32,7 +32,6 @@ CGameFramework::CGameFramework()
 		std::ios::sync_with_stdio();
 #endif
 #ifdef USE_SERVER
-	m_bMouseBindFlag = true;
 	ShowCursor(true);
 	ReleaseCapture();
 #endif
@@ -331,7 +330,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 	case WM_KEYDOWN:
 		switch (wParam) {
 		case VK_ESCAPE:
-			m_bMouseBindFlag = !m_bMouseBindFlag;
+			SCENE_MGR->g_bMouseBindFlag = !SCENE_MGR->g_bMouseBindFlag;
 			ShowCursor(true);
 			ReleaseCapture();
 			break;
@@ -383,7 +382,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 		m_bTweakInit = true;
 	}
 
-	if (m_bMouseBindFlag)
+	if (SCENE_MGR->g_bMouseBindFlag)
 		TwEventWin(m_hWnd, nMessageID, wParam, lParam);
 	else 
 		TwEventWin(m_hWnd, 0, wParam, lParam);
@@ -481,7 +480,6 @@ void CGameFramework::BuildObjects()
 	switch (startTag) {
 		case SceneTag::eTitleScene:
 			SCENE_MGR->ChangeScene(SceneTag::eTitleScene);
-			m_bMouseBindFlag = true;
 		break;
 		case SceneTag::eMainScene:
 			RESOURCE_MGR->LoadResourceAll();
@@ -539,7 +537,7 @@ void CGameFramework::ProcessInput()
 	POINT ptCursorPos;
 
 	if (GetCapture() == m_hWnd)	{
-		if (m_bMouseBindFlag == false) {
+		if (SCENE_MGR->g_bMouseBindFlag == false) {
 			SetCursor(NULL);
 			GetCursorPos(&ptCursorPos);
 
@@ -591,7 +589,7 @@ void CGameFramework::FrameAdvance()
 
 	// Draw tweak bars
 	if (SCENE_MGR->g_nowScene->GetSceneTag() == SceneTag::eMainScene) {
-		if (true == m_bMouseBindFlag) {
+		if (true == SCENE_MGR->g_bMouseBindFlag) {
 			if (0 == TwDraw()) {
 				MessageBoxA(m_hWnd, TwGetLastError(), "TwDraw Error!", MB_OK | MB_ICONERROR);
 				exit(0);

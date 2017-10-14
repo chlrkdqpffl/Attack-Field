@@ -18,10 +18,13 @@ public:
 	CCharacterPlayer				*g_pPlayerCharacter = nullptr;
 	ID3D11RenderTargetView			*g_pd3dRenderTargetView = nullptr;
 	ID3D11DepthStencilView			*g_pd3dDepthStencilView = nullptr;
-	bool							m_loginfail = false;
 	float							g_fDeltaTime	= 0.0f;
-	LPARAM							g_lParam			= 0;
 	PxScene*						g_pPxScene		= nullptr;
+	bool							g_bMouseBindFlag = true;
+
+	// Server
+	bool							m_loginfail = false;
+	LPARAM							g_lParam		= 0;
 
 public:
 	CSceneManager() {};

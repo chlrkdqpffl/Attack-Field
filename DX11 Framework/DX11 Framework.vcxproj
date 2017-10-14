@@ -216,9 +216,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="SSReflection.cpp" />
-    <ClCompile Include="TerrainShader.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="TerroristCharacterObject.cpp" />
     <ClCompile Include="TerroristPlayer.cpp" />
     <ClCompile Include="TextureToScreenRectMesh.cpp" />
@@ -226,15 +223,6 @@
     <ClCompile Include="DirectX11_Project.cpp" />
     <ClCompile Include="FirstPersonCamera.cpp" />
     <ClCompile Include="GameFramework.cpp" />
-    <ClCompile Include="HeightMap.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="HeightMapGridMesh.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="HeightMapTerrain.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="LineMesh.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="FbxModelMesh.cpp" />
@@ -259,9 +247,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TerrainPlayer.cpp" />
-    <ClCompile Include="TerrainWater.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="TextManager.cpp" />
     <ClCompile Include="TexturedRectMesh.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -273,12 +258,6 @@
     <ClCompile Include="UIObject.cpp" />
     <ClCompile Include="UIShader.cpp" />
     <ClCompile Include="WaitScene.cpp" />
-    <ClCompile Include="WaterGridMesh.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="WaterShader.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -317,15 +296,6 @@
     <ClInclude Include="DirectX11_Project.h" />
     <ClInclude Include="FirstPersonCamera.h" />
     <ClInclude Include="GameFramework.h" />
-    <ClInclude Include="HeightMap.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="HeightMapGridMesh.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="HeightMapTerrain.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="LineMesh.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="FbxModelMesh.h" />
@@ -379,12 +349,6 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TerrainPlayer.h" />
-    <ClInclude Include="TerrainShader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="TerrainWater.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="TerroristCharacterObject.h" />
     <ClInclude Include="TerroristPlayer.h" />
     <ClInclude Include="TextManager.h" />
@@ -399,12 +363,6 @@
     <ClInclude Include="UserDefine.h" />
     <ClInclude Include="UserTag.h" />
     <ClInclude Include="WaitScene.h" />
-    <ClInclude Include="WaterGridMesh.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="WaterShader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <ItemGroup>

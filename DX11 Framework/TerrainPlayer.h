@@ -1,7 +1,6 @@
 #pragma once
 #include "Player.h"
 #include "ThirdPersonCamera.h"
-#include "HeightMapTerrain.h"
 
 class CTerrainPlayer : public CPlayer
 {

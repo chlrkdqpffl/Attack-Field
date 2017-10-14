@@ -51,7 +51,7 @@ public:
 
 	void Rotate(float x, float y);
 	void Update(float fDeltaTime);
-	void OnKeyboardUpdate(UINT nMessageID, WPARAM wParam);
+	void OnKeyInputUpdate(UINT nMessageID, WPARAM wParam);
 	void UpdateKeyState(float fDeltaTime);
 	void UpdateDOF(float fDeltaTime);
 

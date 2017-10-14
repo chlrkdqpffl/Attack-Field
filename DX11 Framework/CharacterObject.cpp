@@ -137,7 +137,6 @@ void CCharacterObject::OnCollisionCheck()
 			rayDirection = XMVector3Normalize(rayDirection);
 
 			int collisionObjectCount = staticObject->GetMesh()->CheckRayIntersection(&rayPosition, &rayDirection, &info);
-			
 			if (collisionObjectCount) {
 				if (info.m_fDistance < 2) {
 					XMVECTOR slidingVec = velocity - XMVector3Dot(velocity, XMLoadFloat3(&info.m_f3HitNormal)) * XMLoadFloat3(&info.m_f3HitNormal);

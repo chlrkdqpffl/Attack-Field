@@ -53,7 +53,6 @@ public:
 
 	TextureTag FindCollisionUIObject(POINT mousePos);
 	void AddUIObject(CUIObject* object) { m_vecUIObject.push_back(object); };
-	void Render(ID3D11DeviceContext* pDeviceContext, TextureTag tag);
 	void RenderAll(ID3D11DeviceContext* pDeviceContext);
 
 	// ----- Get, Setter ----- //

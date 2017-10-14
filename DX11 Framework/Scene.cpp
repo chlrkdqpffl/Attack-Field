@@ -170,7 +170,7 @@ void CScene::ReleasePhysX()
 	if (m_pPxControllerManager) m_pPxControllerManager->release();
 	if (m_pPxScene) m_pPxScene->release();
 	if (m_pPxFoundation) m_pPxFoundation->release();
-	if (m_pPxPhysicsSDK) m_pPxPhysicsSDK->release();
+//	if (m_pPxPhysicsSDK) m_pPxPhysicsSDK->release();	릴리즈 버그 발생으로 임시 제거
 	if (m_pPxCooking) m_pPxCooking->release();
 }
 

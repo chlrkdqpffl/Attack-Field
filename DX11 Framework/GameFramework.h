@@ -67,7 +67,6 @@ private:
 	unsigned __int64				m_ui64VideoMemory		= 0;
 
 	// TweakBar
-	bool							m_bMouseBindFlag		= false;
 	bool							m_bTweakInit			= false;
 
 	// FrameRate

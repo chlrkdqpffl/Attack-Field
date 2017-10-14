@@ -223,7 +223,6 @@ PS_GBUFFER_OUTPUT PSTexturedLightingTangent(VS_TEXTURED_LIGHTING_TANGENT_OUTPUT 
     return output;
 }
 
-
 //-------------------------------------------------------------------------------------------------------------------------------
 VS_INSTANCED_TEXTURED_LIGHTING_OUTPUT VSInstancedTexturedLightingColor(VS_INSTANCED_TEXTURED_LIGHTING_INPUT input)
 {

@@ -35,7 +35,7 @@ CMainScene::~CMainScene()
 bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	CScene::OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
-	m_pPlayer->OnKeyboardUpdate(nMessageID, wParam);
+	m_pPlayer->OnKeyInputUpdate(nMessageID, wParam);
 
 	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
@@ -59,7 +59,7 @@ bool CMainScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	CScene::OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
-	m_pPlayer->OnKeyboardUpdate(nMessageID, wParam);
+	m_pPlayer->OnKeyInputUpdate(nMessageID, wParam);
 
 	switch (nMessageID) {
 		case WM_KEYDOWN:
@@ -1919,16 +1919,6 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 	}
 }
 
-void CMainScene::PrepareRenderUI()
-{
-	// 중복해서 그리는 문제 존재(m_pUIManager 에서 추가 렌더링)
-	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eRespawnGageBar);
-	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eRespawnGageWhiteBar);
-
-	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eOccupyGageBar);
-	m_pUIManager->Render(m_pd3dDeviceContext, TextureTag::eOccupyGageWhiteBar);
-}
-
 void CMainScene::RenderUI()
 {
 	ShowAimUI();
@@ -2370,9 +2360,6 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 		m_pSSReflection->DoReflectionBlend(pd3dDeviceContext);
 	}
 
-	// ----- UI ----- // 
-	PrepareRenderUI();
-
 	// ----- Particle System ----- //
 	PARTICLE_MGR->RenderAllEffect(m_pd3dDeviceContext);
 	
@@ -2402,7 +2389,7 @@ void CMainScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera
 	RenderUI();
 	RenderAllText(m_pd3dDeviceContext);
 	m_pd3dDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
-
+	
 #ifdef USE_DEFERRD_RENDER
 	if (GLOBAL_MGR->g_bShowGBuffer) {
 		pd3dDeviceContext->OMSetRenderTargets(1, &SCENE_MGR->g_pd3dRenderTargetView, nullptr);

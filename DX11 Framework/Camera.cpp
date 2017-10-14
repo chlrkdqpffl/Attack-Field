@@ -210,70 +210,56 @@ void CCamera::CalculateFrustumPlanes()
 
 bool CCamera::IsInFrustum(XMVECTOR& xCenter, XMVECTOR& xExtern)
 {
-	XMFLOAT3 xmVectorNearPoint, xmVectorFarPoint, xmVectorNormal;
-	XMFLOAT3 xmVectorTempMax, xmVectorTempMin;
+	XMFLOAT3 vNearPoint, vFarPoint, vPlaneNormal;
+	XMFLOAT3 vTempMax, vTempMin;
 
-	XMStoreFloat3(&xmVectorTempMin, XMVectorSubtract(xCenter, xExtern));
-	XMStoreFloat3(&xmVectorTempMax, XMVectorAdd(xCenter, xExtern));
+	XMStoreFloat3(&vTempMin, XMVectorSubtract(xCenter, xExtern));
+	XMStoreFloat3(&vTempMax, XMVectorAdd(xCenter, xExtern));
 
-	for (int i = 0; i < 6; i++)
-	{
-		XMStoreFloat3(&xmVectorNormal, XMVectorSet(m_pd3dxFrustumPlanes[i].x, m_pd3dxFrustumPlanes[i].y, m_pd3dxFrustumPlanes[i].z, 0.0f));
+	for (int i = 0; i < 6; i++) {
+		XMStoreFloat3(&vPlaneNormal, XMVectorSet(m_pd3dxFrustumPlanes[i].x, m_pd3dxFrustumPlanes[i].y, m_pd3dxFrustumPlanes[i].z, 0.0f));
 
-		if (xmVectorNormal.x >= 0.0f)
-		{
-			if (xmVectorNormal.y >= 0.0f)
-			{
-				if (xmVectorNormal.z >= 0.0f)
-				{
-					xmVectorNearPoint.x = xmVectorTempMin.x; xmVectorNearPoint.y = xmVectorTempMin.y; xmVectorNearPoint.z = xmVectorTempMin.z;
+		if (vPlaneNormal.x >= 0.0f) {
+			if (vPlaneNormal.y >= 0.0f) {
+				if (vPlaneNormal.z >= 0.0f) {
+					vNearPoint.x = vTempMin.x; vNearPoint.y = vTempMin.y; vNearPoint.z = vTempMin.z;
 				}
-				else
-				{
-					xmVectorNearPoint.x = xmVectorTempMin.x; xmVectorNearPoint.y = xmVectorTempMin.y; xmVectorNearPoint.z = xmVectorTempMax.z;
+				else {
+					vNearPoint.x = vTempMin.x; vNearPoint.y = vTempMin.y; vNearPoint.z = vTempMax.z;
 				}
 			}
-			else
-			{
-				if (xmVectorNormal.z >= 0.0f)
-				{
-					xmVectorNearPoint.x = xmVectorTempMin.x; xmVectorNearPoint.y = xmVectorTempMax.y; xmVectorNearPoint.z = xmVectorTempMin.z;
+			else {
+				if (vPlaneNormal.z >= 0.0f) {
+					vNearPoint.x = vTempMin.x; vNearPoint.y = vTempMax.y; vNearPoint.z = vTempMin.z;
 				}
-				else
-				{
-					xmVectorNearPoint.x = xmVectorTempMin.x; xmVectorNearPoint.y = xmVectorTempMax.y; xmVectorNearPoint.z = xmVectorTempMax.z;
+				else {
+					vNearPoint.x = vTempMin.x; vNearPoint.y = vTempMax.y; vNearPoint.z = vTempMax.z;
 				}
 			}
 		}
-		else
-		{
-			if (xmVectorNormal.y >= 0.0f)
-			{
-				if (xmVectorNormal.z >= 0.0f)
-				{
-					xmVectorNearPoint.x = xmVectorTempMax.x; xmVectorNearPoint.y = xmVectorTempMin.y; xmVectorNearPoint.z = xmVectorTempMin.z;
+		else {
+			if (vPlaneNormal.y >= 0.0f) {
+				if (vPlaneNormal.z >= 0.0f) {
+					vNearPoint.x = vTempMax.x; vNearPoint.y = vTempMin.y; vNearPoint.z = vTempMin.z;
 				}
-				else
-				{
-					xmVectorNearPoint.x = xmVectorTempMax.x; xmVectorNearPoint.y = xmVectorTempMin.y; xmVectorNearPoint.z = xmVectorTempMax.z;
+				else {
+					vNearPoint.x = vTempMax.x; vNearPoint.y = vTempMin.y; vNearPoint.z = vTempMax.z;
 				}
 			}
-			else
-			{
-				if (xmVectorNormal.z >= 0.0f)
-				{
-					xmVectorNearPoint.x = xmVectorTempMax.x; xmVectorNearPoint.y = xmVectorTempMax.y; xmVectorNearPoint.z = xmVectorTempMin.z;
+			else {
+				if (vPlaneNormal.z >= 0.0f) {
+					vNearPoint.x = vTempMax.x; vNearPoint.y = vTempMax.y; vNearPoint.z = vTempMin.z;
 				}
-				else
-				{
-					xmVectorNearPoint.x = xmVectorTempMax.x; xmVectorNearPoint.y = xmVectorTempMax.y; xmVectorNearPoint.z = xmVectorTempMax.z;
+				else {
+					vNearPoint.x = vTempMax.x; vNearPoint.y = vTempMax.y; vNearPoint.z = vTempMax.z;
 				}
 			}
 		}
 
-		if (XMVectorGetX(XMPlaneDotCoord(XMLoadFloat4(&m_pd3dxFrustumPlanes[i]), XMLoadFloat3(&xmVectorNearPoint))) > 0.0f) return(false);
+		if (XMVectorGetX(XMPlaneDotCoord(XMLoadFloat4(&m_pd3dxFrustumPlanes[i]), XMLoadFloat3(&vNearPoint))) > 0.0f)
+			return false;
 	}
-	return(true);
+	return true;
 }
 
 bool CCamera::IsInFrustum(BoundingBox *boundingbox)

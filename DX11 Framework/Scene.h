@@ -10,14 +10,10 @@
 
 // ========== Shader ========== 
 #include "SkyBoxShader.h"
-#include "WaterShader.h"
-#include "TerrainShader.h"
 #include "CharacterShader.h"
 
 // ========== Object ========== 
 #include "SkyBox.h"
-#include "HeightMapTerrain.h"
-#include "TerrainWater.h"
 #include "RotatingObject.h"
 #include "NormalMapObject.h"
 #include "AxisObjects.h"

@@ -1,9 +1,7 @@
 //------------------------------------------------------- ----------------------
 // File: Mesh.h
 //-----------------------------------------------------------------------------
-
 #pragma once
-#include "HeightMap.h"
 
 #define VERTEX_POSITION_ELEMENT			0x0001
 #define VERTEX_COLOR_ELEMENT			0x0002
