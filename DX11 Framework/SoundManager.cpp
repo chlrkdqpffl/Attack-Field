@@ -35,52 +35,10 @@ void CSound3D::Update(float fTimeDelta)
 		maxDistance = MAXDISTANCE;
 
 	float volume = ((maxDistance - distance) / maxDistance) * m_fMaxVolume;
+	volume = min(volume, g_fMainVolume);
+	
 	if (volume <= 0)
 		m_pChannel->stop();
-	else
-		m_pChannel->setVolume(volume);
-}
-
-CEnvironmentSound::CEnvironmentSound(SoundTag tag, XMFLOAT3 pos, float maxDistance, float maxVolume, Channel* channel)
-	: CSound3D(tag, pos, maxVolume, channel), m_fMaxDistance(maxDistance)
-{
-}
-
-void CEnvironmentSound::Update(float fTimeDelta)
-{
-	XMVECTOR position = XMLoadFloat3(&m_f3Position);
-	XMVECTOR listenerPosition = SCENE_MGR->g_pCamera->GetvPosition();
-	XMVECTOR direction = position - listenerPosition;
-	static bool bIsEnviromentSound = false;
-
-	float distance = XMVectorGetX(XMVector3LengthEst(direction));
-	if (distance > m_fMaxDistance) {
-		m_pChannel->stop();
-		return;
-	}
-	else {
-		if (false == bIsEnviromentSound) {
-			bIsEnviromentSound = true;
-			g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(m_tagSound)], 0, &m_pChannel);
-		}
-	}
-
-	direction = XMVector3Normalize(direction);
-	XMVECTOR vLook = SCENE_MGR->g_pCamera->GetvLook();
-	float fDot = XMVectorGetX(XMVector3Dot(vLook, direction));
-
-	float maxDistance = 0.0f;
-	if (fDot < 0)
-		maxDistance = BACK_MAX_DISTANCE;
-	else
-		maxDistance = MAXDISTANCE;
-
-	float volume = ((maxDistance - distance) / maxDistance) * m_fMaxVolume;
-//	cout << volume << endl;
-	if (volume <= 0) {
-		m_pChannel->stop();
-		bIsEnviromentSound = false;
-	}
 	else
 		m_pChannel->setVolume(volume);
 }
@@ -138,7 +96,8 @@ void CSoundManager::LoadEffectSound()
 	g_pSystem->createSound("../Assets/Sound/Effect/Sniper1.mp3",		FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eSniperRifleFire)]);
 //	g_pSystem->createSound("../Assets/Sound/Effect/Sniper2.mp3",		FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eSniperRifleFire)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/SniperShellsFall.mp3", FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eSniperShellsFall)]);
-	
+	g_pSystem->createSound("../Assets/Sound/Effect/Beep.mp3",			FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eBeep)]);
+
 	// Environment
 	g_pSystem->createSound("../Assets/Sound/Effect/Fire.ogg",			FMOD_LOOP_NORMAL, 0, &g_pSound[static_cast<int>(SoundTag::eFire)]);
 	g_pSystem->createSound("../Assets/Sound/Effect/Thunder_Strike.mp3",	FMOD_HARDWARE, 0, &g_pSound[static_cast<int>(SoundTag::eThunderStrike)]);
@@ -174,17 +133,17 @@ void CSoundManager::StopBGMSound()
 	g_pBGMChannel->stop();
 }
 
+void CSoundManager::StopBeepSound()
+{
+	g_pBeepChannel->stop();
+}
+
 void CSoundManager::Play3DSound(SoundTag soundTag, XMFLOAT3 position, XMFLOAT3 direction, float nowSpeed, float addSpeed, float volume)
 {
 	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel);
 	g_pChannel->setVolume(volume);
 
 	g_listSound3DContainer.push_back(new CSound3D(soundTag, position, direction, nowSpeed, addSpeed, volume, g_pChannel));
-}
-
-void CSoundManager::Play3DSound_Environment(SoundTag soundTag, XMFLOAT3 position, float maxDistance, float volume)
-{
-	g_listSound3DEnvironmentContainer.push_front(new CEnvironmentSound(soundTag, position, maxDistance, volume, g_pEnvironmentChannel));
 }
 
 void CSoundManager::PlayBgm(SoundTag soundTag, float volume)
@@ -195,21 +154,42 @@ void CSoundManager::PlayBgm(SoundTag soundTag, float volume)
 
 void CSoundManager::Play2DSound(SoundTag soundTag, float volume)
 {
-	g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel);
-	g_pChannel->setVolume(volume);
+	volume = min(volume, g_fMainVolume);
+
+	// 천둥 소리만 다른 채널 사용
+	if (soundTag == SoundTag::eThunderStrike ||	soundTag == SoundTag::eThunderStrike2 
+		|| soundTag == SoundTag::eThunderStrike3 || soundTag == SoundTag::eThunderStrike4) {
+		g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pThunderChannel);
+	}
+	else if (soundTag == SoundTag::eBeep) {
+		g_fBeepVolume = 1.0f;
+		g_pBeepChannel->setVolume(g_fBeepVolume);
+		g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pBeepChannel);
+	}
+	else {
+		g_pSystem->playSound(FMOD_CHANNEL_FREE, g_pSound[static_cast<int>(soundTag)], false, &g_pChannel);
+	}
 }
 
-void CSoundManager::SetVolume(float volume)
+bool CSoundManager::IsMaxSound() 
+{
+	if (g_fMainVolume >= 1.0f)
+		return true;
+	else
+		return false;
+}
+
+void CSoundManager::AddVolume(float volume)
 {
 	g_fMainVolume += volume;
+	g_fBeepVolume -= volume;
 
-	if (1.0f < g_fMainVolume)
-		g_fMainVolume = 1.0f;
-	else if (g_fMainVolume < 0)
-		g_fMainVolume = 0.0f;
-
-	cout << g_fMainVolume << endl;
+	g_fBeepVolume = clamp(g_fBeepVolume, 0.0f, 1.0f);
+	g_fMainVolume = clamp(g_fMainVolume, 0.0f, 1.0f);
+	
 	g_pBGMChannel->setVolume(g_fMainVolume);
 	g_pChannel->setVolume(g_fMainVolume);
+	g_pThunderChannel->setVolume(g_fMainVolume);
+	g_pBeepChannel->setVolume(g_fBeepVolume);
 }
 #endif

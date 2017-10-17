@@ -50,6 +50,7 @@
 #include <memory>
 #include <process.h>
 #include <utility>
+#include <unordered_map>
 
 
 // PhysX

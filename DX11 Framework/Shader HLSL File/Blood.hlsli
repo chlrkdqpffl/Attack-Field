@@ -21,11 +21,8 @@ void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTIC
   
             PARTICLE_INPUT particle = (PARTICLE_INPUT) 0;
             particle.position = gvParticleEmitPosition.xyz;
-//            particle.velocity = 5.0f * vRandom;
-            //particle.velocity = g_f4Var.z * vRandom;
             particle.velocity = vRandom;
             particle.size = float2(0.2f, 0.2f);
-            //particle.size = float2(0.4f, 0.4f);
             particle.age = 0.0f;
             particle.type = PARTICLE_TYPE_FLARE;
 

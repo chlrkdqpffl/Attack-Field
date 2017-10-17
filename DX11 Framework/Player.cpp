@@ -32,24 +32,17 @@ void CPlayer::InitializePhysXData(PxPhysics* pPxPhysics, PxMaterial *pPxMaterial
 	PxCapsuleControllerDesc	PxCapsuledesc;
 	PxCapsuledesc.position = PxExtendedVec3(0, 0, 0);
 	PxCapsuledesc.radius = 0.6f;
-//	PxCapsuledesc.radius = 1.0f;
 	PxCapsuledesc.height = 2.0f;
 //	PxCapsuledesc.climbingMode = PxCapsuleClimbingMode::Enum::eCONSTRAINED;
-	//캐릭터가 올라갈 수있는 장애물의 최대 높이를 정의합니다. 
-	PxCapsuledesc.stepOffset = 0.1f;
-		
-	//캐시 된 볼륨 증가.
-	//성능을 향상시키기 위해 캐싱하는 컨트롤러 주변의 공간입니다.  이것은 1.0f보다 커야하지만 너무 크지 않아야하며, 2.0f보다 낮아야합니다.
+//	PxCapsuledesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
+	PxCapsuledesc.stepOffset = 0.1f;	
+
+	// 성능을 향상시키기 위해 캐싱하는 컨트롤러 주변의 공간. 이것은 1.0f보다 커야하지만 너무 크지 않아야하며, 2.0f보다 낮아야함
 	PxCapsuledesc.volumeGrowth = 1.9f;
-	//캐릭터가 걸어 갈 수있는 최대 경사. 
 	PxCapsuledesc.slopeLimit = cosf(XMConvertToRadians(45.f));
 	
-	
-//	PxCapsuledesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
-
 	PxCapsuledesc.upDirection = PxVec3(0, 1, 0);
-	PxCapsuledesc.contactOffset = 0.001f; //접촉 오프셋-> 요게 타 객체와 부딪혔을때 영향을 주는 변수인듯(높을수록 덜덜떨림)
-	//PxCapsuledesc.contactOffset = 1.0f;
+	PxCapsuledesc.contactOffset = 0.001f;
 	PxCapsuledesc.material = pPxMaterial;
 
 	m_pPxCharacterController = pPxControllerManager->createController(PxCapsuledesc);
@@ -280,7 +273,7 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy))
-			m_pCharacter->SetOccupy(true);
+		m_pCharacter->SetOccupy(true);
 	else
 		m_pCharacter->SetOccupy(false);
 
@@ -317,6 +310,11 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 	XMStoreFloat3(&m_f3MoveDirection, vMoveDirection);
 	m_pCharacter->SetRelativevVelocity(relativeVelocity);
 
+	if (m_pCharacter->IsMoving()) {
+		m_pCharacter->Walking();
+		m_pCharacter->SetOccupy(false);
+	}
+
 	// =============================== Mouse ============================== //
 	if (m_wKeyState & static_cast<int>(KeyInput::eLeftMouse)) {
 		m_pCharacter->SetIsFire(true);
@@ -331,10 +329,6 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 		m_bIsFire = false;
 	}
 	
-	if (m_pCharacter->IsMoving())
-		m_pCharacter->Walking();
-
-
 #ifdef	USE_SERVER
 	cs_key_input packet;
 

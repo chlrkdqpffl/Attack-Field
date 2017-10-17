@@ -293,7 +293,7 @@ enum class SoundTag
 
 	// Effect
 	eGunFire, eReload, eWalk, eRun, eDeath, eShellsFall,
-	eSniperRifleFire, eSniperShellsFall,
+	eSniperRifleFire, eSniperShellsFall, eBeep,
 	
 	// Environment
 	eFire, eThunderStrike, eThunderStrike2, eThunderStrike3, eThunderStrike4,

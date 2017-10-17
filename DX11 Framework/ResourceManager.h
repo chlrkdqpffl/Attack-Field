@@ -4,14 +4,13 @@
 #include "UserTag.h"
 #include "Mesh.h"
 
-
 class CResourceManager : public CSingletonManager<CResourceManager>
 {
-	multimap<TextureTag, ID3D11ShaderResourceView*>		m_mapTexturePool;
-	multimap<TextureTag, string>						m_mapPathPool;
-	multimap<MeshTag, CFbxMeshData>						m_mapFbxMeshPool;
-	multimap<MeshTag, CMesh*>							m_mapNoneFbxMeshPool;
-	bool												m_bIsLoading = false;
+	bool	m_bIsLoading = false;
+
+	unordered_map<TextureTag, ID3D11ShaderResourceView*>		m_mapTexturePool;
+	unordered_map<TextureTag, string>							m_mapPathPool;
+	unordered_map<MeshTag, CFbxMeshData>						m_mapFbxMeshPool;
 
 public:
 	CResourceManager() {}
@@ -27,8 +26,7 @@ public:
 	wstring FindResourcePath(const TextureTag& textureTag);
 	ID3D11ShaderResourceView* CloneShaderResourceView(const TextureTag& textureTag);
 	CFbxMeshData CloneFbxMeshData(const MeshTag& meshTag);
-	CMesh* CloneNoneFbxMeshData(const MeshTag& meshTag);
-
+	
 	void ShowImageInfo(const string& source);
 
 	void LoadResourceTitleScene();

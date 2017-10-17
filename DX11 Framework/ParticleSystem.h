@@ -62,7 +62,7 @@ public:
 	void Update(float fDeltaTime);
 	void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
-	void ParticleRestart() { m_bInitializeParticle = true; m_fAge = 0.0f; m_bIsActive = true; }
+	void ParticleRestart();
 
 	void UpdateConstantBuffer(ID3D11DeviceContext *pd3dDeviceContext);
 	void CreateShader(ID3D11Device *pd3dDevice, const wstring& wstring);

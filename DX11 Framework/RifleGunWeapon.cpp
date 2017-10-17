@@ -107,7 +107,7 @@ void CRifleGunWeapon::UpdateRecoil(float fDeltaTime)
 		if (m_nFireBulletCount == 0)
 		{
 			float gap = m_pOwner->GetPitch() - m_fInitPitch - m_fUserMovePitch;
-			float returnSpeedFactor = abs(-gap * 20) / 100;					// 자연스럽게 속도 줄이기
+			float returnSpeedFactor = abs(-gap * 20) / 100;		// 자연스럽게 속도 줄이기
 			const float returnSpeed = 50.0;
 
 			if (returnSpeedFactor< 0.1f)

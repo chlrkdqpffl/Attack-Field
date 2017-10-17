@@ -140,21 +140,19 @@ void CParticleManager::CreateParticle(ParticleTag tag, XMVECTOR pos)
 {
 #ifndef FASTLOAD_MODE
 	auto findParticlePool = m_mapParticlePool.find(tag);
-	
-	if (findParticlePool == m_mapParticlePool.end())
-		MessageBox(NULL, s_to_ws("Particle Tag : " + to_string(static_cast<int>(tag))).c_str(), L"Error", MB_OK);
+	assert(findParticlePool != m_mapParticlePool.end());
 
 	CParticleSystem* pParticle = nullptr;
-	for (auto& particle : findParticlePool->second) {
-		if (particle->GetActive())
+	for (auto& particleSystem : findParticlePool->second) {
+		if (particleSystem->GetActive())
 			continue;
 		else {
-			pParticle = particle;
+			pParticle = particleSystem;
 			break;
 		}
 	}
 
-	if (!pParticle)
+	if (nullptr == pParticle)
 		return;
 
 	pParticle->ParticleRestart();
@@ -190,9 +188,9 @@ void CParticleManager::RenderAllNoEffect(ID3D11DeviceContext *pd3dDeviceContext)
 
 	for (auto& container : m_mapParticlePool)
 		if (static_cast<UINT>(container.first) > static_cast<UINT>(ParticleTag::MaxPostProcessingParticle)) {
-			for (auto& system : container.second)
-				if (system->GetActive())
-					system->Render(pd3dDeviceContext);
+			for (auto& particle : container.second)
+				if (particle->GetActive())
+					particle->Render(pd3dDeviceContext);
 		}
 }
 
@@ -200,8 +198,8 @@ void CParticleManager::RenderAllEffect(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	for (auto& container : m_mapParticlePool)
 		if (static_cast<UINT>(container.first) < static_cast<UINT>(ParticleTag::MaxPostProcessingParticle)) {
-			for (auto& system : container.second)
-				if (system->GetActive())
-					system->Render(pd3dDeviceContext);
+			for (auto& particle : container.second)
+				if (particle->GetActive())
+					particle->Render(pd3dDeviceContext);
 		}
 }

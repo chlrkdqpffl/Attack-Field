@@ -65,7 +65,7 @@ void CAnimationController::UpdateTime(float fDeltaTime)
 		m_fTimePos += timeElapse;
 		if (m_fTimePos > endTime)
 			//SetAnimation(AnimationTag::eIdle);
-			m_isActive = false;
+			m_bIsActive = false;
 		break;
 	case AnimationType::ePingPong:
 		static bool isReverse = false;
@@ -83,7 +83,7 @@ void CAnimationController::UpdateTime(float fDeltaTime)
 			if (m_fTimePos < 0.0f) {
 				isReverse = false;
 				SetAnimation(AnimationTag::eIdle);
-				m_isActive = false;
+				m_bIsActive = false;
 			}
 		}
 		break;
@@ -92,7 +92,7 @@ void CAnimationController::UpdateTime(float fDeltaTime)
 
 void CAnimationController::Update(float fDeltaTime)
 {
-	if (m_isActive) {
+	if (m_bIsActive) {
 		UpdateTime(fDeltaTime);
 		m_pSkinnedMesh->CalcFinalTransformsBlending(get<1>(m_prevAnimState), get<1>(m_currAnimState), m_fTimePos, m_typeParts);
 	}

@@ -2,7 +2,6 @@
 
 // fxc /E GSParticleStreamOut /T gs_5_0 /Od /Zi /Fo CompiledVS.fxo Particle.fx
 
-//static const float3 gFireAccelW = { 0.0f, 7.8f, 0.0f };
 static const float3 gFireAccelW = { 0.0f, 8.0f, 0.0f };
 
 PARTICLE_INPUT VSParticleStreamOut(PARTICLE_INPUT input)
@@ -26,9 +25,6 @@ void GSParticleStreamOut(point PARTICLE_INPUT input[1], inout PointStream<PARTIC
             particle.position = gvParticleEmitPosition.xyz;
             particle.velocity = 2.5f * vRandom;        // 2.2f, 0.4f, 3
   //          particle.velocity = g_f4Var.z * vRandom;
-  //          particle.size = float2(3.0f, 3.0f);
-           // particle.size = float2(1.0f, 1.0f);
-           // particle.size = float2(2.2f, 2.2f);
             particle.size = float2(1.4f, 1.4f);
             particle.age = 0.0f;
             particle.type = PARTICLE_TYPE_FLARE;

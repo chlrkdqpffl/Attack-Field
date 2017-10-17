@@ -80,6 +80,13 @@ void CCharacterObject::Reloading()
 void CCharacterObject::Revival()
 {
 	m_nLife = PLAYER_HP;
+
+	m_bIsHeadHit = false;
+	m_bIsDeadlyAttack = false;
+	m_bIsDeadly = false;
+	m_bIsCrouch = false;
+	m_bIsFire = false;
+	m_f3RelativeVelocity = XMFLOAT3(0, 0, 0);
 }
 
 void CCharacterObject::DamagedCharacter(UINT damage)

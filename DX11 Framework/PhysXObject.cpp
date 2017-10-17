@@ -110,23 +110,12 @@ void CPhysXObject::CreatePhysX_TriangleMesh(string name, PxPhysics* pPxPhysics, 
 
 void CPhysXObject::CreatePhysX_CubeMesh(string name, PxPhysics* pPxPhysics, PxScene* pPxScene, PxMaterial *pPxMaterial, PxCooking* pCooking, XMFLOAT3 vScale)
 {
-	/*
-	XMFLOAT3 vMin = 
-	vMin.x *= vScale.x;	 vMin.y *= vScale.y;  vMin.z *= vScale.z;
-
-	XMFLOAT3 vMax = *(CMeshMgr::GetInstance()->Get_MeshMax(m_uiObjNum));
-	vMax.x *= vScale.x;	 vMax.y *= vScale.y;  vMax.z *= vScale.z;
-
-
-	XMFLOAT3 vExtents =
-		XMFLOAT3((abs(vMin.x) + abs(vMax.x)) / 2, (abs(vMin.y) + abs(vMax.y)) / 2, (abs(vMin.z) + abs(vMax.z)) / 2);
-		*/
 	m_tagPxMesh = PxMeshType::eCube;
+
 	XMFLOAT3 vExtents = m_vecMeshContainer[0]->GetBoundingCube().Extents;
-
-	PxTransform _PxTransform(-m_vecMeshContainer[0]->GetBoundingCube().Center.x, -m_vecMeshContainer[0]->GetBoundingCube().Center.y, -m_vecMeshContainer[0]->GetBoundingCube().Center.z);
-
+	PxTransform _PxTransform(m_vecMeshContainer[0]->GetBoundingCube().Center.x, m_vecMeshContainer[0]->GetBoundingCube().Center.y, m_vecMeshContainer[0]->GetBoundingCube().Center.z);
 	PxBoxGeometry _PxBoxGeometry(vExtents.x, vExtents.y, vExtents.z);
+
 	m_pPxActor = PxCreateStatic(*pPxPhysics, _PxTransform, _PxBoxGeometry, *pPxMaterial);
 	m_pPxActor->setName(name.c_str());
 	pPxScene->addActor(*m_pPxActor);

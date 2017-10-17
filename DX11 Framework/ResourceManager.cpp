@@ -11,8 +11,6 @@ void CResourceManager::InitializeManager()
 
 void CResourceManager::ReleseManager()
 {
-	for (auto& index = m_mapNoneFbxMeshPool.begin(); index != m_mapNoneFbxMeshPool.end(); ++index)
-		SafeDelete(index->second);
 }
 
 bool CResourceManager::LoadResourceAll()
@@ -267,11 +265,14 @@ void CResourceManager::LoadEtcData()
 
 void CResourceManager::AddResourece(const TextureTag& textureTag, const string& source)
 {
+	// 한 태그에 여러개 등록되었음
+	assert(m_mapTexturePool.count(textureTag) < 1);
+
 	cout << "  File Loading < " + source + " > ";
 	
 	HRESULT hResult;
-	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
-	D3DX11CreateShaderResourceViewFromFile(STATEOBJ_MGR->g_pd3dDevice, s_to_ws(source).c_str(), NULL, NULL, &pd3dsrvTexture, &hResult);
+	ID3D11ShaderResourceView *pSRVTexture = NULL;
+	D3DX11CreateShaderResourceViewFromFile(STATEOBJ_MGR->g_pd3dDevice, s_to_ws(source).c_str(), NULL, NULL, &pSRVTexture, &hResult);
 
 	if ((HRESULT)hResult >= 0)
 		ShowTaskSuccess("\t Success!!");
@@ -279,16 +280,16 @@ void CResourceManager::AddResourece(const TextureTag& textureTag, const string& 
 		ShowTaskFail("\t Error!! \t\t 파일 또는 경로를 확인하세요.");
 
 	string str = "TextureTag : " + to_string(static_cast<int>(textureTag));
-	DXUT_SetDebugName(pd3dsrvTexture, str.c_str());
+	DXUT_SetDebugName(pSRVTexture, str.c_str());
 
-	m_mapTexturePool.insert(make_pair(textureTag, pd3dsrvTexture));
-
-	// 한 태그에 여러개 등록되었음
-	assert(m_mapTexturePool.count(textureTag) <= 1);
+	m_mapTexturePool.insert(make_pair(textureTag, pSRVTexture));
 }
 
 void CResourceManager::AddResourece(const MeshTag& meshTag, const string& source)
 {
+	// 한 태그에 여러개 등록되었음
+	assert(m_mapFbxMeshPool.count(meshTag) < 1);
+
 	CFbxMeshData meshData;
 
 	cout << "  File Loading < " + source + " > ";
@@ -311,17 +312,14 @@ void CResourceManager::AddResourece(const MeshTag& meshTag, const string& source
 	}
 
 	m_mapFbxMeshPool.insert(make_pair(meshTag, meshData));
-
-	// 한 태그에 여러개 등록되었음
-	assert(m_mapFbxMeshPool.count(meshTag) <= 1);
 }
 
 void CResourceManager::AddResourecePath(const TextureTag& textureTag, const string& source)
 {
-	m_mapPathPool.insert(make_pair(textureTag, source));
-
 	// 한 태그에 여러개 등록되었음
 	assert(m_mapPathPool.count(textureTag) <= 1);
+
+	m_mapPathPool.insert(make_pair(textureTag, source));
 }
 
 wstring CResourceManager::FindResourcePath(const TextureTag& textureTag)
@@ -352,17 +350,6 @@ CFbxMeshData CResourceManager::CloneFbxMeshData(const MeshTag& meshTag)
 
 	// Pool에 해당 데이터가 존재하지 않는다.
 	if (findResource == m_mapFbxMeshPool.end())
-		MessageBox(NULL, s_to_ws("Mesh Tag : " + to_string(static_cast<int>(meshTag))).c_str(), L"Resource Error", MB_OK);
-
-	return (*findResource).second;
-}
-
-CMesh* CResourceManager::CloneNoneFbxMeshData(const MeshTag& meshTag)
-{
-	auto findResource = m_mapNoneFbxMeshPool.find(meshTag);
-
-	// Pool에 해당 데이터가 존재하지 않는다.
-	if (findResource == m_mapNoneFbxMeshPool.end())
 		MessageBox(NULL, s_to_ws("Mesh Tag : " + to_string(static_cast<int>(meshTag))).c_str(), L"Resource Error", MB_OK);
 
 	return (*findResource).second;

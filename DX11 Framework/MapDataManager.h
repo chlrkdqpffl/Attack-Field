@@ -9,7 +9,7 @@ struct MapData {
 
 class CMapDataManager : public CSingletonManager<CMapDataManager>
 {
-	multimap<ObjectTag, vector<MapData>>		m_mapDataPool;
+	unordered_multimap<ObjectTag, vector<MapData>>		m_mapDataPool;
 								
 public:
 	CMapDataManager();

@@ -8,7 +8,6 @@ struct AnimationTrack
 	bool m_bEnable = false;
 	float m_fSpeed = 1.0f;
 	float m_fTimePos = 0.0f;
-//	float m_fWeight = 0.0f;		// 현재 미사용
 
 	AnimationTrack() {}
 	AnimationTrack(string name) : m_strClipName(name) {}
@@ -16,11 +15,11 @@ struct AnimationTrack
 
 class CAnimationController
 {
-	bool						m_isActive = true;
-	bool						m_bIsBlending = false;
-	float						m_fTimePos = 0.0f;
-	CharacterParts				m_typeParts = CharacterParts::Defalut;
-	CFbxModelSkinnedMesh*		m_pSkinnedMesh = nullptr;
+	bool						m_bIsActive		= true;
+	bool						m_bIsBlending	= false;
+	float						m_fTimePos		= 0.0f;
+	CharacterParts				m_typeParts		= CharacterParts::Defalut;
+	CFbxModelSkinnedMesh*		m_pSkinnedMesh	= nullptr;
 
 	tuple<AnimationTag, AnimationTrack, AnimationType> m_prevAnimState;
 	tuple<AnimationTag, AnimationTrack, AnimationType> m_currAnimState;
@@ -45,6 +44,6 @@ public:
 	void SetAnimation(AnimationTag anim, float speed = 1.0f);
 	float GetTimePos() const { return m_fTimePos; }
 	void SetTimePos(float timePos) { m_fTimePos = timePos; }
-	bool GetActive() const { return m_isActive; }
-	void SetActive(bool set) { m_isActive = set; }
+	bool GetActive() const { return m_bIsActive; }
+	void SetActive(bool set) { m_bIsActive = set; }
 };

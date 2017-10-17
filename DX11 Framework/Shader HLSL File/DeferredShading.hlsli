@@ -272,7 +272,7 @@ PS_GBUFFER_OUTPUT PSInstancedTexturedTangentLighting(VS_INSTANCED_TEXTURED_TANGE
     input.normalW = normalize(input.normalW);
 
     float3 DiffuseColor = gtxDiffuse.Sample(gssAnisotropicWrap, input.texCoord);
-    DiffuseColor *= DiffuseColor; // 어떤 차이인지 확인해보기
+    DiffuseColor *= DiffuseColor;
    
     PS_GBUFFER_OUTPUT output = (PS_GBUFFER_OUTPUT) 0;
 

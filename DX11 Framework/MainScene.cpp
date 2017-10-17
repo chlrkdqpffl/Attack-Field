@@ -14,7 +14,7 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(1.0f, 0.3f, 0.0f);
+//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(0.0f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(0.0f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(1000.0f, 55.0f, 0.0f, 0.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
@@ -87,19 +87,19 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				// 임의로 위급 상황
 				m_pPlayerCharacter->SetLife(20);
 				break;
-			case VK_V:	
+			case VK_F:	
 				m_vecCharacterContainer.back()->SetIsFire(true);
-				//m_vecCharacterContainer.back()->ReplaceWeapon(WeaponTag::eRifle);
 				break;
-			case VK_B:
+			case VK_V:
 				m_vecCharacterContainer.back()->SetIsFire(false);
 				break;
-			case VK_H:
-				m_vecCharacterContainer.back()->SetPitch(65);
+			case VK_G:
+				m_pPlayerCharacter->SetIsHeadHit(true);
 				break;
-			case VK_N:
-				m_vecCharacterContainer.back()->SetPitch(-65);
+			case VK_B:
+			//	SOUND_MGR->AddVolume(-0.1f);
 				break;
+
 #endif
 			}
 			break;
@@ -244,69 +244,6 @@ void CMainScene::Initialize()
 	m_pSkyBox = move(pSkyBox);
 #pragma endregion
 
-	/*
-#pragma region [Create Terrain]
-	CTexture *pTerrainTexture = new CTexture(2, 2, PS_TEXTURE_SLOT_TERRAIN_DIFUSE, PS_SAMPLER_SLOT_TERRAIN);
-
-	pTerrainTexture->SetTexture(0, TextureTag::eTerrainD);
-	pTerrainTexture->SetSampler(0, STATEOBJ_MGR->g_pPointClampSS);
-	
-	pTerrainTexture->SetTexture(1, TextureTag::eTerrainDetailD);
-	pTerrainTexture->SetSampler(1, STATEOBJ_MGR->g_pPointWrapSS);
-	
-	CMaterialColors *pTerrainColors = new CMaterialColors();
-	
-	pTerrainColors->m_d3dxcDiffuse = XMFLOAT4(0.8f, 1.0f, 0.2f, 1.0f);
-	pTerrainColors->m_d3dxcAmbient = XMFLOAT4(0.1f, 0.3f, 0.1f, 1.0f);
-	pTerrainColors->m_d3dxcSpecular = XMFLOAT4(1.0f, 1.0f, 1.0f, 5.0f);
-	pTerrainColors->m_d3dxcEmissive = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-
-	CMaterial *pTerrainMaterial = new CMaterial(pTerrainColors);
-	pTerrainMaterial->SetTexture(pTerrainTexture);
-
-	XMVECTOR d3dxvScale = XMVectorSet(8.0f, 2.0f, 8.0f, 0.0f);
-
-//	XMVECTOR d3dxvScale = XMVectorSet(8.0f, 1.0f, 8.0f, 0.0f);
-#ifdef _WITH_TERRAIN_PARTITION
-	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(m_pd3dDevice, RESOURCE_MGR->FindResourcePath(TextureTag::eTerrainH).c_str(), 257, 257, 17, 17, d3dxvScale);
-#else
-	CHeightMapTerrain *pTerrain = new CHeightMapTerrain(m_pd3dDevice, RESOURCE_MGR->FindResourcePath(eHeightMap).c_str(), 257, 257, 257, 257, d3dxvScale);
-#endif
-	pTerrain->SetMaterial(pTerrainMaterial);
-
-	CShader *pTerrainShader = new CTerrainShader();
-	pTerrainShader->CreateShader(m_pd3dDevice);
-	pTerrain->SetShader(pTerrainShader);
-
-	m_pTerrain = move(pTerrain);
-#pragma endregion
-	*/
-
-	/*
-#pragma region [Create Water]
-	CTexture *pTerrainWaterTexture = new CTexture(2, 2, PS_TEXTURE_SLOT, PS_SAMPLER_SLOT);
-	pTerrainWaterTexture->SetTexture(0, TextureTag::eWaterD);
-	pTerrainWaterTexture->SetSampler(0, STATEOBJ_MGR->g_pPointWrapSS);
-
-	pTerrainWaterTexture->SetTexture(1, TextureTag::eWaterDetailD);
-	pTerrainWaterTexture->SetSampler(1, STATEOBJ_MGR->g_pPointWrapSS);
-
-	CMaterialColors *pWaterColors = new CMaterialColors();
-	CMaterial *pTerrainWaterMaterial = new CMaterial(pWaterColors);
-	pTerrainWaterMaterial->SetTexture(pTerrainWaterTexture);
-
-	CTerrainWater *pTerrainWater = new CTerrainWater(m_pd3dDevice, 257, 257, 257, 257, d3dxvScale);
-	pTerrainWater->SetMaterial(pTerrainWaterMaterial);
-	pTerrainWater->SetPosition(0.0f, 80.0f, 0.0f);
-
-	CShader *pTerrainWaterShader = new CWaterShader();
-	pTerrainWaterShader->CreateShader(m_pd3dDevice);
-	pTerrainWater->SetShader(pTerrainWaterShader);
-	
-	m_vecObjectsContainer.push_back(move(pTerrainWater));
-#pragma endregion
-	*/
-	
 #pragma region [Create Character]
 	CScene::CreatePlayer();
 	m_vecBBoxRenderContainer.push_back(m_pPlayerCharacter);
@@ -358,8 +295,8 @@ void CMainScene::Initialize()
 	pCharacter->CreateAxisObject(m_pd3dDevice);
 
 #ifdef DEVELOP_MODE
-//	pCharacter->SetLife(10000);	// 파티클 테스트용
-	pCharacter->SetLife(100);
+	pCharacter->SetLife(10000);	// 파티클 테스트용
+//	pCharacter->SetLife(100);
 #else
 	pCharacter->SetLife(100);
 #endif
@@ -1718,16 +1655,6 @@ void CMainScene::CreateLights()
 	}
 }
 
-void CMainScene::CreateSound()
-{
-	vector<MapData> vecMapData;
-
-	// ========================== Fire ================================= //
-	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel);
-	for (auto& object : vecMapData)
-		SOUND_MGR->Play3DSound_Environment(SoundTag::eFire, object.m_Position, 30.0f);
-}
-
 void CMainScene::ReleaseObjects()
 {
 	CScene::ReleaseObjects();
@@ -2189,7 +2116,7 @@ void CMainScene::Update_LightningStrikes(float fDeltaTime)
 	static UINT nSoundCount = 0;
 	static DWORD dwFirstLightningTime = 0;
 	static DWORD dwLightningPeriod = 20000 / m_fFrameSpeed;
-	//static const DWORD dwLightningPeriod = 5000;
+	//static const DWORD dwLightningPeriod = 7000;
 
 	if (GetTickCount() - m_dwLastLightningTime > dwLightningPeriod - 4000 / m_fFrameSpeed) {
 		// 최초 번개 시작시 잠깐 밝아짐
@@ -2204,9 +2131,9 @@ void CMainScene::Update_LightningStrikes(float fDeltaTime)
 				if (false == isFirstThunderSound) {
 					if (GetTickCount() - dwFirstLightningTime > 500 / m_fFrameSpeed) {
 						if(nSoundCount % 2 == 0)
-							SOUND_MGR->Play2DSound(SoundTag::eThunderStrike2, 1.0f);
+							SOUND_MGR->Play2DSound(SoundTag::eThunderStrike2);
 						else
-							SOUND_MGR->Play2DSound(SoundTag::eThunderStrike3, 1.0f);
+							SOUND_MGR->Play2DSound(SoundTag::eThunderStrike3);
 						isFirstThunderSound = true;
 					}
 				}
@@ -2221,9 +2148,9 @@ void CMainScene::Update_LightningStrikes(float fDeltaTime)
 		if (false == isThunderSound) {
 			if (GetTickCount() - dwFirstLightningTime > 1500 / m_fFrameSpeed) {
 				if (nSoundCount % 2 == 0)
-					SOUND_MGR->Play2DSound(SoundTag::eThunderStrike, 1.0f);
+					SOUND_MGR->Play2DSound(SoundTag::eThunderStrike);
 				else
-					SOUND_MGR->Play2DSound(SoundTag::eThunderStrike4, 1.0f);
+					SOUND_MGR->Play2DSound(SoundTag::eThunderStrike4);
 				isThunderSound = true;
 			}
 		}
@@ -2293,10 +2220,9 @@ void CMainScene::Update(float fDeltaTime)
 		fAdaptationNorm = 0.0f;
 		s_bFirstTime = false;
 	}
-	else {
+	else 
 		fAdaptationNorm = min(TWBAR_MGR->g_OptionHDR.g_fAdaptation < 0.0001f ? 1.0f : fCalcDeltatime / TWBAR_MGR->g_OptionHDR.g_fAdaptation, 0.9999f);
-		//	fAdaptationNorm = fDeltaTime / 3;			// 1부터 10까지가 샘플 프로그램임
-	}
+	
 	m_PostFX->SetParameters(TWBAR_MGR->g_OptionHDR.g_fMiddleGrey, TWBAR_MGR->g_OptionHDR.g_fWhite, fAdaptationNorm,
 		TWBAR_MGR->g_OptionHDR.g_fBloomThreshold, TWBAR_MGR->g_OptionHDR.g_fBloomScale, TWBAR_MGR->g_OptionHDR.g_fDOFFarStart, TWBAR_MGR->g_OptionHDR.g_fDOFFarRange);
 

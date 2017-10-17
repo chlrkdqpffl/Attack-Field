@@ -104,6 +104,13 @@ void CParticleSystem::CreateShader(ID3D11Device *pd3dDevice, const wstring& wstr
 	CShader::CreatePixelShaderFromFile(pd3dDevice, wstring, "PSParticleDraw", "ps_5_0", &m_pd3dPixelShader);
 }
 
+void CParticleSystem::ParticleRestart()
+{
+	m_fAge = 0.0f;
+	m_bIsActive = true;
+	m_bInitializeParticle = true;
+}
+
 void CParticleSystem::Update(float fDeltaTime)
 {
 	m_fTimeStep = fDeltaTime;
@@ -154,14 +161,12 @@ void CParticleSystem::Render(ID3D11DeviceContext* pd3dDeviceContext)
 	pd3dDeviceContext->GSSetShaderResources(GS_TEXTURE_SLOT_RANDOM, 1, &m_pd3dsrvRandomTexture);
 	pd3dDeviceContext->SOSetTargets(1, &m_pd3dStreamOutVertexBuffer, &offset);
 
-	if (m_bInitializeParticle)
-	{
+	if (m_bInitializeParticle) {
 		pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dInitialVertexBuffer, &stride, &offset);
 		pd3dDeviceContext->Draw(1, 0);
 		m_bInitializeParticle = false;
 	}
-	else
-	{
+	else {
 		pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dDrawVertexBuffer, &stride, &offset);
 		pd3dDeviceContext->DrawAuto();
 	}

@@ -66,6 +66,7 @@ float3 CalcDirectional(float3 position, Material material)
     float3 HalfWay = normalize(ToEye + DirToLight);
     float NDotH = saturate(dot(HalfWay, material.normal));
     finalColor += DirLightColor.rgb * pow(NDotH, material.specPow) * material.specIntensity;
+    finalColor += float3(0.1f, 0.1f, 0.1f);         // Frame 저하 요소
 
     return finalColor * material.diffuseColor.rgb;
 }

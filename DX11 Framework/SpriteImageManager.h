@@ -34,6 +34,6 @@ public:
 	void RenderAll(ID3D11DeviceContext	*pd3dDeviceContext, CCamera *pCamera);
 
 private:
-	map<TextureTag, SpriteInfo>		m_mapSpriteInfoPool;
-	vector<CSpriteImageObject*>		m_vecSpriteObjectContainer;
+	unordered_map<TextureTag, SpriteInfo>	m_mapSpriteInfoPool;
+	vector<CSpriteImageObject*>				m_vecSpriteObjectContainer;
 };

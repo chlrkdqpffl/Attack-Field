@@ -34,7 +34,6 @@ public:
 	void RenderBoundingBox();
 	void RenderReflection(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera);
 
-	void CreateSound();
 	void CreateMapDataInstancingObject();
 	void CreateTestingObject();
 	void ModifiedSelectObject();

@@ -668,11 +668,11 @@ void CInstancedObjectsShader::Render(ID3D11DeviceContext *pd3dDeviceContext, CCa
 		int nInstances = 0;
 		D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 		pd3dDeviceContext->Map(m_pd3dInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-		XMMATRIX *pd3dxmtxInstances = (XMMATRIX *)d3dMappedResource.pData;
+		XMMATRIX *pMtxInstances = (XMMATRIX *)d3dMappedResource.pData;
 
 		for (auto object : shaderTag.second) {
 			if (object->IsVisible(pCamera))
-				pd3dxmtxInstances[nInstances++] = XMMatrixTranspose(object->m_mtxWorld);
+				pMtxInstances[nInstances++] = XMMatrixTranspose(object->m_mtxWorld);
 		}
 		pd3dDeviceContext->Unmap(m_pd3dInstanceBuffer, 0);
 

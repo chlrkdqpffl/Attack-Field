@@ -62,10 +62,10 @@ void CAntTweakBarManager::InitializeManager()
 	// Test Variable
 	TwAddVarRW(g_tweakBar, "Reflection", TW_TYPE_BOOLCPP, &g_bIsReflection, "");
 
-	TwAddVarRW(g_tweakBar, "Test Var X", TW_TYPE_FLOAT, &g_xmf4TestVariable.x, "step=0.2");
-	TwAddVarRW(g_tweakBar, "Test Var Y", TW_TYPE_FLOAT, &g_xmf4TestVariable.y, "step=0.2");
-	TwAddVarRW(g_tweakBar, "Test Var Z", TW_TYPE_FLOAT, &g_xmf4TestVariable.z, "step=0.2");
-	TwAddVarRW(g_tweakBar, "Test Var W", TW_TYPE_FLOAT, &g_xmf4TestVariable.w, "step=0.2");
+	TwAddVarRW(g_tweakBar, "Test Var X", TW_TYPE_FLOAT, &g_xmf4TestVariable.x, "step=0.1");
+	TwAddVarRW(g_tweakBar, "Test Var Y", TW_TYPE_FLOAT, &g_xmf4TestVariable.y, "step=0.1");
+	TwAddVarRW(g_tweakBar, "Test Var Z", TW_TYPE_FLOAT, &g_xmf4TestVariable.z, "step=0.1");
+	TwAddVarRW(g_tweakBar, "Test Var W", TW_TYPE_FLOAT, &g_xmf4TestVariable.w, "step=0.1");
 	
 }
 
@@ -116,8 +116,8 @@ void CAntTweakBarManager::CreateHDROption()
 	g_OptionHDR.g_fMiddleGrey = 2.0f;
 	g_OptionHDR.g_fWhite = g_cfWhite;
 	g_OptionHDR.g_fAdaptation = 2.0f;
-	g_OptionHDR.g_fBloomThreshold = 1.0f;
-	g_OptionHDR.g_fBloomScale = 1.0f;
+	g_OptionHDR.g_fBloomThreshold = 3.0f;
+	g_OptionHDR.g_fBloomScale = 4.0f;
 	g_OptionHDR.g_fDOFFarStart = 40.0f;
 	g_OptionHDR.g_fDOFFarRange = 10.0f;
 	g_OptionHDR.g_fDOFChangingTime = 1.0f;

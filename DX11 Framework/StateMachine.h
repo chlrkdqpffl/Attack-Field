@@ -21,6 +21,7 @@ public:
 	{
 		if (newState == m_pCurrentState)
 			return;
+
 		m_pPreviousState = m_pCurrentState;
 		m_pCurrentState->ExitState(m_pOwner, m_partsBody);
 

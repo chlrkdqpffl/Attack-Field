@@ -198,6 +198,8 @@ public:
 
 class CState_HeadHit : public CFSM_State<CCharacterObject>
 {
+	DWORD		m_dwHeadHitStartTime = 0;
+
 public:
 	CState_HeadHit() {};
 	virtual ~CState_HeadHit() {};

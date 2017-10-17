@@ -8,8 +8,8 @@ class CParticleManager : public CSingletonManager<CParticleManager>
 	const UINT m_nMaxSparkParticle		= 10;
 	CParticleSystem*					m_pRainParticle = nullptr;
 
-	multimap<ParticleTag, ID3D11ShaderResourceView*>	m_mapTexturePool;
-	multimap<ParticleTag, vector<CParticleSystem*>>		m_mapParticlePool;
+	unordered_multimap<ParticleTag, ID3D11ShaderResourceView*>	m_mapTexturePool;
+	unordered_multimap<ParticleTag, vector<CParticleSystem*>>	m_mapParticlePool;
 
 public:
 	CParticleManager() {};

@@ -488,7 +488,7 @@ void CGameFramework::BuildObjects()
 	}
 	m_pCamera = SCENE_MGR->g_nowScene->GetPlayer()->GetCamera();
 	m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
-	m_pCamera->GenerateViewMatrix();
+//	m_pCamera->GenerateViewMatrix();
 
 	SCENE_MGR->g_nowScene->SetCamera(m_pCamera);
 	SCENE_MGR->g_pCamera = m_pCamera;
