@@ -172,8 +172,8 @@ void CGBuffer::Initialize(ID3D11Device* pDevice, UINT width, UINT height)
 	m_pSpecShader = new CGBufferShader(GBufferType::eSpec);
 	m_pSpecShader->CreateShader(pDevice);
 
-	CShader::CreateVertexShaderFromFile(pDevice, L"Shader HLSL File/PostProcessing.hlsli", "VSPostProcessing", "vs_5_0", &m_pDeferrdVertexShader);
-	CShader::CreatePixelShaderFromFile(pDevice, L"Shader HLSL File/PostProcessing.hlsli", "PSPostProcessing", "ps_5_0", &m_pDeferrdPixelShader);
+	CShader::CreateVertexShaderFromFile(pDevice, L"../Shader HLSL File/PostProcessing.hlsli", "VSPostProcessing", "vs_5_0", &m_pDeferrdVertexShader);
+	CShader::CreatePixelShaderFromFile(pDevice, L"../Shader HLSL File/PostProcessing.hlsli", "PSPostProcessing", "ps_5_0", &m_pDeferrdPixelShader);
 }
 
 void CGBuffer::OnPreRender(ID3D11DeviceContext* pd3dImmediateContext)

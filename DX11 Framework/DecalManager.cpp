@@ -26,12 +26,12 @@ void CDecalManager::InitializeManager()
 	// --------------------- Create Shader -------------------------- //
 	wstring strFileName;
 	// Directional Light Shader
-	strFileName = L"Shader HLSL File/DecalGen.hlsli";
+	strFileName = L"../Shader HLSL File/DecalGen.hlsli";
 	CShader::CreateVertexShaderFromFile(pd3dDevice, strFileName, "DecalGenVS", "vs_5_0", &m_pDecalGenVS);
 	CShader::CreateGeometryShaderFromFile(pd3dDevice, strFileName, "DecalGenGS", "gs_5_0", &m_pDecalGenGS);
 	CreateSOGeometryShaderFromFile(pd3dDevice, strFileName, "DecalGenGS", "gs_5_0", &m_pDecalGenGS);
 	
-	strFileName = L"Shader HLSL File/DeferredShading.hlsli";
+	strFileName = L"../Shader HLSL File/DeferredShading.hlsli";
 	CShader::CreateVertexShaderFromFile(pd3dDevice, strFileName, "RenderSceneVS", "vs_5_0", &m_pDecalRenderVS);
 	CShader::CreatePixelShaderFromFile(pd3dDevice, strFileName, "RenderDecalPS", "ps_5_0", &m_pDecalRenderPS);
 

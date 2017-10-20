@@ -6,8 +6,10 @@ void CState_AnyTime::UpdateUpperBodyState(CCharacterObject* pCharacter)
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(CharacterParts::UpperBody);
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(CharacterParts::LowerBody);
 	
-	if (false == SOUND_MGR->IsMaxSound())
-		SOUND_MGR->AddVolume(TWBAR_MGR->g_xmf3Offset.x);
+	if (pCharacter->GetCharacterID() == 0) {
+		if (false == SOUND_MGR->IsMaxSound())
+			SOUND_MGR->AddVolume(0.002f);
+	}
 
 	// 죽은 상태일 때에는 상태 확인 X
 	if (pUpperFSM->GetCurrentState() == CState_Death::GetInstance()) {
@@ -265,7 +267,7 @@ void CState_Reload::EnterState(CCharacterObject* pCharacter, CharacterParts type
 	if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eRifle)
 		pCharacter->SetAnimation(AnimationTag::eReload, 1.6f);
 	else if (pCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
-		pCharacter->SetAnimation(AnimationTag::eReload, TWBAR_MGR->g_xmf3Offset.x);
+		pCharacter->SetAnimation(AnimationTag::eReload, 1.3f);
 
 	pCharacter->GetWeapon()->SetFireBulletCount(0);
 	SOUND_MGR->Play3DSound(SoundTag::eReload, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
@@ -357,13 +359,7 @@ void CState_Fire::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		pUpperFSM->ChangeState(CState_Reload::GetInstance());
 		return;
 	}
-
-	// Check Reload
-	if (pCharacter->GetIsReload()) {
-		pUpperFSM->ChangeState(CState_Reload::GetInstance());
-		return;
-	}
-
+	
 	pCharacter->Firing();
 }
 
@@ -373,7 +369,6 @@ void CState_Fire::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 void CState_Fire::ExitState(CCharacterObject* pCharacter, CharacterParts type)
 {
-	pCharacter->GetWeapon()->SetFireBulletCount(0);
 	SPRITE_MGR->DisableSprite(pCharacter->GetMuzzleSprite());
 }
 
@@ -562,15 +557,16 @@ void CState_HeadHit::EnterState(CCharacterObject* pCharacter, CharacterParts typ
 
 	m_dwHeadHitStartTime = GetTickCount();
 
-	SOUND_MGR->Play2DSound(SoundTag::eBeep);
-	SOUND_MGR->AddVolume(-0.9f);
+	if (pCharacter->GetCharacterID() == 0) {
+		SOUND_MGR->Play2DSound(SoundTag::eBeep);
+		SOUND_MGR->AddVolume(-0.9f);
+	}
 }
 
 void CState_HeadHit::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(CharacterParts::UpperBody);
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(CharacterParts::LowerBody);
-	DWORD timeElapsed = GetTickCount() - m_dwHeadHitStartTime;
 
 	if (pCharacter->GetIsDeath()) {
 		pUpperFSM->ChangeState(CState_Death::GetInstance());
@@ -583,8 +579,11 @@ void CState_HeadHit::UpdateUpperBodyState(CCharacterObject* pCharacter)
 		return;
 	}
 
-	if(300 < timeElapsed)
-		SOUND_MGR->AddVolume(TWBAR_MGR->g_xmf3Offset.x);
+	if (pCharacter->GetCharacterID() == 0) {
+		DWORD timeElapsed = GetTickCount() - m_dwHeadHitStartTime;
+		if (300 < timeElapsed)
+			SOUND_MGR->AddVolume(0.002f);
+	}
 }
 
 void CState_HeadHit::UpdateLowerBodyState(CCharacterObject* pCharacter)

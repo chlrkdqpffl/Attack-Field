@@ -101,6 +101,7 @@ void CPlayer::OnKeyInputUpdate(UINT nMessageID, WPARAM wParam)
 		m_bIsZoom = false;
 		m_nFovAngle = 45;
 		m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, m_nFovAngle);
+		m_wKeyState = 0;
 		return;
 	}
 

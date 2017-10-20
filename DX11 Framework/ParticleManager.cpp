@@ -36,7 +36,7 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 
 	// ========================== Fire ================================= //
 	vecMapData = MAPDATA_MGR->GetDataVector(ObjectTag::eFireBarrel);
-	wstrShaderName = L"Shader HLSL File/Fire.hlsli";
+	wstrShaderName = L"../Shader HLSL File/Fire.hlsli";
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pParticle = new CParticleSystem();
 		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eFire), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
@@ -53,7 +53,7 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 	vecParticleSystemPool.clear();
 
 	// Spark
-	wstrShaderName = L"Shader HLSL File/FireSpark.hlsli";
+	wstrShaderName = L"../Shader HLSL File/FireSpark.hlsli";
 	for (int count = 0; count < vecMapData.size(); ++count) {
 		pParticle = new CParticleSystem();
 		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eSpark), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 500, STATEOBJ_MGR->g_pFireBS);
@@ -70,7 +70,7 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 	vecParticleSystemPool.clear();
 
 	// ========================== Blood ================================= //
-	wstrShaderName = L"Shader HLSL File/Blood.hlsli";
+	wstrShaderName = L"../Shader HLSL File/Blood.hlsli";
 	for (int i = 0; i < m_nMaxBloodParticle; ++i) {
 		pParticle = new CParticleSystem();
 		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eBlood1), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 5, STATEOBJ_MGR->g_pBloodBS, 1.0f);
@@ -94,7 +94,7 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 	vecParticleSystemPool.clear();
 
 	// Copious Bleeding
-	wstrShaderName = L"Shader HLSL File/CopiousBleeding.hlsli";
+	wstrShaderName = L"../Shader HLSL File/CopiousBleeding.hlsli";
 	for (int i = 0; i < m_nMaxBloodParticle; ++i) {
 		pParticle = new CParticleSystem();
 		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eBlood1), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 8, STATEOBJ_MGR->g_pBloodBS, 1.0f);
@@ -118,7 +118,7 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 	vecParticleSystemPool.clear();
 
 	// ========================== Spark ================================= //
-	wstrShaderName = L"Shader HLSL File/Spark.hlsli";
+	wstrShaderName = L"../Shader HLSL File/Spark.hlsli";
 	for (int i = 0; i < m_nMaxSparkParticle; ++i) {
 		pParticle = new CParticleSystem();
 		pParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eSpark), pParticle->CreateRandomTexture1DSRV(pd3dDevice), 10, STATEOBJ_MGR->g_pTransparentBS, 1.0f);
@@ -133,7 +133,7 @@ void CParticleManager::CreateParticleSystems(ID3D11Device *pd3dDevice)
 	// ========================== Rain ================================= //
 	m_pRainParticle = new CParticleSystem();
 	m_pRainParticle->Initialize(pd3dDevice, RESOURCE_MGR->CloneShaderResourceView(TextureTag::eRain), m_pRainParticle->CreateRandomTexture1DSRV(pd3dDevice), 10000, STATEOBJ_MGR->g_pTransparentBS);
-	m_pRainParticle->CreateShader(pd3dDevice, L"Shader HLSL File/Rain.hlsli");
+	m_pRainParticle->CreateShader(pd3dDevice, L"../Shader HLSL File/Rain.hlsli");
 }
 
 void CParticleManager::CreateParticle(ParticleTag tag, XMVECTOR pos)

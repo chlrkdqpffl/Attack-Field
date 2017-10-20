@@ -48,7 +48,7 @@ void CSSReflection::Initialize(ID3D11Device* pDevice, UINT width, UINT height)
 	// Compile the shaders
 	wstring strFileName;
 	// Directional Light Shader
-	strFileName = L"Shader HLSL File/SSReflection.hlsli";
+	strFileName = L"../Shader HLSL File/SSReflection.hlsli";
 
 	// Create a layout for the object data
 	D3D11_INPUT_ELEMENT_DESC layout[] =

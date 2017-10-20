@@ -14,7 +14,7 @@ CTextManager::~CTextManager()
 void CTextManager::InitializeManager(ID3D11Device* pd3dDevice)
 {
 	AddFont();
-	wstring fontName = L"koverwatch";
+	wstring fontName = L"Koverwatch";
 
 	if (FAILED(FW1CreateFactory(FW1_VERSION, &m_pFW1FontFactory)))
 		MessageBox(NULL, L"Do not Create FontFactory", L"Error", MB_OK);
@@ -25,7 +25,7 @@ void CTextManager::InitializeManager(ID3D11Device* pd3dDevice)
 
 void CTextManager::AddFont()
 {
-	AddFontResource(L"../Assets/Font/koverwatch.ttf");
+	AddFontResource(L"../Assets/Font/Koverwatch.ttf");
 }
 
 void CTextManager::ReleseManager()
