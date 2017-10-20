@@ -146,7 +146,6 @@ void CState_Walk::UpdateLowerBodyState(CCharacterObject* pCharacter)
 
 	// Check Walk Direction 
 	AnimationTag characterAnim = pCharacter->GetAnimationEnum(CharacterParts::LowerBody);
-
 	XMFLOAT3 relativeVelocity = pCharacter->GetRelativeVelocity();		// 추후 방향만 있는 것이 아닌 속력까지 갖도록 설정하기. 현재는 방향만 존재
 
 	// Forward
@@ -436,6 +435,12 @@ void CState_Run::UpdateLowerBodyState(CCharacterObject* pCharacter)
 {
 	CStateMachine<CCharacterObject>* pUpperFSM = pCharacter->GetFSM(CharacterParts::UpperBody);
 	CStateMachine<CCharacterObject>* pLowerFSM = pCharacter->GetFSM(CharacterParts::LowerBody);
+
+	if (!pCharacter->IsMoving()) {
+		pUpperFSM->ChangeState(CState_Idle::GetInstance());
+		pLowerFSM->ChangeState(CState_Idle::GetInstance());
+		return;
+	}
 
 	if (!pCharacter->GetIsRun()) {
 		if (pCharacter->IsMoving()) {

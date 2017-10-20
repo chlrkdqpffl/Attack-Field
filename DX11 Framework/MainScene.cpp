@@ -253,7 +253,7 @@ void CMainScene::Initialize()
 	cs_create_charter packet;
 
 	packet.size = sizeof(cs_create_charter);
-	packet.type = 8;
+	packet.type = CS_CreatePlayer;
 
 	SERVER_MGR->Sendpacket(reinterpret_cast<BYTE *>(&packet));
 #endif
@@ -1781,10 +1781,7 @@ void CMainScene::CalcOccupyTime()
 			SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
 		}
 
-		m_OccupyTime = 0;
 		m_bIsGameRoundOver = true;
-		m_tagOccupyTeam = TeamTag::eNone;
-		m_nGameTime = DEATHMATCH_TIME;
 	}
 }
 
@@ -1832,6 +1829,10 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 
 	// 라운드 종료 - 6초 뒤 새 게임 시작
 	if (GetTickCount() - m_dwGameRoundOverTime > ROUNDWAIT_TIME) {
+		m_OccupyTime = 0;
+		m_tagOccupyTeam = TeamTag::eNone;
+		m_nGameTime = DEATHMATCH_TIME;
+
 		m_bIsGameRoundOver = false;
 		m_fFrameSpeed = 1.0f;
 		bIsGameRoundOverTimer = false;

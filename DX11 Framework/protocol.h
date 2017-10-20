@@ -5,8 +5,9 @@
 #define CS_ROTATE       2
 #define CS_WEAPONE      3
 #define CS_HEAD_HIT     4
-
+#define CS_GAME_MODE	5
 #define RemovePlayer    6
+#define CS_CreatePlayer 8
 
 enum PacketType
 {
@@ -119,13 +120,14 @@ struct sc_packet_remove_player {   //접속이 종료되면 보내는 패킷이다.
 	WORD id;
 };
 
-struct cs_weapon {   //클라에서 무기의 정보를 보낸다.
+struct cs_FireInfo
+{
 	BYTE size;
 	BYTE type;
 
 	XMFLOAT3 direction;
 	XMFLOAT3 position;
-
+	BYTE weaponType;
 };
 
 struct SC_Collison
@@ -133,7 +135,9 @@ struct SC_Collison
 	BYTE size;
 	BYTE type;
 
-	WORD id;
+	BYTE weaponType;
+	WORD hitCharacterID;
+
 	BOOL collision;
 	XMFLOAT3 position;
 	XMFLOAT3 direction;
@@ -144,12 +148,14 @@ struct CS_Head_Collison
 	BYTE size;
 	BYTE type;
 
-	BOOL Head;
-	BYTE id;
+	BYTE hitParts;
+	BYTE hitCharacterID;
+	BYTE weaponType;
 
 	XMFLOAT3 position;
 	XMFLOAT3 direction;
 };
+
 
 
 struct SC_Damegedirection
@@ -165,8 +171,9 @@ struct SC_Player_Hp
 	BYTE size;
 	BYTE type;
 
-	BYTE m_nLife;
 	BYTE m_nCharacterID;
+	BYTE m_nLife;
+	BYTE m_nArmorPoint;
 
 	BOOL m_bIsHeadHit;
 	BOOL m_bIsAlive;
@@ -282,14 +289,6 @@ struct SC_Occupy_Timer
 
 	float Occupy_timer;
 
-};
-
-struct CS_Fire
-{
-	BYTE size;
-	BYTE type;
-
-	XMFLOAT3 FireDirection;
 };
 
 struct sc_change_scene

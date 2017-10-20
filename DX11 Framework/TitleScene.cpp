@@ -140,9 +140,11 @@ void CTitleScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 {
 	switch (m_tagCursorSelectUI) {
 	case TextureTag::eStartButtonOn:
+		
 #ifdef USE_SERVER
 		SERVER_MGR->Server_init();
 
+		/*
 		cs_login packet;
 		strcpy(packet.id, m_ID.c_str());
 		strcpy(packet.password, m_Password.c_str());
@@ -153,7 +155,9 @@ void CTitleScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 		packet.type = 6;
 
 		SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+		*/
 #endif
+
 		if (!SCENE_MGR->m_loginfail)
 			SCENE_MGR->ChangeScene(SceneTag::eWaitScene);
 		break;

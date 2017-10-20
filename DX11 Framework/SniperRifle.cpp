@@ -27,7 +27,7 @@ CSniperRifle::CSniperRifle(CCharacterObject* pOwner)
 
 	// Data Initialize
 	m_tagWeapon = WeaponTag::eSniperRifle;
-	m_fDamage = 80.f;
+	m_fDamage = 150.f;
 	m_fRange = 1000.f;
 	m_uiFireSpeed = 1500;
 

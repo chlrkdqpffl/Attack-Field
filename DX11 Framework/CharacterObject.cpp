@@ -80,6 +80,7 @@ void CCharacterObject::Reloading()
 void CCharacterObject::Revival()
 {
 	m_nLife = PLAYER_HP;
+	m_nArmorPoint = PLAYER_HP;
 
 	m_bIsHeadHit = false;
 	m_bIsDeadlyAttack = false;
@@ -94,7 +95,24 @@ void CCharacterObject::DamagedCharacter(UINT damage)
 	if (m_nLife == 0)
 		return;
 
-	int life = m_nLife - damage;
+	// AP Point는 70%데미지, HP 30% 데미지
+	int life = m_nLife;
+	UINT nArmorDamage = damage * 0.7f;
+
+	if (m_nArmorPoint) {
+		if (m_nArmorPoint > nArmorDamage) {
+			m_nArmorPoint -= nArmorDamage;
+			life -= damage * 0.3f;
+		}
+		else {
+			life -= nArmorDamage - m_nArmorPoint;
+			life -= damage * 0.3f;
+			m_nArmorPoint = 0;
+		}
+	}
+	else
+		life -= damage;
+
 	if (life <= 0)
 		life = 0;
 
@@ -111,18 +129,6 @@ void CCharacterObject::ReplaceWeapon(WeaponTag weapon)
 
 	m_bIsReplaceWeapon = true;
 	m_nNextReplacementWeaponNumber = static_cast<UINT>(weapon);
-
-
-#ifdef USE_SERVER
-	// 무기 변경 패킷 보내기
-	cs_weapon_type packet;
-	packet.size = sizeof(packet);
-	packet.type = 13;
-	packet.Weapontype = static_cast<BYTE>(weapon);
-
-	SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
-
-#endif
 }
 
 /*

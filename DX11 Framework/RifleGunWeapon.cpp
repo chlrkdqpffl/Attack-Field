@@ -18,7 +18,7 @@ CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner)
 
 	// Data Initialize
 	m_tagWeapon = WeaponTag::eRifle;
-	m_fDamage = 30.f;
+	m_fDamage = 40.f;
 	m_fRange = 150.f;
 	m_uiFireSpeed = 100;
 

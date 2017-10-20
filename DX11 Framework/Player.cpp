@@ -7,7 +7,6 @@
 
 #define InitSpeed 7.0f
 
-
 CPlayer::CPlayer(CCharacterPlayer* pCharacter) 
 	: m_pCharacter(pCharacter)
 {
@@ -166,16 +165,38 @@ void CPlayer::OnKeyInputUpdate(UINT nMessageID, WPARAM wParam)
 			SetKeyDown(KeyInput::eCrouch);
 			break;
 		case '1':
+		{
 			m_bIsZoom = false;
 			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, 45.0f);
-			
+
 			m_pCharacter->ReplaceWeapon(WeaponTag::eRifle);
+
+#ifdef USE_SERVER
+			cs_weapon_type packet;
+			packet.size = sizeof(packet);
+			packet.type = 13;
+			packet.Weapontype = static_cast<BYTE>(WeaponTag::eRifle);
+
+			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+#endif
 			break;
+		}
 		case '2':
+		{
 			m_bIsZoom = false;
 			m_pCamera->GenerateProjectionMatrix(0.05f, 5000.0f, ASPECT_RATIO, 45.0f);
 
 			m_pCharacter->ReplaceWeapon(WeaponTag::eSniperRifle);
+
+#ifdef USE_SERVER
+			cs_weapon_type packet;
+			packet.size = sizeof(packet);
+			packet.type = 13;
+			packet.Weapontype = static_cast<BYTE>(WeaponTag::eSniperRifle);
+
+			SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&packet));
+#endif
+		}
 			break;
 		}
 		break;

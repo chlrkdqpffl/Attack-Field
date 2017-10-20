@@ -35,9 +35,10 @@ void CWeapon::Firing(XMVECTOR direction)
 
 #ifdef USE_SERVER
 		if (SCENE_MGR->g_pPlayerCharacter->GetIsFire())	{
-			cs_weapon* packet = reinterpret_cast<cs_weapon *>(SERVER_MGR->GetSendbuffer());
-			packet->size = sizeof(cs_weapon);
+			cs_FireInfo* packet = reinterpret_cast<cs_FireInfo *>(SERVER_MGR->GetSendbuffer());
+			packet->size = sizeof(cs_FireInfo);
 			packet->type = CS_WEAPONE;
+			packet->weaponType = static_cast<BYTE>(m_tagWeapon);
 			XMStoreFloat3(&packet->position, firePosOffset);
 			XMStoreFloat3(&packet->direction, direction);
 
@@ -83,9 +84,12 @@ void CWeapon::Firing(XMVECTOR direction)
 					hitCharacter->DamagedCharacter(m_fDamage * 2.5f);
 					PARTICLE_MGR->CreateParticle(ParticleTag::eCopiousBleeding, bloodOffset);
 				}
-				else {
+				else if (info.m_HitParts == ChracterBoundingBoxParts::eBody) {
 					hitCharacter->DamagedCharacter(m_fDamage);
-
+					PARTICLE_MGR->CreateParticle(ParticleTag::eBleeding, bloodOffset);
+				}
+				else {
+					hitCharacter->DamagedCharacter(m_fDamage * 0.75f);
 					PARTICLE_MGR->CreateParticle(ParticleTag::eBleeding, bloodOffset);
 				}
 			}

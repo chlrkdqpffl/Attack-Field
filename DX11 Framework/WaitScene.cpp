@@ -104,7 +104,6 @@ void CWaitScene::CreateUIImage()
 	m_pUIManager->AddUIObject(search9);
 }
 
-
 void CWaitScene::CreatePlayer()
 {
 	m_pPlayer = new CTerrainPlayer();
@@ -113,8 +112,6 @@ void CWaitScene::CreatePlayer()
 
 	SCENE_MGR->g_pPlayer = m_pPlayer;
 }
-
-
 
 void CWaitScene::IsOnCursorUI(POINT mousePos, HWND hwnd)
 {
@@ -226,7 +223,7 @@ void CWaitScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 		cs_Gamemode packet;
 		packet.size = sizeof(cs_Gamemode);
 		packet.mode = 1;
-		packet.type = 5;
+		packet.type = CS_GAME_MODE;
 
 		if (!m_mouseclick)
 		{
@@ -255,7 +252,7 @@ void CWaitScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 		cs_Gamemode packet;
 		packet.size = sizeof(cs_Gamemode);
 		packet.mode = 2;
-		packet.type = 5;
+		packet.type = CS_GAME_MODE;
 
 		if (!m_mouseclick)
 		{

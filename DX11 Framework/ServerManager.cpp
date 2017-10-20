@@ -31,9 +31,7 @@ void CServerManager::processpacket(char *ptr)
 					XMVECTOR Animation = XMVectorZero();
 					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eReload))
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(true);
-//					else
-//						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsReload(false);
-		
+	
 					if (my_Pos_packet->key_button & static_cast<int>(KeyInput::eRun))
 						SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(true);
 					else
@@ -67,12 +65,9 @@ void CServerManager::processpacket(char *ptr)
 					XMFLOAT3 Temp;
 					XMStoreFloat3(&Temp, Animation);
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetRelativeVelocity(Temp);
-
-					//SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsRun(false);
 				}
 			}
-			break;
-		
+			break;	
 			case ePacket_CreateOthderPlayer:   //처음 받았을때.
 			{
 				sc_packet_put_player*   my_put_packet;
@@ -95,7 +90,7 @@ void CServerManager::processpacket(char *ptr)
 		
 				if (id == m_myid) {
 					SCENE_MGR->g_pPlayer->SetPosition(XMFLOAT3(my_put_packet->x, my_put_packet->y, my_put_packet->z));
-					SCENE_MGR->g_pPlayer->SetPlayerlife(static_cast<UINT>(my_put_packet->hp));//SCENE_MGR->g_pMainScene->-> SetLife(static_cast<UINT>(my_put_packet->hp));
+					SCENE_MGR->g_pPlayer->SetPlayerlife(static_cast<UINT>(my_put_packet->hp));
 					SCENE_MGR->g_pPlayerCharacter->SetServerID(id);
 					SCENE_MGR->g_pPlayerCharacter->SetTeamTag(static_cast<TeamTag>(my_put_packet->Team));
 					SCENE_MGR->g_pMainScene->SetGameMode(static_cast<GameMode>(my_put_packet->mode));
@@ -103,7 +98,7 @@ void CServerManager::processpacket(char *ptr)
 				}
 				else
 				{
-					CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject(static_cast<TeamTag>(my_put_packet->Team));   //객체 생성
+					CTerroristCharacterObject *pCharObject = new CTerroristCharacterObject(static_cast<TeamTag>(my_put_packet->Team));
 					pCharObject->CreateObjectData(STATEOBJ_MGR->g_pd3dDevice);
 					pCharObject->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 					pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
@@ -117,7 +112,6 @@ void CServerManager::processpacket(char *ptr)
 				SCENE_MGR->g_pMainScene->SetRedTeamKill(static_cast<UINT>(my_put_packet->RED));
 				SCENE_MGR->g_pMainScene->SetBlueTeamKill(static_cast<UINT>(my_put_packet->Blue));
 			}
-		
 			break;
 			case ePacket_MouseRotate:   //rotate된 값 처리
 			{
@@ -153,7 +147,7 @@ void CServerManager::processpacket(char *ptr)
 				CollisionInfo info;
 				bool bIsPartsCollisionCS = false;
 				for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
-					if (character->GetServerID() == my_collision->id)
+					if (character->GetServerID() == my_collision->hitCharacterID)
 						info.m_pHitObject = character;
 				}
 
@@ -161,16 +155,14 @@ void CServerManager::processpacket(char *ptr)
 		
 				if (bIsPartsCollisionCS) {
 					CS_Head_Collison Collison;
-					Collison.Head = false;
+					Collison.hitParts = static_cast<BYTE>(info.m_HitParts);
 					Collison.type = CS_HEAD_HIT;
 					Collison.size = sizeof(CS_Head_Collison);
-					Collison.id = my_collision->id;
+					Collison.hitCharacterID = my_collision->hitCharacterID;
 					Collison.position = my_collision->position;
 					Collison.direction = my_collision->direction;
-		
-					if (info.m_HitParts == ChracterBoundingBoxParts::eHead)
-						Collison.Head = true;
-		
+					Collison.weaponType = my_collision->weaponType;
+
 					SERVER_MGR->Sendpacket(reinterpret_cast<unsigned char *>(&Collison));
 				}
 			}
@@ -181,13 +173,12 @@ void CServerManager::processpacket(char *ptr)
 				packet = reinterpret_cast<SC_Player_Hp *>(ptr);
 				id = packet->m_nCharacterID;
 		
-				if (id == m_myid)
-				{
+				if (id == m_myid) {
 					SCENE_MGR->g_pPlayerCharacter->SetLife(packet->m_nLife);
+					SCENE_MGR->g_pPlayerCharacter->SetArmorPoint(packet->m_nArmorPoint);
 					SCENE_MGR->g_pPlayerCharacter->SetIsHeadHit(packet->m_bIsHeadHit);
 				}
-				else
-				{
+				else {
 					int i = 0;
 					for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer())
 					{
@@ -196,6 +187,7 @@ void CServerManager::processpacket(char *ptr)
 						i++;
 					}
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetLife(packet->m_nLife);
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetArmorPoint(packet->m_nArmorPoint);
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[i]->SetIsHeadHit(packet->m_bIsHeadHit);
 				}
 			}
@@ -282,11 +274,6 @@ void CServerManager::processpacket(char *ptr)
 	case ePacket_SuccessMyCharacter:	//방에 들어가지면 받고 신변경해주고 서버에 정보 넣어달라고 보낸다.
 	{
 		SCENE_MGR->ChangeScene(SceneTag::eLoadingScene);
-
-		cs_create_charter sendpacket;
-
-		sendpacket.size = sizeof(cs_create_charter);
-		sendpacket.type = 8;
 	}
 	break;
 
@@ -317,23 +304,14 @@ void CServerManager::processpacket(char *ptr)
 	{
 		sc_weapon_type *my_packet = reinterpret_cast<sc_weapon_type *>(ptr);
 
-		int other_id = my_packet->id;
-		if (other_id == m_myid)
-		{
-			//아무것도 안한다.
+		int findCharacterID = 0;
+		for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
+			if (character->GetServerID() == my_packet->id)
+				break;
+			findCharacterID++;
 		}
-		else
-		{
-			int findCharacterID = 0;
 
-			for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
-				if (character->GetServerID() == my_packet->id)
-					break;
-				findCharacterID++;
-			}
-
-			SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->ReplaceWeapon(static_cast<WeaponTag>(my_packet->Weapontype));
-		}
+		SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->ReplaceWeapon(static_cast<WeaponTag>(my_packet->Weapontype));
 		break;
 	}
 	default:
