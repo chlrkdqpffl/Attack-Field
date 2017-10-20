@@ -96,6 +96,7 @@ void CResourceManager::LoadUIData()
 	AddResourece(TextureTag::eRespawnGageWhiteBar,	"../Assets/Image/UI/RespawnGage(White).png");
 
 	AddResourece(TextureTag::eZoomScopeD,			"../Assets/Image/UI//Zoom_Scope.png");
+	AddResourece(TextureTag::eBoom,					"../Assets/Image/UI//Boom.png");
 
 	AddResourece(TextureTag::eOccupyGageBar,		"../Assets/Image/UI/RespawnGage.png");	// 현재는 동일한 텍스쳐 사용중
 	AddResourece(TextureTag::eOccupyGageWhiteBar,	"../Assets/Image/UI/RespawnGage(White).png");
@@ -328,7 +329,7 @@ wstring CResourceManager::FindResourcePath(const TextureTag& textureTag)
 
 	// Pool에 해당 데이터가 존재하지 않는다.
 	if (findResource == m_mapPathPool.end())
-		MessageBox(NULL, s_to_ws("Texture Tag : " + to_string(static_cast<int>(textureTag))).c_str(), L"Resource Error", MB_OK);
+		MessageBox(NULL, s_to_ws("Texture Tag : " + to_string(static_cast<int>(textureTag))).c_str(), L"Resource File Null", MB_OK);
 
 	return s_to_ws((*findResource).second.c_str());
 }
@@ -339,7 +340,7 @@ ID3D11ShaderResourceView* CResourceManager::CloneShaderResourceView(const Textur
 
 	// Pool에 해당 데이터가 존재하지 않는다.
 	if(findResource == m_mapTexturePool.end())
-		MessageBox(NULL, s_to_ws("Texture Tag : " + to_string(static_cast<int>(textureTag))).c_str(), L"Resource Error", MB_OK);
+		MessageBox(NULL, s_to_ws("Texture Tag : " + to_string(static_cast<int>(textureTag))).c_str(), L"Resource File Null", MB_OK);
 
 	return (*findResource).second;
 }

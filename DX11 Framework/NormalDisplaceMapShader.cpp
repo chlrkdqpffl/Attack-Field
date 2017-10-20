@@ -14,10 +14,10 @@ void CNormalDisplaceMapShader::CreateShader(ID3D11Device *pd3dDevice)
 	};
 	UINT nElements = ARRAYSIZE(d3dInputElements);
 
-	CreateVertexShaderFromFile(pd3dDevice, L"Shader HLSL File/DisplacementMap.hlsli", "VS_NormalDisplace", "vs_5_0", &m_pd3dVertexShader, d3dInputElements, nElements, &m_pd3dVertexLayout);
-	CreateHullShaderFromFile(pd3dDevice, L"Shader HLSL File/DisplacementMap.hlsli", "HS_NormalDisplace", "hs_5_0", &m_pd3dHullShader);
-	CreateDomainShaderFromFile(pd3dDevice, L"Shader HLSL File/DisplacementMap.hlsli", "DS_NormalDisplace", "ds_5_0", &m_pd3dDomainShader);
-	CreatePixelShaderFromFile(pd3dDevice, L"Shader HLSL File/DisplacementMap.hlsli", "PS_NormalDisplace", "ps_5_0", &m_pd3dPixelShader);
+	CreateVertexShaderFromFile(pd3dDevice, L"../Shader HLSL File/DisplacementMap.hlsli", "VS_NormalDisplace", "vs_5_0", &m_pd3dVertexShader, d3dInputElements, nElements, &m_pd3dVertexLayout);
+	CreateHullShaderFromFile(pd3dDevice, L"../Shader HLSL File/DisplacementMap.hlsli", "HS_NormalDisplace", "hs_5_0", &m_pd3dHullShader);
+	CreateDomainShaderFromFile(pd3dDevice, L"../Shader HLSL File/DisplacementMap.hlsli", "DS_NormalDisplace", "ds_5_0", &m_pd3dDomainShader);
+	CreatePixelShaderFromFile(pd3dDevice, L"../Shader HLSL File/DisplacementMap.hlsli", "PS_NormalDisplace", "ps_5_0", &m_pd3dPixelShader);
 }
 
 void CNormalDisplaceMapShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)
@@ -59,10 +59,10 @@ void CNormalDisplaceMapInstancedShader::CreateShader(ID3D11Device *pd3dDevice)
 	};
 	UINT nElements = ARRAYSIZE(d3dInputElements);
 
-	CreateVertexShaderFromFile(pd3dDevice, L"Shader HLSL File/DisplacementMap.hlsli", "VS_InstancedNormalDisplace", "vs_5_0", &m_pd3dVertexShader, d3dInputElements, nElements, &m_pd3dVertexLayout);
-	CreateHullShaderFromFile(pd3dDevice, L"Shader HLSL File/DisplacementMap.hlsli", "HS_NormalDisplace", "hs_5_0", &m_pd3dHullShader);
-	CreateDomainShaderFromFile(pd3dDevice, L"Shader HLSL File/DisplacementMap.hlsli", "DS_NormalDisplace", "ds_5_0", &m_pd3dDomainShader);
-	CreatePixelShaderFromFile(pd3dDevice, L"Shader HLSL File/DisplacementMap.hlsli", "PS_NormalDisplace", "ps_5_0", &m_pd3dPixelShader);
+	CreateVertexShaderFromFile(pd3dDevice, L"../Shader HLSL File/DisplacementMap.hlsli", "VS_InstancedNormalDisplace", "vs_5_0", &m_pd3dVertexShader, d3dInputElements, nElements, &m_pd3dVertexLayout);
+	CreateHullShaderFromFile(pd3dDevice, L"../Shader HLSL File/DisplacementMap.hlsli", "HS_NormalDisplace", "hs_5_0", &m_pd3dHullShader);
+	CreateDomainShaderFromFile(pd3dDevice, L"../Shader HLSL File/DisplacementMap.hlsli", "DS_NormalDisplace", "ds_5_0", &m_pd3dDomainShader);
+	CreatePixelShaderFromFile(pd3dDevice, L"../Shader HLSL File/DisplacementMap.hlsli", "PS_NormalDisplace", "ps_5_0", &m_pd3dPixelShader);
 }
 
 void CNormalDisplaceMapInstancedShader::OnPrepareRender(ID3D11DeviceContext *pd3dDeviceContext)

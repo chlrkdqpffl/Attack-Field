@@ -26,11 +26,9 @@ CRifleGunWeapon::CRifleGunWeapon(CCharacterObject* pOwner)
 	m_fMaxPitchGap = 5.0f;
 
 	m_nMaxhasBulletCount = 30;
-	m_nhasBulletCount = 30;
+	m_nhasBulletCount = m_nMaxhasBulletCount;
 
 //	m_nMaxhasBulletCount = 100;
-//	m_nhasBulletCount = 100;
-
 }
 
 CRifleGunWeapon::~CRifleGunWeapon()

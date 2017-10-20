@@ -59,7 +59,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 
 	m_hInstance = hInstance;
 	m_hWnd = hMainWnd;
-
+	
 	if (!CreateDirect3DDisplay()) return(false);
 
 	// Initialize Manager
@@ -76,6 +76,8 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	SOUND_MGR->InitializeManager();
 
 	BuildObjects();
+	m_pGameTimer = new CGameTimer();
+	SCENE_MGR->g_pGameTimer = m_pGameTimer;
 	
 	return(true);
 }
@@ -105,6 +107,8 @@ void CGameFramework::OnDestroy()
 	SERVER_MGR->ReleseInstance();
 	PARTICLE_MGR->ReleseInstance();
 	SPRITE_MGR->ReleseInstance();
+
+	SafeDelete(m_pGameTimer);
 
 #if defined(DEBUG) || defined(_DEBUG)
 	_CrtDumpMemoryLeaks();
@@ -212,7 +216,7 @@ bool CGameFramework::CreateDirect3DDisplay()
 		// 외장 그래픽으로 디바이스 생성시 전체화면이 안됨!
 		// 개발할 때에는 전체 화면이 필요 없으므로 실행하도록 하고 시연용으로는 파일을 외장그래픽으로 수동 실행하여야 함
 		if (SUCCEEDED(hResult = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
-	//	if (SUCCEEDED(hResult = D3D11CreateDevice(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
+//		if (SUCCEEDED(hResult = D3D11CreateDevice(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
 #endif
 			break;
 		else {
@@ -555,8 +559,8 @@ void CGameFramework::ProcessInput()
 
 void CGameFramework::UpdateObjects()
 {
-	m_fDeltaTime = m_GameTimer.GetTimeElapsed();
-	m_nFrameRate = m_GameTimer.GetFrameRate();
+	m_fDeltaTime = m_pGameTimer->GetTimeElapsed();
+	m_nFrameRate = m_pGameTimer->GetFrameRate();
 
 	SCENE_MGR->g_fDeltaTime = m_fDeltaTime;
 	SCENE_MGR->g_nowScene->Update(m_fDeltaTime);
@@ -567,8 +571,8 @@ void CGameFramework::UpdateObjects()
 
 void CGameFramework::FrameAdvance()
 {
-	m_GameTimer.Tick(60);
-//	m_GameTimer.Tick();
+	m_pGameTimer->Tick(TWBAR_MGR->g_xmf3Quaternion.y);
+//	m_pGameTimer->Tick();
 
 	ProcessInput();
 	UpdateObjects();
@@ -607,10 +611,10 @@ void CGameFramework::SetTitleName()
 {
 	wstring wstrTitleName = PROJECT_NAME;
 
-	wstrTitleName += to_wstring(m_GameTimer.GetFrameRate());
+	wstrTitleName += to_wstring(m_pGameTimer->GetFrameRate());
 	wstrTitleName += L" FPS, ";
 
-	wstrTitleName += to_wstring(m_GameTimer.GetRealFrameRate());
+	wstrTitleName += to_wstring(m_pGameTimer->GetRealFrameRate());
 	wstrTitleName += L" FPS)";
 
 	::SetWindowText(m_hWnd, wstrTitleName.c_str());
@@ -622,7 +626,7 @@ void CGameFramework::RenderDebugText()
 
 	// Draw FrameRate
 	//UINT fps = m_nFrameRate;
-	UINT fps = m_GameTimer.GetRealFrameRate();
+	UINT fps = m_pGameTimer->GetRealFrameRate();
 	str = to_string(fps) + " FPS";
 
 	if (60 <= fps)

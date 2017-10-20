@@ -102,44 +102,16 @@ void CWaitScene::CreateUIImage()
 	search9->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
 	search9->SetActive(false);
 	m_pUIManager->AddUIObject(search9);
-
-	//CUIObject* search10 = new CUIObject(TextureTag::eSearch10);
-	//search10->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
-	//search10->SetActive(false);
-	//m_pUIManager->AddUIObject(search10);
-
-	//CUIObject* search11 = new CUIObject(TextureTag::eSearch11);
-	//search11->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
-	//search11->SetActive(false);
-	//m_pUIManager->AddUIObject(search11);
-
-	//CUIObject* search12 = new CUIObject(TextureTag::eSearch12);
-	//search12->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
-	//search12->SetActive(false);
-	//m_pUIManager->AddUIObject(search12);
-
-	//CUIObject* search13 = new CUIObject(TextureTag::eSearch13);
-	//search13->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 40 , FRAME_BUFFER_HEIGHT / 2 - 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 40,  FRAME_BUFFER_HEIGHT / 2 + 40 }, 0.0f);
-	//search13->SetActive(false);
-	//m_pUIManager->AddUIObject(search13);
-
 }
 
 
 void CWaitScene::CreatePlayer()
 {
-	/*
-	카메라만 필요하지만 캐릭터까지 만들어 주는데 이는 수정이 필요한 부분
-	현재는 무조건 플레이어를 거쳐서 카메라를 만들어 준다.
-	*/
-
-
 	m_pPlayer = new CTerrainPlayer();
 	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson);
 	m_pCamera = m_pPlayer->GetCamera();
 
 	SCENE_MGR->g_pPlayer = m_pPlayer;
-
 }
 
 
@@ -151,23 +123,15 @@ void CWaitScene::IsOnCursorUI(POINT mousePos, HWND hwnd)
 	switch (findTag) {
 
 	case TextureTag::eNone:
-		if (!m_mouseclick)
-		{
+		if (!m_mouseclick) {
 			m_tagCursorSelectUI = TextureTag::eNone;
 			m_pUIManager->GetUIObject(TextureTag::eDeathOn)->SetActive(false);
 			m_pUIManager->GetUIObject(TextureTag::eOccupyOn)->SetActive(false);
 			m_pUIManager->GetUIObject(TextureTag::eDeathOff)->SetActive(true);
 			m_pUIManager->GetUIObject(TextureTag::eOccupyOff)->SetActive(true);
 		}
-
 		break;
 
-		//case TextureTag::eDeathOn:
-
-		//	break;
-		//case TextureTag::eOccupyOn:
-
-		//	break;
 	case TextureTag::eDeathOff:
 		m_tagCursorSelectUI = TextureTag::eDeathOn;
 		m_pUIManager->GetUIObject(TextureTag::eDeathOff)->SetActive(false);
@@ -182,8 +146,6 @@ void CWaitScene::IsOnCursorUI(POINT mousePos, HWND hwnd)
 		m_pUIManager->GetUIObject(TextureTag::eDeathOff)->SetActive(true);
 		m_pUIManager->GetUIObject(TextureTag::eOccupyOn)->SetActive(true);
 		break;
-
-
 	}
 }
 
@@ -236,26 +198,6 @@ void CWaitScene::SearchRender()
 		m_pUIManager->GetUIObject(TextureTag::eSearch9)->SetActive(false);
 		m_pUIManager->GetUIObject(TextureTag::eSearch1)->SetActive(true);
 		break;
-	//case TextureTag::eSearch10:
-	//	m_tagCursorSelectUI = TextureTag::eSearch11;
-	//	m_pUIManager->GetUIObject(TextureTag::eSearch10)->SetActive(false);
-	//	m_pUIManager->GetUIObject(TextureTag::eSearch11)->SetActive(true);
-	//	break;
-	//case TextureTag::eSearch11:
-	//	m_tagCursorSelectUI = TextureTag::eSearch12;
-	//	m_pUIManager->GetUIObject(TextureTag::eSearch11)->SetActive(false);
-	//	m_pUIManager->GetUIObject(TextureTag::eSearch12)->SetActive(true);
-	//	break;
-	//case TextureTag::eSearch12:
-	//	m_tagCursorSelectUI = TextureTag::eSearch13;
-	//	m_pUIManager->GetUIObject(TextureTag::eSearch12)->SetActive(false);
-	//	m_pUIManager->GetUIObject(TextureTag::eSearch13)->SetActive(true);
-	//	break;
-	//case TextureTag::eSearch13:
-	//	m_tagCursorSelectUI = TextureTag::eSearch1;
-	//	m_pUIManager->GetUIObject(TextureTag::eSearch13)->SetActive(false);
-	//	m_pUIManager->GetUIObject(TextureTag::eSearch1)->SetActive(true);
-	//	break;
 	}
 }
 
@@ -267,11 +209,6 @@ bool CWaitScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wPa
 	switch (nMessageID) {
 	case WM_LBUTTONDOWN:
 		IsCollisionUI(mousePos, hWnd);
-		break;
-	case WM_MOUSEMOVE:
-
-		break;
-	case WM_RBUTTONUP:
 		break;
 	default:
 		break;
@@ -339,20 +276,11 @@ void CWaitScene::IsCollisionUI(POINT mousePos, HWND hwnd)
 #endif
 		break;
 	}
-	case TextureTag::eOccupyOff:
-
-		break;
-
-	case TextureTag::eDeathOff:
-
-		break;
-
 	case TextureTag::eExitButtonOn:
 		::PostQuitMessage(0);
 		break;
 	}
 }
-
 
 void CWaitScene::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {

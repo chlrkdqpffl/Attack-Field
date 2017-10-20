@@ -257,7 +257,7 @@ void CShader::CreateShader(ID3D11Device *pd3dDevice, UINT nType)
 	LPCSTR pszVSShaderName = NULL, pszVSShaderModel = "vs_5_0", pszPSShaderName = NULL, pszPSShaderModel = "ps_5_0";
 	GetShaderName(m_nType, &pszVSShaderName, &pszVSShaderModel, &pszPSShaderName, &pszPSShaderModel);
 
-	CreateShader(pd3dDevice, NULL, 0, L"Shader HLSL File/Effect.fx", pszVSShaderName, pszVSShaderModel, pszPSShaderName, pszPSShaderModel);
+	CreateShader(pd3dDevice, NULL, 0, L"../Shader HLSL File/Effect.fx", pszVSShaderName, pszVSShaderModel, pszPSShaderName, pszPSShaderModel);
 }
 
 void CShader::CreateShader(ID3D11Device *pd3dDevice, D3D11_INPUT_ELEMENT_DESC *pd3dInputElementDesc, int nInputElements, WCHAR *pszFileName, LPCSTR pszVSShaderName, LPCSTR pszVSShaderModel, LPCSTR pszPSShaderName, LPCSTR pszPSShaderModel)
@@ -316,9 +316,9 @@ void CShader::CreateShader(ID3D11Device *pd3dDevice, ShaderTag shaderTag)
 	GetShaderName(m_nType, &pszVSShaderName, &pszVSShaderModel, &pszPSShaderName, &pszPSShaderModel);
 
 #ifdef USE_DEFERRD_RENDER
-		CreateShader(pd3dDevice, NULL, 0, L"Shader HLSL File/DeferredShading.hlsli", pszVSShaderName, pszVSShaderModel, pszPSShaderName, pszPSShaderModel);
+		CreateShader(pd3dDevice, NULL, 0, L"../Shader HLSL File/DeferredShading.hlsli", pszVSShaderName, pszVSShaderModel, pszPSShaderName, pszPSShaderModel);
 #else
-		CreateShader(pd3dDevice, NULL, 0, L"Shader HLSL File/Effect.fx", pszVSShaderName, pszVSShaderModel, pszPSShaderName, pszPSShaderModel);
+		CreateShader(pd3dDevice, NULL, 0, L"../Shader HLSL File/Effect.fx", pszVSShaderName, pszVSShaderModel, pszPSShaderName, pszPSShaderModel);
 #endif
 }
 

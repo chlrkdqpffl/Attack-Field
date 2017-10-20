@@ -186,7 +186,7 @@ void CPostFX::Initialize(ID3D11Device* pDevice, UINT width, UINT height)
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Create ShaderFile
 	wstring strFileName;
-	strFileName = L"Shader HLSL File/PostDownScaleFX.hlsli";
+	strFileName = L"../Shader HLSL File/PostDownScaleFX.hlsli";
 	CShader::CreateComputeShaderFromFile(pDevice, strFileName, "DownScaleFirstPass", "cs_5_0", &m_pDownScaleFirstPassCS);
 	DXUT_SetDebugName(m_pDownScaleFirstPassCS, "Post FX - Down Scale First Pass CS" );
 	CShader::CreateComputeShaderFromFile(pDevice, strFileName, "DownScaleSecondPass", "cs_5_0", &m_pDownScaleSecondPassCS);
@@ -194,14 +194,14 @@ void CPostFX::Initialize(ID3D11Device* pDevice, UINT width, UINT height)
 	CShader::CreateComputeShaderFromFile(pDevice, strFileName, "BloomReveal", "cs_5_0", &m_pBloomRevealCS);
 	DXUT_SetDebugName(m_pBloomRevealCS, "Post FX - Bloom Reveal CS");
 
-	strFileName = L"Shader HLSL File/PostFX.hlsli";
+	strFileName = L"../Shader HLSL File/PostFX.hlsli";
 	CShader::CreateVertexShaderFromFile(pDevice, strFileName, "FullScreenQuadVS", "vs_5_0", &m_pFullScreenQuadVS);
 	DXUT_SetDebugName(m_pFullScreenQuadVS, "Post FX - Full Screen Quad VS");
 	CShader::CreatePixelShaderFromFile(pDevice, strFileName, "FinalPassPS", "ps_5_0", &m_pFinalPassPS);
     DXUT_SetDebugName( m_pFinalPassPS, "Post FX - Final Pass PS" );
 
 	// NVidia Gaussian Blur
-	strFileName = L"Shader HLSL File/Blur.hlsli";
+	strFileName = L"../Shader HLSL File/Blur.hlsli";
 	CShader::CreateComputeShaderFromFile(pDevice, strFileName, "VerticalFilter", "cs_5_0", &m_VerticalBlurCS);
 	DXUT_SetDebugName(m_VerticalBlurCS, "Post FX - - Vertical Blur CS");
 	CShader::CreateComputeShaderFromFile(pDevice, strFileName, "HorizFilter", "cs_5_0", &m_HorizontalBlurCS);

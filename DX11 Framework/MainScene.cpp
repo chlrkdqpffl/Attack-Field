@@ -14,9 +14,9 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(0.0f, 0.0f, 0.0f);
+//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(0.002f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(0.0f, 0.0f, 0.0f);
-//	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(1000.0f, 55.0f, 0.0f, 0.0f);
+	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(900.0f, 60.0f, 0.0f, 0.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_nSelect = 15;
 }
@@ -1609,6 +1609,11 @@ void CMainScene::CreateUIImage()
 	pUIObject->SetActive(false);
 	m_pUIManager->AddUIObject(pUIObject);
 	
+	pUIObject = new CUIObject(TextureTag::eBoom);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ (LONG)(TWBAR_MGR->g_xmf3Rotate.x), (LONG)(TWBAR_MGR->g_xmf3Rotate.y) }, POINT{ (LONG)(TWBAR_MGR->g_xmf3Rotate.x + TWBAR_MGR->g_xmf3Rotate.z), (LONG)(TWBAR_MGR->g_xmf3Rotate.y + TWBAR_MGR->g_xmf3Rotate.z) }, 0.0f, true);
+	//pUIObject->SetActive(true);
+	m_pUIManager->AddUIObject(pUIObject);
+
 	// ===== Damage Direction ===== //
 	pUIObject = new CUIObject(TextureTag::eDamageDirection_Top);
 	pUIObject->Initialize(m_pd3dDevice, POINT{ 650, 180 }, POINT{ 950, 280 }, 0.1f);
@@ -1789,7 +1794,17 @@ void CMainScene::CalcOccupyPosition()
 	XMVECTOR occupyPos = XMLoadFloat3(&m_cf3OccupyPosition);
 
 	float distance = XMVectorGetX(XMVector3Length(playerPos - occupyPos));
-	if (distance >= 23.5f)
+	/*
+	if (distance <= 30.0f) {
+
+	}
+	CUIObject* pBoomUI = m_pUIManager->GetUIObject(TextureTag::eBoom);
+
+	pBoomUI->SetStartPos(POINT{ (LONG)(TWBAR_MGR->g_xmf3Rotate.x), (LONG)(TWBAR_MGR->g_xmf3Rotate.y) });
+	pBoomUI->SetEndPos(POINT{ (LONG)(TWBAR_MGR->g_xmf3Rotate.x + TWBAR_MGR->g_xmf3Rotate.z), (LONG)(TWBAR_MGR->g_xmf3Rotate.y + TWBAR_MGR->g_xmf3Rotate.z) });
+	*/
+
+	if (23.5f <= distance)
 		m_pPlayerCharacter->SetOccupy(false);
 }
 
@@ -2217,7 +2232,7 @@ void CMainScene::Update(float fDeltaTime)
 	float fAdaptationNorm;
 	static bool s_bFirstTime = true;
 	if (s_bFirstTime) {
-		fAdaptationNorm = 0.0f;
+		fAdaptationNorm = 1.0f;
 		s_bFirstTime = false;
 	}
 	else 

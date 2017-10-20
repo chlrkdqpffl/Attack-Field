@@ -60,33 +60,33 @@ void CLightManager::InitializeManager()
 
 	wstring strFileName;
 	// Directional Light Shader
-	strFileName = L"Shader HLSL File/DirLight.hlsli";
+	strFileName = L"../Shader HLSL File/DirLight.hlsli";
 	CShader::CreateVertexShaderFromFile(pd3dDevice, strFileName, "DirLightVS", "vs_5_0", &m_pDirLightVertexShader);
 	CShader::CreatePixelShaderFromFile(pd3dDevice, strFileName, "DirLightPS", "ps_5_0", &m_pDirLightPixelShader);
 
 	// Point Light Shader
-	strFileName = L"Shader HLSL File/PointLight.hlsli";
+	strFileName = L"../Shader HLSL File/PointLight.hlsli";
 	CShader::CreateVertexShaderFromFile(pd3dDevice, strFileName, "PointLightVS", "vs_5_0", &m_pPointLightVertexShader);
 	CShader::CreateHullShaderFromFile(pd3dDevice, strFileName, "PointLightHS", "hs_5_0", &m_pPointLightHullShader);
 	CShader::CreateDomainShaderFromFile(pd3dDevice, strFileName, "PointLightDS", "ds_5_0", &m_pPointLightDomainShader);
 	CShader::CreatePixelShaderFromFile(pd3dDevice, strFileName, "PointLightPS", "ps_5_0", &m_pPointLightPixelShader);
 
 	// Spot Light Shader
-	strFileName = L"Shader HLSL File/SpotLight.hlsli";
+	strFileName = L"../Shader HLSL File/SpotLight.hlsli";
 	CShader::CreateVertexShaderFromFile(pd3dDevice, strFileName, "SpotLightVS", "vs_5_0", &m_pSpotLightVertexShader);
 	CShader::CreateHullShaderFromFile(pd3dDevice, strFileName, "SpotLightHS", "hs_5_0", &m_pSpotLightHullShader);
 	CShader::CreateDomainShaderFromFile(pd3dDevice, strFileName, "SpotLightDS", "ds_5_0", &m_pSpotLightDomainShader);
 	CShader::CreatePixelShaderFromFile(pd3dDevice, strFileName, "SpotLightPS", "ps_5_0", &m_pSpotLightPixelShader);
 
 	// Capsule Light Shader
-	strFileName = L"Shader HLSL File/CapsuleLight.hlsli";
+	strFileName = L"../Shader HLSL File/CapsuleLight.hlsli";
 	CShader::CreateVertexShaderFromFile(pd3dDevice, strFileName, "CapsuleLightVS", "vs_5_0", &m_pCapsuleLightVertexShader);
 	CShader::CreateHullShaderFromFile(pd3dDevice, strFileName, "CapsuleLightHS", "hs_5_0", &m_pCapsuleLightHullShader);
 	CShader::CreateDomainShaderFromFile(pd3dDevice, strFileName, "CapsuleLightDS", "ds_5_0", &m_pCapsuleLightDomainShader);
 	CShader::CreatePixelShaderFromFile(pd3dDevice, strFileName, "CapsuleLightPS", "ps_5_0", &m_pCapsuleLightPixelShader);
 
 	// Light Volume Debug Shader
-	strFileName = L"Shader HLSL File/Common.hlsli";
+	strFileName = L"../Shader HLSL File/Common.hlsli";
 	CShader::CreatePixelShaderFromFile(pd3dDevice, strFileName, "DebugLightPS", "ps_5_0", &m_pDebugLightPixelShader);
 
 	D3D11_DEPTH_STENCIL_DESC descDepth;

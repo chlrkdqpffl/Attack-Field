@@ -5,6 +5,7 @@
 #include "LoadingScene.h"
 #include "MainScene.h"
 #include "WaitScene.h"
+#include "Timer.h"
 
 class CSceneManager : public CSingletonManager<CSceneManager>
 {
@@ -13,6 +14,7 @@ public:
 	CScene							*g_nowScene		= nullptr;
 
 	// ----- Etc ----- // 
+	CGameTimer						*g_pGameTimer	= nullptr;
 	CCamera							*g_pCamera		= nullptr;
 	CPlayer							*g_pPlayer		= nullptr;
 	CCharacterPlayer				*g_pPlayerCharacter = nullptr;

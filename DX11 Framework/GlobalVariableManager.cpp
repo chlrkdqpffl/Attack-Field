@@ -8,7 +8,7 @@ ID3D11Buffer*	CGlobalVariableManager::g_pd3dcbTessOption = nullptr;
 bool			CGlobalVariableManager::g_bShowGBuffer = false;
 bool			CGlobalVariableManager::g_bShowWorldAxis = false;
 bool			CGlobalVariableManager::g_bShowWireFrame = false;
-bool			CGlobalVariableManager::g_bActivateDOF = true;
+bool			CGlobalVariableManager::g_bActivateDOF = false;
 
 CGlobalVariableManager::CGlobalVariableManager()
 {

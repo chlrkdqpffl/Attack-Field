@@ -75,16 +75,14 @@ float3 DistanceDOF(float3 colorFocus, float3 colorBlurred, float depth)
 
 float3 ToneMapping(float3 HDRColor)
 {
-	// Find the luminance scale for the current pixel
     float LScale = dot(HDRColor, LUM_FACTOR);
     LScale *= MiddleGrey / AvgLum[0];
     LScale = (LScale + LScale * LScale / LumWhiteSqr) / (1.0 + LScale);
-    return HDRColor * LScale; // Apply the luminance scale to the pixels color
+    return HDRColor * LScale;
 }
 
 float4 FinalPassPS(VS_OUTPUT In) : SV_TARGET
 {
-	// Get the color and depth samples
     float3 color = HDRTex.Sample(PointSampler, In.UV.xy).xyz;
 
 	// Distance DOF only on pixels that are not on the far plane
@@ -100,13 +98,10 @@ float4 FinalPassPS(VS_OUTPUT In) : SV_TARGET
 		// Compute the distance DOF color
         color = DistanceDOF(color, colorBlurred, depth);
     }
-
-	// Add the bloom contribution
+    
     color += BloomScale * BloomTex.Sample(LinearSampler, In.UV.xy).xyz;
-
-	// Tone mapping
+    
     color = ToneMapping(color);
-
-	// Output the LDR value
+    
     return float4(color, 1.0);
 }

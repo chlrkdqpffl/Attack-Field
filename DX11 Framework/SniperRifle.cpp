@@ -38,9 +38,8 @@ CSniperRifle::CSniperRifle(CCharacterObject* pOwner)
 //	m_fMaxPitchGap = 0.0f;
 
 	m_nMaxhasBulletCount = 5;
-	m_nhasBulletCount = 5;
+	m_nhasBulletCount = m_nMaxhasBulletCount;
 //	m_nMaxhasBulletCount = 100;
-//	m_nhasBulletCount = 100;
 }
 
 CSniperRifle::~CSniperRifle()
