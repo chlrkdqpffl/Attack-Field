@@ -5,6 +5,7 @@
 #include "ThirdPersonCamera.h"
 #include "protocol.h"
 
+
 CPlayer::CPlayer(CCharacterPlayer* pCharacter) 
 	: m_pCharacter(pCharacter)
 {
