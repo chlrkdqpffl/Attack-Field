@@ -329,7 +329,7 @@ wstring CResourceManager::FindResourcePath(const TextureTag& textureTag)
 
 	// Pool에 해당 데이터가 존재하지 않는다.
 	if (findResource == m_mapPathPool.end())
-		MessageBox(NULL, s_to_ws("Texture Tag : " + to_string(static_cast<int>(textureTag))).c_str(), L"Resource Error", MB_OK);
+		MessageBox(NULL, s_to_ws("Texture Tag : " + to_string(static_cast<int>(textureTag))).c_str(), L"Resource File Null", MB_OK);
 
 	return s_to_ws((*findResource).second.c_str());
 }
@@ -340,7 +340,7 @@ ID3D11ShaderResourceView* CResourceManager::CloneShaderResourceView(const Textur
 
 	// Pool에 해당 데이터가 존재하지 않는다.
 	if(findResource == m_mapTexturePool.end())
-		MessageBox(NULL, s_to_ws("Texture Tag : " + to_string(static_cast<int>(textureTag))).c_str(), L"Resource Error", MB_OK);
+		MessageBox(NULL, s_to_ws("Texture Tag : " + to_string(static_cast<int>(textureTag))).c_str(), L"Resource File Null", MB_OK);
 
 	return (*findResource).second;
 }

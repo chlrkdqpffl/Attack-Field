@@ -426,7 +426,6 @@ void CState_Run::EnterState(CCharacterObject* pCharacter, CharacterParts type)
 
 	SOUND_MGR->Play3DSound(SoundTag::eRun, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 	pCharacter->SetAnimation(AnimationTag::eRun, 1.4f);
-	pCharacter->SetIsTempRun(true);
 }
 
 void CState_Run::UpdateUpperBodyState(CCharacterObject* pCharacter)
@@ -457,7 +456,6 @@ void CState_Run::ExitState(CCharacterObject* pCharacter, CharacterParts type)
 	if (type == CharacterParts::LowerBody)
 		return;
 
-	pCharacter->SetIsTempRun(false);
 	SOUND_MGR->StopSound();
 }
 

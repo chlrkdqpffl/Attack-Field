@@ -687,9 +687,7 @@ bool CGameObject::IsVisible(CCamera *pCamera)
 #endif
 
 	// 임시로 해놓은 상태.	 - 09. 17
-	if (m_tagMesh == MeshTag::eStair)
-		m_bIsVisible = true;
-	if (m_tagMesh == MeshTag::eStair2)
+	if (m_tagMesh == MeshTag::eStair || m_tagMesh == MeshTag::eStair2)
 		m_bIsVisible = true;
 
 	return(m_bIsVisible);

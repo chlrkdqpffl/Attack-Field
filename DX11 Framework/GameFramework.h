@@ -48,15 +48,13 @@ private:
 	ID3D11Device					*m_pd3dDevice			= nullptr;
 	ID3D11DeviceContext				*m_pd3dDeviceContext	= nullptr;
 
-	UINT							m_n4xMSAAQualities;
+	UINT							m_n4xMSAAQualities		= 0;
 
-	ID3D11Texture2D					*m_pd3dDepthStencilBuffer;
-	ID3D11DepthStencilView			*m_pd3dDepthStencilView;
+	ID3D11Texture2D					*m_pd3dDepthStencilBuffer = nullptr;
+	ID3D11DepthStencilView			*m_pd3dDepthStencilView = nullptr;
 
-	CGameTimer						m_GameTimer;
-
-//	CPlayer							*m_pPlayer;
-	CCamera							*m_pCamera;
+	CGameTimer						*m_pGameTimer			= nullptr;
+	CCamera							*m_pCamera				= nullptr;
 
 	POINT							m_ptOldCursorPos;
 	wstring							m_strTitleName;

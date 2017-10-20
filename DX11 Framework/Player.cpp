@@ -5,20 +5,15 @@
 #include "ThirdPersonCamera.h"
 #include "protocol.h"
 
+#define InitSpeed 7.0f
+
+
 CPlayer::CPlayer(CCharacterPlayer* pCharacter) 
 	: m_pCharacter(pCharacter)
 {
 	XMStoreFloat4x4(&m_mtxWorld, XMMatrixIdentity());
 
-#define InitSpeed 7.0f
-
-#ifdef DEVELOP_MODE
-
-//	m_fMoveSpeed = 15.0f;
-	m_fMoveSpeed = InitSpeed;
-#else
 	m_fMoveSpeed = InitSpeed;	// 자연스러운 속도
-#endif
 	count = 0;
 }
 
@@ -82,7 +77,7 @@ void CPlayer::PhysXUpdate(float fDeltaTime)
 	XMFLOAT3 position = XMFLOAT3(m_pPxCharacterController->getPosition().x, m_pPxCharacterController->getPosition().y, m_pPxCharacterController->getPosition().z);
 
 	m_mtxWorld._41 = position.x;
-	m_mtxWorld._42 = position.y - characterCenterOffset;
+	m_mtxWorld._42 = position.y - characterCenterOffset;	// 포지션은 캐릭터 중심이 기준
 	m_mtxWorld._43 = position.z;
 	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&m_mtxWorld);
 }
@@ -252,10 +247,6 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
-		if (m_pCharacter->GetIsTempRun()) {	// 임시로 이렇게 해놓음. FSM 에서 Run 상태일 때에만 속력이 증가하도록 - 추후 수정해야함
-			if (m_pCamera->GetCameraTag() != CameraTag::eFreeCam)
-				vMoveDirection = GetvLook();
-		}
 		m_fSpeedFactor = 1.8f;
 		m_pCharacter->Running();
 	}
@@ -272,7 +263,7 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 		else
 			m_pCharacter->SetIsReload(true);
 	}
-
+	
 	if (m_wKeyState & static_cast<int>(KeyInput::eOccupy))
 		m_pCharacter->SetOccupy(true);
 	else
@@ -282,8 +273,8 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 		if (false == m_bIsJumping) {
 			m_bIsJumping = true;
 		
-		//	AddAccel(XMFLOAT3(0.0f, TWBAR_MGR->g_xmf3Quaternion.x, 0.0f));
-			AddAccel(XMFLOAT3(0.0f, 1000.0f, 0.0f));
+			UINT nJumpPower = SCENE_MGR->g_pGameTimer->GetFrameRate() * 15 + 100;
+			AddAccel(XMFLOAT3(0.0f, nJumpPower, 0.0f));
 			relativeVelocity += XMVectorSet(0, 1, 0, 0);
 			m_pCharacter->SetIsJump(true);
 		}
@@ -303,10 +294,8 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 		m_fSpeedFactor *= 0.8f;
 
 	// 앉기시 이동 금지 or 조금 이동
-	if (m_wKeyState & static_cast<int>(KeyInput::eCrouch)) {
-		//vMoveDirection = XMVectorZero();
+	if (m_wKeyState & static_cast<int>(KeyInput::eCrouch)) 
 		m_fSpeedFactor *= 0.2f;
-	}
 
 	XMStoreFloat3(&m_f3MoveDirection, vMoveDirection);
 	m_pCharacter->SetRelativevVelocity(relativeVelocity);
@@ -406,7 +395,7 @@ void CPlayer::Rotate(float x, float y)
 		m_pCharacter->SetPitch(0.0f);
 
 #ifdef	USE_SERVER
-	if (abs(m_pCharacter->GetminusPitch()) >= 1.0f || abs(m_pCharacter->GetminusYaw()) >= 1.0f)
+	if (abs(m_pCharacter->GetminusPitch()) >= 3.0f || abs(m_pCharacter->GetminusYaw()) >= 3.0f)
 	{
 		cs_rotate *rotate = reinterpret_cast<cs_rotate *>(SERVER_MGR->GetSendbuffer());
 		rotate->mouseRotate.x = m_pCharacter->GetPitch();
@@ -467,7 +456,7 @@ void CPlayer::UpdateDOF(float fDeltaTime)
 
 void CPlayer::Update(float fDeltaTime)
 {
-	UpdateDOF(fDeltaTime);
+//	UpdateDOF(fDeltaTime);		 임시로 DOF Off
 	UpdateKeyState(fDeltaTime);
 	PhysXUpdate(fDeltaTime);
 	
@@ -494,7 +483,7 @@ CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, CameraTag nNewCameraT
 			pNewCamera = new CSpaceShipCamera(m_pCamera);
 
 			m_f3GravityAccel = XMFLOAT3(0.0f, 0.0f, 0.0f);
-			m_fMoveSpeed = 30.0f;
+			m_fMoveSpeed = InitSpeed * 4;
 			break;
 		case CameraTag::eThirdPerson:
 			pNewCamera = new CThirdPersonCamera(m_pCamera);

@@ -86,8 +86,7 @@ void DownScaleFirstPass(uint3 groupId : SV_GroupID, uint3 groupThreadId : SV_Gro
         stepAvgLum += dispatchThreadId.x + 16 < Domain ? SharedPositions[groupThreadId.x + 16] : avgLum;
         stepAvgLum += dispatchThreadId.x + 32 < Domain ? SharedPositions[groupThreadId.x + 32] : avgLum;
         stepAvgLum += dispatchThreadId.x + 48 < Domain ? SharedPositions[groupThreadId.x + 48] : avgLum;
-
-		// Store the results
+        
         avgLum = stepAvgLum;
         SharedPositions[groupThreadId.x] = stepAvgLum;
     }

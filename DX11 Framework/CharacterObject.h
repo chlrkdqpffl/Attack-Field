@@ -49,7 +49,6 @@ protected:
 	bool				m_bIsOccupy = false;
 	bool				m_bIsDeathHead = false;
 	bool				m_bIsHeadHit = false;
-	bool				m_bTempIsRun = false;   // 임시로 달리기 속력 맞추려고 넣은 변수 이므로 사용 금지 - 추후 수정
 	DWORD               m_dwWalkSoundWatingTime = 0;
 	bool				m_bIsDeadly = false;
 	bool				m_bIsDeadlyAttack = false;
@@ -133,8 +132,6 @@ public:
 	void SetIsCrouch(bool set) { m_bIsCrouch = set; }
 	bool GetIsCrouch() const { return  m_bIsCrouch; }
 	
-	void SetIsTempRun(bool set) { m_bTempIsRun = set; }
-	bool GetIsTempRun() const { return m_bTempIsRun; }
 	void SetIsFire(bool bIsFire) { 
 		m_bIsFire = bIsFire;
 		if (false == bIsFire)

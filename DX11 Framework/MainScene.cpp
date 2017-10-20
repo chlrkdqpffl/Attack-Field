@@ -16,7 +16,7 @@ CMainScene::CMainScene()
 
 //	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(0.002f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(0.0f, 0.0f, 0.0f);
-//	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(1000.0f, 55.0f, 0.0f, 0.0f);
+	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(900.0f, 60.0f, 0.0f, 0.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_nSelect = 15;
 }

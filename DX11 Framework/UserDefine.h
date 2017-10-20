@@ -4,10 +4,9 @@
 
 #define DEVELOP_MODE				// 클라이언트 개발 모드
 #define FASTLOAD_MODE				// 빠른 로딩 모드 - 테스트용
-
 //#define USE_SERVER					// 서버 활성화 모드
 
-#define USE_CONSOLE					// Open Console Windows
+//#define USE_CONSOLE					// Open Console Windows
 #define USE_AUTOIP					// Use Config File
 #define USE_SOUND
 
