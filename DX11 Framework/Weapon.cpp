@@ -74,7 +74,6 @@ void CWeapon::Firing(XMVECTOR direction)
 				info.m_pHitObject->SetCollision(true);
 
 				CCharacterObject* hitCharacter = static_cast<CCharacterObject*>(info.m_pHitObject);
-
 				XMVECTOR bloodOffset = firePosOffset;
 				bloodOffset += direction * info.m_fDistance;
 

@@ -92,6 +92,8 @@ void CServerManager::processpacket(char *ptr)
 					SCENE_MGR->g_pPlayer->SetPosition(XMFLOAT3(my_put_packet->x, my_put_packet->y, my_put_packet->z));
 					SCENE_MGR->g_pPlayer->SetPlayerlife(static_cast<UINT>(my_put_packet->hp));
 					SCENE_MGR->g_pPlayerCharacter->SetServerID(id);
+					SCENE_MGR->g_pPlayerCharacter->SetID(my_put_packet->characterID);
+					
 					SCENE_MGR->g_pPlayerCharacter->SetTeamTag(static_cast<TeamTag>(my_put_packet->Team));
 					SCENE_MGR->g_pMainScene->SetGameMode(static_cast<GameMode>(my_put_packet->mode));
 					SCENE_MGR->g_pPlayerCharacter->CreateMaterial();
@@ -103,6 +105,7 @@ void CServerManager::processpacket(char *ptr)
 					pCharObject->SetPosition(XMVectorSet(my_put_packet->x, my_put_packet->y, my_put_packet->z, 0.0f));
 					pCharObject->SetLife(static_cast<UINT>(my_put_packet->hp));
 					pCharObject->SetServerID(id);
+					pCharObject->SetID(my_put_packet->characterID);
 					SCENE_MGR->g_pMainScene->SetGameMode(static_cast<GameMode>(my_put_packet->mode));
 					SCENE_MGR->g_pMainScene->GetCharcontainer().push_back(pCharObject);
 					SCENE_MGR->g_pMainScene->GetBbBoxcontainer().push_back(pCharObject);
@@ -240,7 +243,7 @@ void CServerManager::processpacket(char *ptr)
 			case ePacket_OccupyTeam:	//어떤팀이 점령했는지 보낸다.
 			{
 				sc_occupy *packet = reinterpret_cast<sc_occupy *>(ptr);
-				if(packet->redteam == static_cast<int>(TeamTag::eRedTeam))
+				if(packet->OccupyTeam == static_cast<int>(TeamTag::eRedTeam))
 					SCENE_MGR->g_pMainScene->SetOccupyTeam(TeamTag::eRedTeam);
 				else
 					SCENE_MGR->g_pMainScene->SetOccupyTeam(TeamTag::eBlueTeam);

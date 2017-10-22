@@ -37,7 +37,7 @@ protected:
 	float               m_fPrevYaw = 0.0f;
 
 	XMFLOAT3            m_f3RelativeVelocity = XMFLOAT3(0, 0, 0);
-
+	string				m_strID;
 	UINT				m_nCharacterID = 0;
 
 	// ----- State Variable ----- //
@@ -147,6 +147,9 @@ public:
 	
 	void SetIsJump(bool set) { m_bIsJump = set; }
 	bool GetIsJump() const { return m_bIsJump; }
+
+	string GetID() const { return m_strID; }
+	void SetID(string id) { m_strID = id; }
 
 	void SetOccupy(bool occupy) {
 		static bool bIsOccupyStart = false;

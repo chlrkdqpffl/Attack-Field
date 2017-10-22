@@ -107,7 +107,6 @@ public:
 	void SetKeyUp(KeyInput key);
 	WORD GetKeyState() const { return m_wKeyState; }
 	
-	void SetDamagedInfo(DamagedInfo info) { m_infoDamage = info; }
 	UINT GetServerID() const { return m_pCharacter->GetServerID(); }
 
 	// --- Draw UI Text --- //
@@ -117,12 +116,14 @@ public:
 	UINT GetPlayerLife() const { return m_pCharacter->GetLife(); }
 	UINT GetPlayerArmorPoint() const { return m_pCharacter->GetArmorPoint(); }
 	void SetPlayerlife(UINT hp) { m_pCharacter->SetLife(hp); }
+	bool GetAlive() const { return m_pCharacter->GetLife(); }
 
 	bool GetIsZoom() const { return m_bIsZoom; }
 	void SetIsZoom(bool set) { m_bIsZoom = set; }
 
 	bool GetIsDamage() const { return m_infoDamage.m_bIsDamage; }
 	void SetIsDamage(bool set) { m_infoDamage.m_bIsDamage = set; }
+	void SetDamagedInfo(DamagedInfo info) { m_infoDamage = info; }
 	DamagedInfo GetDamageInfo() const { return m_infoDamage; }
 	bool GetIsDeadly() const { return m_pCharacter->GetIsDeadly(); }
 	void SetIsDeadly(bool set) { m_pCharacter->SetIsDeadly(set); }

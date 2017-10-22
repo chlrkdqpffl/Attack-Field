@@ -8,6 +8,7 @@
 #define CS_GAME_MODE	5
 #define RemovePlayer    6
 #define CS_CreatePlayer 8
+#define CS_OCCUPYTEAM	9
 
 enum PacketType
 {
@@ -51,26 +52,24 @@ struct cs_rotate {   //클라에서 화면을 움직였을때
 	XMFLOAT3 FireDirection;			// 이거 무슨 코드임??? 어디서 쓰이는지좀
 };
 
-struct sc_packet_put_player {   //서버에서 처음 접속했을때 위치값과 ID를 부여한다.
+struct sc_packet_put_player {	//서버에서 처음 접속했을때 위치값과 ID를 부여한다.
 
 	BYTE size;
-	volatile BYTE type;
+	BYTE type;
 
-	WORD   id;
+	WORD id;
+	char characterID[20];
 
 	float x;
 	float y;
 	float z;
 
 	BYTE Team;
-
-
-	BYTE   hp;
-
-	BYTE   Goal;
-	BYTE   RED;
-	BYTE   Blue;
-	float   timer;
+	BYTE hp;
+	BYTE Goal;
+	BYTE RED;
+	BYTE Blue;
+	float timer;
 
 	BYTE mode;
 };
@@ -272,14 +271,15 @@ struct cs_create_charter
 {
 	BYTE size;
 	BYTE type;
+
+	char characterID[20];
 };
 
 struct sc_occupy
 {
 	BYTE size;
 	BYTE type;
-	BYTE redteam;
-
+	BYTE OccupyTeam;
 };
 
 struct SC_Occupy_Timer
@@ -302,8 +302,7 @@ struct cs_round_over
 {
 	BYTE size;
 	BYTE type;
-	BYTE Red;
-	BYTE Blue;
+	BYTE OccupyTeam;
 };
 
 

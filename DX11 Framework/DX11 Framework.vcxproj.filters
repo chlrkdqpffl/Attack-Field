@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="HLSL">
-      <UniqueIdentifier>{b36ea3a8-3cb6-4680-a615-a0844cf96048}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\Object">
       <UniqueIdentifier>{95bc00e2-a8e6-4a66-b8da-dc732c5ed1de}</UniqueIdentifier>
     </Filter>
@@ -88,9 +85,6 @@
     <Filter Include="Objects\Billboard">
       <UniqueIdentifier>{16748d53-bd13-4cb5-93ea-0ffd814ef231}</UniqueIdentifier>
     </Filter>
-    <Filter Include="HLSL\Deferred">
-      <UniqueIdentifier>{b7912b48-bd30-4e80-b6bd-a96120c8225b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Deferred">
       <UniqueIdentifier>{181e45a1-6e7f-4dbd-9614-0bad023d9bed}</UniqueIdentifier>
     </Filter>
@@ -99,12 +93,6 @@
     </Filter>
     <Filter Include="Particle">
       <UniqueIdentifier>{212ba4fb-c602-4b82-bf63-ababc9048f83}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="HLSL\Deferred\Light">
-      <UniqueIdentifier>{d60721e4-64b1-451f-8ea6-8cc8c2f99d4e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="HLSL\Particle">
-      <UniqueIdentifier>{8f2ed613-93d3-4bc0-bb46-21ce10be5793}</UniqueIdentifier>
     </Filter>
     <Filter Include="Objects\SpriteImage">
       <UniqueIdentifier>{ad1505d7-3b82-4b95-84ff-7165426ea589}</UniqueIdentifier>
@@ -120,6 +108,18 @@
     </Filter>
     <Filter Include="Objects\Weopon\SniperRifle">
       <UniqueIdentifier>{b181e8be-0beb-4dae-b460-b008a02663db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL">
+      <UniqueIdentifier>{609c6cf0-1238-46bc-8517-850d558d7e53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\Deferred">
+      <UniqueIdentifier>{0143dbe9-85d1-4ec6-b8ba-37b3cc6118b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\Deferred\Light">
+      <UniqueIdentifier>{1b364c57-7819-4fc0-b1e4-21116595ff05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\Particle">
+      <UniqueIdentifier>{f5b544f2-8fc5-4965-a666-3f08caa23e31}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -677,114 +677,111 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shader HLSL File\Effect.fx">
+    <FxCompile Include="..\Shader HLSL File\Effect.fx">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader HLSL File\Fog.hlsli">
+    <None Include="..\Shader HLSL File\RenderToScreen.hlsli">
       <Filter>HLSL</Filter>
     </None>
-    <None Include="Shader HLSL File\Light.hlsli">
+    <None Include="..\Shader HLSL File\SpriteImage.hlsli">
       <Filter>HLSL</Filter>
     </None>
-    <None Include="Shader HLSL File\NormalMap.hlsli">
+    <None Include="..\Shader HLSL File\Terrain.hlsli">
       <Filter>HLSL</Filter>
     </None>
-    <None Include="Shader HLSL File\Terrain.hlsli">
+    <None Include="..\Shader HLSL File\BoundingBox.hlsli">
       <Filter>HLSL</Filter>
     </None>
-    <None Include="Shader HLSL File\DisplacementMap.hlsli">
+    <None Include="..\Shader HLSL File\CharacterSkinned.hlsli">
       <Filter>HLSL</Filter>
     </None>
-    <None Include="Shader HLSL File\Normal.hlsli">
+    <None Include="..\Shader HLSL File\CharacterSkinnedNormal.hlsli">
       <Filter>HLSL</Filter>
     </None>
-    <None Include="Shader HLSL File\CharacterSkinned.hlsli">
+    <None Include="..\Shader HLSL File\common.hlsli">
       <Filter>HLSL</Filter>
     </None>
-    <None Include="Shader HLSL File\CharacterSkinnedNormal.hlsli">
+    <None Include="..\Shader HLSL File\DisplacementMap.hlsli">
       <Filter>HLSL</Filter>
     </None>
-    <None Include="Shader HLSL File\BoundingBox.hlsli">
+    <None Include="..\Shader HLSL File\Fog.hlsli">
       <Filter>HLSL</Filter>
     </None>
-    <None Include="Shader HLSL File\Blurring.hlsli">
-      <Filter>HLSL\Deferred</Filter>
+    <None Include="..\Shader HLSL File\Normal.hlsli">
+      <Filter>HLSL</Filter>
     </None>
-    <None Include="Shader HLSL File\common.hlsli">
-      <Filter>HLSL\Deferred</Filter>
+    <None Include="..\Shader HLSL File\NormalMap.hlsli">
+      <Filter>HLSL</Filter>
     </None>
-    <None Include="Shader HLSL File\DeferredShading.hlsli">
-      <Filter>HLSL\Deferred</Filter>
+    <None Include="..\Shader HLSL File\Blood.hlsli">
+      <Filter>HLSL\Particle</Filter>
     </None>
-    <None Include="Shader HLSL File\GBuffer.hlsli">
-      <Filter>HLSL\Deferred</Filter>
+    <None Include="..\Shader HLSL File\CopiousBleeding.hlsli">
+      <Filter>HLSL\Particle</Filter>
     </None>
-    <None Include="Shader HLSL File\PostProcessing.hlsli">
-      <Filter>HLSL\Deferred</Filter>
+    <None Include="..\Shader HLSL File\Fire.hlsli">
+      <Filter>HLSL\Particle</Filter>
     </None>
-    <None Include="Shader HLSL File\DeferredCharacterSkinnedNormal.hlsli">
-      <Filter>HLSL\Deferred</Filter>
+    <None Include="..\Shader HLSL File\FireSpark.hlsli">
+      <Filter>HLSL\Particle</Filter>
     </None>
-    <None Include="Shader HLSL File\GBufferStructure.hlsli">
-      <Filter>HLSL\Deferred</Filter>
+    <None Include="..\Shader HLSL File\Rain.hlsli">
+      <Filter>HLSL\Particle</Filter>
     </None>
-    <None Include="Shader HLSL File\PointLight.hlsli">
+    <None Include="..\Shader HLSL File\Spark.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
+    <None Include="..\Shader HLSL File\ParticleCommon.hlsli">
+      <Filter>HLSL\Particle</Filter>
+    </None>
+    <None Include="..\Shader HLSL File\Light.hlsli">
       <Filter>HLSL\Deferred\Light</Filter>
     </None>
-    <None Include="Shader HLSL File\SpotLight.hlsli">
+    <None Include="..\Shader HLSL File\PointLight.hlsli">
       <Filter>HLSL\Deferred\Light</Filter>
     </None>
-    <None Include="Shader HLSL File\DirLight.hlsli">
+    <None Include="..\Shader HLSL File\SpotLight.hlsli">
       <Filter>HLSL\Deferred\Light</Filter>
     </None>
-    <None Include="Shader HLSL File\CapsuleLight.hlsli">
+    <None Include="..\Shader HLSL File\DirLight.hlsli">
       <Filter>HLSL\Deferred\Light</Filter>
     </None>
-    <None Include="Shader HLSL File\PostFX.hlsli">
-      <Filter>HLSL\Deferred</Filter>
-    </None>
-    <None Include="Shader HLSL File\PostDownScaleFX.hlsli">
-      <Filter>HLSL\Deferred</Filter>
-    </None>
-    <None Include="Shader HLSL File\Blur.hlsli">
-      <Filter>HLSL\Deferred</Filter>
-    </None>
-    <None Include="Shader HLSL File\ParticleCommon.hlsli">
-      <Filter>HLSL\Particle</Filter>
-    </None>
-    <None Include="Shader HLSL File\Fire.hlsli">
-      <Filter>HLSL\Particle</Filter>
-    </None>
-    <None Include="Shader HLSL File\Rain.hlsli">
-      <Filter>HLSL\Particle</Filter>
-    </None>
-    <None Include="Shader HLSL File\Blood.hlsli">
-      <Filter>HLSL\Particle</Filter>
-    </None>
-    <None Include="Shader HLSL File\ShadowGen.hlsli">
+    <None Include="..\Shader HLSL File\CapsuleLight.hlsli">
       <Filter>HLSL\Deferred\Light</Filter>
     </None>
-    <None Include="Shader HLSL File\Spark.hlsli">
-      <Filter>HLSL\Particle</Filter>
-    </None>
-    <None Include="Shader HLSL File\FireSpark.hlsli">
-      <Filter>HLSL\Particle</Filter>
-    </None>
-    <None Include="Shader HLSL File\CopiousBleeding.hlsli">
-      <Filter>HLSL\Particle</Filter>
-    </None>
-    <None Include="Shader HLSL File\SpriteImage.hlsli">
-      <Filter>HLSL</Filter>
-    </None>
-    <None Include="Shader HLSL File\SSReflection.hlsli">
+    <None Include="..\Shader HLSL File\Blur.hlsli">
       <Filter>HLSL\Deferred</Filter>
     </None>
-    <None Include="Shader HLSL File\RenderToScreen.hlsli">
-      <Filter>HLSL</Filter>
+    <None Include="..\Shader HLSL File\Blurring.hlsli">
+      <Filter>HLSL\Deferred</Filter>
     </None>
-    <None Include="Shader HLSL File\DecalGen.hlsli">
+    <None Include="..\Shader HLSL File\DecalGen.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="..\Shader HLSL File\DeferredCharacterSkinnedNormal.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="..\Shader HLSL File\DeferredShading.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="..\Shader HLSL File\GBuffer.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="..\Shader HLSL File\GBufferStructure.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="..\Shader HLSL File\PostDownScaleFX.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="..\Shader HLSL File\PostFX.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="..\Shader HLSL File\PostProcessing.hlsli">
+      <Filter>HLSL\Deferred</Filter>
+    </None>
+    <None Include="..\Shader HLSL File\SSReflection.hlsli">
       <Filter>HLSL</Filter>
     </None>
   </ItemGroup>

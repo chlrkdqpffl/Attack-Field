@@ -373,52 +373,48 @@
     <ResourceCompile Include="DirectX11_Project.rc" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shader HLSL File\Effect.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    <FxCompile Include="..\Shader HLSL File\Effect.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader HLSL File\Blood.hlsli" />
-    <None Include="Shader HLSL File\Blur.hlsli" />
-    <None Include="Shader HLSL File\Blurring.hlsli" />
-    <None Include="Shader HLSL File\BoundingBox.hlsli" />
-    <None Include="Shader HLSL File\CapsuleLight.hlsli" />
-    <None Include="Shader HLSL File\CharacterSkinnedNormal.hlsli" />
-    <None Include="Shader HLSL File\common.hlsli" />
-    <None Include="Shader HLSL File\CopiousBleeding.hlsli" />
-    <None Include="Shader HLSL File\DecalGen.hlsli" />
-    <None Include="Shader HLSL File\DeferredCharacterSkinnedNormal.hlsli" />
-    <None Include="Shader HLSL File\DeferredShading.hlsli" />
-    <None Include="Shader HLSL File\DirLight.hlsli" />
-    <None Include="Shader HLSL File\DisplacementMap.hlsli" />
-    <None Include="Shader HLSL File\CharacterSkinned.hlsli" />
-    <None Include="Shader HLSL File\FireSpark.hlsli" />
-    <None Include="Shader HLSL File\Fog.hlsli" />
-    <None Include="Shader HLSL File\GBuffer.hlsli" />
-    <None Include="Shader HLSL File\GBufferStructure.hlsli" />
-    <None Include="Shader HLSL File\Light.hlsli" />
-    <None Include="Shader HLSL File\Normal.hlsli" />
-    <None Include="Shader HLSL File\NormalMap.hlsli" />
-    <None Include="Shader HLSL File\Fire.hlsli" />
-    <None Include="Shader HLSL File\ParticleCommon.hlsli" />
-    <None Include="Shader HLSL File\PointLight.hlsli" />
-    <None Include="Shader HLSL File\PostDownScaleFX.hlsli" />
-    <None Include="Shader HLSL File\PostFX.hlsli" />
-    <None Include="Shader HLSL File\PostProcessing.hlsli" />
-    <None Include="Shader HLSL File\Rain.hlsli" />
-    <None Include="Shader HLSL File\ShadowGen.hlsli" />
-    <None Include="Shader HLSL File\Spark.hlsli" />
-    <None Include="Shader HLSL File\SpotLight.hlsli" />
-    <None Include="Shader HLSL File\SpriteImage.hlsli" />
-    <None Include="Shader HLSL File\SSReflection.hlsli" />
-    <None Include="Shader HLSL File\Terrain.hlsli">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </None>
-    <None Include="Shader HLSL File\RenderToScreen.hlsli" />
+    <None Include="..\Shader HLSL File\Blood.hlsli" />
+    <None Include="..\Shader HLSL File\Blur.hlsli" />
+    <None Include="..\Shader HLSL File\Blurring.hlsli" />
+    <None Include="..\Shader HLSL File\BoundingBox.hlsli" />
+    <None Include="..\Shader HLSL File\CapsuleLight.hlsli" />
+    <None Include="..\Shader HLSL File\CharacterSkinned.hlsli" />
+    <None Include="..\Shader HLSL File\CharacterSkinnedNormal.hlsli" />
+    <None Include="..\Shader HLSL File\common.hlsli" />
+    <None Include="..\Shader HLSL File\CopiousBleeding.hlsli" />
+    <None Include="..\Shader HLSL File\DecalGen.hlsli" />
+    <None Include="..\Shader HLSL File\DeferredCharacterSkinnedNormal.hlsli" />
+    <None Include="..\Shader HLSL File\DeferredShading.hlsli" />
+    <None Include="..\Shader HLSL File\DirLight.hlsli" />
+    <None Include="..\Shader HLSL File\DisplacementMap.hlsli" />
+    <None Include="..\Shader HLSL File\Fire.hlsli" />
+    <None Include="..\Shader HLSL File\FireSpark.hlsli" />
+    <None Include="..\Shader HLSL File\Fog.hlsli" />
+    <None Include="..\Shader HLSL File\GBuffer.hlsli" />
+    <None Include="..\Shader HLSL File\GBufferStructure.hlsli" />
+    <None Include="..\Shader HLSL File\Light.hlsli" />
+    <None Include="..\Shader HLSL File\Normal.hlsli" />
+    <None Include="..\Shader HLSL File\NormalMap.hlsli" />
+    <None Include="..\Shader HLSL File\ParticleCommon.hlsli" />
+    <None Include="..\Shader HLSL File\PointLight.hlsli" />
+    <None Include="..\Shader HLSL File\PostDownScaleFX.hlsli" />
+    <None Include="..\Shader HLSL File\PostFX.hlsli" />
+    <None Include="..\Shader HLSL File\PostProcessing.hlsli" />
+    <None Include="..\Shader HLSL File\Rain.hlsli" />
+    <None Include="..\Shader HLSL File\RenderToScreen.hlsli" />
+    <None Include="..\Shader HLSL File\Spark.hlsli" />
+    <None Include="..\Shader HLSL File\SpotLight.hlsli" />
+    <None Include="..\Shader HLSL File\SpriteImage.hlsli" />
+    <None Include="..\Shader HLSL File\SSReflection.hlsli" />
+    <None Include="..\Shader HLSL File\Terrain.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

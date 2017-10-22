@@ -44,7 +44,6 @@ public:
 	void GameRoundOver(float fDeltaTime);
 	void CalcTime();
 	void CalcOccupyTime();
-	void CalcOccupyPosition();
 
 	// UI
 	void RenderUI();
@@ -52,7 +51,8 @@ public:
 	void ShowZoomScope();
 	void ShowDamageDirection();
 	void ShowDeathRespawnUI();
-	void ShowOccupyUI();
+	void ShowOccupyGageUI();
+	void ShowOccupyPointUI();
 	void ShowDeadlyUI();
 	void ShowDeadlyAttackUI();
 	void CalcDamagedDirection();
@@ -114,9 +114,9 @@ private:
 
 
 	// ----- Occupy Variable ----- //
-	const XMFLOAT3					m_cf3OccupyPosition = XMFLOAT3(130.0f, 25.0f, 168.0f);
+	const XMFLOAT3					m_cf3OccupyPosition = XMFLOAT3(129.0f, 4.0f, 168.0f);
 	DWORD							m_dwGameRoundOverTime = 0;
-	TeamTag						m_tagOccupyTeam = TeamTag::eNone;
+	TeamTag							m_tagOccupyTeam = TeamTag::eNone;
 	UINT							m_nRedScore = 0;
 	UINT							m_nBlueScore = 0;
 };

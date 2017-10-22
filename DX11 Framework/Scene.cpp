@@ -182,11 +182,15 @@ void CScene::CreatePlayer()
 
 	m_pPlayer = new CTerrainPlayer(m_pPlayerCharacter);
 	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eFirstPerson);
-//	m_pPlayer->ChangeCamera(m_pd3dDevice, CameraTag::eThirdPerson);
 	m_pPlayer->InitializePhysXData(m_pPxPhysicsSDK, m_pPxMaterial, m_pPxControllerManager);
 
 	m_pCamera = m_pPlayer->GetCamera();
 	m_pPlayerCharacter->SetPlayer(m_pPlayer);
+
+	char id[20];
+	GetPrivateProfileStringA("Client", "ID", "Å×½ºÆ®", id, 20, "./Config.Ini");
+
+	m_pPlayerCharacter->SetID(id);
 
 	SCENE_MGR->g_pPlayerCharacter = m_pPlayerCharacter;
 	SCENE_MGR->g_pPlayer = m_pPlayer;

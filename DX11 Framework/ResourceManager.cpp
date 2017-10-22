@@ -87,7 +87,6 @@ void CResourceManager::LoadUIData()
 {
 	cout << endl << " ----- UI Data -----" << endl;
 
-	AddResourece(TextureTag::eCaptureArea,			"../Assets/Image/UI/CaptureArea.png");
 	AddResourece(TextureTag::eScoreUI,				"../Assets/Image/UI/ScoreUI.png");
 	AddResourece(TextureTag::eMagazineUI,			"../Assets/Image/UI/MagazineUI.png");
 	AddResourece(TextureTag::eLifeUI,				"../Assets/Image/UI/LifeUI.png");
@@ -96,7 +95,6 @@ void CResourceManager::LoadUIData()
 	AddResourece(TextureTag::eRespawnGageWhiteBar,	"../Assets/Image/UI/RespawnGage(White).png");
 
 	AddResourece(TextureTag::eZoomScopeD,			"../Assets/Image/UI//Zoom_Scope.png");
-	AddResourece(TextureTag::eBoom,					"../Assets/Image/UI//Boom.png");
 
 	AddResourece(TextureTag::eOccupyGageBar,		"../Assets/Image/UI/RespawnGage.png");	// 현재는 동일한 텍스쳐 사용중
 	AddResourece(TextureTag::eOccupyGageWhiteBar,	"../Assets/Image/UI/RespawnGage(White).png");
