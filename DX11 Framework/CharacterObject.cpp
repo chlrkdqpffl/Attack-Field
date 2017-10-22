@@ -57,9 +57,11 @@ void CCharacterObject::Firing()
 
 void CCharacterObject::Walking()
 {
-	if (GetTickCount() - m_dwWalkSoundWatingTime > 1000) {
-		SOUND_MGR->Play3DSound(SoundTag::eWalk, GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
-		m_dwWalkSoundWatingTime = GetTickCount();
+	if (m_bIsCrouch == false) {
+		if (GetTickCount() - m_dwWalkSoundWatingTime > 1000) {
+			SOUND_MGR->Play3DSound(SoundTag::eWalk, GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
+			m_dwWalkSoundWatingTime = GetTickCount();
+		}
 	}
 }
 

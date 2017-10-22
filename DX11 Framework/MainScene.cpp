@@ -14,8 +14,8 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientUpperColor = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(0.002f, 0.0f, 0.0f);
-//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(0.0f, 0.0f, 0.0f);
+//	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(0.3f, 0.0f, -0.35f);
+//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(100.0f, 0.0f, 0.0f);
 	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(900.0f, 60.0f, 0.0f, 0.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_nSelect = 15;
@@ -1755,8 +1755,10 @@ void CMainScene::ModifiedSelectObject()
 void CMainScene::CalcTime()
 {
 	if (GetTickCount() - m_dwTime > 1000 / m_fFrameSpeed) {
-		if (m_nGameTime <= 0)
+		if (m_nGameTime <= 0) {
+			m_bIsGameRoundOver = true;
 			return;
+		}
 
 		m_nGameTime--;
 		CalcOccupyTime();

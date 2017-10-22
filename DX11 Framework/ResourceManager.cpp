@@ -39,12 +39,12 @@ void CResourceManager::LoadResourceTitleScene()
 	// BackGround Image
 	AddResourece(TextureTag::eTitleBackGroundD,		"../Assets/Image/UI/TitleScene.jpg");
 	AddResourece(TextureTag::eLoadingBackGroundD,	"../Assets/Image/UI/LoadingScene(Final).jpg");
-	AddResourece(TextureTag::eDeathOn,	"../Assets/Image/UI/DeathMatchOn.png");
-	AddResourece(TextureTag::eOccupyOn, "../Assets/Image/UI/OccupyMatchOn.png");
-	AddResourece(TextureTag::eDeathSearch, "../Assets/Image/UI/DeathMatchOn.png");
-	AddResourece(TextureTag::eOccupySearch, "../Assets/Image/UI/OccupyMatchOn.png");
-	AddResourece(TextureTag::eDeathOff, "../Assets/Image/UI/DeathMatchOff.png");
-	AddResourece(TextureTag::eOccupyOff, "../Assets/Image/UI/OccupyMatchOff.png");
+	AddResourece(TextureTag::eDeathOn,				"../Assets/Image/UI/DeathMatchOn.jpg");
+	AddResourece(TextureTag::eOccupyOn,				"../Assets/Image/UI/OccupyMatchOn.jpg");
+	AddResourece(TextureTag::eDeathOff,				"../Assets/Image/UI/DeathMatchOff.jpg");
+	AddResourece(TextureTag::eOccupyOff,			"../Assets/Image/UI/OccupyMatchOff.jpg");
+	AddResourece(TextureTag::eDeathSearch,			"../Assets/Image/UI/DeathMatchWaiting.jpg");
+	AddResourece(TextureTag::eOccupySearch,			"../Assets/Image/UI/OccupyMatchOnWaiting.jpg");
 
 	// UI
 	AddResourece(TextureTag::eStartButtonOn,		"../Assets/Image/UI/StartOn.png");

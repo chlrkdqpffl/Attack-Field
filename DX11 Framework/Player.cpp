@@ -25,7 +25,7 @@ void CPlayer::InitializePhysXData(PxPhysics* pPxPhysics, PxMaterial *pPxMaterial
 {
 	PxCapsuleControllerDesc	PxCapsuledesc;
 	PxCapsuledesc.position = PxExtendedVec3(0, 0, 0);
-	PxCapsuledesc.radius = 0.6f;
+	PxCapsuledesc.radius = 0.8f;
 	PxCapsuledesc.height = 2.0f;
 //	PxCapsuledesc.climbingMode = PxCapsuleClimbingMode::Enum::eCONSTRAINED;
 //	PxCapsuledesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;
@@ -33,7 +33,7 @@ void CPlayer::InitializePhysXData(PxPhysics* pPxPhysics, PxMaterial *pPxMaterial
 
 	// 성능을 향상시키기 위해 캐싱하는 컨트롤러 주변의 공간. 이것은 1.0f보다 커야하지만 너무 크지 않아야하며, 2.0f보다 낮아야함
 	PxCapsuledesc.volumeGrowth = 1.9f;
-	PxCapsuledesc.slopeLimit = cosf(XMConvertToRadians(45.f));
+	PxCapsuledesc.slopeLimit = cosf(XMConvertToRadians(40.f));
 	
 	PxCapsuledesc.upDirection = PxVec3(0, 1, 0);
 	PxCapsuledesc.contactOffset = 0.001f;
@@ -72,12 +72,15 @@ void CPlayer::PhysXUpdate(float fDeltaTime)
 
 	// ----- Character Update ----- //
 	//float characterCenterOffset = TWBAR_MGR->g_xmf3Offset.x;
-	float characterCenterOffset = 0.08f;
+	float characterCenterOffset = 0.3f;
 	XMFLOAT3 position = XMFLOAT3(m_pPxCharacterController->getPosition().x, m_pPxCharacterController->getPosition().y, m_pPxCharacterController->getPosition().z);
 
-	m_mtxWorld._41 = position.x;
-	m_mtxWorld._42 = position.y - characterCenterOffset;	// 포지션은 캐릭터 중심이 기준
-	m_mtxWorld._43 = position.z;
+	XMVECTOR vLook = m_pCharacter->GetvLook() * -0.35f;
+	XMFLOAT3 look; XMStoreFloat3(&look, vLook);
+
+	m_mtxWorld._41 = position.x + look.x;
+	m_mtxWorld._42 = position.y - characterCenterOffset + look.y;	// 포지션은 캐릭터 중심이 기준
+	m_mtxWorld._43 = position.z + look.z;
 	m_pCharacter->m_mtxWorld = XMLoadFloat4x4(&m_mtxWorld);
 }
 
@@ -268,6 +271,7 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
+		vMoveDirection = GetvLook();
 		m_fSpeedFactor = 1.8f;
 		m_pCharacter->Running();
 	}
@@ -294,7 +298,7 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 		if (false == m_bIsJumping) {
 			m_bIsJumping = true;
 		
-			UINT nJumpPower = SCENE_MGR->g_pGameTimer->GetFrameRate() * 15 + 100;
+			UINT nJumpPower = SCENE_MGR->g_pGameTimer->GetFrameRate() * 15 + 15;
 			AddAccel(XMFLOAT3(0.0f, nJumpPower, 0.0f));
 			relativeVelocity += XMVectorSet(0, 1, 0, 0);
 			m_pCharacter->SetIsJump(true);
