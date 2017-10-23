@@ -99,6 +99,14 @@ void CResourceManager::LoadUIData()
 	AddResourece(TextureTag::eOccupyGageBar,		"../Assets/Image/UI/RespawnGage.png");	// 현재는 동일한 텍스쳐 사용중
 	AddResourece(TextureTag::eOccupyGageWhiteBar,	"../Assets/Image/UI/RespawnGage(White).png");
 
+	// 동일한 UI를 여러개 사용할 수 없어서 임시로 제작
+	AddResourece(TextureTag::eRifleKill,			"../Assets/Image/UI/RifleKill.png");
+	AddResourece(TextureTag::eRifleKill2,			"../Assets/Image/UI/RifleKill.png");
+	AddResourece(TextureTag::eRifleKill3,			"../Assets/Image/UI/RifleKill.png");
+	AddResourece(TextureTag::eSniperKill,			"../Assets/Image/UI/SniperKill.png");
+	AddResourece(TextureTag::eSniperKill2,			"../Assets/Image/UI/SniperKill.png");
+	AddResourece(TextureTag::eSniperKill3,			"../Assets/Image/UI/SniperKill.png");
+
 	// Damage Direction
 	AddResourece(TextureTag::eDamageDirection_Left,		"../Assets/Image/UI/DamageDirection/DamageDir_Left.png");
 	AddResourece(TextureTag::eDamageDirection_LeftTop,	"../Assets/Image/UI/DamageDirection/DamageDir_LeftTop.png");

@@ -150,12 +150,11 @@ bool CCollisionManager::RayCastCollisionToCharacter_AABB(CollisionInfo& info, XM
 {
 	CGameObject* pNearestObject = nullptr;
 	float fNearestDistance = FLT_MAX;
-	float fDist = 0;
 	bool isCollision = false;
 
 	for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
 		if (!character->GetBoundingSphere().Intersects(originPos, direction, info.m_fDistance))
-			return false;
+			continue;
 	
 		info.m_pHitObject = character;
 		if (info.m_pHitObject->GetBoundingBox(0).Intersects(originPos, direction, info.m_fDistance)) {
@@ -168,7 +167,6 @@ bool CCollisionManager::RayCastCollisionToCharacter_AABB(CollisionInfo& info, XM
 			}
 		}
 	}
-
 	if (isCollision) {
 		info.m_pHitObject = pNearestObject;
 		return true;

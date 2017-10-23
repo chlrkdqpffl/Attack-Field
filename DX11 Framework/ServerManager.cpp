@@ -157,11 +157,13 @@ void CServerManager::processpacket(char *ptr)
 				bIsPartsCollisionCS = COLLISION_MGR->RayCastCollisionToCharacter_Parts(info, XMLoadFloat3(&my_collision->position), XMLoadFloat3(&my_collision->direction));
 		
 				if (bIsPartsCollisionCS) {
-					CS_Head_Collison Collison;
+					CS_FinalCollison Collison;
 					Collison.hitParts = static_cast<BYTE>(info.m_HitParts);
 					Collison.type = CS_HEAD_HIT;
-					Collison.size = sizeof(CS_Head_Collison);
+					Collison.size = sizeof(CS_FinalCollison);
+					Collison.fireCharacterID = my_collision->fireCharacterID;
 					Collison.hitCharacterID = my_collision->hitCharacterID;
+					Collison.collisionDistance = info.m_fDistance;
 					Collison.position = my_collision->position;
 					Collison.direction = my_collision->direction;
 					Collison.weaponType = my_collision->weaponType;
@@ -300,9 +302,8 @@ void CServerManager::processpacket(char *ptr)
 			}
 		}
 	}
-		break;
+	break;
 
-	
 	case ePacket_WeaponReplace:	//Weapon_Change.
 	{
 		sc_weapon_type *my_packet = reinterpret_cast<sc_weapon_type *>(ptr);
@@ -317,6 +318,35 @@ void CServerManager::processpacket(char *ptr)
 		SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->ReplaceWeapon(static_cast<WeaponTag>(my_packet->Weapontype));
 		break;
 	}
+
+	case ePacket_KillLog: 
+	{
+		SC_KillLog* my_packet = reinterpret_cast<SC_KillLog *>(ptr);
+		//my_packet->killerPlayer
+		int findKiller = 0;
+		int findDiedPlayer = 0;
+		for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
+			if (character->GetServerID() == my_packet->killerPlayer)
+				break;
+			findKiller++;
+		}
+		for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
+			if (character->GetServerID() == my_packet->diePlayer)
+				break;
+			findDiedPlayer++;
+		}
+
+		SCENE_MGR->g_pMainScene->CreateKillLog(SCENE_MGR->g_pMainScene->GetCharcontainer()[findKiller], SCENE_MGR->g_pMainScene->GetCharcontainer()[findDiedPlayer]->GetID());
+	}
+	break;
+	case ePacket_Particle:
+	{
+		SC_Particle* packet = reinterpret_cast<SC_Particle *>(ptr);
+
+		PARTICLE_MGR->CreateParticle(static_cast<ParticleTag>(packet->particleType), XMLoadFloat3(&packet->position));
+	}
+	break;
+
 	default:
 		std::cout << "Unknown PACKET type :" << (int)ptr[1] << "\n";
 		break;

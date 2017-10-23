@@ -23,6 +23,8 @@ enum PacketType
 	ePacket_OccupyTeam,
 	ePacket_DamageInfo,
 	ePacket_WeaponReplace,
+	ePacket_KillLog,
+	ePacket_Particle,
 
 	ePacket_SuccessMyCharacter,
 	ePacket_SceneChange,
@@ -72,6 +74,24 @@ struct sc_packet_put_player {	//서버에서 처음 접속했을때 위치값과 ID를 부여한다.
 	float timer;
 
 	BYTE mode;
+};
+
+struct SC_Particle
+{
+	BYTE size;
+	BYTE type;
+
+	BYTE particleType;
+	XMFLOAT3 position;
+};
+
+struct SC_KillLog
+{
+	BYTE size;
+	BYTE type;
+
+	BYTE killerPlayer;
+	BYTE diePlayer;
 };
 
 struct sc_packet_pos   //서버에서 처리된 값을 클라에게 보낸다. 
@@ -124,6 +144,7 @@ struct cs_FireInfo
 	BYTE size;
 	BYTE type;
 
+	BYTE fireCharacterID;
 	XMFLOAT3 direction;
 	XMFLOAT3 position;
 	BYTE weaponType;
@@ -134,6 +155,7 @@ struct SC_Collison
 	BYTE size;
 	BYTE type;
 
+	BYTE fireCharacterID;
 	BYTE weaponType;
 	WORD hitCharacterID;
 
@@ -142,15 +164,17 @@ struct SC_Collison
 	XMFLOAT3 direction;
 };
 
-struct CS_Head_Collison
+struct CS_FinalCollison
 {
 	BYTE size;
 	BYTE type;
 
+	BYTE fireCharacterID;
 	BYTE hitParts;
 	BYTE hitCharacterID;
 	BYTE weaponType;
 
+	float collisionDistance;
 	XMFLOAT3 position;
 	XMFLOAT3 direction;
 };

@@ -111,7 +111,6 @@ public:
 
 	// --- Draw UI Text --- //
 	UINT GetWeaponBulletCount() const { return m_pCharacter->GetWeaponBulletCount(); }
-	void SetWeaponBulletMax() { m_pCharacter->SetWeaponBulletMax(); }
 	UINT GetWeaponMaxBulletCount() const { return m_pCharacter->GetWeaponMaxBulletCount(); }
 	UINT GetPlayerLife() const { return m_pCharacter->GetLife(); }
 	UINT GetPlayerArmorPoint() const { return m_pCharacter->GetArmorPoint(); }

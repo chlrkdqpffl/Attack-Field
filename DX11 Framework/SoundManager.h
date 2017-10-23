@@ -91,6 +91,6 @@ public:
 	void PlayBgm(SoundTag soundTag, float vol = 0.7f) {}
 
 	void AddVolume(float volume) {}
-	bool IsMaxSound() {}
+	bool IsMaxSound() { return false; }
 #endif
 };

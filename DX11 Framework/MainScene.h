@@ -5,6 +5,16 @@
 #include "PostFX.h"
 #include "SSReflection.h"
 
+struct KillLog
+{
+	DWORD dwCreateTime;
+	bool bIsFriendly;
+	string killerID;
+	string diedID;
+	WeaponTag weaponTag;
+	CUIObject* pWeaponUI;
+};
+
 class CMainScene : public CScene 
 {
 public:
@@ -39,6 +49,7 @@ public:
 	void ModifiedSelectObject();
 	void AddShaderObject(ShaderTag tag, CGameObject* pObject);
 
+	void Show_KillLog();
 	void Update_Light();
 	void Update_LightningStrikes(float fDeltaTime);
 	void GameRoundOver(float fDeltaTime);
@@ -55,7 +66,9 @@ public:
 	void ShowOccupyPointUI();
 	void ShowDeadlyUI();
 	void ShowDeadlyAttackUI();
+	void ShowKillUI(KillLog log, UINT activateLine);
 	void CalcDamagedDirection();
+	void CreateKillLog(CCharacterObject* killerPlayer, string diedID);
 
 
 	vector<CCharacterObject*> &GetCharcontainer() { return m_vecCharacterContainer; }
@@ -111,7 +124,7 @@ private:
 	UINT							m_nRedTeamTotalKill = 0;
 	UINT							m_nBlueTeamTotalKill = 0;
 	GameMode						m_tagGameMode = GameMode::eNone;
-
+	list<KillLog>					m_listKillLog;
 
 	// ----- Occupy Variable ----- //
 	const XMFLOAT3					m_cf3OccupyPosition = XMFLOAT3(129.0f, 4.0f, 168.0f);

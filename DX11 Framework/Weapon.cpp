@@ -39,6 +39,7 @@ void CWeapon::Firing(XMVECTOR direction)
 			packet->size = sizeof(cs_FireInfo);
 			packet->type = CS_WEAPONE;
 			packet->weaponType = static_cast<BYTE>(m_tagWeapon);
+			packet->fireCharacterID = m_pOwner->GetServerID();
 			XMStoreFloat3(&packet->position, firePosOffset);
 			XMStoreFloat3(&packet->direction, direction);
 
@@ -48,19 +49,21 @@ void CWeapon::Firing(XMVECTOR direction)
 		CollisionInfo info;
 		if (COLLISION_MGR->RayCastCollisionToCharacter(info, firePosOffset, direction)) {
 			if (info.m_fDistance < m_fRange) {
-				XMVECTOR bloodOffset = firePosOffset;
-				bloodOffset += direction * info.m_fDistance;
+		//		if (static_cast<CCharacterObject*>(info.m_pHitObject)->GetAlive() == false) {	// 죽을 때에는 서버에 모션이 없으므로 따로 처리
+					XMVECTOR bloodOffset = firePosOffset;
+					bloodOffset += direction * info.m_fDistance;
 
-				// Head Shot 판정
-				if (info.m_HitParts == ChracterBoundingBoxParts::eHead) {
-					PARTICLE_MGR->CreateParticle(ParticleTag::eCopiousBleeding, bloodOffset);
-				}
-				else {
-					PARTICLE_MGR->CreateParticle(ParticleTag::eBleeding, bloodOffset);
-				}
+					// Head Shot 판정
+					if (info.m_HitParts == ChracterBoundingBoxParts::eHead)
+						PARTICLE_MGR->CreateParticle(ParticleTag::eCopiousBleeding, bloodOffset);
+					else
+						PARTICLE_MGR->CreateParticle(ParticleTag::eBleeding, bloodOffset);
+		//		}
 			}
 		}
-		else if (COLLISION_MGR->RayCastCollision(info, firePosOffset, direction)) {
+
+//		CollisionInfo info;
+		if (COLLISION_MGR->RayCastCollision(info, firePosOffset, direction)) {
 			if (info.m_fDistance < m_fRange) {
 				XMVECTOR SparkOffset = firePosOffset;
 				SparkOffset += direction * info.m_fDistance;
@@ -91,6 +94,9 @@ void CWeapon::Firing(XMVECTOR direction)
 					hitCharacter->DamagedCharacter(m_fDamage * 0.75f);
 					PARTICLE_MGR->CreateParticle(ParticleTag::eBleeding, bloodOffset);
 				}
+
+				if(false == hitCharacter->GetAlive())
+					SCENE_MGR->g_pMainScene->CreateKillLog(m_pOwner, hitCharacter->GetID());
 			}
 		}
 		else if (COLLISION_MGR->RayCastCollision(info, firePosOffset, direction)) {

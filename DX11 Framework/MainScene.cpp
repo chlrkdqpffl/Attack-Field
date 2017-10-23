@@ -14,8 +14,8 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 //	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(0.3f, 0.0f, -0.35f);
-//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(100.0f, 0.0f, 0.0f);
-	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(900.0f, 60.0f, 0.0f, 0.0f);
+//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(1300.0f, 45.0f, 100.0f);
+//	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(1305.0f, 30.0f, 90.0f, 45.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_nSelect = 730;
 	
@@ -94,10 +94,10 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_vecCharacterContainer.back()->SetIsFire(false);
 				break;
 			case VK_G:
-				m_pPlayerCharacter->SetIsHeadHit(true);
+				CreateKillLog(m_vecCharacterContainer[0], "하이하이");
 				break;
 			case VK_B:
-			//	SOUND_MGR->AddVolume(-0.1f);
+				CreateKillLog(m_vecCharacterContainer[1], "dddddddddd");
 				break;
 
 #endif
@@ -269,8 +269,8 @@ void CMainScene::Initialize()
 	pCharacter->CreateAxisObject(m_pd3dDevice);
 
 #ifdef DEVELOP_MODE
-	pCharacter->SetLife(10000);	// 파티클 테스트용
-//	pCharacter->SetLife(100);
+//	pCharacter->SetLife(10000);	// 파티클 테스트용
+	pCharacter->SetLife(100);
 #else
 	pCharacter->SetLife(100);
 #endif
@@ -1561,6 +1561,37 @@ void CMainScene::CreateUIImage()
 	pUIObject->AddOpacity(-1.0f);
 	m_pUIManager->AddUIObject(pUIObject);
 
+	// Weapon Kill UI
+	pUIObject = new CUIObject(TextureTag::eRifleKill);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ 30, 30 }, 0.0f, true);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eRifleKill2);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ 30, 30 }, 0.0f, true);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eRifleKill3);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ 30, 30 }, 0.0f, true);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eSniperKill);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ 30, 30 }, 0.0f, true);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eSniperKill2);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ 30, 30 }, 0.0f, true);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eSniperKill3);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ 30, 30 }, 0.0f, true);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
+
 	// Respawn Gage
 	pUIObject = new CUIObject(TextureTag::eRespawnGageBar);
 	pUIObject->Initialize(m_pd3dDevice, POINT{ FRAME_BUFFER_WIDTH / 2 - 305, FRAME_BUFFER_HEIGHT / 2 + 40 }, POINT{ FRAME_BUFFER_WIDTH / 2 + 305 , FRAME_BUFFER_HEIGHT / 2 + 65 }, 0.1f);
@@ -1810,8 +1841,9 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 		else
 			m_pPlayer->SetPosition(blueTeamStartPosition);
 
-		m_pPlayer->SetWeaponBulletMax();
-		m_pPlayer->SetPlayerlife(PLAYER_HP);
+		m_pPlayerCharacter->SetWeaponBulletMax();
+		m_pPlayerCharacter->SetLife(PLAYER_HP);
+		m_pPlayerCharacter->SetArmorPoint(PLAYER_HP);
 	}
 }
 
@@ -1981,7 +2013,7 @@ void CMainScene::ShowOccupyPointUI()
 
 	// 50m부터 최소 크기
 	float fontSize = (1 - distance / 50.0f) * 100;
-	fontSize = clamp(fontSize, 0.0f, 30.0f);
+	fontSize = clamp(fontSize, 0.0f, 25.0f);
 
 
 	XMVECTOR Direction = XMLoadFloat3(&m_cf3OccupyPosition) - m_pPlayer->GetvPosition();
@@ -2070,6 +2102,84 @@ void CMainScene::ShowDeadlyAttackUI()
 	if (pDamageUI->GetOpacity() <= 0.0f) {
 		bIsDeadlyAttack = true;
 		m_pPlayer->SetIsDeadlyAttack(false);
+	}
+}
+
+void CMainScene::ShowKillUI(KillLog log, UINT activateLine)
+{
+	if (nullptr == log.pWeaponUI)
+		return;
+	
+	log.pWeaponUI->SetActive(true);
+	log.pWeaponUI->SetStartPos(POINT{ 1305, 30 + 45 * (LONG)activateLine });
+	log.pWeaponUI->SetEndPos(POINT{ 1395, 75 + 45 * (LONG)activateLine });
+}
+
+void CMainScene::CreateKillLog(CCharacterObject* killerPlayer, string diedID)
+{
+	KillLog log;
+	log.dwCreateTime = GetTickCount();
+
+	if (killerPlayer->GetTagTeam() == m_pPlayerCharacter->GetTagTeam())
+		log.bIsFriendly = true;
+	else
+		log.bIsFriendly = false;
+	log.killerID = killerPlayer->GetID();
+	log.diedID = diedID;
+	log.weaponTag = killerPlayer->GetWeapon()->GetWeaponTag();
+
+	CUIObject* pWeaponUI = nullptr;
+	if (log.weaponTag == WeaponTag::eRifle) {
+		if (false == m_pUIManager->GetUIObject(TextureTag::eRifleKill)->GetActive())
+			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eRifleKill);
+		else if (false == m_pUIManager->GetUIObject(TextureTag::eRifleKill2)->GetActive())
+			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eRifleKill2);
+		else if (false == m_pUIManager->GetUIObject(TextureTag::eRifleKill3)->GetActive())
+			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eRifleKill3);
+	}
+	else if (log.weaponTag == WeaponTag::eSniperRifle) {
+		if (false == m_pUIManager->GetUIObject(TextureTag::eSniperKill)->GetActive())
+			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eSniperKill);
+		else if (false == m_pUIManager->GetUIObject(TextureTag::eSniperKill2)->GetActive())
+			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eSniperKill2);
+		else if (false == m_pUIManager->GetUIObject(TextureTag::eSniperKill3)->GetActive())
+			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eSniperKill3);
+	}
+	log.pWeaponUI = pWeaponUI;
+
+	m_listKillLog.push_back(log);
+}
+
+void CMainScene::Show_KillLog()
+{
+	UINT startYPos = 30;
+	UINT activateLog = 0;
+
+	for (auto killLog : m_listKillLog) {
+		if (GetTickCount() - killLog.dwCreateTime < 5000) {	// 5초간 렌더링
+			string str = killLog.killerID;
+			if(killLog.bIsFriendly)
+				TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 35, 1300, 35 + 45 * activateLog, 0xFFFF8A36, FW1_RIGHT);
+			else 
+				TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 35, 1300, 35 + 45 * activateLog, 0xFF2478FF, FW1_RIGHT);
+
+			ShowKillUI(killLog, activateLog);
+
+			str = killLog.diedID;
+			if (killLog.bIsFriendly)
+				TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 35, 1400, 35 + 45 * activateLog, 0xFF2478FF, FW1_LEFT);
+			else
+				TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 35, 1400, 35 + 45 * activateLog, 0xFFFF8A36, FW1_LEFT);
+
+			activateLog++;
+		}
+		else {
+			if (m_listKillLog.front().pWeaponUI) {
+				m_listKillLog.front().pWeaponUI->SetActive(false);
+				m_listKillLog.front().pWeaponUI = nullptr;
+			}
+			m_listKillLog.pop_front();
+		}
 	}
 }
 
@@ -2497,4 +2607,7 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 		if (0 <= fDegree && fDegree < 80)
 			TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 15 + fontSize, vScreenPos.x, vScreenPos.y, 0xFF41FF3A, FW1_CENTER);
 	}
+
+	// ----- Kill Log ----- //
+	Show_KillLog();
 }
