@@ -49,7 +49,7 @@ void CWeapon::Firing(XMVECTOR direction)
 		CollisionInfo info;
 		if (COLLISION_MGR->RayCastCollisionToCharacter(info, firePosOffset, direction)) {
 			if (info.m_fDistance < m_fRange) {
-		//		if (static_cast<CCharacterObject*>(info.m_pHitObject)->GetAlive() == false) {	// 죽을 때에는 서버에 모션이 없으므로 따로 처리
+				if (static_cast<CCharacterObject*>(info.m_pHitObject)->GetAlive() == false) {	// 죽을 때에는 서버에 모션이 없으므로 따로 처리
 					XMVECTOR bloodOffset = firePosOffset;
 					bloodOffset += direction * info.m_fDistance;
 
@@ -58,7 +58,7 @@ void CWeapon::Firing(XMVECTOR direction)
 						PARTICLE_MGR->CreateParticle(ParticleTag::eCopiousBleeding, bloodOffset);
 					else
 						PARTICLE_MGR->CreateParticle(ParticleTag::eBleeding, bloodOffset);
-		//		}
+				}
 			}
 		}
 
@@ -95,8 +95,12 @@ void CWeapon::Firing(XMVECTOR direction)
 					PARTICLE_MGR->CreateParticle(ParticleTag::eBleeding, bloodOffset);
 				}
 
-				if(false == hitCharacter->GetAlive())
-					SCENE_MGR->g_pMainScene->CreateKillLog(m_pOwner, hitCharacter->GetID());
+				if (false == hitCharacter->GetAlive()) {
+					if (info.m_HitParts == ChracterBoundingBoxParts::eHead)
+						SCENE_MGR->g_pMainScene->CreateKillLog(m_pOwner, hitCharacter->GetID(), true);
+					else
+						SCENE_MGR->g_pMainScene->CreateKillLog(m_pOwner, hitCharacter->GetID(), false);
+				}
 			}
 		}
 		else if (COLLISION_MGR->RayCastCollision(info, firePosOffset, direction)) {

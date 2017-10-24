@@ -11,6 +11,8 @@ struct KillLog
 	bool bIsFriendly;
 	string killerID;
 	string diedID;
+	bool bIsHeadShoot;
+
 	WeaponTag weaponTag;
 	CUIObject* pWeaponUI;
 };
@@ -68,7 +70,7 @@ public:
 	void ShowDeadlyAttackUI();
 	void ShowKillUI(KillLog log, UINT activateLine);
 	void CalcDamagedDirection();
-	void CreateKillLog(CCharacterObject* killerPlayer, string diedID);
+	void CreateKillLog(CCharacterObject* killerPlayer, string diedID, bool bIsHead);
 
 
 	vector<CCharacterObject*> &GetCharcontainer() { return m_vecCharacterContainer; }
@@ -94,7 +96,7 @@ private:
 	ID3D11Buffer					*m_pd3dcbTestVariable = nullptr;
 
 	CAimObject*						m_pAimObject = nullptr;
-
+\
 	// Bounding Box Render
 	bool							m_bIsPreCollisionCheck = false;
 	CBoundingBoxShader				*m_pBoundingBoxShader = nullptr;

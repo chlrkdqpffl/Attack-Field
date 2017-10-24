@@ -425,10 +425,14 @@ void CState_Run::EnterState(CCharacterObject* pCharacter, CharacterParts type)
 
 	SOUND_MGR->Play3DSound(SoundTag::eRun, pCharacter->GetPosition(), XMFLOAT3(0, 0, 0), 0, 0);
 	pCharacter->SetAnimation(AnimationTag::eRun, 1.4f);
+
+	pCharacter->SetIsRunningSpeed(true);
 }
 
 void CState_Run::UpdateUpperBodyState(CCharacterObject* pCharacter)
 {
+	if (pCharacter->GetCharacterID() == 0)
+		SCENE_MGR->g_pPlayerCharacter->AddPitch(RAND_FLOAT(-0.1f, 0.1f));
 }
 
 void CState_Run::UpdateLowerBodyState(CCharacterObject* pCharacter)
@@ -462,6 +466,7 @@ void CState_Run::ExitState(CCharacterObject* pCharacter, CharacterParts type)
 		return;
 
 	SOUND_MGR->StopSound();
+	pCharacter->SetIsRunningSpeed(false);
 }
 
 // ---------------------------- Death ---------------------------- //

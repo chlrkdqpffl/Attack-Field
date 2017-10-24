@@ -46,6 +46,7 @@ protected:
 	bool				m_bIsCrouch = false;
 	bool				m_bIsReload = false;
 	bool				m_bIsRun = false;
+	bool				m_bIsRunningSpeed = false;
 	bool				m_bIsOccupy = false;
 	bool				m_bIsDeathHead = false;
 	bool				m_bIsHeadHit = false;
@@ -129,6 +130,8 @@ public:
 	bool IsMoving() const {	return (m_f3RelativeVelocity.x != 0 || m_f3RelativeVelocity.y != 0 || m_f3RelativeVelocity.z != 0);	}
 	void SetIsRun(bool set) { m_bIsRun = set; }
 	bool GetIsRun() const { return  m_bIsRun; }
+	void SetIsRunningSpeed(bool set) { m_bIsRunningSpeed = set; }
+	bool GetIsRunningSpeed() const { return  	m_bIsRunningSpeed; }
 	void SetIsCrouch(bool set) { m_bIsCrouch = set; }
 	bool GetIsCrouch() const { return  m_bIsCrouch; }
 	

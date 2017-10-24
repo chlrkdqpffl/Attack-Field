@@ -103,9 +103,16 @@ void CResourceManager::LoadUIData()
 	AddResourece(TextureTag::eRifleKill,			"../Assets/Image/UI/RifleKill.png");
 	AddResourece(TextureTag::eRifleKill2,			"../Assets/Image/UI/RifleKill.png");
 	AddResourece(TextureTag::eRifleKill3,			"../Assets/Image/UI/RifleKill.png");
+	AddResourece(TextureTag::eRifleKill4,			"../Assets/Image/UI/RifleKill.png");
+	AddResourece(TextureTag::eRifleKill5,			"../Assets/Image/UI/RifleKill.png");
+	AddResourece(TextureTag::eRifleKill6,			"../Assets/Image/UI/RifleKill.png");
+
 	AddResourece(TextureTag::eSniperKill,			"../Assets/Image/UI/SniperKill.png");
 	AddResourece(TextureTag::eSniperKill2,			"../Assets/Image/UI/SniperKill.png");
 	AddResourece(TextureTag::eSniperKill3,			"../Assets/Image/UI/SniperKill.png");
+	AddResourece(TextureTag::eSniperKill4,			"../Assets/Image/UI/SniperKill.png");
+	AddResourece(TextureTag::eSniperKill5,			"../Assets/Image/UI/SniperKill.png");
+	AddResourece(TextureTag::eSniperKill6,			"../Assets/Image/UI/SniperKill.png");
 
 	// Damage Direction
 	AddResourece(TextureTag::eDamageDirection_Left,		"../Assets/Image/UI/DamageDirection/DamageDir_Left.png");

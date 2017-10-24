@@ -182,7 +182,8 @@ enum class TextureTag
 	eStartButtonOn, eStartButtonOff, eExitButtonOn, eExitButtonOff,
 	eMagazineUI, eLifeUI, eScoreUI, eDamagedCharacterUI, eRespawnGageBar, eRespawnGageWhiteBar, eOccupyGageBar, eOccupyGageWhiteBar,
 	eDamageDirection_Left, eDamageDirection_LeftTop, eDamageDirection_Top, eDamageDirection_RightTop, eDamageDirection_Right, eDamageDirection_Bottom,
-	eRifleKill, eRifleKill2, eRifleKill3, eSniperKill, eSniperKill2, eSniperKill3,
+	eRifleKill, eRifleKill2, eRifleKill3, eRifleKill4, eRifleKill5, eRifleKill6,
+	eSniperKill, eSniperKill2, eSniperKill3, eSniperKill4, eSniperKill5, eSniperKill6,
 
 	// Etc
 	eBarricadeD, eStoneWallD, eStoneWallN,

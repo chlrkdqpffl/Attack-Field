@@ -223,11 +223,9 @@ void CServerManager::processpacket(char *ptr)
 				packet = reinterpret_cast<SC_Respawn *>(ptr);
 				id = packet->id;
 
-//				ShowXMFloat3(packet->m_f3Position);
-
 				if (id == m_myid){
-					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->Revival();
 					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->SetPosition(XMVectorSet(packet->m_f3Position.x, packet->m_f3Position.y, packet->m_f3Position.z, 0));
+					SCENE_MGR->g_pMainScene->GetCharcontainer()[0]->Revival();
 				}
 				else
 				{
@@ -242,6 +240,7 @@ void CServerManager::processpacket(char *ptr)
 				}
 			}
 			break;
+
 			case ePacket_OccupyTeam:	//어떤팀이 점령했는지 보낸다.
 			{
 				sc_occupy *packet = reinterpret_cast<sc_occupy *>(ptr);
@@ -262,20 +261,6 @@ void CServerManager::processpacket(char *ptr)
 			}
 			break;
 	}
-	case ePacket_LoginFail:	//로그인 실패시 클라이언트종료
-	{
-		SC_login_CONNECT *packet;
-		packet = reinterpret_cast<SC_login_CONNECT *>(ptr);
-		id = packet->id;
-		if (!packet->connect)
-		{
-			SCENE_MGR->m_loginfail = true;
-			exit(1);
-			//PostQuitMessage(0);
-		}
-	}
-	break;
-	
 	case ePacket_SuccessMyCharacter:	//방에 들어가지면 받고 신변경해주고 서버에 정보 넣어달라고 보낸다.
 	{
 		SCENE_MGR->ChangeScene(SceneTag::eLoadingScene);
@@ -316,13 +301,13 @@ void CServerManager::processpacket(char *ptr)
 		}
 
 		SCENE_MGR->g_pMainScene->GetCharcontainer()[findCharacterID]->ReplaceWeapon(static_cast<WeaponTag>(my_packet->Weapontype));
-		break;
 	}
+	break;
 
 	case ePacket_KillLog: 
 	{
 		SC_KillLog* my_packet = reinterpret_cast<SC_KillLog *>(ptr);
-		//my_packet->killerPlayer
+
 		int findKiller = 0;
 		int findDiedPlayer = 0;
 		for (auto& character : SCENE_MGR->g_pMainScene->GetCharcontainer()) {
@@ -336,7 +321,7 @@ void CServerManager::processpacket(char *ptr)
 			findDiedPlayer++;
 		}
 
-		SCENE_MGR->g_pMainScene->CreateKillLog(SCENE_MGR->g_pMainScene->GetCharcontainer()[findKiller], SCENE_MGR->g_pMainScene->GetCharcontainer()[findDiedPlayer]->GetID());
+		SCENE_MGR->g_pMainScene->CreateKillLog(SCENE_MGR->g_pMainScene->GetCharcontainer()[findKiller], SCENE_MGR->g_pMainScene->GetCharcontainer()[findDiedPlayer]->GetID(), my_packet->bIsHead);
 	}
 	break;
 	case ePacket_Particle:
@@ -349,6 +334,7 @@ void CServerManager::processpacket(char *ptr)
 
 	default:
 		std::cout << "Unknown PACKET type :" << (int)ptr[1] << "\n";
+		Sleep(2000);
 		break;
 	}
 }
@@ -425,7 +411,7 @@ void CServerManager::Server_init()
 
 	if (Result == SOCKET_ERROR) {
 		cout << "연결안됨 !!";
-		Sleep(3000);
+		Sleep(2000);
 		exit(1);
 	}
 	WSAAsyncSelect(g_socket, m_handle, WM_SOCKET, FD_CLOSE | FD_READ);

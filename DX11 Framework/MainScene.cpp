@@ -14,7 +14,7 @@ CMainScene::CMainScene()
 	m_f3DirectionalAmbientLowerColor = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 //	TWBAR_MGR->g_xmf3Offset = XMFLOAT3(0.3f, 0.0f, -0.35f);
-//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(1300.0f, 45.0f, 100.0f);
+//	TWBAR_MGR->g_xmf3Rotate = XMFLOAT3(765.0f, 823, 100.0f);
 //	TWBAR_MGR->g_xmf3Quaternion = XMFLOAT4(1305.0f, 30.0f, 90.0f, 45.0f);
 	TWBAR_MGR->g_xmf4TestVariable = XMFLOAT4(900.0f, 1600.0f, 0.0f, 0.0f);
 //	TWBAR_MGR->g_nSelect = 730;
@@ -94,10 +94,10 @@ bool CMainScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM 
 				m_vecCharacterContainer.back()->SetIsFire(false);
 				break;
 			case VK_G:
-				CreateKillLog(m_vecCharacterContainer[0], "하이하이");
+				CreateKillLog(m_vecCharacterContainer[0], "하이하이", true);
 				break;
 			case VK_B:
-				CreateKillLog(m_vecCharacterContainer[1], "dddddddddd");
+				CreateKillLog(m_vecCharacterContainer[1], "dddddddddd", false);
 				break;
 
 #endif
@@ -1577,6 +1577,21 @@ void CMainScene::CreateUIImage()
 	pUIObject->SetActive(false);
 	m_pUIManager->AddUIObject(pUIObject);
 
+	pUIObject = new CUIObject(TextureTag::eRifleKill4);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ 30, 30 }, 0.0f, true);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eRifleKill5);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ 30, 30 }, 0.0f, true);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eRifleKill6);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ 30, 30 }, 0.0f, true);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
+
 	pUIObject = new CUIObject(TextureTag::eSniperKill);
 	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ 30, 30 }, 0.0f, true);
 	pUIObject->SetActive(false);
@@ -1588,6 +1603,21 @@ void CMainScene::CreateUIImage()
 	m_pUIManager->AddUIObject(pUIObject);
 
 	pUIObject = new CUIObject(TextureTag::eSniperKill3);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ 30, 30 }, 0.0f, true);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eSniperKill4);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ 30, 30 }, 0.0f, true);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eSniperKill5);
+	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ 30, 30 }, 0.0f, true);
+	pUIObject->SetActive(false);
+	m_pUIManager->AddUIObject(pUIObject);
+
+	pUIObject = new CUIObject(TextureTag::eSniperKill6);
 	pUIObject->Initialize(m_pd3dDevice, POINT{ 0, 0 }, POINT{ 30, 30 }, 0.0f, true);
 	pUIObject->SetActive(false);
 	m_pUIManager->AddUIObject(pUIObject);
@@ -1849,10 +1879,8 @@ void CMainScene::GameRoundOver(float fDeltaTime)
 
 void CMainScene::RenderUI()
 {
-
 	ShowAimUI();
 	ShowZoomScope();
-
 	ShowDeadlyAttackUI();
 	ShowDeadlyUI();
 	ShowDeathRespawnUI();
@@ -1883,6 +1911,12 @@ void CMainScene::ShowAimUI()
 	m_pAimObject->SetAimSize(10 * m_pPlayerCharacter->GetWeaponCalcRecoil());
 	m_pAimObject->Render(m_pd3dDeviceContext);
 }
+
+/*
+void CMainScene::ShowHitUI()
+{
+}
+*/
 
 void CMainScene::ShowZoomScope()
 {
@@ -2000,9 +2034,13 @@ void CMainScene::ShowOccupyPointUI()
 	XMVECTOR occupyPos = XMLoadFloat3(&m_cf3OccupyPosition);
 	float distance = XMVectorGetX(XMVector3Length(playerPos - occupyPos));
 
-	if (5.5f <= distance)
+	if (6.0f <= distance)
 		m_pPlayerCharacter->SetOccupy(false);
-
+	else {
+		if (m_pPlayerCharacter->GetTagTeam() != m_tagOccupyTeam)
+			if(false == m_pPlayerCharacter->GetIsOccupy())
+				TEXT_MGR->RenderText(m_pd3dDeviceContext, "Press E Button", 50, 810, 520, 0xFFFFFFFF, FW1_CENTER);
+	}
 	// UI
 	D3D11_VIEWPORT viewport = m_pCamera->GetViewport();
 	XMVECTOR vOut = XMVector3Project(XMLoadFloat3(&m_cf3OccupyPosition), viewport.TopLeftX, viewport.TopLeftY, viewport.Width, viewport.Height, viewport.MinDepth, viewport.MaxDepth, m_pCamera->GetProjectionMatrix(), m_pCamera->GetViewMatrix(), XMMatrixIdentity());
@@ -2111,11 +2149,11 @@ void CMainScene::ShowKillUI(KillLog log, UINT activateLine)
 		return;
 	
 	log.pWeaponUI->SetActive(true);
-	log.pWeaponUI->SetStartPos(POINT{ 1305, 30 + 45 * (LONG)activateLine });
-	log.pWeaponUI->SetEndPos(POINT{ 1395, 75 + 45 * (LONG)activateLine });
+	log.pWeaponUI->SetStartPos(POINT{ 1305, 20 + 50 * (LONG)activateLine });
+	log.pWeaponUI->SetEndPos(POINT{ 1395, 65 + 50 * (LONG)activateLine });
 }
 
-void CMainScene::CreateKillLog(CCharacterObject* killerPlayer, string diedID)
+void CMainScene::CreateKillLog(CCharacterObject* killerPlayer, string diedID, bool bIsHead)
 {
 	KillLog log;
 	log.dwCreateTime = GetTickCount();
@@ -2126,6 +2164,7 @@ void CMainScene::CreateKillLog(CCharacterObject* killerPlayer, string diedID)
 		log.bIsFriendly = false;
 	log.killerID = killerPlayer->GetID();
 	log.diedID = diedID;
+	log.bIsHeadShoot = bIsHead;
 	log.weaponTag = killerPlayer->GetWeapon()->GetWeaponTag();
 
 	CUIObject* pWeaponUI = nullptr;
@@ -2136,6 +2175,12 @@ void CMainScene::CreateKillLog(CCharacterObject* killerPlayer, string diedID)
 			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eRifleKill2);
 		else if (false == m_pUIManager->GetUIObject(TextureTag::eRifleKill3)->GetActive())
 			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eRifleKill3);
+		else if (false == m_pUIManager->GetUIObject(TextureTag::eRifleKill4)->GetActive())
+			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eRifleKill4);
+		else if (false == m_pUIManager->GetUIObject(TextureTag::eRifleKill5)->GetActive())
+			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eRifleKill5);
+		else if (false == m_pUIManager->GetUIObject(TextureTag::eRifleKill6)->GetActive())
+			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eRifleKill6);
 	}
 	else if (log.weaponTag == WeaponTag::eSniperRifle) {
 		if (false == m_pUIManager->GetUIObject(TextureTag::eSniperKill)->GetActive())
@@ -2144,6 +2189,12 @@ void CMainScene::CreateKillLog(CCharacterObject* killerPlayer, string diedID)
 			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eSniperKill2);
 		else if (false == m_pUIManager->GetUIObject(TextureTag::eSniperKill3)->GetActive())
 			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eSniperKill3);
+		else if (false == m_pUIManager->GetUIObject(TextureTag::eSniperKill4)->GetActive())
+			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eSniperKill4);
+		else if (false == m_pUIManager->GetUIObject(TextureTag::eSniperKill5)->GetActive())
+			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eSniperKill5);
+		else if (false == m_pUIManager->GetUIObject(TextureTag::eSniperKill6)->GetActive())
+			pWeaponUI = m_pUIManager->GetUIObject(TextureTag::eSniperKill6);
 	}
 	log.pWeaponUI = pWeaponUI;
 
@@ -2158,18 +2209,22 @@ void CMainScene::Show_KillLog()
 	for (auto killLog : m_listKillLog) {
 		if (GetTickCount() - killLog.dwCreateTime < 5000) {	// 5초간 렌더링
 			string str = killLog.killerID;
+			
+			if(killLog.bIsHeadShoot)
+				TEXT_MGR->RenderText(m_pd3dDeviceContext, "[Head Shoot]", 18, 1385, 50 + 50 * activateLog, 0xFF2424FF, FW1_RIGHT);
+
 			if(killLog.bIsFriendly)
-				TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 35, 1300, 35 + 45 * activateLog, 0xFFFF8A36, FW1_RIGHT);
+				TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 35, 1300, 25 + 50 * activateLog, 0xFFFF8A36, FW1_RIGHT);
 			else 
-				TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 35, 1300, 35 + 45 * activateLog, 0xFF2478FF, FW1_RIGHT);
+				TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 35, 1300, 25 + 50 * activateLog, 0xFF2478FF, FW1_RIGHT);
 
 			ShowKillUI(killLog, activateLog);
 
 			str = killLog.diedID;
 			if (killLog.bIsFriendly)
-				TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 35, 1400, 35 + 45 * activateLog, 0xFF2478FF, FW1_LEFT);
+				TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 35, 1400, 25 + 50 * activateLog, 0xFF2478FF, FW1_LEFT);
 			else
-				TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 35, 1400, 35 + 45 * activateLog, 0xFFFF8A36, FW1_LEFT);
+				TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 35, 1400, 25 + 50 * activateLog, 0xFFFF8A36, FW1_LEFT);
 
 			activateLog++;
 		}
@@ -2491,10 +2546,11 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 	else if (m_pPlayerCharacter->GetWeapon()->GetWeaponTag() == WeaponTag::eSniperRifle)
 		str = "TRG - 21";
 	TEXT_MGR->RenderText(pd3dDeviceContext, str, 51, 1470, 765, 0xFFCCCCCC, FW1_CENTER);
-	
+
 	UINT nBulletCount = m_pPlayer->GetWeaponBulletCount();
 	str = to_string(nBulletCount);
 	TEXT_MGR->RenderText(pd3dDeviceContext, str, 53, 1465, 823, 0xFFFFFFFF, FW1_RIGHT);
+
 
 	UINT nMaxBulletCount = m_pPlayer->GetWeaponMaxBulletCount();
 	str = " /  " + to_string(nMaxBulletCount);
@@ -2594,7 +2650,7 @@ void CMainScene::RenderAllText(ID3D11DeviceContext *pd3dDeviceContext)
 		float fontSize = (1 - distance / 10.0f) * 100;
 		fontSize = clamp(fontSize, 0.0f, 30.0f);
 	
-		XMVECTOR vOut = XMVector3Project(chracter->GetvPosition() + XMVectorSet(0.0f, 1.6f + 1.8f * idHeightPercent, 0.0f, 0.0f), viewport.TopLeftX, viewport.TopLeftY, viewport.Width, viewport.Height, viewport.MinDepth, viewport.MaxDepth, m_pCamera->GetProjectionMatrix(), m_pCamera->GetViewMatrix(), XMMatrixIdentity());
+		XMVECTOR vOut = XMVector3Project(chracter->GetvPosition() + XMVectorSet(0.0f, 1.6f + 1.8f * idHeightPercent, 0.0f, 0.0f), 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f, m_pCamera->GetProjectionMatrix(), m_pCamera->GetViewMatrix(), XMMatrixIdentity());
 		XMFLOAT3 vScreenPos; XMStoreFloat3(&vScreenPos, vOut);
 
 		XMVECTOR Direction = chracter->GetvPosition() - m_pPlayer->GetvPosition();

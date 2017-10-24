@@ -63,6 +63,7 @@ private:
 	// Graphic Card Info
 	wstring							m_wsGraphicBrandName;
 	unsigned __int64				m_ui64VideoMemory		= 0;
+	bool							m_bIsShowDebugInfo		= false;
 
 	// TweakBar
 	bool							m_bTweakInit			= false;

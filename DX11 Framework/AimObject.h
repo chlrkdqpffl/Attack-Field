@@ -4,6 +4,7 @@
 
 class CAimObject
 {
+protected:
 	bool			m_bIsActive = true;
 	UINT			m_nAimSize = 0;
 	XMFLOAT4		m_Color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -21,9 +22,9 @@ public:
 	CAimObject(UINT AimLength, XMFLOAT4 color);
 	virtual ~CAimObject();
 
-	void Initialize(ID3D11Device* pDevice, POINT aimPosition, UINT width);
+	virtual void Initialize(ID3D11Device* pDevice, POINT aimPosition, UINT width);
+	virtual void SetAimSize(UINT size);
 
-	void SetAimSize(UINT size);
 	void SetActive(bool set) { m_bIsActive = set; }
 	void Render(ID3D11DeviceContext* pDeviceContext);
 };

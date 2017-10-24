@@ -271,9 +271,12 @@ void CPlayer::UpdateKeyState(float fDeltaTime)
 	}
 
 	if (m_wKeyState & static_cast<int>(KeyInput::eRun)) {
-		vMoveDirection = GetvLook();
-		m_fSpeedFactor = 1.8f;
-		m_pCharacter->Running();
+		m_pCharacter->SetIsRun(true);
+		if (m_pCharacter->GetIsRunningSpeed()) {
+			vMoveDirection = GetvLook();
+			m_fSpeedFactor = 1.8f;
+			m_pCharacter->Running();
+		}
 	}
 	else {
 		m_pCharacter->SetIsRun(false);

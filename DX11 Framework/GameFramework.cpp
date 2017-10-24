@@ -215,8 +215,8 @@ bool CGameFramework::CreateDirect3DDisplay()
 #else
 		// 외장 그래픽으로 디바이스 생성시 전체화면이 안됨!
 		// 개발할 때에는 전체 화면이 필요 없으므로 실행하도록 하고 시연용으로는 파일을 외장그래픽으로 수동 실행하여야 함
-//		if (SUCCEEDED(hResult = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
-		if (SUCCEEDED(hResult = D3D11CreateDevice(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
+		if (SUCCEEDED(hResult = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
+//		if (SUCCEEDED(hResult = D3D11CreateDevice(NULL, nd3dDriverType, NULL, dwCreateDeviceFlags, pd3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext)))
 #endif
 			break;
 		else {
@@ -342,6 +342,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case VK_F5:
 	//		ScreenCapture(m_pd3dRenderTargetView);
+			break;
+		case VK_F8:
+			m_bIsShowDebugInfo != m_bIsShowDebugInfo;
+			cout << "Show DebugInfo On/Off" << endl;
 			break;
 		case VK_F9:
 		{
@@ -587,9 +591,8 @@ void CGameFramework::FrameAdvance()
 	m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 #endif
 
-#if defined(DEVELOP_MODE)
-	RenderDebugText();
-#endif
+	if(m_bIsShowDebugInfo)
+		RenderDebugText();
 
 	// Draw tweak bars
 	if (SCENE_MGR->g_nowScene->GetSceneTag() == SceneTag::eMainScene) {
@@ -625,8 +628,8 @@ void CGameFramework::RenderDebugText()
 	string str;
 
 	// Draw FrameRate
-	//UINT fps = m_nFrameRate;
-	UINT fps = m_pGameTimer->GetRealFrameRate();
+	/*
+	UINT fps = m_nFrameRate;
 	str = to_string(fps) + " FPS";
 
 	if (60 <= fps)
@@ -634,6 +637,16 @@ void CGameFramework::RenderDebugText()
 	else if (30 <= fps && fps < 60)
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 40, 1500, 20, 0xFF1270FF, FW1_LEFT);
 	else if (fps < 30)										   
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 40, 1500, 20, 0xFF0000FF, FW1_LEFT);
+		*/
+	UINT fps = m_pGameTimer->GetRealFrameRate();
+	str = to_string(fps) + " FPS";
+
+	if (300 <= fps)
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 40, 1500, 20, 0xFFFFFFFF, FW1_LEFT);
+	else if (100 <= fps && fps < 200)
+		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 40, 1500, 20, 0xFF1270FF, FW1_LEFT);
+	else if (fps < 100)
 		TEXT_MGR->RenderText(m_pd3dDeviceContext, str, 40, 1500, 20, 0xFF0000FF, FW1_LEFT);
 
 	if (SCENE_MGR->g_nowScene->GetSceneTag() == SceneTag::eMainScene) {
